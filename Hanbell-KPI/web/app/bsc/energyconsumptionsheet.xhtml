@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/bsc.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <div class="ui-g dashboard">
+                <div class="ui-g-12 ui-md-12">
+                    <div><h3 style="text-align: center"><span style="float: left">单位:#{energyConsumptionDetailBean.indicator.unit}</span>#{energyConsumptionDetailBean.y}#{energyConsumptionDetailBean.indicatorChart.name}<p:link value="返回" outcome="home" style="float: right"/></h3></div>
+                    <p:dataTable var="item" value="#{energyConsumptionDetailBean.indicatorDetailList}" styleClass="plgSheetData Wid100">
+                        <p:column headerText="部门" groupRow="true">
+                            <h:outputText value="#{item.parent.name}" />
+                        </p:column>
+                        <p:column headerText="类别">
+                            <h:outputText value="#{item.type}" />
+                        </p:column>
+                        <p:column headerText="M01">
+                            <h:outputText value="#{energyConsumptionDetailBean.format(item.type,item.n01,1)}" />
+                            #{(item.type == '能耗达标率' and item.n01!='0.00'  )?'%':'' }
+                        </p:column>
+                        <p:column headerText="M02">
+                            <h:outputText value="#{energyConsumptionDetailBean.format(item.type,item.n02,2)}" />
+                            #{(item.type == '能耗达标率' and item.n02!='0.00'  )?'%':'' }
+                        </p:column>
+                        <p:column headerText="M03">
+                            <h:outputText value="#{energyConsumptionDetailBean.format(item.type,item.n03,3)}" />
+                            #{(item.type == '能耗达标率' and item.n03!='0.00'  )?'%':'' }
+                        </p:column>
+                        <p:column headerText="M04">
+                            <h:outputText value="#{energyConsumptionDetailBean.format(item.type,item.n04,4)}" />
+                            #{(item.type == '能耗达标率' and item.n04!='0.00'  )?'%':'' }
+                        </p:column>
+                        <p:column headerText="M05">
+                            <h:outputText value="#{energyConsumptionDetailBean.format(item.type,item.n05,5)}" />
+                            #{(item.type == '能耗达标率' and item.n05!='0.00'  )?'%':'' }
+                        </p:column>
+                        <p:column headerText="M06">
+                            <h:outputText value="#{energyConsumptionDetailBean.format(item.type,item.n06,6)}" />
+                            #{(item.type == '能耗达标率' and item.n06!='0.00'  )?'%':'' }
+                        </p:column>
+                        <p:column headerText="M07">
+                            <h:outputText value="#{energyConsumptionDetailBean.format(item.type,item.n07,7)}" />
+                            #{(item.type == '能耗达标率' and item.n07!='0.00'  )?'%':'' }
+                        </p:column>
+                        <p:column headerText="M08">
+                            <h:outputText value="#{energyConsumptionDetailBean.format(item.type,item.n08,8)}" />
+                            #{(item.type == '能耗达标率' and item.n08!='0.00'  )?'%':'' }
+                        </p:column>
+                        <p:column headerText="M09">
+                            <h:outputText value="#{energyConsumptionDetailBean.format(item.type,item.n09,9)}" />
+                            #{(item.type == '能耗达标率' and item.n09!='0.00'  )?'%':'' }
+                        </p:column>
+                        <p:column headerText="M10">
+                            <h:outputText value="#{energyConsumptionDetailBean.format(item.type,item.n10,10)}" />
+                            #{(item.type == '能耗达标率' and item.n10!='0.00'  )?'%':'' }
+                        </p:column>
+                        <p:column headerText="M11">
+                            <h:outputText value="#{energyConsumptionDetailBean.format(item.type,item.n11,11)}" />
+                            #{(item.type == '能耗达标率' and item.n11!='0.00'  )?'%':'' }
+                        </p:column>
+                        <p:column headerText="M12">
+                            <h:outputText value="#{energyConsumptionDetailBean.format(item.type,item.n12,12)}" />
+                            #{(item.type == '能耗达标率' and item.n12 != '0.00'  )?'%':'' }
+                        </p:column>
+                        <p:column headerText="全年">
+                            <h:outputText value="#{energyConsumptionDetailBean.format(item.type,item.nfy,0)}" 
+                                          style="#{(item.type == '吨标煤/万元产值' || item.type == '能耗达标率' || item.type == '实际（吨标煤/万元产值）'
+                                                   || item.type == '基准（吨标煤/万元产值）' || item.type == '目标（吨标煤/万元产值）')?'display: none':'' }"   />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </div>
+            <div><h:inputHidden id="m" value="#{energyConsumptionDetailBean.m}"></h:inputHidden></div>
+        </h:form>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                var m = document.getElementById("formOne:m");
+                if (m !== null) {
+                    var tr = $("tr.ui-widget-content");
+                    $(tr).each(function (i, t) {
+                        var c;
+                        if ($(t).find("td").length === 15) {
+                            c = $(t).find("td")[parseInt(m.value) + 1];
+                        } else {
+                            c = $(t).find("td")[m.value];
+                        }
+                        if (c !== null) {
+                            $(c).css("color", "red");
+                        }
+                    });
+                }
+            });
+        </script>
+    </ui:define>
+
+</ui:composition>

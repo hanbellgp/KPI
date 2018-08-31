@@ -277,6 +277,11 @@
             <to-view-id>/app/bsc/complaintschartb.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
+        <navigation-case>
+            <from-outcome>energyconsumptionsheet</from-outcome>
+            <to-view-id>/app/bsc/energyconsumptionsheet.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
     </navigation-rule>
     <navigation-rule>
         <description>模态开窗</description>
