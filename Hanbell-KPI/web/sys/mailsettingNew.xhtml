@@ -26,9 +26,9 @@
                     </p:row>
                 </f:facet>
                 <p:row>
-                    <p:column styleClass="Wid20"><p:outputLabel value="编号" for="roleno" /></p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="编号" for="formid" /></p:column>
                     <p:column styleClass="Wid30">
-                        <p:inputText id="roleno" value="#{mailSettingManagedBean.newEntity.formid}" title="formid"
+                        <p:inputText id="formid" value="#{mailSettingManagedBean.newEntity.formid}" title="formid"
                                      required="true" requiredMessage="编号不能为空." disabled="#{mailSettingManagedBean.currentPrgGrant.sysprg.noauto}"/>
                     </p:column>
                     <p:column styleClass="Wid20"><p:outputLabel value="设定日期" for="formdate" /></p:column>

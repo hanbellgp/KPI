@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" autoUpdate="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="jobschedule" icon="ui-icon-restore"  />
+                    <p:commandButton id="btnPrev" value="向前" actionListener="#{jobScheduleManagedBean.toPrev()}" icon="ui-icon-carat-1-w"
+                                     process="@this" update="formOne"
+                                     rendered="#{jobScheduleManagedBean.hasPrev}"/>
+                    <p:commandButton id="btnNext" value="向后" actionListener="#{jobScheduleManagedBean.toNext()}" icon="ui-icon-carat-1-e"
+                                     process="@this" update="formOne"
+                                     rendered="#{jobScheduleManagedBean.hasNext}"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnVerify" value="审核" actionListener="#{jobScheduleManagedBean.verify()}" icon="ui-icon-check"
+                                     rendered="#{jobScheduleManagedBean.doCfm}" process="@this" update="toolbar"/>
+                    <p:commandButton id="btnUnverify" value="还原" actionListener="#{jobScheduleManagedBean.unverify()}" icon="ui-icon-lock-open"
+                                     rendered="#{jobScheduleManagedBean.doUnCfm}" process="@this" update="toolbar"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead"  styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">系统排程维护－查看</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"><h:outputText value="排程编号"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="formid" value="#{jobScheduleManagedBean.currentEntity.formid}" title="formid"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><h:outputText value="设定日期"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <h:outputText id="formdate" value="#{jobScheduleManagedBean.currentEntity.formdate}" title="Formdate">
+                            <f:convertDateTime pattern="yyyy-MM-dd"/>
+                        </h:outputText>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="排程说明"/></p:column>
+                    <p:column colspan="3">
+                        <h:outputText id="description" value="#{jobScheduleManagedBean.currentEntity.description}" title="Description"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="秒"/></p:column>
+                    <p:column>
+                        <h:outputText id="sec" value="#{jobScheduleManagedBean.currentEntity.sec}" title="Sec" />
+                    </p:column>
+                    <p:column><h:outputText value="分钟"/></p:column>
+                    <p:column>
+                        <h:outputText id="min" value="#{jobScheduleManagedBean.currentEntity.min}" title="Min" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="小时"/></p:column>
+                    <p:column>
+                        <h:outputText id="hr" value="#{jobScheduleManagedBean.currentEntity.hr}" title="Hr" />
+                    </p:column>
+                    <p:column></p:column>
+                    <p:column>
+
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="每月哪天"/></p:column>
+                    <p:column>
+                        <h:outputText id="dayOfMonth" value="#{jobScheduleManagedBean.currentEntity.dayOfMonth}" title="DayOfMonth" />
+                    </p:column>
+                    <p:column><h:outputText value="每周哪天"/></p:column>
+                    <p:column>
+                        <h:outputText id="dayOfWeek" value="#{jobScheduleManagedBean.currentEntity.dayOfWeek}" title="DayOfWeek" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="月"/></p:column>
+                    <p:column>
+                        <h:outputText id="m" value="#{jobScheduleManagedBean.currentEntity.m}" title="M" />
+                    </p:column>
+                    <p:column> <h:outputText value="年"/></p:column>
+                    <p:column>
+                        <h:outputText id="y" value="#{jobScheduleManagedBean.currentEntity.y}" title="Y" />
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

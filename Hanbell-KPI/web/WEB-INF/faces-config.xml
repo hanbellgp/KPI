@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<faces-config version="2.0" xmlns="http://java.sun.com/xml/ns/javaee"
+<faces-config xmlns="http://xmlns.jcp.org/xml/ns/javaee"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd"
+              version="2.3">
     <lifecycle>
         <phase-listener>
             cn.hanbell.kpi.web.SignCheck
@@ -75,6 +76,11 @@
         <navigation-case>
             <from-outcome>indicatorchart</from-outcome>
             <to-view-id>/sys/indicatorchart.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>jobschedule</from-outcome>
+            <to-view-id>/sys/jobschedule.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>
@@ -294,6 +300,11 @@
         <navigation-case>
             <from-outcome>categorySelect</from-outcome>
             <to-view-id>/app/df/categorySelect.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>jobscheduleSelect</from-outcome>
+            <to-view-id>/app/df/jobscheduleSelect.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>

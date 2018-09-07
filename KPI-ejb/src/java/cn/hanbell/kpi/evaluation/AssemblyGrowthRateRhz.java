@@ -37,6 +37,7 @@ public class AssemblyGrowthRateRhz extends Productivity {
     @Override
     public BigDecimal getValue(int y, int m, Date d, int type, LinkedHashMap<String, Object> map) {
         String mon;
+        mon = indicatorBean.getIndicatorColumn("N", m);
         Field f;
         BigDecimal v1;
         Double a1, a2, a3;
@@ -46,7 +47,6 @@ public class AssemblyGrowthRateRhz extends Productivity {
         //同期值
         IndicatorDetail benchmark = i.getBenchmarkIndicator();
         try {
-            mon = indicatorBean.getIndicatorColumn("N", m);
             f = o1.getClass().getDeclaredField(mon);
             f.setAccessible(true);
             a1 = Double.valueOf(f.get(o1).toString());

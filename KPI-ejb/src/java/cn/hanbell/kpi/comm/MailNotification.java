@@ -47,7 +47,7 @@ public abstract class MailNotification {
     protected List<String> bcc;
     protected List<File> attachments;
 
-    protected String css = "";
+    protected String css = "<style type='text/css'>body{font-size:14px;}div.content{margin:auto;text-align:center;}div.tbl{margin-bottom:20px;}table{margin:auto;border-spacing:0px;border:1px solid #A2C0DA;}th,td{padding:5px;border-collapse:collapse;text-align:left;}th{background:#B0D0FC;border:1px solid #000000;text-align:center;font-weight:bold;}td{background:#D3E5FD;border:1px solid #000000;text-align:right;}.title{font-size:14px;font-weight:bold;}.foot{font-size:14px;color:Red;}.divFoot{text-align:right;height:20px;width:100%;}div.tableTitle{float:left;font-size:14px;font-weight:bold;text-align:left;}</style>";
 
     protected List<Indicator> indicators;
     protected HashMap<String, BigDecimal> data;
@@ -73,7 +73,7 @@ public abstract class MailNotification {
     }
 
     public void init() {
-        Calendar c = Calendar.getInstance();
+        c = Calendar.getInstance();
         this.y = c.get(Calendar.YEAR);
         this.m = c.get(Calendar.MONTH) + 1;
         this.d = c.getTime();
@@ -101,8 +101,7 @@ public abstract class MailNotification {
     protected String getMailHead() {
         StringBuilder sb = new StringBuilder();
         sb.append("<html><head><title>Hanbell</title>");
-        sb.append("<link rel=\"stylesheet\" href=\"http://jws.hanbell.com.cn:8480/Hanbell-war/resources/css/mail.css\" type=\"text/css\"/>");
-        //sb.append("<style type=\"text/css\">{css}</style>");
+        sb.append(css);
         sb.append("</head><body><div style=\"margin: auto;text-align: center;\">");
         sb.append("<div style=\"width:100%\" class=\"title\">");
         sb.append("<div style=\"text-align:center;width:100%\">上海汉钟精机股份有限公司</div>");
@@ -110,7 +109,6 @@ public abstract class MailNotification {
         sb.append("<div style=\"text-align:center;width:100%; color:Red;\">日期:").append(BaseLib.formatDate("yyyy-MM-dd", d)).append("</div>");
         sb.append("</div>");
         return sb.toString();
-        //return sb.toString().replace("{css}", css);
     }
 
     protected abstract String getMailBody();
@@ -179,6 +177,27 @@ public abstract class MailNotification {
         } catch (Exception ex) {
 
         }
+    }
+
+    /**
+     * @return the to
+     */
+    public List<String> getTo() {
+        return to;
+    }
+
+    /**
+     * @return the cc
+     */
+    public List<String> getCc() {
+        return cc;
+    }
+
+    /**
+     * @return the bcc
+     */
+    public List<String> getBcc() {
+        return bcc;
     }
 
     /**

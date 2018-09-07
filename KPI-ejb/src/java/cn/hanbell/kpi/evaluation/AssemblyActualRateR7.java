@@ -37,6 +37,7 @@ public class AssemblyActualRateR7 extends Productivity {
     @Override
     public BigDecimal getValue(int y, int m, Date d, int type, LinkedHashMap<String, Object> map) {
         String mon;
+        mon = indicatorBean.getIndicatorColumn("N", m);
         Field f;
         BigDecimal v1;
         Double a1, a2;
@@ -44,7 +45,6 @@ public class AssemblyActualRateR7 extends Productivity {
         IndicatorDetail o1 = i.getOther1Indicator();
         IndicatorDetail o2 = i.getOther2Indicator();
         try {
-            mon = indicatorBean.getIndicatorColumn("N", m);
             f = o1.getClass().getDeclaredField(mon);
             f.setAccessible(true);
             a1 = Double.valueOf(f.get(o1).toString());
@@ -54,7 +54,7 @@ public class AssemblyActualRateR7 extends Productivity {
             a2 = Double.valueOf(f.get(o2).toString());
 
             if (a1 == 0.00) {
-                v1 = BigDecimal.valueOf(0);
+                v1 = BigDecimal.ZERO;
             } else {
                 v1 = BigDecimal.valueOf(a2 / a1 * 100).divide(BigDecimal.ONE, 2, RoundingMode.HALF_UP);
             }

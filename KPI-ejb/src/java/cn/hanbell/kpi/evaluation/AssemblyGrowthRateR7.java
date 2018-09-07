@@ -37,6 +37,7 @@ public class AssemblyGrowthRateR7 extends Productivity {
     @Override
     public BigDecimal getValue(int y, int m, Date d, int type, LinkedHashMap<String, Object> map) {
         String mon;
+        mon = indicatorBean.getIndicatorColumn("N", m);
         Field f;
         BigDecimal v1;
         Double a1, a2, a3;
@@ -46,7 +47,6 @@ public class AssemblyGrowthRateR7 extends Productivity {
         //同期值
         IndicatorDetail benchmark = i.getBenchmarkIndicator();
         try {
-            mon = indicatorBean.getIndicatorColumn("N", m);
             f = o1.getClass().getDeclaredField(mon);
             f.setAccessible(true);
             a1 = Double.valueOf(f.get(o1).toString());
@@ -61,14 +61,14 @@ public class AssemblyGrowthRateR7 extends Productivity {
 
             //增长率公式
             if (a3 == 0.00 || a1 == 0.00) {
-                v1 = BigDecimal.valueOf(0);
+                v1 = BigDecimal.ZERO;
             } else {
                 v1 = BigDecimal.valueOf((a2 / a1 * 100 - a3) / a3 * 100).divide(BigDecimal.ONE, 2, RoundingMode.HALF_UP);
             }
 
             return v1;
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            Logger.getLogger(ProcessQuantityHFX.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(AssemblyGrowthRateR7.class.getName()).log(Level.SEVERE, null, ex);
         }
         return BigDecimal.ZERO;
     }

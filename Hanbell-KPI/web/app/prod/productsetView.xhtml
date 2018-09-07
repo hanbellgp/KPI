@@ -99,9 +99,13 @@
                             <f:selectItem itemLabel="表达式" itemValue="E"/>
                         </p:selectOneMenu>
                     </p:column>
-                    <p:column><h:outputText value="数字格式"/></p:column>
+                    <p:column><p:outputLabel value="达标计算" for="perfCalc" /></p:column>
                     <p:column>
-                        <h:outputText id="symbol" value="#{productSetManagedBean.currentEntity.symbol}" title="symbol" />
+                        <p:selectOneMenu id="perfCalc" value="#{productSetManagedBean.currentEntity.perfCalc}" title="perfCalc"
+                                         required="true" requiredMessage="达标计算" disabled="true">
+                            <f:selectItem itemLabel="实际/目标" itemValue="AT"/>
+                            <f:selectItem itemLabel="目标/实际" itemValue="TA"/>
+                        </p:selectOneMenu>
                     </p:column>
                 </p:row>
                 <p:row>
@@ -112,6 +116,16 @@
                     <p:column><h:outputText value="换算率"/></p:column>
                     <p:column>
                         <h:outputText id="rate" value="#{productSetManagedBean.currentEntity.rate}" title="rate" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><h:outputText value="数字格式"/></p:column>
+                    <p:column>
+                        <h:outputText id="symbol" value="#{productSetManagedBean.currentEntity.symbol}" title="symbol" />
+                    </p:column>
+                    <p:column><h:outputText value="系統排程"/></p:column>
+                    <p:column>
+                        <h:outputText id="jobSchedule" value="#{productSetManagedBean.currentEntity.jobSchedule}" title="symbol" />
                     </p:column>
                 </p:row>
                 <p:row>

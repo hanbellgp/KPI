@@ -7,6 +7,7 @@ package cn.hanbell.kpi.control;
 
 import cn.hanbell.kpi.entity.Category;
 import cn.hanbell.kpi.entity.IndicatorDetail;
+import cn.hanbell.kpi.entity.JobSchedule;
 import java.util.Calendar;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.bean.ManagedBean;
@@ -67,6 +68,20 @@ public class ProductSetManagedBean extends IndicatorSetManagedBean {
         }
     }
 
+    public void handleDialogReturnJobScheduleWhenEdit(SelectEvent event) {
+        if (event.getObject() != null && currentEntity != null) {
+            JobSchedule e = (JobSchedule) event.getObject();
+            currentEntity.setJobSchedule(e.getFormid());
+        }
+    }
+
+    public void handleDialogReturnJobScheduleWhenNew(SelectEvent event) {
+        if (event.getObject() != null && newEntity != null) {
+            JobSchedule e = (JobSchedule) event.getObject();
+            newEntity.setJobSchedule(e.getFormid());
+        }
+    }
+
     public void handleDialogReturnProductWhenDetail2Edit(SelectEvent event) {
         if (currentDetail2 != null && event.getObject() != null) {
             Category e = (Category) event.getObject();
@@ -116,7 +131,7 @@ public class ProductSetManagedBean extends IndicatorSetManagedBean {
             }
         }
     }
-    
+
     public void updateActualValueManual() {
         if (queryDateBegin != null && currentEntity != null) {
             try {

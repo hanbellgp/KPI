@@ -38,6 +38,8 @@ public class MailSettingManagedBean extends FormMultiBean<MailSetting, MailRecip
 
     protected MailNotification mailBean;
 
+    private String recipient;
+
     public MailSettingManagedBean() {
         super(MailSetting.class, MailRecipient.class);
     }
@@ -85,7 +87,7 @@ public class MailSettingManagedBean extends FormMultiBean<MailSetting, MailRecip
                 if (mailBean != null) {
                     mailBean.init();
                     mailBean.setD(queryDateBegin);
-                    mailBean.setMailContent();                    
+                    mailBean.setMailContent();
                     mailBean.setMailSubject();
                     mailBean.notify(new MailNotify());
                     showInfoMsg("Info", "报表邮件发送成功");
@@ -102,10 +104,57 @@ public class MailSettingManagedBean extends FormMultiBean<MailSetting, MailRecip
         }
     }
 
+    public void testMail() {
+        if (queryDateBegin != null && currentEntity != null) {
+            try {
+                setMailBean(currentEntity.getMailEJB());
+                if (mailBean != null && recipient != null && !"".equals(recipient)) {
+                    mailBean.init();
+                    //清除设定的收件人,重设为测试人员
+                    mailBean.getTo().clear();
+                    mailBean.getCc().clear();
+                    mailBean.getBcc().clear();
+                    if (recipient.contains("@")) {
+                        mailBean.getTo().add(recipient);
+                    } else {
+                        mailBean.getTo().add(recipient + "@hanbell.com.cn");
+                    }
+                    mailBean.setD(queryDateBegin);
+                    mailBean.setMailContent();
+                    mailBean.setMailSubject();
+                    mailBean.notify(new MailNotify());
+                    showInfoMsg("Info", "报表邮件发送成功");
+                } else {
+                    showErrorMsg("Error", "MailEJB或测试人员设置错误");
+                }
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+                Logger.getLogger(MailSettingManagedBean.class.getName()).log(Level.SEVERE, null, ex);
+                showErrorMsg("Error", ex.toString());
+            } catch (Exception ex) {
+                Logger.getLogger(MailSettingManagedBean.class.getName()).log(Level.SEVERE, null, ex);
+                showErrorMsg("Error", ex.toString());
+            }
+        }
+    }
+
     public void setMailBean(String JNDIName) throws Exception {
         InitialContext c = new InitialContext();
         Object objRef = c.lookup(JNDIName);
         mailBean = (MailNotification) objRef;
+    }
+
+    /**
+     * @return the recipient
+     */
+    public String getRecipient() {
+        return recipient;
+    }
+
+    /**
+     * @param recipient the recipient to set
+     */
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
     }
 
 }

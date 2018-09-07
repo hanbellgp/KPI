@@ -19,10 +19,10 @@ public class AssemblyOutputMinuteR4 extends ProductivityOutputMinute {
         //*生产地
         queryParams.put("prono", "1");
         //*制作流程号
-        queryParams.put("prosscode", " IN('RZ01','RZ02','RZ03','RZ05','RZ06','FRZ07') ");
+        queryParams.put("prosscode", " IN ('RZ01','RZ02','RZ03','RZ05','RZ06','FRZ07') ");
         //* 生产线别
-        queryParams.put("linecode", " IN('RC') ");
+        queryParams.put("linecode", " IN ('RC') ");
         //状态码 1未确认 2 确认 3作废
-        queryParams.put("stats", " IN('2') ");
+        queryParams.put("stats", " IN ('2') ");
     }
 }

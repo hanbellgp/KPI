@@ -204,6 +204,17 @@ public class IndicatorBean extends SuperEJBForKPI<Indicator> {
         }
     }
 
+    public List<Indicator> findByJobScheduleAndStatus(String jobschedule, String status) {
+        Query query = getEntityManager().createNamedQuery("Indicator.findByJobScheduleAndStatus");
+        query.setParameter("jobschedule", jobschedule);
+        query.setParameter("status", status);
+        try {
+            return query.getResultList();
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
     public Indicator findByIdAndYear(int id, int y) {
         Query query = getEntityManager().createNamedQuery("Indicator.findByIdAndSeq");
         query.setParameter("id", id);
@@ -272,6 +283,19 @@ public class IndicatorBean extends SuperEJBForKPI<Indicator> {
         query.setParameter("company", company);
         query.setParameter("objtype", objtype);
         query.setParameter("seq", y);
+        try {
+            return query.getResultList();
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    public List<Indicator> findRootByAssignedAndJobSchedule(String company, String objtype, int y, String jobschedule) {
+        Query query = getEntityManager().createNamedQuery("Indicator.findRootByAssignedAndJobSchedule");
+        query.setParameter("company", company);
+        query.setParameter("objtype", objtype);
+        query.setParameter("seq", y);
+        query.setParameter("jobschedule", jobschedule);
         try {
             return query.getResultList();
         } catch (Exception ex) {
@@ -908,6 +932,7 @@ public class IndicatorBean extends SuperEJBForKPI<Indicator> {
 
     public Indicator updateActual(int id, int y, int m, Date d, int type) {
         Indicator entity = findById(id);
+        IndicatorDetail detail;
         //先计算Other
         if (entity != null && entity.getHasOther() > 0) {
             if (entity.getOther1Interface() != null && !"".equals(entity.getOther1Interface())) {
@@ -942,9 +967,10 @@ public class IndicatorBean extends SuperEJBForKPI<Indicator> {
                     otherInterface = (Actual) Class.forName(entity.getOther3Interface()).newInstance();
                     otherInterface.setEJB(entity.getOther3EJB());
                     BigDecimal na = otherInterface.getValue(y, m, d, type, otherInterface.getQueryParams());
-                    Method setMethod = o3.getClass().getDeclaredMethod("set" + this.getIndicatorColumn("N", m).toUpperCase(), BigDecimal.class);
-                    setMethod.invoke(o3, na);
-                    indicatorDetailBean.update(o3);
+                    detail = indicatorDetailBean.findById(o3.getId());
+                    Method setMethod = detail.getClass().getDeclaredMethod("set" + this.getIndicatorColumn("N", m).toUpperCase(), BigDecimal.class);
+                    setMethod.invoke(detail, na);
+                    indicatorDetailBean.update(detail);
                 } catch (Exception ex) {
                     Logger.getLogger(IndicatorBean.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -988,7 +1014,6 @@ public class IndicatorBean extends SuperEJBForKPI<Indicator> {
                     Logger.getLogger(IndicatorBean.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            indicatorDetailBean.getEntityManager().flush();
         }
         if ((entity != null) && (entity.getSeq() == y) && (entity.getActualInterface() != null) && (!"".equals(entity.getActualInterface()))) {
             IndicatorDetail a = entity.getActualIndicator();
@@ -999,7 +1024,6 @@ public class IndicatorBean extends SuperEJBForKPI<Indicator> {
                 Method setMethod = a.getClass().getDeclaredMethod("set" + this.getIndicatorColumn("N", m).toUpperCase(), BigDecimal.class);
                 setMethod.invoke(a, na);
                 indicatorDetailBean.update(a);
-                indicatorDetailBean.getEntityManager().flush();
             } catch (Exception ex) {
                 Logger.getLogger(IndicatorBean.class.getName()).log(Level.SEVERE, null, ex);
             }

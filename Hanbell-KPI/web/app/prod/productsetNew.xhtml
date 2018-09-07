@@ -79,6 +79,22 @@
                     </p:column>
                 </p:row>
                 <p:row>
+                    <p:column><p:outputLabel value="数字格式" for="symbol" /></p:column>
+                    <p:column>
+                        <p:inputText id="symbol" value="#{productSetManagedBean.newEntity.symbol}" title="symbol" />
+                    </p:column>
+                    <p:column><p:outputLabel value="系統排程" for="jobSchedule" /></p:column>
+                    <p:column>
+                        <p:inputText id="jobSchedule" value="#{productSetManagedBean.newEntity.jobSchedule}" title="symbol" styleClass="inputWithButton">
+                            <p:commandButton id="btnJobScheduleSelect" actionListener="#{productSetManagedBean.openDialog('jobscheduleSelect')}" icon="ui-icon-extlink"
+                                             process="@this" >
+                                <p:ajax event="dialogReturn" listener="#{productSetManagedBean.handleDialogReturnJobScheduleWhenNew}"
+                                        update="jobSchedule" />
+                            </p:commandButton>
+                        </p:inputText>
+                    </p:column>
+                </p:row>
+                <p:row>
                     <p:column><p:outputLabel value="API" for="api" /></p:column>
                     <p:column>
                         <p:inputText id="api" value="#{productSetManagedBean.newEntity.api}" title="api"

@@ -123,9 +123,13 @@
                             <f:selectItem itemLabel="表达式" itemValue="E"/>
                         </p:selectOneMenu>
                     </p:column>
-                    <p:column><p:outputLabel value="数字格式" for="symbol" /></p:column>
+                    <p:column><p:outputLabel value="达标计算" for="perfCalc" /></p:column>
                     <p:column>
-                        <p:inputText id="symbol" value="#{productSetManagedBean.currentEntity.symbol}" title="symbol" />
+                        <p:selectOneMenu id="perfCalc" value="#{productSetManagedBean.currentEntity.perfCalc}" title="perfCalc"
+                                         required="true" requiredMessage="达标计算">
+                            <f:selectItem itemLabel="实际/目标" itemValue="AT"/>
+                            <f:selectItem itemLabel="目标/实际" itemValue="TA"/>
+                        </p:selectOneMenu>
                     </p:column>
                 </p:row>
                 <p:row>
@@ -136,6 +140,21 @@
                     <p:column><p:outputLabel value="换算率" for="rate" /></p:column>
                     <p:column>
                         <p:inputNumber id="rate" value="#{productSetManagedBean.currentEntity.rate}" title="rate" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="数字格式" for="symbol" /></p:column>
+                    <p:column>
+                        <p:inputText id="symbol" value="#{productSetManagedBean.currentEntity.symbol}" title="symbol" />
+                    </p:column>
+                    <p:column><p:outputLabel value="系統排程" for="jobSchedule" /></p:column>
+                    <p:column>
+                        <p:inputText id="jobSchedule" value="#{productSetManagedBean.currentEntity.jobSchedule}" title="symbol" styleClass="inputWithButton"/>
+                        <p:commandButton id="btnJobScheduleSelect" actionListener="#{productSetManagedBean.openDialog('jobscheduleSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{productSetManagedBean.handleDialogReturnJobScheduleWhenEdit}"
+                                    update="jobSchedule" />
+                        </p:commandButton>
                     </p:column>
                 </p:row>
                 <p:row>

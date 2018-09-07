@@ -1,144 +1,158 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
-    <persistence-unit name="CRM-ejbPU" transaction-type="JTA">
-        <jta-data-source>jdbc/shbcrm</jta-data-source>
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
-        <shared-cache-mode>NONE</shared-cache-mode>
-        <validation-mode>NONE</validation-mode>
-        <properties/>
-    </persistence-unit>
-    <persistence-unit name="KPI-ejbPU" transaction-type="JTA">
-        <jta-data-source>jdbc/shbkpi</jta-data-source>
-        <exclude-unlisted-classes>false</exclude-unlisted-classes>
-        <shared-cache-mode>NONE</shared-cache-mode>
-        <validation-mode>NONE</validation-mode>
-        <properties/>
-    </persistence-unit>
-    <persistence-unit name="SHBMES-ejbPU" transaction-type="JTA">
-        <jta-data-source>jdbc/shbmes</jta-data-source>
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
-        <shared-cache-mode>NONE</shared-cache-mode>
-        <validation-mode>NONE</validation-mode>
-        <properties/>
-    </persistence-unit>
-    <persistence-unit name="PU_shberp" transaction-type="JTA">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        <jta-data-source>jdbc/shberp</jta-data-source>
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
-        <shared-cache-mode>NONE</shared-cache-mode>
-        <validation-mode>NONE</validation-mode>
-        <properties>
-            <property name="eclipselink.canonicalmodel.subpackage" value="shb"/>
-        </properties>
-    </persistence-unit>
-    <persistence-unit name="PU_cqerp" transaction-type="JTA">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        <jta-data-source>jdbc/cqerp</jta-data-source>
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
-        <shared-cache-mode>NONE</shared-cache-mode>
-        <validation-mode>NONE</validation-mode>
-        <properties>
-            <property name="eclipselink.canonicalmodel.subpackage" value="cq"/>
-        </properties>
-    </persistence-unit>
-    <persistence-unit name="PU_gzerp" transaction-type="JTA">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        <jta-data-source>jdbc/gzerp</jta-data-source>
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
-        <shared-cache-mode>NONE</shared-cache-mode>
-        <validation-mode>NONE</validation-mode>
-        <properties>
-            <property name="eclipselink.canonicalmodel.subpackage" value="gz"/>
-        </properties>
-    </persistence-unit>
-    <persistence-unit name="PU_jnerp" transaction-type="JTA">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        <jta-data-source>jdbc/jnerp</jta-data-source>
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
-        <shared-cache-mode>NONE</shared-cache-mode>
-        <validation-mode>NONE</validation-mode>
-        <properties>
-            <property name="eclipselink.canonicalmodel.subpackage" value="jn"/>
-        </properties>
-    </persistence-unit>
-    <persistence-unit name="PU_njerp" transaction-type="JTA">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        <jta-data-source>jdbc/njerp</jta-data-source>
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
-        <shared-cache-mode>NONE</shared-cache-mode>
-        <validation-mode>NONE</validation-mode>
-        <properties>
-            <property name="eclipselink.canonicalmodel.subpackage" value="nj"/>
-        </properties>
-    </persistence-unit>
-    <persistence-unit name="PU_hansonerp" transaction-type="JTA">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        <jta-data-source>jdbc/hansonerp</jta-data-source>
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
-        <shared-cache-mode>NONE</shared-cache-mode>
-        <validation-mode>NONE</validation-mode>
-        <properties>
-            <property name="eclipselink.canonicalmodel.subpackage" value="hanson"/>
-        </properties>
-    </persistence-unit>
-    <persistence-unit name="PU_comererp" transaction-type="JTA">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        <jta-data-source>jdbc/comererp</jta-data-source>
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
-        <shared-cache-mode>NONE</shared-cache-mode>
-        <validation-mode>NONE</validation-mode>
-        <properties>
-            <property name="eclipselink.canonicalmodel.subpackage" value="comer"/>
-        </properties>
-    </persistence-unit>
-    <persistence-unit name="PU_qtcerp" transaction-type="JTA">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        <jta-data-source>jdbc/qtcerp</jta-data-source>
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
-        <shared-cache-mode>NONE</shared-cache-mode>
-        <validation-mode>NONE</validation-mode>
-        <properties>
-            <property name="eclipselink.canonicalmodel.subpackage" value="qtc"/>
-        </properties>
-    </persistence-unit>
-    <persistence-unit name="PU_sderp" transaction-type="JTA">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        <jta-data-source>jdbc/sderp</jta-data-source>
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
-        <shared-cache-mode>NONE</shared-cache-mode>
-        <validation-mode>NONE</validation-mode>
-        <properties>
-            <property name="eclipselink.canonicalmodel.subpackage" value="sd"/>
-        </properties>
-    </persistence-unit>
-    <persistence-unit name="PU_hkerp" transaction-type="JTA">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        <jta-data-source>jdbc/hkerp</jta-data-source>
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
-        <shared-cache-mode>NONE</shared-cache-mode>
-        <validation-mode>NONE</validation-mode>
-        <properties>
-            <property name="eclipselink.canonicalmodel.subpackage" value="hk"/>
-        </properties>
-    </persistence-unit>
-    <persistence-unit name="PU_thberp" transaction-type="JTA">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        <jta-data-source>jdbc/thberp</jta-data-source>
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
-        <shared-cache-mode>NONE</shared-cache-mode>
-        <validation-mode>NONE</validation-mode>
-        <properties>
-            <property name="eclipselink.canonicalmodel.subpackage" value="thb"/>
-        </properties>
-    </persistence-unit>
-    <persistence-unit name="PU_vhberp" transaction-type="JTA">
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        <jta-data-source>jdbc/vhberp</jta-data-source>
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
-        <shared-cache-mode>NONE</shared-cache-mode>
-        <validation-mode>NONE</validation-mode>
-        <properties>
-            <property name="eclipselink.canonicalmodel.subpackage" value="vhb"/>
-        </properties>
-    </persistence-unit>
+  <persistence-unit name="CRM-ejbPU" transaction-type="JTA">
+    <jta-data-source>jdbc/shbcrm</jta-data-source>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <validation-mode>NONE</validation-mode>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="KPI-ejbPU" transaction-type="JTA">
+    <jta-data-source>jdbc/shbkpi</jta-data-source>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <validation-mode>NONE</validation-mode>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="SHBMES-ejbPU" transaction-type="JTA">
+    <jta-data-source>jdbc/shbmes</jta-data-source>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <validation-mode>NONE</validation-mode>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="PU_shberp" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>jdbc/shberp</jta-data-source>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <validation-mode>NONE</validation-mode>
+    <properties>
+      <property name="eclipselink.canonicalmodel.subpackage" value="shb"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="PU_cqerp" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>jdbc/cqerp</jta-data-source>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <validation-mode>NONE</validation-mode>
+    <properties>
+      <property name="eclipselink.canonicalmodel.subpackage" value="cq"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="PU_gzerp" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>jdbc/gzerp</jta-data-source>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <validation-mode>NONE</validation-mode>
+    <properties>
+      <property name="eclipselink.canonicalmodel.subpackage" value="gz"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="PU_jnerp" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>jdbc/jnerp</jta-data-source>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <validation-mode>NONE</validation-mode>
+    <properties>
+      <property name="eclipselink.canonicalmodel.subpackage" value="jn"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="PU_njerp" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>jdbc/njerp</jta-data-source>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <validation-mode>NONE</validation-mode>
+    <properties>
+      <property name="eclipselink.canonicalmodel.subpackage" value="nj"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="PU_hansonerp" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>jdbc/hansonerp</jta-data-source>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <validation-mode>NONE</validation-mode>
+    <properties>
+      <property name="eclipselink.canonicalmodel.subpackage" value="hanson"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="PU_comererp" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>jdbc/comererp</jta-data-source>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <validation-mode>NONE</validation-mode>
+    <properties>
+      <property name="eclipselink.canonicalmodel.subpackage" value="comer"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="PU_qtcerp" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>jdbc/qtcerp</jta-data-source>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <validation-mode>NONE</validation-mode>
+    <properties>
+      <property name="eclipselink.canonicalmodel.subpackage" value="qtc"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="PU_sderp" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>jdbc/sderp</jta-data-source>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <validation-mode>NONE</validation-mode>
+    <properties>
+      <property name="eclipselink.canonicalmodel.subpackage" value="sd"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="PU_hkerp" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>jdbc/hkerp</jta-data-source>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <validation-mode>NONE</validation-mode>
+    <properties>
+      <property name="eclipselink.canonicalmodel.subpackage" value="hk"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="PU_thberp" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>jdbc/thberp</jta-data-source>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <validation-mode>NONE</validation-mode>
+    <properties>
+      <property name="eclipselink.canonicalmodel.subpackage" value="thb"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="PU_vhberp" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>jdbc/vhberp</jta-data-source>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <validation-mode>NONE</validation-mode>
+    <properties>
+      <property name="eclipselink.canonicalmodel.subpackage" value="vhb"/>
+    </properties>
+  </persistence-unit>
+  <persistence-unit name="PU-SHBEEPXT" transaction-type="JTA">
+    <jta-data-source>jdbc/shbeep_xt</jta-data-source>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <validation-mode>NONE</validation-mode>
+    <properties/>
+  </persistence-unit>
+  <persistence-unit name="PU-SHBEEP" transaction-type="JTA">
+    <jta-data-source>jdbc/shbeep</jta-data-source>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <validation-mode>NONE</validation-mode>
+    <properties/>
+  </persistence-unit>
 </persistence>

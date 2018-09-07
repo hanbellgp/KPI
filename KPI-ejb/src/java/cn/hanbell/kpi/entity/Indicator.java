@@ -47,6 +47,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     ,
     @NamedQuery(name = "Indicator.findByFormkind", query = "SELECT i FROM Indicator i WHERE i.formkind = :formkind")
     ,
+    @NamedQuery(name = "Indicator.findByJobScheduleAndStatus", query = "SELECT i FROM Indicator i WHERE i.assigned=0 AND i.jobSchedule = :jobschedule AND i.status =:status")
+    ,
     @NamedQuery(name = "Indicator.findByObjtypeAndSeq", query = "SELECT i FROM Indicator i WHERE i.objtype = :objtype AND i.seq = :seq ORDER BY i.id")
     ,
     @NamedQuery(name = "Indicator.findByObjtypeSeqAndStatus", query = "SELECT i FROM Indicator i WHERE i.objtype = :objtype AND i.seq = :seq AND i.status =:status")
@@ -68,6 +70,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Indicator.findByStatus", query = "SELECT i FROM Indicator i WHERE i.status = :status")
     ,
     @NamedQuery(name = "Indicator.findRootByAssigned", query = "SELECT i FROM Indicator i WHERE i.lvl = 0 AND i.assigned = 1 AND i.company = :company AND i.objtype = :objtype AND i.seq = :seq ORDER BY i.seq DESC,i.sortid ASC")
+    ,
+        @NamedQuery(name = "Indicator.findRootByAssignedAndJobSchedule", query = "SELECT i FROM Indicator i WHERE i.lvl = 0 AND i.assigned = 1 AND i.company = :company AND i.objtype = :objtype AND i.seq = :seq AND i.jobSchedule = :jobschedule ORDER BY i.sortid ASC")
     ,
     @NamedQuery(name = "Indicator.findRootByCompany", query = "SELECT i FROM Indicator i WHERE i.lvl = 0 AND i.company = :company AND i.objtype = :objtype AND i.seq = :seq ORDER BY i.seq DESC,i.sortid ASC")})
 public class Indicator extends SuperEntity {
@@ -287,7 +291,9 @@ public class Indicator extends SuperEntity {
     @Size(max = 45)
     @Column(name = "other6Label")
     private String other6Label;
-
+    @Size(max = 20)
+    @Column(name = "jobSchedule")
+    private String jobSchedule;
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
@@ -961,6 +967,20 @@ public class Indicator extends SuperEntity {
      */
     public void setOther6Label(String other6Label) {
         this.other6Label = other6Label;
+    }
+
+    /**
+     * @return the jobSchedule
+     */
+    public String getJobSchedule() {
+        return jobSchedule;
+    }
+
+    /**
+     * @param jobSchedule the jobSchedule to set
+     */
+    public void setJobSchedule(String jobSchedule) {
+        this.jobSchedule = jobSchedule;
     }
 
     public String getRemark() {

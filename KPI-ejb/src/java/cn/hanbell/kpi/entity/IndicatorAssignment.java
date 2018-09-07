@@ -266,7 +266,9 @@ public class IndicatorAssignment extends SuperDetailEntity {
     @Size(max = 45)
     @Column(name = "other6Label")
     private String other6Label;
-
+    @Size(max = 20)
+    @Column(name = "jobSchedule")
+    private String jobSchedule;
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
@@ -927,6 +929,20 @@ public class IndicatorAssignment extends SuperDetailEntity {
      */
     public void setOther6Label(String other6Label) {
         this.other6Label = other6Label;
+    }
+
+    /**
+     * @return the jobSchedule
+     */
+    public String getJobSchedule() {
+        return jobSchedule;
+    }
+
+    /**
+     * @param jobSchedule the jobSchedule to set
+     */
+    public void setJobSchedule(String jobSchedule) {
+        this.jobSchedule = jobSchedule;
     }
 
     public String getRemark() {

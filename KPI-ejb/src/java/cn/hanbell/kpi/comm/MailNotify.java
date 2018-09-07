@@ -42,18 +42,18 @@ public class MailNotify {
             email.setSubject(notification.mailSubject);
             email.setHtmlMsg(notification.mailContent);
             email.setCharset("utf8");
-            if (notification.to != null && !notification.to.isEmpty()) {
-                for (String t : notification.to) {
+            if (notification.getTo() != null && !notification.to.isEmpty()) {
+                for (String t : notification.getTo()) {
                     email.addTo(t);
                 }
             }
-            if (notification.cc != null && !notification.cc.isEmpty()) {
-                for (String c : notification.cc) {
+            if (notification.getCc() != null && !notification.cc.isEmpty()) {
+                for (String c : notification.getCc()) {
                     email.addCc(c);
                 }
             }
-            if (notification.bcc != null && !notification.bcc.isEmpty()) {
-                for (String b : notification.bcc) {
+            if (notification.getBcc() != null && !notification.bcc.isEmpty()) {
+                for (String b : notification.getBcc()) {
                     email.addBcc(b);
                 }
             }

@@ -11,15 +11,15 @@
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
-                    <file>${libs.JSF_2.2.8.classpath}</file>
+                    <file>${libs.BIRT.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
-                    <file>${libs.PrimeFaces_6.2.classpath}</file>
+                    <file>${libs.PrimeFaces_6.1.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
-                    <file>${libs.PrimeFacesUltima.classpath}</file>
+                    <file>${libs.PrimeUtilma.classpath}</file>
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
@@ -31,14 +31,10 @@
                     <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="100">
-                    <file>${reference.KPI-ejb.dist}</file>
-                </library>
-                <library dirs="100">
                     <file>${reference.EAP-ejb.dist}</file>
                 </library>
-                <library dirs="200">
-                    <file>${file.reference.org.eclipse.birt.runtime_4.5.0.jar}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
+                <library dirs="100">
+                    <file>${reference.KPI-ejb.dist}</file>
                 </library>
             </web-module-libraries>
             <web-module-additional-libraries/>
