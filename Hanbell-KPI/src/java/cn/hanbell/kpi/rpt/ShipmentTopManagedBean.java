@@ -144,32 +144,38 @@ public class ShipmentTopManagedBean implements Serializable {
         String deptno = indicatorChart.getDeptno();
         switch (deptno) {
             case "1F000":
-                getMap().put("facno", "C");
+                getMap().put("facno", "C,C4,N,G,J");
                 getMap().put("deptnoname", "制冷产品部");
                 getMap().put("daname", "制冷产品");
                 getMap().put("n_code_DA", "= 'R'");
+                getMap().put("depno", " IN ('1B000','1C000','1B000','1D000','1B000','1E000','1V000') ");
+                getMap().put("ogdkid", " IN ('RL01') ");
                 break;
             case "1Q000":
                 getMap().put("facno", "C");
                 getMap().put("deptnoname", "空压机组产品部");
                 getMap().put("daname", "空压机组");
                 getMap().put("n_code_DA", "= 'AA'");
+                getMap().put("depno", " IN ('1Q000','1Q100') ");
+                getMap().put("ogdkid", " IN ('RL01','RL03') ");
                 break;
             case "1G100":
                 getMap().put("facno", "C");
                 getMap().put("deptnoname", "空压机体营销一课");
                 getMap().put("daname", "A机体");
-                getMap().put("n_code_DA", " = 'AH' ");
+                getMap().put("n_code_DA", "= 'AH'");
                 getMap().put("n_code_DC", " LIKE 'AJ%'");
                 getMap().put("depno", " IN ('1G110','1T100') ");
+                getMap().put("ogdkid", " IN ('RL01','RL03') ");
                 break;
             case "1G500":
                 getMap().put("facno", "C");
                 getMap().put("deptnoname", "空压机体营销二课");
                 getMap().put("daname", "SDS无油");
-                getMap().put("n_code_DA", " = 'AH'");
+                getMap().put("n_code_DA", "= 'AH'");
                 getMap().put("n_code_DC", " = 'SDS' ");
                 getMap().put("depno", " IN ('1G500') ");
+                getMap().put("ogdkid", " IN ('RL01','RL03') ");
                 break;
             case "1H000":
                 getMap().put("facno", "C");
@@ -235,7 +241,8 @@ public class ShipmentTopManagedBean implements Serializable {
                         }
                     }
                 }
-                List<ClientTable> list = clientrank.getNowClient(y, m, getMap());
+                String deptno = indicatorChart.getDeptno();
+                List<ClientTable> list= clientrank.getNowClient(y, m, getMap());
                 if (list.size() > 0) {
                     setClientlist(list);
                 } else {
