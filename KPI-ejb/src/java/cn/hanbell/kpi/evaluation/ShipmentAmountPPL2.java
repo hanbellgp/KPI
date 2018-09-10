@@ -18,7 +18,7 @@ public class ShipmentAmountPPL2 extends ShipmentAmount {
         queryParams.put("ogdkid", "RL03");
         queryParams.put("decode", "2");
         queryParams.put("n_code_DA", " ='P' ");
-        queryParams.put("n_code_CD", " LIEK 'WX%' ");
+        queryParams.put("n_code_CD", " LIKE 'WX%' ");
         queryParams.put("n_code_DC", " ='PL' ");
         queryParams.put("n_code_DD", " ='00' ");
     }

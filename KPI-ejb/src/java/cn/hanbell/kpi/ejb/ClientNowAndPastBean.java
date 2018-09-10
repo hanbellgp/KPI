@@ -5,17 +5,15 @@
  */
 package cn.hanbell.kpi.ejb;
 
-import cn.hanbell.kpi.comm.SuperEJBForERP;
+import cn.hanbell.kpi.comm.ClientRanking;
 import cn.hanbell.kpi.entity.ClientTable;
 import java.io.Serializable;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
-import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.persistence.Query;
 
 /**
  *
@@ -23,336 +21,239 @@ import javax.persistence.Query;
  */
 @Stateless
 @LocalBean
-public class ClientNowAndPastBean implements Serializable {
+public class ClientNowAndPastBean extends ClientRanking implements Serializable {
 
-    @EJB
-    private SuperEJBForERP erpEJB;
-    private final DecimalFormat df;
-
-    public ClientNowAndPastBean() {
-        this.df = new DecimalFormat("#,###.##");
-    }
-
-    public String getQuantitySql(int y, int m, LinkedHashMap<String, String> map) {
-        String facno = map.get("facno") != null ? map.get("facno") : "";
-        String decode = map.get("decode") != null ? map.get("decode") : "";
-        String depno = map.get("depno") != null ? map.get("depno") : "";
-        String n_code_DA = map.get("n_code_DA") != null ? map.get("n_code_DA") : "";
-        String n_code_DC = map.get("n_code_DC") != null ? map.get("n_code_DC") : "";
-        String style = map.get("style") != null ? map.get("style") : "";
-        StringBuilder sb = new StringBuilder();
-        sb.append(" select  z.cusno as 'cusno' ,c.cusna as 'cusna' ,z.num  as 'shpqy1' from ( ");
-        sb.append(" select x.cusno,sum(num) as num  from ( ");
-        sb.append(" select h.cusno,sum(shpqy1) as num  from cdrdta d left join cdrhad h on d.shpno=h.shpno ");
-        sb.append(" where h.cusno NOT IN ('SSD00107','SGD00088','SJS00254','SCQ00146') and d.issevdta='N' and h.facno='${facno}' ");
-        sb.append(" and h.houtsta <> 'W' and year(h.shpdate) = ${y} and d.n_code_DD ='00' ");
-        if (style.equals("nowmonth")) {
-            sb.append(" and month(h.shpdate) = ${m} ");
-        } else {
-            sb.append(" and month(h.shpdate) BETWEEN 1 AND ${m} ");
-        }
-        if (!"".equals(decode)) {
-            sb.append(" and h.decode ='").append(decode).append("' ");
-        }
-        if (!"".equals(n_code_DA)) {
-            sb.append(" and d.n_code_DA ").append(n_code_DA);
-        }
-        //当查询年限超过2017年则按产品别查询，否则按部门区分
-        if (y > 2017) {
-            if (!"".equals(n_code_DC)) {
-                sb.append(" and d.n_code_DC ").append(n_code_DC);
-            }
-        } else {
-            if (!"".equals(depno)) {
-                sb.append(" and h.depno ").append(depno);
-            }
-        }
-        sb.append(" group by  h.cusno ");
-        sb.append(" union all ");
-        sb.append(" select  h.cusno,-sum(bshpqy1) as num  from cdrbdta d left join cdrbhad h on  h.bakno=d.bakno ");
-        sb.append(" where h.cusno NOT IN ('SSD00107','SGD00088','SJS00254','SCQ00146') and d.issevdta='N' and h.facno='${facno}' ");
-        sb.append(" and h.baksta <> 'W' and year(h.bakdate) = ${y} and  d.n_code_DD ='00' ");
-        if (style.equals("nowmonth")) {
-            sb.append(" and month(h.bakdate)= ${m} ");
-        } else {
-            sb.append(" and month(h.bakdate) BETWEEN 1 AND ${m} ");
-        }
-        if (!"".equals(decode)) {
-            sb.append(" and h.decode ='").append(decode).append("' ");
-        }
-        if (!"".equals(n_code_DA)) {
-            sb.append(" and d.n_code_DA ").append(n_code_DA);
-        }
-        //当查询年限超过2017年则按产品别查询，否则按部门区分
-        if (y > 2017) {
-            if (!"".equals(n_code_DC)) {
-                sb.append(" and d.n_code_DC ").append(n_code_DC);
-            }
-        } else {
-            if (!"".equals(depno)) {
-                sb.append(" and h.depno ").append(depno);
-            }
-        }
-        sb.append(" group by  h.cusno ) ");
-        sb.append(" x  group by x.cusno ) ");
-        sb.append(" z,cdrcus c  where z.cusno=c.cusno ");
-
-        return sb.toString().replace("${facno}", facno).replace("${y}", String.valueOf(y)).replace("${m}", String.valueOf(m));
-    }
-
-    public String getAmountSql(int y, int m, LinkedHashMap<String, String> map) {
-        String facno = map.get("facno") != null ? map.get("facno") : "";
-        String decode = map.get("decode") != null ? map.get("decode") : "";
-        String depno = map.get("depno") != null ? map.get("depno") : "";
-        String n_code_DA = map.get("n_code_DA") != null ? map.get("n_code_DA") : "";
-        String n_code_DC = map.get("n_code_DC") != null ? map.get("n_code_DC") : "";
-        String style = map.get("style") != null ? map.get("style") : "";
-        StringBuilder sb = new StringBuilder();
-        sb.append(" select  z.cusno as 'cusno' ,c.cusna as 'cusna' ,z.num  as 'shpamts' from ( ");
-        sb.append(" select x.cusno,sum(num) as num  from ( ");
-        sb.append(" select  h.cusno,isnull(convert(decimal(16,2),sum((d.shpamts * h.ratio)/(h.taxrate + 1))),0) as num ");
-        sb.append(" from cdrdta d left join cdrhad h on d.shpno=h.shpno ");
-        sb.append(" where h.cusno NOT IN ('SSD00107','SGD00088','SJS00254','SCQ00146') and d.issevdta='N' and h.facno='${facno}' ");
-        sb.append(" and h.houtsta <> 'W'  and year(h.shpdate) = ${y} and d.n_code_DD ='00' ");
-        if (style.equals("nowmonth")) {
-            sb.append(" and month(h.shpdate) = ${m} ");
-        } else {
-            sb.append(" and month(h.shpdate) BETWEEN 1 AND ${m} ");
-        }
-        if (!"".equals(decode)) {
-            sb.append(" and h.decode ='").append(decode).append("' ");
-        }
-        if (!"".equals(n_code_DA)) {
-            sb.append(" and d.n_code_DA ").append(n_code_DA);
-        }
-        //当查询年限超过2017年则按产品别查询，否则按部门区分
-        if (y > 2017) {
-            if (!"".equals(n_code_DC)) {
-                sb.append(" and d.n_code_DC ").append(n_code_DC);
-            }
-        } else {
-            if (!"".equals(depno)) {
-                sb.append(" and h.depno ").append(depno);
-            }
-        }
-        sb.append(" group by  h.cusno ");
-        sb.append(" union all ");
-        sb.append(" select  h.cusno,isnull(convert(decimal(16,2),-sum((d.bakamts * h.ratio)/(h.taxrate + 1))),0) as num ");
-        sb.append(" from cdrbdta d left join cdrbhad h on  h.bakno=d.bakno ");
-        sb.append(" where h.cusno NOT IN ('SSD00107','SGD00088','SJS00254','SCQ00146') and d.issevdta='N' and h.facno='${facno}' ");
-        sb.append(" and h.baksta <> 'W' and year(h.bakdate) = ${y} and d.n_code_DD ='00' ");
-        if (style.equals("nowmonth")) {
-            sb.append(" and month(h.bakdate)= ${m} ");
-        } else {
-            sb.append(" and month(h.bakdate) BETWEEN 1 AND ${m} ");
-        }
-        //当查询年限超过2017年则按产品别查询，否则按部门区分
-        if (y > 2017) {
-            if (!"".equals(n_code_DC)) {
-                sb.append(" and d.n_code_DC ").append(n_code_DC);
-            }
-        } else {
-            if (!"".equals(depno)) {
-                sb.append(" and h.depno ").append(depno);
-            }
-        }
-        if (!"".equals(decode)) {
-            sb.append(" and h.decode ='").append(decode).append("' ");
-        }
-        if (!"".equals(n_code_DA)) {
-            sb.append(" and d.n_code_DA ").append(n_code_DA);
-        }
-        sb.append(" group by  h.cusno ) ");
-        sb.append(" x  group by x.cusno ) ");
-        sb.append(" z,cdrcus c where z.cusno=c.cusno ");
-
-        return sb.toString().replace("${facno}", facno).replace("${y}", String.valueOf(y)).replace("${m}", String.valueOf(m));
-    }
-
+    //当前
     public List<ClientTable> getNowClient(int y, int m, LinkedHashMap<String, String> map) {
         String facno = map.get("facno") != null ? map.get("facno") : "";
-        StringBuilder sb = new StringBuilder();
-        sb.append(" select  a.cusno as 'cusno',a.cusna as 'cusna',a.shpqy1 as 'shpqy1',b.shpamts as 'shpamts' from ( ");
-        sb.append(getQuantitySql(y, m, map));
-        sb.append(" ) a,( ");
-        sb.append(getAmountSql(y, m, map));
-        sb.append(" ) b where a.cusno=b.cusno  and a.cusna  =b.cusna ORDER BY shpamts DESC ");
-
-        List<ClientTable> nowlist = new ArrayList<>();
-        List<ClientTable> pastlist = getPastClient(y, m, map);
-        List<ClientTable> clientlist = new ArrayList<>();
-
-        erpEJB.setCompany(facno);
-        //.setFirstResult(0).setMaxResults(20)
-        Query query = erpEJB.getEntityManager().createNativeQuery(sb.toString());
+        //查询当前值并赋予排名
+        String[] arr = facno.split(",");
+        //过渡list
+        List<ClientTable> list;
+        //汇总返回list
+        List<ClientTable> returnlist = new ArrayList<>();
+        ClientTable ct;
+        boolean aa;
         try {
-            List result = query.getResultList();
-            if (result != null && !result.isEmpty()) {
-                //通过客户编号找到去年同期值;
-                boolean aa, bb;
-                double nowshpamts, pastshpamts;
-                Double nowamountshpqy1 = 0.0;
-                Double nowamountshpamts = 0.0;
-                for (int i = 0; i < result.size(); i++) {
-                    aa = true;
-                    bb = true;
-                    ClientTable ct = new ClientTable();
-                    Object[] row = (Object[]) result.get(i);
-                    ct.setCusno(row[0].toString());
-                    ct.setCusna(row[1].toString());
-                    ct.setNowshpqy1(String.valueOf(Double.valueOf(row[2].toString()).intValue()));
-                    ct.setNowshpamts(row[3].toString());
-                    ct.setNowrank(String.valueOf(i + 1));
-                    nowamountshpqy1 = nowamountshpqy1 + Double.valueOf(row[2].toString());
-                    nowamountshpamts = nowamountshpamts + Double.valueOf(row[3].toString());
-                    for (int j = 0; j < pastlist.size(); j++) {
-                        if (row[0].toString().equals(pastlist.get(j).getCusno())) {
-                            aa = false;
-                            nowshpamts = Double.parseDouble(row[3].toString());
-                            pastshpamts = Double.parseDouble(pastlist.get(j).getPastshpamts());
-                            ct.setPastshpqy1(pastlist.get(j).getPastshpqy1());
-                            ct.setPastshpamts(pastlist.get(j).getPastshpamts());
-                            ct.setPastrank(pastlist.get(j).getPastrank());
-                            ct.setDifferencevalue(df.format(nowshpamts - pastshpamts));
-                            if (((nowshpamts - pastshpamts) / pastshpamts * 100) < 0) {
-                                ct.setStyle("red");
-                            }
-                            ct.setGrowthrate(String.valueOf(df.format((nowshpamts - pastshpamts) / pastshpamts * 100)));
-                        }
+            for (String arr1 : arr) {
+                list = new ArrayList<>();
+                List result = getClient(y, m, arr1, map);
+                if (result != null && !result.isEmpty()) {
+                    for (int i = 0; i < result.size(); i++) {
+                        ct = new ClientTable();
+                        Object[] row = (Object[]) result.get(i);
+                        ct.setCusno(row[0].toString());
+                        ct.setCusna(row[1].toString());
+                        ct.setNowshpqy1(RTshpqy1(row[2].toString()));
+                        ct.setNowshpamts(row[3].toString());
+                        list.add(ct);
                     }
-                    if (aa) {
-                        ct.setPastshpqy1("0");
-                        ct.setPastshpamts("0");
-                        ct.setGrowthrate("100");
-                        ct.setDifferencevalue(df.format(Double.parseDouble(row[3].toString())));
-                    }
-                    nowlist.add(ct);
-                    if (result.size() == (i + 1)) {
-                        for (int j = 0; j < pastlist.size(); j++) {
-                            if ("总计".equals(pastlist.get(j).getCusna())) {
-                                bb = false;
-                                ClientTable client = new ClientTable();
-                                client.setCusna("总计");
-                                client.setNowshpqy1(String.valueOf(nowamountshpqy1.intValue()));
-                                client.setNowshpamts(String.valueOf(nowamountshpamts));
-                                client.setPastshpqy1(pastlist.get(j).getPastshpqy1());
-                                client.setPastshpamts(pastlist.get(j).getPastshpamts());
-                                client.setDifferencevalue(df.format(nowamountshpamts - Double.parseDouble(pastlist.get(j).getPastshpamts())));
-                                client.setGrowthrate(String.valueOf(df.format((nowamountshpamts - Double.parseDouble(pastlist.get(j).getPastshpamts())) / Double.parseDouble(pastlist.get(j).getPastshpamts()) * 100)));
-                                nowlist.add(client);
-                            }
-                        }
-                        if (bb) {
-                            ClientTable client = new ClientTable();
-                            client.setCusna("总计");
-                            client.setNowshpqy1(String.valueOf(nowamountshpqy1.intValue()));
-                            client.setNowshpamts(String.valueOf(nowamountshpamts));
-                            client.setPastshpqy1("0");
-                            client.setPastshpamts("0");
-                            client.setDifferencevalue(df.format(nowamountshpamts));
-                            client.setGrowthrate("100");
-                            nowlist.add(client);
-                        }
-                    }
-                }
-                //重新赋值top20 计算其他、合计\
-                int nowothershpqy1, pastothershpqy1;
-                Double nowothershpamts, pastothershpamts;
-                //总计
-                int top20nowshpqy1 = 0;
-                double top20nowshpamts = 0;
-                int top20pastshpqy1 = 0;
-                Double top20pastshpamts = 0.0;
-                for (int i = 0; i < nowlist.size(); i++) {
-                    //top20
-                    if (i < 20 && !"总计".equals(nowlist.get(i).getCusna())) {
-                        top20nowshpqy1 = top20nowshpqy1 + Integer.parseInt(nowlist.get(i).getNowshpqy1());
-                        top20nowshpamts = top20nowshpamts + Double.parseDouble(nowlist.get(i).getNowshpamts());
-                        top20pastshpqy1 = top20pastshpqy1 + Integer.parseInt(nowlist.get(i).getPastshpqy1());
-                        top20pastshpamts = top20pastshpamts + Double.parseDouble(nowlist.get(i).getPastshpamts());
-                        clientlist.add(nowlist.get(i));
-                    }
-                    if ("总计".equals(nowlist.get(i).getCusna())) {
-                        ClientTable cto = new ClientTable();
-                        if (nowlist.size() > 21) {
-                            nowothershpqy1 = Integer.parseInt(nowlist.get(i).getNowshpqy1()) - top20nowshpqy1;
-                            pastothershpqy1 = Integer.parseInt(nowlist.get(i).getPastshpqy1()) - top20pastshpqy1;
-                            nowothershpamts = Double.parseDouble(nowlist.get(i).getNowshpamts()) - (top20nowshpamts);
-                            pastothershpamts = Double.parseDouble(nowlist.get(i).getPastshpamts()) - (top20pastshpamts);
-                            ClientTable client = new ClientTable();
-                            client.setCusna("其他");
-                            client.setNowshpqy1(String.valueOf(nowothershpqy1));
-                            client.setNowshpamts(df.format(nowothershpamts));
-                            client.setPastshpqy1(String.valueOf(pastothershpqy1));
-                            client.setPastshpamts(pastothershpamts == 0 ? "0" : df.format(pastothershpamts));
-                            client.setDifferencevalue(df.format(nowothershpamts - pastothershpamts));
-                            if (pastothershpamts == 0) {
-                                client.setGrowthrate("100");
-                            } else {
-                                if (((nowothershpamts - pastothershpamts) / pastothershpamts * 100) < 0) {
-                                    client.setStyle("red");
+                    //汇总
+                    //循环list数据往returnlist合并数据               
+                    if (result == null && returnlist.isEmpty()) {
+                        returnlist = list;
+                    } else {
+                        for (int i = 0; i < list.size(); i++) {
+                            aa = true;
+                            for (int j = 0; j < returnlist.size(); j++) {
+                                //list客户与returnlist客户相同 则台数与金额 returnlist = returnlist + list
+                                if (list.get(i).getCusna().equals(returnlist.get(j).getCusna())) {
+                                    returnlist.get(j).setNowshpqy1(RTshpqy1(returnlist.get(j).getNowshpqy1(), list.get(i).getNowshpqy1()));
+                                    returnlist.get(j).setNowshpamts(RTshpamts(returnlist.get(j).getNowshpamts(), list.get(i).getNowshpamts()));
+                                    aa = false;
                                 }
-                                client.setGrowthrate(df.format((nowothershpamts - pastothershpamts) / pastothershpamts * 100));
                             }
-                            clientlist.add(client);
+                            if (aa) {
+                                returnlist.add(list.get(i));
+                            }
                         }
-                        cto.setCusna("总计");
-                        cto.setNowshpqy1(nowlist.get(i).getNowshpqy1());
-                        cto.setNowshpamts(df.format(Double.parseDouble(nowlist.get(i).getNowshpamts())));
-                        cto.setPastshpqy1(nowlist.get(i).getPastshpqy1());
-                        cto.setPastshpamts(nowlist.get(i).getPastshpamts().equals("0") ? "0" : df.format(Double.parseDouble(nowlist.get(i).getPastshpamts())));
-                        cto.setDifferencevalue(nowlist.get(i).getDifferencevalue());
-                        cto.setGrowthrate(nowlist.get(i).getGrowthrate());
-                        clientlist.add(cto);
                     }
                 }
             }
-            return clientlist;
+            return returnlist;
         } catch (Exception e) {
             return null;
         }
     }
 
+    //去年同期
     public List<ClientTable> getPastClient(int y, int m, LinkedHashMap<String, String> map) {
         String facno = map.get("facno") != null ? map.get("facno") : "";
         //查询去年同期值并赋予排名
-        StringBuilder sb = new StringBuilder();
-        sb.append(" select  a.cusno as 'cusno',a.cusna as 'cusna',a.shpqy1 as 'shpqy1',b.shpamts as 'shpamts' from ( ");
-        sb.append(getQuantitySql((y - 1), m, map));
-        sb.append(" ) a,( ");
-        sb.append(getAmountSql((y - 1), m, map));
-        sb.append(" ) b where a.cusno=b.cusno  and a.cusna  =b.cusna ORDER BY shpamts DESC ");
-        List<ClientTable> list = new ArrayList<>();
-        erpEJB.setCompany(facno);
-        Query query = erpEJB.getEntityManager().createNativeQuery(sb.toString());
+        String[] arr = facno.split(",");
+        //过渡list
+        List<ClientTable> list;
+        //汇总返回list
+        List<ClientTable> returnlist = new ArrayList<>();
+        ClientTable ct;
+        boolean aa;
         try {
-            Double pastamountshpqy1 = 0.0;
-            Double pastamountshpamts = 0.0;
-            List result = query.getResultList();
-            if (result != null && !result.isEmpty()) {
-                for (int i = 0; i < result.size(); i++) {
-                    ClientTable ct = new ClientTable();
-                    Object[] row = (Object[]) result.get(i);
-                    ct.setCusno(row[0].toString());
-                    ct.setCusna(row[1].toString());
-                    ct.setPastshpqy1(String.valueOf(Double.valueOf(row[2].toString()).intValue()));
-                    ct.setPastshpamts(row[3].toString());
-                    ct.setPastrank(String.valueOf(i + 1));
-                    pastamountshpqy1 = pastamountshpqy1 + Double.valueOf(row[2].toString());
-                    pastamountshpamts = pastamountshpamts + Double.valueOf(row[3].toString());
-                    list.add(ct);
-                    if (result.size() == (i + 1)) {
-                        ClientTable ct1 = new ClientTable();
-                        ct1.setCusna("总计");
-                        ct1.setPastshpqy1(String.valueOf(pastamountshpqy1.intValue()));
-                        ct1.setPastshpamts(String.valueOf(pastamountshpamts));
-                        list.add(ct1);
+            for (String arr1 : arr) {
+                list = new ArrayList<>();
+                List result = getClient(y - 1, m, arr1, map);
+                if (result != null && !result.isEmpty()) {
+                    for (int i = 0; i < result.size(); i++) {
+                        ct = new ClientTable();
+                        Object[] row = (Object[]) result.get(i);
+                        ct.setCusno(row[0].toString());
+                        ct.setCusna(row[1].toString());
+                        ct.setPastshpqy1(RTshpqy1(row[2].toString()));
+                        ct.setPastshpamts(row[3].toString());
+                        list.add(ct);
+                    }
+                    //汇总
+                    //循环list数据往returnlist合并数据                
+                    if (result == null && returnlist.isEmpty()) {
+                        returnlist = list;
+                    } else {
+                        for (int i = 0; i < list.size(); i++) {
+                            aa = true;
+                            for (int j = 0; j < returnlist.size(); j++) {
+                                //list客户与returnlist客户相同 则台数与金额 returnlist = returnlist + list
+                                if (list.get(i).getCusna().equals(returnlist.get(j).getCusna())) {
+                                    returnlist.get(j).setPastshpqy1(RTshpqy1(returnlist.get(j).getPastshpqy1(), list.get(i).getPastshpqy1()));
+                                    returnlist.get(j).setPastshpamts(RTshpamts(returnlist.get(j).getPastshpamts(), list.get(i).getPastshpamts()));
+                                    aa = false;
+                                }
+                            }
+                            if (aa) {
+                                returnlist.add(list.get(i));
+                            }
+                        }
                     }
                 }
             }
-            return list;
+            return returnlist;
         } catch (Exception e) {
             return null;
         }
     }
+
+    public List<ClientTable> getClientListNowAndPast(int y, int m, LinkedHashMap<String, String> map) {
+        List<ClientTable> list = new LinkedList<>();
+        //得到已经有排名的list
+        //NowClient       
+        List<ClientTable> nowList = RTlist(getNowClient(y, m, map), "now");
+        //PastClient
+        List<ClientTable> pastList = RTlist(getPastClient(y, m, map), "past");
+        //循环nowList 并与 pastList 合并客户
+        //其他值
+        int nowothershpqy1, pastothershpqy1;
+        Double nowothershpamts, pastothershpamts;
+        //TOP20总计
+        int top20nowshpqy1 = 0;
+        Double top20nowshpamts = 0.0;
+        int top20pastshpqy1 = 0;
+        Double top20pastshpamts = 0.0;
+        if (nowList != null && !nowList.isEmpty()) {
+            ClientTable now, past;
+            boolean aa, bb;
+            for (int i = 0; i < nowList.size(); i++) {
+                now = nowList.get(i);
+                aa = true;
+                bb = false;
+                //前20项台数金额累加 以计算其他值
+                if (Integer.parseInt(now.getNowrank()) <= 20) {
+                    ClientTable ct = new ClientTable();
+                    if (pastList != null && !pastList.isEmpty()) {
+                        for (int j = 0; j < pastList.size(); j++) {
+                            past = pastList.get(j);
+                            if (now.getCusna().equals(past.getCusna())) {
+                                ct.setCusno(now.getCusno());
+                                ct.setCusna(now.getCusna());
+                                ct.setNowrank(now.getNowrank());
+                                ct.setNowshpqy1(now.getNowshpqy1());
+                                ct.setNowshpamts(df.format(now.getNowshpamts()));
+                                ct.setPastrank(past.getPastrank());
+                                ct.setPastshpqy1(past.getPastshpqy1());
+                                ct.setPastshpamts(df.format(past.getPastshpamts()));
+                                ct.setDifferencevalue(RTdifferencevalue(now.getNowshpamts(), past.getPastshpamts()));
+                                ct.setGrowthrate(RTgrowthrate(now.getNowshpamts(), past.getPastshpamts()));
+                                //合计TOP20
+                                top20nowshpqy1 += Integer.parseInt(now.getNowshpqy1());
+                                top20nowshpamts += Double.parseDouble(now.getNowshpamts());
+                                top20pastshpqy1 += Integer.parseInt(past.getPastshpqy1());
+                                top20pastshpamts += Double.parseDouble(past.getPastshpamts());
+                                if ((Double.parseDouble(now.getNowshpamts()) - Double.parseDouble(past.getPastshpamts())) < 0) {
+                                    ct.setStyle("red");
+                                }
+                                aa = false;
+                                if (now.getCusna().equals("总计")) {
+                                    bb = true;
+                                }
+                                list.add(ct);
+                            }
+                        }
+                        if (aa) {
+                            top20nowshpqy1 += Integer.parseInt(now.getNowshpqy1());
+                            top20nowshpamts += Double.parseDouble(now.getNowshpamts());
+                            ct.setCusno(now.getCusno());
+                            ct.setCusna(now.getCusna());
+                            ct.setNowrank(now.getNowrank());
+                            ct.setNowshpqy1(now.getNowshpqy1());
+                            ct.setNowshpamts(df.format(now.getNowshpamts()));
+                            ct.setPastshpqy1("0");
+                            ct.setPastshpamts("0");
+                            ct.setDifferencevalue(df.format(now.getNowshpamts()));
+                            ct.setGrowthrate("100");
+                            list.add(ct);
+                        }
+
+                    }
+                }
+                //如果排名大于20 则有其他项 
+                if (Integer.parseInt(now.getNowrank()) > 20 && now.getCusna().equals("总计")) {
+                    for (int j = 0; j < pastList.size(); j++) {
+                        if (pastList.get(j).getCusna().equals("总计")) {
+                            nowothershpqy1 = Integer.parseInt(now.getNowshpqy1()) - top20nowshpqy1;
+                            pastothershpqy1 = Integer.parseInt(pastList.get(j).getPastshpqy1()) - top20pastshpqy1;
+                            nowothershpamts = Double.parseDouble(now.getNowshpamts()) - top20nowshpamts;
+                            pastothershpamts = Double.parseDouble(pastList.get(j).getPastshpamts()) - top20pastshpamts;
+                            ClientTable ct = new ClientTable();
+                            ct.setCusna("其他");
+                            ct.setNowshpqy1(String.valueOf(nowothershpqy1));
+                            ct.setNowshpamts(df.format(nowothershpamts));
+                            ct.setPastshpqy1(String.valueOf(pastothershpqy1));
+                            ct.setPastshpamts(df.format(pastothershpamts));
+                            if ((nowothershpamts - pastothershpamts) < 0) {
+                                ct.setStyle("red");
+                            }
+                            if (Double.parseDouble(pastList.get(j).getPastshpamts()) < 0) {
+                                ct.setDifferencevalue("0");
+                                ct.setGrowthrate("0");
+                            } else {
+                                ct.setDifferencevalue(RTdifferencevalue(String.valueOf(nowothershpamts), String.valueOf(pastothershpamts)));
+                                ct.setGrowthrate(RTgrowthrate(String.valueOf(nowothershpamts), String.valueOf(pastothershpamts)));
+
+                            }
+                            list.add(ct);
+                            ClientTable ctsum = new ClientTable();
+                            ctsum.setCusna(now.getCusna());
+                            ctsum.setNowshpqy1(now.getNowshpqy1());
+                            ctsum.setNowshpamts(df.format(now.getNowshpamts()));
+                            ctsum.setPastshpqy1(pastList.get(j).getPastshpqy1());
+                            ctsum.setPastshpamts(df.format(pastList.get(j).getPastshpamts()));
+                            ctsum.setDifferencevalue(RTdifferencevalue(now.getNowshpamts(), pastList.get(j).getPastshpamts()));
+                            ctsum.setGrowthrate(RTgrowthrate(now.getNowshpamts(), pastList.get(j).getPastshpamts()));
+                            if ((Double.parseDouble(now.getNowshpamts()) - Double.parseDouble(pastList.get(j).getPastshpamts())) < 0) {
+                                ct.setStyle("red");
+                            }
+                            if (Double.parseDouble(pastList.get(j).getPastshpamts()) < 0) {
+                                ct.setDifferencevalue("0");
+                                ct.setGrowthrate("0");
+                            } else {
+                                ct.setDifferencevalue(RTdifferencevalue(now.getNowshpamts(), pastList.get(j).getPastshpamts()));
+                                ct.setGrowthrate(RTgrowthrate(now.getNowshpamts(), pastList.get(j).getPastshpamts()));
+                            }
+
+                        }
+
+                    }
+                }
+            }
+            return new LinkedList<>();
+        }
+        return null;
+    }
+
 }

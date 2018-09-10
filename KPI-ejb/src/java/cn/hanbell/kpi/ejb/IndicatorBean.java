@@ -1114,119 +1114,347 @@ public class IndicatorBean extends SuperEJBForKPI<Indicator> {
                 case "AT":
                     if (entity.getTargetIndicator().getN01().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN01(entity.getActualIndicator().getN01().divide(entity.getTargetIndicator().getN01(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    } else {
+                        if (entity.getActualIndicator().getN01().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN01(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN01(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getTargetIndicator().getN02().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN02(entity.getActualIndicator().getN02().divide(entity.getTargetIndicator().getN02(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getActualIndicator().getN02().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN02(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN02(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getTargetIndicator().getN03().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN03(entity.getActualIndicator().getN03().divide(entity.getTargetIndicator().getN03(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getActualIndicator().getN03().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN03(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN03(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getTargetIndicator().getN04().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN04(entity.getActualIndicator().getN04().divide(entity.getTargetIndicator().getN04(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getActualIndicator().getN04().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN04(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN04(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getTargetIndicator().getN05().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN05(entity.getActualIndicator().getN05().divide(entity.getTargetIndicator().getN05(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getActualIndicator().getN05().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN05(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN05(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getTargetIndicator().getN06().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN06(entity.getActualIndicator().getN06().divide(entity.getTargetIndicator().getN06(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getActualIndicator().getN06().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN06(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN06(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getTargetIndicator().getN07().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN07(entity.getActualIndicator().getN07().divide(entity.getTargetIndicator().getN07(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getActualIndicator().getN07().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN07(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN07(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getTargetIndicator().getN08().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN08(entity.getActualIndicator().getN08().divide(entity.getTargetIndicator().getN08(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getActualIndicator().getN08().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN08(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN08(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getTargetIndicator().getN09().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN09(entity.getActualIndicator().getN09().divide(entity.getTargetIndicator().getN09(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getActualIndicator().getN09().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN09(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN09(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getTargetIndicator().getN10().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN10(entity.getActualIndicator().getN10().divide(entity.getTargetIndicator().getN10(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getActualIndicator().getN10().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN10(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN10(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getTargetIndicator().getN11().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN11(entity.getActualIndicator().getN11().divide(entity.getTargetIndicator().getN11(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getActualIndicator().getN11().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN11(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN11(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getTargetIndicator().getN12().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN12(entity.getActualIndicator().getN12().divide(entity.getTargetIndicator().getN12(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getActualIndicator().getN12().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN12(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN12(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getTargetIndicator().getNq1().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setNq1(entity.getActualIndicator().getNq1().divide(entity.getTargetIndicator().getNq1(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getActualIndicator().getNq1().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setNq1(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setNq1(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getTargetIndicator().getNq2().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setNq2(entity.getActualIndicator().getNq2().divide(entity.getTargetIndicator().getNq2(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getActualIndicator().getNq2().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setNq2(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setNq2(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getTargetIndicator().getNq3().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setNq3(entity.getActualIndicator().getNq3().divide(entity.getTargetIndicator().getNq3(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getActualIndicator().getNq3().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setNq3(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setNq3(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getTargetIndicator().getNq4().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setNq4(entity.getActualIndicator().getNq4().divide(entity.getTargetIndicator().getNq4(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getActualIndicator().getNq4().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setNq4(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setNq4(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getTargetIndicator().getNh1().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setNh1(entity.getActualIndicator().getNh1().divide(entity.getTargetIndicator().getNh1(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getActualIndicator().getNh1().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setNh1(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setNh1(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getTargetIndicator().getNh2().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setNh2(entity.getActualIndicator().getNh2().divide(entity.getTargetIndicator().getNh2(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getActualIndicator().getNh2().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setNh2(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setNh2(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getTargetIndicator().getNfy().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setNfy(entity.getActualIndicator().getNfy().divide(entity.getTargetIndicator().getNfy(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getActualIndicator().getNfy().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setNfy(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setNfy(BigDecimal.valueOf(0d));
+                        }
                     }
                     break;
                 case "TA":
                     if (entity.getActualIndicator().getN01().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN01(entity.getTargetIndicator().getN01().divide(entity.getActualIndicator().getN01(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getTargetIndicator().getN01().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN01(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN01(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getActualIndicator().getN02().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN02(entity.getTargetIndicator().getN02().divide(entity.getActualIndicator().getN02(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getTargetIndicator().getN02().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN02(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN02(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getActualIndicator().getN03().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN03(entity.getTargetIndicator().getN03().divide(entity.getActualIndicator().getN03(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getTargetIndicator().getN03().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN03(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN03(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getActualIndicator().getN04().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN04(entity.getTargetIndicator().getN04().divide(entity.getActualIndicator().getN04(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getTargetIndicator().getN04().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN04(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN04(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getActualIndicator().getN05().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN05(entity.getTargetIndicator().getN05().divide(entity.getActualIndicator().getN05(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getTargetIndicator().getN05().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN05(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN05(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getActualIndicator().getN06().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN06(entity.getTargetIndicator().getN06().divide(entity.getActualIndicator().getN06(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getTargetIndicator().getN06().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN06(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN06(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getActualIndicator().getN07().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN07(entity.getTargetIndicator().getN07().divide(entity.getActualIndicator().getN07(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getTargetIndicator().getN07().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN07(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN07(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getActualIndicator().getN08().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN08(entity.getTargetIndicator().getN08().divide(entity.getActualIndicator().getN08(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getTargetIndicator().getN08().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN08(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN08(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getActualIndicator().getN09().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN09(entity.getTargetIndicator().getN09().divide(entity.getActualIndicator().getN09(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getTargetIndicator().getN09().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN09(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN09(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getActualIndicator().getN10().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN10(entity.getTargetIndicator().getN10().divide(entity.getActualIndicator().getN10(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getTargetIndicator().getN10().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN10(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN10(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getActualIndicator().getN11().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN11(entity.getTargetIndicator().getN11().divide(entity.getActualIndicator().getN11(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getTargetIndicator().getN11().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN11(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN11(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getActualIndicator().getN12().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setN12(entity.getTargetIndicator().getN12().divide(entity.getActualIndicator().getN12(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getTargetIndicator().getN12().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setN12(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setN12(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getActualIndicator().getNq1().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setNq1(entity.getTargetIndicator().getNq1().divide(entity.getActualIndicator().getNq1(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getTargetIndicator().getNq1().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setNq1(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setNq1(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getActualIndicator().getNq2().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setNq2(entity.getTargetIndicator().getNq2().divide(entity.getActualIndicator().getNq2(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getTargetIndicator().getNq2().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setNq2(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setNq2(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getActualIndicator().getNq3().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setNq3(entity.getTargetIndicator().getNq3().divide(entity.getActualIndicator().getNq3(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getTargetIndicator().getNq3().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setNq3(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setNq3(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getActualIndicator().getNq4().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setNq4(entity.getTargetIndicator().getNq4().divide(entity.getActualIndicator().getNq4(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getTargetIndicator().getNq4().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setNq4(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setNq4(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getActualIndicator().getNh1().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setNh1(entity.getTargetIndicator().getNh1().divide(entity.getActualIndicator().getNh1(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getTargetIndicator().getNh1().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setNh1(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setNh1(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getActualIndicator().getNh2().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setNh2(entity.getTargetIndicator().getNh2().divide(entity.getActualIndicator().getNh2(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getTargetIndicator().getNh2().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setNh2(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setNh2(BigDecimal.valueOf(0d));
+                        }
                     }
                     if (entity.getActualIndicator().getNfy().compareTo(BigDecimal.ZERO) != 0) {
                         entity.getPerformanceIndicator().setNfy(entity.getTargetIndicator().getNfy().divide(entity.getActualIndicator().getNfy(), 4, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(100d)));
+                    }else {
+                        if (entity.getTargetIndicator().getNfy().compareTo(BigDecimal.ZERO) != 0) {
+                            entity.getPerformanceIndicator().setNfy(BigDecimal.valueOf(100d));
+                        } else {
+                            entity.getPerformanceIndicator().setNfy(BigDecimal.valueOf(0d));
+                        }
                     }
                     break;
             }
