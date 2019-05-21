@@ -79,6 +79,11 @@
             <redirect/>
         </navigation-case>
         <navigation-case>
+            <from-outcome>indicatorgrant</from-outcome>
+            <to-view-id>/sys/indicatorgrant.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
             <from-outcome>indicatorclone</from-outcome>
             <to-view-id>/sys/indicatorclone.xhtml</to-view-id>
             <redirect/>
@@ -246,38 +251,13 @@
         <description>BSC一级导航</description>
         <from-view-id>/*</from-view-id>
         <navigation-case>
-            <from-outcome>clientranking</from-outcome>
-            <to-view-id>/app/bsc/clientranking.xhtml</to-view-id>
+            <from-outcome>balancesheet</from-outcome>
+            <to-view-id>/app/bsc/balancesheet.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>
-            <from-outcome>shipmentchart</from-outcome>
-            <to-view-id>/app/bsc/shipmentchart.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>shipmentsheet</from-outcome>
-            <to-view-id>/app/bsc/shipmentsheet.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>productionchart</from-outcome>
-            <to-view-id>/app/bsc/productionchart.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>productionsheet</from-outcome>
-            <to-view-id>/app/bsc/productionsheet.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>processratiochart</from-outcome>
-            <to-view-id>/app/bsc/processratiochart.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>processscrapchart</from-outcome>
-            <to-view-id>/app/bsc/processscrapchart.xhtml</to-view-id>
+            <from-outcome>cashflowsheet</from-outcome>
+            <to-view-id>/app/bsc/cashflowsheet.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>
@@ -286,13 +266,13 @@
             <redirect/>
         </navigation-case>
         <navigation-case>
-            <from-outcome>complaintschart</from-outcome>
-            <to-view-id>/app/bsc/complaintschart.xhtml</to-view-id>
+            <from-outcome>clientranking</from-outcome>
+            <to-view-id>/app/bsc/clientranking.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>
-            <from-outcome>complaintschartmis</from-outcome>
-            <to-view-id>/app/bsc/complaintschartmis.xhtml</to-view-id>
+            <from-outcome>complaintschart</from-outcome>
+            <to-view-id>/app/bsc/complaintschart.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>
@@ -301,13 +281,58 @@
             <redirect/>
         </navigation-case>
         <navigation-case>
+            <from-outcome>complaintschartb</from-outcome>
+            <to-view-id>/app/bsc/complaintschartb.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
             <from-outcome>complaintschartc</from-outcome>
             <to-view-id>/app/bsc/complaintschartc.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>
+            <from-outcome>complaintschartmis</from-outcome>
+            <to-view-id>/app/bsc/complaintschartmis.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>complaintschartp</from-outcome>
+            <to-view-id>/app/bsc/complaintschartp.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
             <from-outcome>complaintschartpzk</from-outcome>
             <to-view-id>/app/bsc/complaintschartpzk.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>consumptioncutter</from-outcome>
+            <to-view-id>/app/bsc/consumptioncutter.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>energyconsumptionsheet</from-outcome>
+            <to-view-id>/app/bsc/energyconsumptionsheet.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>exchangerate</from-outcome>
+            <to-view-id>/app/bsc/exchangerate.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>freeservicesheet</from-outcome>
+            <to-view-id>/app/bsc/freeservicesheet.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>freeserviceparentsheet</from-outcome>
+            <to-view-id>/app/bsc/freeserviceparentsheet.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>incomestatement</from-outcome>incomestatement
+            <to-view-id>/app/bsc/incomestatement.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>
@@ -321,53 +346,8 @@
             <redirect/>
         </navigation-case>
         <navigation-case>
-            <from-outcome>incomestatement</from-outcome>incomestatement
-            <to-view-id>/app/bsc/incomestatement.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>productivity</from-outcome>
-            <to-view-id>/app/bsc/productivity.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>consumptioncutter</from-outcome>
-            <to-view-id>/app/bsc/consumptioncutter.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>complaintschartb</from-outcome>
-            <to-view-id>/app/bsc/complaintschartb.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>energyconsumptionsheet</from-outcome>
-            <to-view-id>/app/bsc/energyconsumptionsheet.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        <navigation-case>
             <from-outcome>inventoryamountsheet</from-outcome>
             <to-view-id>/app/bsc/inventoryamountsheet.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>freeservicesheet</from-outcome>
-            <to-view-id>/app/bsc/freeservicesheet.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>exchangerate</from-outcome>
-            <to-view-id>/app/bsc/exchangerate.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>balancesheet</from-outcome>
-            <to-view-id>/app/bsc/balancesheet.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>cashflowsheet</from-outcome>
-            <to-view-id>/app/bsc/cashflowsheet.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>
@@ -396,26 +376,6 @@
             <redirect/>
         </navigation-case>
         <navigation-case>
-            <from-outcome>procurementsheet</from-outcome>
-            <to-view-id>/app/bsc/procurementsheet.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>qraqualifiedyx</from-outcome>
-            <to-view-id>/app/bsc/qraqualifiedyx.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>qraqualifiedfx</from-outcome>
-            <to-view-id>/app/bsc/qraqualifiedfx.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        <navigation-case>
-            <from-outcome>freeserviceparentsheet</from-outcome>
-            <to-view-id>/app/bsc/freeserviceparentsheet.xhtml</to-view-id>
-            <redirect/>
-        </navigation-case>
-        <navigation-case>
             <from-outcome>percentofpass</from-outcome>
             <to-view-id>/app/bsc/percentofpass.xhtml</to-view-id>
             <redirect/>
@@ -436,13 +396,53 @@
             <redirect/>
         </navigation-case>
         <navigation-case>
-            <from-outcome>storageoccupy</from-outcome>
-            <to-view-id>/app/bsc/storageoccupy.xhtml</to-view-id>
+            <from-outcome>processratiochart</from-outcome>
+            <to-view-id>/app/bsc/processratiochart.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>
-            <from-outcome>storageunoccupied</from-outcome>
-            <to-view-id>/app/bsc/storageunoccupied.xhtml</to-view-id>
+            <from-outcome>processscrapchart</from-outcome>
+            <to-view-id>/app/bsc/processscrapchart.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>procurementsheet</from-outcome>
+            <to-view-id>/app/bsc/procurementsheet.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>productionchart</from-outcome>
+            <to-view-id>/app/bsc/productionchart.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>productionsheet</from-outcome>
+            <to-view-id>/app/bsc/productionsheet.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>productivity</from-outcome>
+            <to-view-id>/app/bsc/productivity.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>qraqualifiedyx</from-outcome>
+            <to-view-id>/app/bsc/qraqualifiedyx.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>qraqualifiedfx</from-outcome>
+            <to-view-id>/app/bsc/qraqualifiedfx.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>shipmentchart</from-outcome>
+            <to-view-id>/app/bsc/shipmentchart.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>shipmentsheet</from-outcome>
+            <to-view-id>/app/bsc/shipmentsheet.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>
@@ -451,13 +451,13 @@
         <description>模态开窗</description>
         <from-view-id>/*</from-view-id>
         <navigation-case>
-            <from-outcome>departmentSelect</from-outcome>
-            <to-view-id>/app/df/departmentSelect.xhtml</to-view-id>
+            <from-outcome>categorySelect</from-outcome>
+            <to-view-id>/app/df/categorySelect.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>
-            <from-outcome>categorySelect</from-outcome>
-            <to-view-id>/app/df/categorySelect.xhtml</to-view-id>
+            <from-outcome>departmentSelect</from-outcome>
+            <to-view-id>/app/df/departmentSelect.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>
