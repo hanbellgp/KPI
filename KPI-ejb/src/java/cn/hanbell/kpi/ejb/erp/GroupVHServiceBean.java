@@ -84,7 +84,7 @@ public class GroupVHServiceBean implements Serializable {
         }
         if (resultData != null) {
             erpEJB.setCompany("C");
-            erpEJB.getEntityManager().createNativeQuery("delete from bsc_groupshipment where protypeno = 'O' and facno='V' and year(soday)=" + y + " and month(soday) = " + m).executeUpdate();
+            erpEJB.getEntityManager().createNativeQuery("delete from bsc_groupshipment where shptype = '21' and facno='V' and year(soday)=" + y + " and month(soday) = " + m).executeUpdate();
             for (BscGroupShipment e : resultData) {
                 erpEJB.getEntityManager().persist(e);
             }
