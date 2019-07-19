@@ -27,7 +27,7 @@
   <persistence-unit name="PU_shberp" transaction-type="JTA">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <jta-data-source>jdbc/shberp</jta-data-source>
-    <class>cn.hanbell.erp.entity.BscGroupShipment</class>
+    <class>cn.hanbell.kpi.entity.erp.BscGroupShipment</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <shared-cache-mode>NONE</shared-cache-mode>
     <validation-mode>NONE</validation-mode>
@@ -128,6 +128,7 @@
   <persistence-unit name="PU_thberp" transaction-type="JTA">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <jta-data-source>jdbc/thberp</jta-data-source>
+    <class>tw.hanbell.kpi.entity.erp.Grpsdailytmp</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <shared-cache-mode>NONE</shared-cache-mode>
     <validation-mode>NONE</validation-mode>

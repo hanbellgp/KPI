@@ -10,14 +10,16 @@ import cn.hanbell.kpi.ejb.IndicatorAnalysisBean;
 import cn.hanbell.kpi.ejb.IndicatorBean;
 import cn.hanbell.kpi.ejb.IndicatorChartBean;
 import cn.hanbell.kpi.ejb.IndicatorSummaryBean;
-import cn.hanbell.kpi.ejb.InventoryBean;
-import cn.hanbell.kpi.ejb.InventoryStatementBean;
+import cn.hanbell.kpi.ejb.InvamountBUBean;
+import cn.hanbell.kpi.ejb.InvamountPolicyTargetBean;
+import cn.hanbell.kpi.ejb.InvamountProductBean;
 import cn.hanbell.kpi.entity.Indicator;
 import cn.hanbell.kpi.entity.IndicatorAnalysis;
 import cn.hanbell.kpi.entity.IndicatorChart;
 import cn.hanbell.kpi.entity.IndicatorSummary;
-import cn.hanbell.kpi.entity.Inventory;
-import cn.hanbell.kpi.entity.InventoryStatement;
+import cn.hanbell.kpi.entity.InvamountBusinessUnit;
+import cn.hanbell.kpi.entity.InvamountPolicyTarget;
+import cn.hanbell.kpi.entity.InvamountProduct;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -45,7 +47,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @ManagedBean(name = "inventoryManagerBean")
 @ViewScoped
-public class InventoryManagerBean implements Serializable {
+public class InvamountManagerBean implements Serializable {
 
     @ManagedProperty(value = "#{userManagedBean}")
     protected UserManagedBean userManagedBean;
@@ -59,17 +61,22 @@ public class InventoryManagerBean implements Serializable {
     @EJB
     protected IndicatorBean indicatorBean;
     protected Indicator indicator;
-    @EJB
-    protected InventoryBean inventoryBean;
 
     @EJB
-    protected InventoryStatementBean inventoryStatementBean;
+    protected InvamountProductBean invamountProductBean;
+
+    @EJB
+    protected InvamountBUBean invamountBUBean;
+
+    @EJB
+    protected InvamountPolicyTargetBean invamountPolicyTargetBean;
 
     private Integer year;
     private Integer month;
     private LinkedHashMap<String, String> map;
-    private List<Inventory> inventoryList;
-    private List<InventoryStatement> inventoryStatementsList;
+    private List<InvamountProduct> invamountProductList;
+    private List<InvamountPolicyTarget> invamountPolicyTargetList;
+    private List<InvamountBusinessUnit> invamountBUList;
     protected List<IndicatorAnalysis> analysisList;
     protected List<IndicatorSummary> summaryList;
     protected int analysisCount;
@@ -91,7 +98,7 @@ public class InventoryManagerBean implements Serializable {
     //下拉选项集合
     private Map<String, String> cities = new HashMap<String, String>();
 
-    public InventoryManagerBean() {
+    public InvamountManagerBean() {
         this.format = new DecimalFormat("#,###.##");
 
     }
@@ -123,7 +130,7 @@ public class InventoryManagerBean implements Serializable {
                 case "1G500":
                     cities.put("物料库存状况表(无油机组)", "AD");
                     break;
-                case "5A":
+                case "5A000":
                     cities.put("物料库存状况表(离心机)", "RT");
                     break;
                 case "1Q000":
@@ -152,11 +159,13 @@ public class InventoryManagerBean implements Serializable {
 
     public void init() {
         getDeopt();
-        setInventoryList(new ArrayList<>());
+        setInvamountProductList(new ArrayList<>());
         setAnalysisCount(0);
         setSummaryCount(0);
         analysisList = new ArrayList<>();
         summaryList = new ArrayList<>();
+        setInvamountPolicyTargetList(new ArrayList<>());
+        setInvamountBUList(new ArrayList<>());
     }
 
     @PostConstruct
@@ -197,16 +206,16 @@ public class InventoryManagerBean implements Serializable {
     }
 
     //各库别之产品别库存金额数据集 DivisionQuery
-    public void DCQuery() {
+    public void InvamountProductQuery() {
         init();
         try {
             if (addQueryModel()) {
                 int m = getMonth();
                 int y = getYear();
-                List<Inventory> list;
-                list = inventoryBean.getInventorysList(y, m);
+                List<InvamountProduct> list;
+                list = invamountProductBean.getInvamountProductResultList(y, m);
                 if (!list.isEmpty()) {
-                    setInventoryList(list);
+                    setInvamountProductList(list);
                     if (indicator != null) {
                         analysisList = indicatorAnalysisBean.findByPIdAndMonth(indicator.getId(), month);//指标分析
                         if (getAnalysisList() != null) {
@@ -227,8 +236,8 @@ public class InventoryManagerBean implements Serializable {
 
     }
 
-    // 各事业部和各产品目标的各库别物料库存状况表数据集
-    public void DAQuery() {
+    // 各事业部和各产品目标的各库别物料库存状况表数据集 新版
+    public void InvamountBusinessUnitQuery() {
         //初始化
         init();
         //获取页面显示的时间三个月的时间
@@ -239,10 +248,10 @@ public class InventoryManagerBean implements Serializable {
                 int y = getYear();
                 String typeValue = getType();
                 String genreValue = getGenre();
-                List<InventoryStatement> list;
-                list = inventoryStatementBean.GetInventoryStatementList(typeValue, genreValue, y, m);
+                List<InvamountBusinessUnit> list;
+                list = invamountBUBean.getBusinessUnitsResultList(typeValue, genreValue, y, m);
                 if (!list.isEmpty()) {
-                    setInventoryStatementsList(list);
+                    setInvamountBUList(list);
                     if (indicator != null) {
                         analysisList = indicatorAnalysisBean.findByPIdAndMonth(indicator.getId(), month);//指标分析
                         if (getAnalysisList() != null) {
@@ -263,7 +272,28 @@ public class InventoryManagerBean implements Serializable {
 
     }
 
-    //获取日期当月、上月、上上月
+    //获取库存金额按总经理室方针目标总表 list
+    public void InvamountPolicyTargetQuery() {
+        //初始化
+        init();
+        try {
+            if (addQueryModel()) {
+                int m = getMonth();
+                int y = getYear();
+                List<InvamountPolicyTarget> list;
+                list = invamountPolicyTargetBean.getInvamountPolicyTargetResultList(y, m);
+                if (!list.isEmpty()) {
+                    invamountPolicyTargetList = list;
+                } else {
+                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "无法查询到该日期的数据，请重新查询！"));
+                }
+            }
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.toString()));
+        }
+    }
+
+    //获取日期当月、上月、上上月 做个事业部物料状况表 使用
     private void getDate() {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
@@ -355,14 +385,6 @@ public class InventoryManagerBean implements Serializable {
         this.map = map;
     }
 
-    public List<Inventory> getInventoryList() {
-        return inventoryList;
-    }
-
-    public void setInventoryList(List<Inventory> inventoryList) {
-        this.inventoryList = inventoryList;
-    }
-
     public List<IndicatorAnalysis> getAnalysisList() {
         return analysisList;
     }
@@ -419,14 +441,6 @@ public class InventoryManagerBean implements Serializable {
         this.indicatorChart = indicatorChart;
     }
 
-    public List<InventoryStatement> getInventoryStatementsList() {
-        return inventoryStatementsList;
-    }
-
-    public void setInventoryStatementsList(List<InventoryStatement> inventoryStatementsList) {
-        this.inventoryStatementsList = inventoryStatementsList;
-    }
-
     public String getDate1() {
         return date1;
     }
@@ -473,6 +487,30 @@ public class InventoryManagerBean implements Serializable {
 
     public void setCities(Map<String, String> cities) {
         this.cities = cities;
+    }
+
+    public List<InvamountBusinessUnit> getInvamountBUList() {
+        return invamountBUList;
+    }
+
+    public void setInvamountBUList(List<InvamountBusinessUnit> invamountBUList) {
+        this.invamountBUList = invamountBUList;
+    }
+
+    public List<InvamountProduct> getInvamountProductList() {
+        return invamountProductList;
+    }
+
+    public void setInvamountProductList(List<InvamountProduct> invamountProductList) {
+        this.invamountProductList = invamountProductList;
+    }
+
+    public List<InvamountPolicyTarget> getInvamountPolicyTargetList() {
+        return invamountPolicyTargetList;
+    }
+
+    public void setInvamountPolicyTargetList(List<InvamountPolicyTarget> invamountPolicyTargetList) {
+        this.invamountPolicyTargetList = invamountPolicyTargetList;
     }
 
 }

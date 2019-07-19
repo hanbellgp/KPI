@@ -6,15 +6,15 @@
 package cn.hanbell.kpi.ejb;
 
 import cn.hanbell.kpi.comm.SuperEJBForERP;
-import cn.hanbell.kpi.entity.Inventory;
+import cn.hanbell.kpi.entity.InvamountProduct;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.ejb.EJB;
-import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.ejb.LocalBean;
 import javax.persistence.Query;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,20 +25,21 @@ import org.apache.logging.log4j.Logger;
  */
 @Stateless
 @LocalBean
-public class InventoryBean implements Serializable {
+public class InvamountProductBean implements Serializable {
 
     @EJB
     private SuperEJBForERP erpEJB;
 
     protected Logger log4j = LogManager.getLogger();
 
-    public InventoryBean() {
+    public InvamountProductBean() {
 
     }
 
-    //取到产品别库存金额数据集合
-    public List<Inventory> getInventorysList1(int y, int m) {
-        List<Inventory> inventoryList = new ArrayList<>();
+    //各产品别之库存统计表
+    //取到产品别库存金额数据集合 --各库别之产品别库存金额表
+    public List<InvamountProduct> getInvamountProductDataList(int y, int m) {
+        List<InvamountProduct> inventoryList = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
         sb.append(" select a.whdsc, ");
         sb.append(" convert(DECIMAL(18,2),isnull(sum(CASE when a.genre =  'A'  then amount end),0))as 'AA', ");
@@ -49,7 +50,7 @@ public class InventoryBean implements Serializable {
         sb.append(" convert(DECIMAL(18,2),isnull(sum(CASE when a.genre = 'L'  then amount end),0)) as 'L', ");
         sb.append(" convert(DECIMAL(18,2),isnull(sum(CASE when a.genre = 'P'  then amount end),0)) as 'P', ");
         sb.append(" convert(DECIMAL(18,2),isnull(sum(CASE when a.genre = 'S'  then amount end),0)) as 'S' ");
-        sb.append(" from  invamount a LEFT OUTER JOIN invwhs w on w.facno = a.facno and w.prono = a.prono and w.wareh = a.wareh ");
+        sb.append(" from  invamount a LEFT OUTER JOIN invwh w on w.facno = a.facno and w.prono = a.prono and w.wareh = a.wareh ");
         sb.append(" where w.costyn = 'Y' and a.facno = 'C' and a.prono = '1' and a.yearmon='${y}${m}' ");
         sb.append(" GROUP BY a.whdsc ");
         sb.append(" UNION ");
@@ -62,18 +63,18 @@ public class InventoryBean implements Serializable {
         sb.append(" convert(DECIMAL(18,2),isnull(sum(CASE when a.genre = 'L'  then amount end),0)) as 'L', ");
         sb.append(" convert(DECIMAL(18,2),isnull(sum(CASE when a.genre = 'P'  then amount end),0)) as 'P', ");
         sb.append(" convert(DECIMAL(18,2),isnull(sum(CASE when a.genre = 'S'  then amount end),0)) as 'S' ");
-        sb.append(" from  invamount a LEFT OUTER JOIN invwhs w on w.facno = a.facno and w.prono = a.prono and w.wareh = a.wareh ");
+        sb.append(" from  invamount a LEFT OUTER JOIN invwh w on w.facno = a.facno and w.prono = a.prono and w.wareh = a.wareh ");
         sb.append(" where a.facno = 'C' and a.prono = '1' and a.trtype in ('ZZ') and a.yearmon='${y}${m}' ");
         sb.append(" GROUP BY a.whdsc ");
 
         String sql = sb.toString().replace("${y}", String.valueOf(y)).replace("${m}", String.valueOf(getMon(m)));
         try {
-            Inventory it;
+            InvamountProduct it;
             Query query = erpEJB.getEntityManager().createNativeQuery(sql);
             List result = query.getResultList();
             if (!result.isEmpty() && result != null) {
                 for (int i = 0; i < result.size(); i++) {
-                    it = new Inventory();
+                    it = new InvamountProduct();
                     Object[] row = (Object[]) result.get(i);
                     it.setWhdsc(row[0].toString());
                     it.setDivisionAA(BigDecimal.valueOf(Double.valueOf(row[1].toString())));
@@ -93,20 +94,20 @@ public class InventoryBean implements Serializable {
             return inventoryList;
 
         } catch (Exception ex) {
-            log4j.error("getInventorysList1()异常！", ex);
+            log4j.error("InvamountProductBean-getInvamountProductDataList()异常！", ex);
         }
         return null;
     }
 
-    //给集合添加最后一列的合计项
-    public List<Inventory> getInventorysList(int y, int m) {
-        List invList = getInventorysList1(y, m);
-        Iterator<Inventory> itr = invList.iterator();
-        Inventory ity = new Inventory();
+    //给集合添加最后一列的合计项 -- --各库别之产品别库存金额表
+    public List<InvamountProduct> getInvamountProductResultList(int y, int m) {
+        List invList = getInvamountProductDataList(y, m);
+        Iterator<InvamountProduct> itr = invList.iterator();
+        InvamountProduct ity = new InvamountProduct();
         ity.setWhdsc("合计");
         try {
             while (itr.hasNext()) {
-                Inventory inventory = itr.next();
+                InvamountProduct inventory = itr.next();
                 ity.setDivisionAA(inventory.getDivisionAA().add(ity.getDivisionAA() == null ? new BigDecimal(0) : ity.getDivisionAA()));
                 ity.setDivisionAH(inventory.getDivisionAH().add(ity.getDivisionAH() == null ? new BigDecimal(0) : ity.getDivisionAH()));
                 ity.setDivisionAD(inventory.getDivisionAD().add(ity.getDivisionAD() == null ? new BigDecimal(0) : ity.getDivisionAD()));
@@ -120,18 +121,17 @@ public class InventoryBean implements Serializable {
             invList.add(ity);
             return invList;
         } catch (Exception ex) {
-            log4j.error("getInventorysList()异常！", ex);
+            log4j.error("InvamountProductBean-getInvamountProductResultList()异常！", ex);
         }
         return null;
     }
 
-    //取到月份小于10 前面自动添加为0
+    //当前月份 m
     private String getMon(int m) {
         if (m < 10) {
             return "0" + m;
-        } else {
-            return String.valueOf(m);
         }
+        return String.valueOf(m);
     }
 
 }

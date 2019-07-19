@@ -370,13 +370,18 @@
             <redirect/>
         </navigation-case>
         <navigation-case>
-            <from-outcome>inventoryamountda</from-outcome>
-            <to-view-id>/app/bsc/inventoryamountda.xhtml</to-view-id>
+            <from-outcome>invamountbusinessunitsheet</from-outcome>
+            <to-view-id>/app/bsc/invamountbusinessunitsheet.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>
-            <from-outcome>inventoryamountdc</from-outcome>
-            <to-view-id>/app/bsc/inventoryamountdc.xhtml</to-view-id>
+            <from-outcome>invamountpolicytargetsheet</from-outcome>
+            <to-view-id>/app/bsc/invamountpolicytargetsheet.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>invamountproductsheet</from-outcome>
+            <to-view-id>/app/bsc/invamountproductsheet.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>

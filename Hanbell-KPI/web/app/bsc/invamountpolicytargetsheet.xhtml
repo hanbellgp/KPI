@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/bsc.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
+            <p:panelGrid id="plgQuery" columns="7" columnClasses="Wid20,Wid20,Wid20,Wid20,Wid10,Wid10" styleClass="plgQuery Wid100">
+                <p:outputLabel value="请输入查询的年份" for="clientyear" />
+                <p:inputText id="clientyear" value="#{inventoryManagerBean.year}" title="年"  required="true" requiredMessage="请输入查询的年份"/>
+                <p:outputLabel value="请输入查询的月份" for="clientmonth" />
+                <p:inputText id="clientmonth" value="#{inventoryManagerBean.month}" title="月" />
+                <p:commandButton id="btnReset" value="重置" actionListener="#{inventoryManagerBean.resetQuery()}"  icon="ui-icon-refresh"
+                                 update="formOne" />
+                <p:commandButton id="btnQuery" value="查询" actionListener="#{inventoryManagerBean.InvamountPolicyTargetQuery()}"  icon="ui-icon-search"
+                                 update="formOne:tblList" />
+                <p:link value="返回"  outcome="home" style="float: left"/>
+            </p:panelGrid>
+            <p:panelGrid columns="7" columnClasses="Wid20,Wid20,Wid20,Wid20,Wid10,Wid10" styleClass="plgQuery Wid100" >
+                <f:facet name="header">
+                    <span style="font-size: 21px;float: left" >各部门库存金额达标情况</span>
+                    <span style="font-size: 21px;float: right" >单位：万元</span>
+                </f:facet>
+            </p:panelGrid>
+            <p:row id="toolbar" styleClass="topToolbar" style="visibility: hidden"></p:row>
+            <style type="text/css">
+                .bgred{
+                    background-color: #00FF00 !important;
+                }
+            </style>
+            <p:dataTable rowStyleClass="#{(item.classify.substring(item.classify.length()-2,item.classify.length()) == '合计')?'bgred':''}" id="tblList" value="#{inventoryManagerBean.invamountPolicyTargetList}" var="item" tableStyleClass="plgSheetData">
+                <p:ajax event="rowSelect"  update="formOne:toolbar" />
+                <p:ajax event="rowUnselect" update="formOne:toolbar" />
+                <p:columnGroup type="header">
+                    <p:row>
+                        <p:column rowspan="2" headerText="目标类型" />
+                        <p:column rowspan="2" headerText="责任单位" />
+                        <p:column rowspan="2" headerText="分类" />
+                        <p:column rowspan="2" headerText="责任人" />
+                        <p:column rowspan="2" headerText="当季目标" />
+                        <p:column colspan="2" headerText="当月实绩与目标差异" />
+                        <p:column colspan="2" headerText="当月实绩与上月差异" />
+                        <p:column colspan="2" headerText="当月实绩与与去年同期差异" />
+                    </p:row>
+                    <p:row>
+                        <p:column headerText="当月库存金额" />
+                        <p:column headerText="差异" />
+                        <p:column headerText="上月库存金额" />
+                        <p:column headerText="差异" />
+                        <p:column headerText="同期库存金额" />
+                        <p:column headerText="差异" />
+                    </p:row>
+                </p:columnGroup>
+                <p:column styleClass="Wid20" style="text-align: center;" groupRow="true">
+                    <h:outputText value="#{item.id}"/>
+                </p:column>
+                <p:column  styleClass="Wid20" style="text-align: center;">
+                    <h:outputText value="#{(item.deptName == '财务部')?'无':item.deptName}"/>
+                </p:column>
+                <p:column  styleClass="Wid20" style="text-align: center;">
+                    <h:outputText  value="#{item.classify}"/>
+                </p:column>
+                <p:column  styleClass="Wid20" style="text-align: right;">
+                    <h:outputText value="#{item.responsible}"/>
+                </p:column>
+                <p:column  styleClass="Wid20" style="text-align: center">
+                    <h:outputText value="#{item.target}"/>
+                </p:column>
+                <p:column  styleClass="Wid20" style="text-align: right">
+                    <h:outputText value="#{item.actual}"/>
+                </p:column>
+                <p:column  styleClass="Wid20" style="text-align: right">
+                    <h:outputText value="#{item.difference1}"/>
+                </p:column>
+                <p:column  styleClass="Wid20" style="text-align: right">
+                    <h:outputText value="#{item.upactual}"/>
+                </p:column>
+                <p:column  styleClass="Wid20" style="text-align: right">
+                    <h:outputText value="#{item.difference2}"/>
+                </p:column>
+                <p:column  styleClass="Wid20" style="text-align: right">
+                    <h:outputText value="#{item.benchmark}"/>
+                </p:column>
+                <p:column  styleClass="Wid20" style="text-align: right">
+                    <h:outputText value="#{item.difference3}"/>
+                </p:column>
+            </p:dataTable>
+            <p:blockUI id="blockUI" block="formOne" trigger="btnQuery">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>

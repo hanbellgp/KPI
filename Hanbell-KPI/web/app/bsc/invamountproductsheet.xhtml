@@ -8,46 +8,25 @@
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <ui:define name="content">
+
         <h:form id="formOne">
             <p:growl id="growl" showSummary="false" showDetail="true" autoUpdate="true"/>
-            <p:panelGrid id="plgQuery" columns="4" columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgQuery Wid100">
-                <f:facet name="header">
-                    查询条件
-                </f:facet>
-                <p:outputLabel for="type" value="事业部" style="font-size:18px" />
-                <p:selectOneMenu id="type" value="#{inventoryManagerBean.type}" style="width:600px;font-size: 18px">
-                    <f:selectItem itemLabel="--请选择--" itemValue="" />
-                    <f:selectItem itemLabel="生产目标" itemValue="SC" />
-                    <f:selectItem itemLabel="服务目标" itemValue="FW" />
-                    <f:selectItem itemLabel="营业目标" itemValue="YY" />
-                    <f:selectItem itemLabel="研发目标" itemValue="YF" />
-                </p:selectOneMenu>
-                <p:outputLabel for="genre" value="产品别" style="font-size:18px" />
-                <p:selectOneMenu id="genre" value="#{inventoryManagerBean.genre}" style="width:600px;font-size: 18px">
-                    <f:selectItem itemLabel="--请选择--" itemValue="" />
-                    <f:selectItems value="#{inventoryManagerBean.cities}" />
-                </p:selectOneMenu>
-                <p:outputLabel value="请输入查询的年份" for="clientyear" style="font-size:18px" />
+            <p:panelGrid id="plgQuery" columns="7" columnClasses="Wid20,Wid20,Wid20,Wid20,Wid10,Wid10" styleClass="plgQuery Wid100">
+                <p:outputLabel value="请输入查询的年份" for="clientyear" />
                 <p:inputText id="clientyear" value="#{inventoryManagerBean.year}" title="年"  required="true" requiredMessage="请输入查询的年份"/>
-                <p:outputLabel value="请输入查询的月份" for="clientmonth" style="font-size:18px"/>
+                <p:outputLabel value="请输入查询的月份" for="clientmonth" />
                 <p:inputText id="clientmonth" value="#{inventoryManagerBean.month}" title="月" />
+                <p:commandButton id="btnReset" value="重置" actionListener="#{inventoryManagerBean.resetQuery()}"  icon="ui-icon-refresh"
+                                 update="formOne" />
+                <p:commandButton id="btnQuery" value="查询" actionListener="#{inventoryManagerBean.InvamountProductQuery()}"  icon="ui-icon-search"
+                                 update="formOne:tblList,remarks" />
+                <p:link value="返回"  outcome="home" style="float: left"/>
             </p:panelGrid>
-            <p:toolbar id="toolbar-head" styleClass="topToolbar">
-                <f:facet name="left">
-                    <p:link value="返回"  outcome="home" style="float: left;color: white;font-size: 18px"/>
-                </f:facet>
-                <f:facet name="right">
-                    <p:commandButton id="btnReset" value="重置" actionListener="#{inventoryManagerBean.resetQuery()}"  icon="ui-icon-refresh"
-                                     update="formOne" />
-                    <p:commandButton id="btnQuery" value="查询" actionListener="#{inventoryManagerBean.DAQuery()}"  icon="ui-icon-search"
-                                     update="formOne:tblList,remarks" />
-                </f:facet>
-            </p:toolbar>
             <p:row id="toolbar" styleClass="topToolbar" style="visibility: hidden"></p:row>
-            <p:dataTable id="tblList" value="#{inventoryManagerBean.inventoryStatementsList}" var="item" tableStyleClass="plgSheetData"
+            <p:dataTable id="tblList" value="#{inventoryManagerBean.invamountProductList}" var="item" tableStyleClass="plgSheetData"
                          rowSelectMode="single" rowKey="item.id">
                 <f:facet name="header">
-                    <span style="font-size: 21px;" >物料库存状况表</span>
+                    <span style="font-size: 21px;" >各库别之产品别库存金额表</span>
                 </f:facet>
                 <p:ajax event="rowSelect"  update="formOne:toolbar" />
                 <p:ajax event="rowUnselect" update="formOne:toolbar" />
@@ -55,37 +34,61 @@
                     <f:facet name="header">
                         <h:outputText value="库别"/>
                     </f:facet>
-                    <h:outputText value="#{item.wareh}" style="#{(item.wareh == '合计')?'color:red':'' }"/>
+                    <h:outputText value="#{item.whdsc}" style="#{(item.whdsc == '合计')?'color:red':'' }"/>
                 </p:column>
                 <p:column styleClass="Wid20" style="text-align: right;">
                     <f:facet name="header">
-                        <h:outputText value="#{inventoryManagerBean.date3}"/>
+                        <h:outputText value="AA"/>
                     </f:facet>
-                    <h:outputText value="#{item.amount1}" style="#{(item.wareh == '合计')?'color:red':'' }"/>
+                    <h:outputText value="#{(item.divisionAA!='0.0')?item.divisionAA:'- '}" style="#{(item.whdsc == '合计')?'color:red':'' }"/>
                 </p:column>
                 <p:column styleClass="Wid20" style="text-align: right;">
                     <f:facet name="header" >
-                        <h:outputText value="#{inventoryManagerBean.date2}" style="text-align: center"/>
+                        <h:outputText value="AH" style="text-align: center"/>
                     </f:facet>
-                    <h:outputText  value="#{item.amount2}" style="#{(item.wareh == '合计')?'color:red':'' }"/>
+                    <h:outputText  value="#{(item.divisionAH!='0.0')?item.divisionAH:'- '}" style="#{(item.whdsc == '合计')?'color:red':'' }"/>
                 </p:column>
                 <p:column styleClass="Wid20" style="text-align: right;">
                     <f:facet name="header">
-                        <h:outputText value="#{inventoryManagerBean.date1}"/>
+                        <h:outputText value="SDS"/>
                     </f:facet>
-                    <h:outputText value="#{item.amount3}" style="#{(item.wareh == '合计')?'color:red':'' }"/>
+                    <h:outputText value="#{(item.divisionAD!='0.0')?item.divisionAD:'- '}" style="#{(item.whdsc == '合计')?'color:red':'' }"/>
                 </p:column>
                 <p:column styleClass="Wid20" style="text-align: center" >
                     <f:facet name="header">
-                        <h:outputText value="差异"/>
+                        <h:outputText value="R"/>
                     </f:facet>
-                    <h:outputText value="#{item.difference}" style="#{(item.wareh == '合计')?'color:red':'' }"/>
+                    <h:outputText value="#{(item.divisionR!='0.0')?item.divisionR:'- '}" style="#{(item.whdsc == '合计')?'color:red':'' }"/>
                 </p:column>
                 <p:column styleClass="Wid20" style="text-align: right;">
                     <f:facet name="header">
-                        <h:outputText value="占比"/>
+                        <h:outputText value="RT"/>
                     </f:facet>
-                    <h:outputText value="#{item.proportion}%" style="#{(item.wareh == '合计')?'color:red':'' }"/>
+                    <h:outputText value="#{(item.divisionRT!='0.0')?item.divisionRT:'- '}" style="#{(item.whdsc == '合计')?'color:red':'' }"/>
+                </p:column>
+                <p:column styleClass="Wid20" style="text-align: right;">
+                    <f:facet name="header">
+                        <h:outputText value="L"/>
+                    </f:facet>
+                    <h:outputText value="#{(item.divisionL!='0.0')?item.divisionL:'- '}" style="#{(item.whdsc == '合计')?'color:red':'' }"/>
+                </p:column>
+                <p:column styleClass="Wid20" style="text-align: right;">
+                    <f:facet name="header">
+                        <h:outputText value="P"/>
+                    </f:facet>
+                    <h:outputText value="#{(item.divisionP!='0.0')?item.divisionP:'- '}" style="#{(item.whdsc == '合计')?'color:red':'' }"/>
+                </p:column>
+                <p:column styleClass="Wid20" style="text-align: right;">
+                    <f:facet name="header">
+                        <h:outputText value="S"/>
+                    </f:facet>
+                    <h:outputText value="#{(item.divisionS!='0.0')?item.divisionS:'- '}" style="#{(item.whdsc == '合计')?'color:red':'' }"/>
+                </p:column>
+                <p:column styleClass="Wid20" style="text-align: right;">
+                    <f:facet name="header">
+                        <h:outputText value="合计"/>
+                    </f:facet>
+                    <h:outputText value="#{item.total}" style="#{(item.whdsc == '合计')?'color:red':'' }"/>
                 </p:column>
             </p:dataTable>
             <p:panel id="remarks" style="height: 0px" >

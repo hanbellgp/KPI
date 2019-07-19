@@ -12,7 +12,7 @@ import java.math.BigDecimal;
  *
  * @author C1749 该实体类只作为财务库存报表（各库别之产品别库存金额）使用 数据库无对应的实体类
  */
-public class Inventory implements Serializable {
+public class InvamountProduct implements Serializable {
 
     //库号
     private String whdsc;
@@ -35,7 +35,7 @@ public class Inventory implements Serializable {
     //合计
     private BigDecimal total;
 
-    public Inventory() {
+    public InvamountProduct() {
         
     }
 
