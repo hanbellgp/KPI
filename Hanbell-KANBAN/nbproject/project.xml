@@ -8,15 +8,12 @@
             <web-module-libraries>
                 <library dirs="200">
                     <file>${libs.PrimeFaces_7.0.classpath}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
                 </library>
                 <library dirs="200">
-                    <file>${libs.PrimeFacesUltima_2.0.classpath}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
+                    <file>${libs.PrimeUtilma.classpath}</file>
                 </library>
                 <library dirs="200">
-                    <file>${libs.Lightshell-2.0.classpath}</file>
-                    <path-in-war>WEB-INF/lib</path-in-war>
+                    <file>${libs.Lightshell-JDK.classpath}</file>
                 </library>
                 <library dirs="200">
                     <file>${libs.Hanbell-JDK.classpath}</file>
