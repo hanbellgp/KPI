@@ -5,7 +5,7 @@
         <data xmlns="http://www.netbeans.org/ns/j2ee-ejbjarproject/3">
             <name>KPI-ejb</name>
             <minimum-ant-version>1.6.5</minimum-ant-version>
-            <included-library dirs="200">libs.Lightshell-JDK.classpath</included-library>
+            <included-library dirs="200">libs.Lightshell-2.0.classpath</included-library>
             <included-library dirs="200">libs.Hanbell-JDK.classpath</included-library>
             <included-library dirs="200">libs.POI-3.15.classpath</included-library>
             <source-roots>
