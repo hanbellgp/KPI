@@ -7,14 +7,15 @@ package cn.hanbell.kpi.evaluation;
 
 /**
  *
- * @author C1879
+ * @author C2082
  */
-public class FreeServiceWithinKS1G extends FreeServiceWithinKS{
+public class FreeServiceWithinKS1G1 extends FreeServiceWithinKS{
 
-    public FreeServiceWithinKS1G() {
+    public FreeServiceWithinKS1G1() {
+        //广州机体维修领退料
         super();
         queryParams.put("facno", "C");
-        queryParams.put("hmark1", " not in ('CK','HN') ");
+        queryParams.put("hmark1", "  in ('HN') ");
         queryParams.put("hmark2", "='AH' ");
     }   
 }

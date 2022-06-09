@@ -47,6 +47,8 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
     private List<Object[]> weightList;
     protected LinkedHashMap<String, String> statusMap;
     private Date btnDate;
+    private int y;
+    private int m;
     @EJB
     private ShoppingAccomuntBean shoppingAccomuntBean;
 
@@ -67,10 +69,13 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
         if (id == null) {
             fc.getApplication().getNavigationHandler().handleNavigation(fc, null, "error");
         }
-        indicatorChart = indicatorChartBean.findById(Integer.valueOf(id));
+        y=Integer.valueOf(BaseLib.formatDate("yyyy", getUserManagedBean().getBaseDate()));
+        m=Integer.valueOf(BaseLib.formatDate("MM", getUserManagedBean().getBaseDate()));  
+        indicatorChart = indicatorChartBean.findById(Integer.valueOf(id)); 
         if (getIndicatorChart() == null) {
             fc.getApplication().getNavigationHandler().handleNavigation(fc, null, "error");
         } else {
+            indicator = indicatorBean.findByFormidYearAndDeptno(indicatorChart.getFormid(),this.getY() , indicatorChart.getDeptno());
             for (RoleGrantModule m1 : userManagedBean.getRoleGrantDeptList()) {
                 if (m1.getDeptno().equals(indicatorChart.getPid())) {
                     deny = false;
@@ -178,7 +183,18 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
             weightList.add(zhanbi3);
             statusMap.put("displaydiv1", "none");
             statusMap.put("displaydiv2", "block");
+            
+            //根据指标ID加载指标说明、指标分析
+            analysisList = indicatorAnalysisBean.findByPIdAndMonth(indicator.getId(), this.m);//指标分析
+            if (analysisList != null) {
+                this.analysisCount = analysisList.size();
+            }
+            summaryList = indicatorSummaryBean.findByPIdAndMonth(indicator.getId(),this.m);//指标说明
+            if (summaryList != null) {
+                this.summaryCount = summaryList.size();
+            }
         } catch (Exception e) {
+            e.printStackTrace();
             FacesContext.getCurrentInstance().addMessage((String) null, new FacesMessage(FacesMessage.SEVERITY_INFO, "error", e.getMessage()));
         }
 
@@ -283,6 +299,22 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
 
     public void setWeightList(List<Object[]> weightList) {
         this.weightList = weightList;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public int getM() {
+        return m;
+    }
+
+    public void setM(int m) {
+        this.m = m;
     }
 
 }

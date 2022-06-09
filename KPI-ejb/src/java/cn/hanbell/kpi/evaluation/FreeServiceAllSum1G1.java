@@ -20,13 +20,13 @@ import javax.naming.NamingException;
  *
  * @author C1879
  */
-public class FreeServiceAllSum1G extends FreeServiceERP {
+public class FreeServiceAllSum1G1 extends FreeServiceERP {
 
     IndicatorBean indicatorBean = lookupIndicatorBeanBean();
 
-    public FreeServiceAllSum1G() {
+    public FreeServiceAllSum1G1() {
         super();
-        queryParams.put("formid", "A-空压机体本部综合成本");
+        queryParams.put("formid", "A-空压机体广州综合成本");
         queryParams.put("deptno", "1G100");
     }
 
