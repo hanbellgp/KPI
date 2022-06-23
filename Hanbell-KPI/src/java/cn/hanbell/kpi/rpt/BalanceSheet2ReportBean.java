@@ -125,7 +125,7 @@ public class BalanceSheet2ReportBean extends BscQueryTableManageBean implements 
             int y = getdate().get(Calendar.YEAR);
             int m = getdate().get(Calendar.MONTH) + 1;
             if (aa) {
-                list = this.balancerecordBean.findByYeaAndMonAndWhethershow(2022, 4, showchecked);
+                list = this.balancerecordBean.findByYeaAndMonAndWhethershow(y, m, showchecked);
                 if (list != null && !list.isEmpty()) {
                     statusMap.put("displaydiv1", "none");
                     statusMap.put("displaydiv2", "block");
