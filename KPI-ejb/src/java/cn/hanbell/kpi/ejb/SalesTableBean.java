@@ -24,19 +24,19 @@ import javax.persistence.Query;
 @Stateless
 @LocalBean
 public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
-    
+
     @EJB
     private SalesTableUpdateBean salesTableUpdateBean;
-    
+
     private final DecimalFormat df;
     private final DecimalFormat dmf;
-    
+
     public SalesTableBean() {
         super(SalesTable.class);
         this.df = new DecimalFormat("#");
         this.dmf = new DecimalFormat("#0.00");
     }
-    
+
     public boolean querySalesTableIsExist(int y, int m, String daString, String typeString) {
         String da = daString == null ? "" : daString;
         StringBuilder sb = new StringBuilder();
@@ -58,7 +58,7 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
         }
         return false;
     }
-    
+
     private void deleteSales(int y, int m, String daString, String typeString) {
         String da = daString == null ? "" : daString;
         StringBuilder sb = new StringBuilder();
@@ -77,7 +77,7 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
         } catch (Exception e) {
             System.out.println("cn.hanbell.kpi.ejb.SalesTableBean.deleteSales()" + e);
         }
-        
+
     }
 
 //    /**
@@ -99,7 +99,6 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
 //        }
 //        
 //    }
-
     //更新到KPI
     public boolean updateSalesTable(int y, int m, String daString, String typeString) {
         String da = daString == null ? "" : daString;
@@ -136,12 +135,16 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
     protected Double getSumQuantity(int y, int m, LinkedHashMap<String, String> map, String type, Boolean monthchecked) {
         String n_code_DA = map.get("n_code_DA") != null ? map.get("n_code_DA") : "";
         String n_code_DC = map.get("n_code_DC") != null ? map.get("n_code_DC") : "";
-        
+        String n_code_CD = map.get("n_code_CD") != null ? map.get("n_code_CD") : "";
+
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT sum(quantity) FROM SalesTable where type='${type}' ");
         sb.append(" AND n_code_DA ").append(n_code_DA);
         if (!"".equals(n_code_DC)) {
             sb.append(" AND n_code_DC ").append(n_code_DC);
+        }
+        if (!"".equals(n_code_CD)) {
+            sb.append(" AND n_code_CD ").append(n_code_CD);
         }
         sb.append(" AND year(cdrdate) = ${y} ");
         if (monthchecked) {
@@ -163,12 +166,16 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
     protected Double getSumAmount(int y, int m, LinkedHashMap<String, String> map, String type, Boolean monthchecked) {
         String n_code_DA = map.get("n_code_DA") != null ? map.get("n_code_DA") : "";
         String n_code_DC = map.get("n_code_DC") != null ? map.get("n_code_DC") : "";
-        
+        String n_code_CD = map.get("n_code_CD") != null ? map.get("n_code_CD") : "";
+
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT sum(amount) FROM SalesTable where type='${type}' ");
         sb.append(" AND n_code_DA ").append(n_code_DA);
         if (!"".equals(n_code_DC)) {
             sb.append(" AND n_code_DC ").append(n_code_DC);
+        }
+        if (!"".equals(n_code_CD)) {
+            sb.append(" AND n_code_CD ").append(n_code_CD);
         }
         sb.append(" AND year(cdrdate) = ${y} ");
         if (monthchecked) {
@@ -190,7 +197,8 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
     protected List<ClientRanking> getNowClient(int y, int m, LinkedHashMap<String, String> map, String type, Boolean monthchecked, Boolean aggregatechecked, String rowsPerPage) {
         String n_code_DA = map.get("n_code_DA") != null ? map.get("n_code_DA") : "";
         String n_code_DC = map.get("n_code_DC") != null ? map.get("n_code_DC") : "";
-        
+        String n_code_CD = map.get("n_code_CD") != null ? map.get("n_code_CD") : "";
+
         StringBuilder sb = new StringBuilder();
         if (aggregatechecked) {
             sb.append(" Select parentcusno,parentcusna,sum(quantity),sum(amount) FROM  SalesTable where type='${type}' ");
@@ -200,6 +208,9 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
         sb.append(" AND n_code_DA ").append(n_code_DA);
         if (!"".equals(n_code_DC)) {
             sb.append(" AND n_code_DC ").append(n_code_DC);
+        }
+        if (!"".equals(n_code_CD)) {
+            sb.append(" AND n_code_CD ").append(n_code_CD);
         }
         sb.append(" AND year(cdrdate) = ${y} ");
         if (monthchecked) {
@@ -213,11 +224,11 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
             sb.append(" GROUP BY cusno ORDER BY sum(amount) desc");
         }
         String sqlsize = sb.toString().replace("${y}", String.valueOf(y)).replace("${m}", String.valueOf(m)).replace("${type}", type).replace("${rowsPerPage}", rowsPerPage);
-        
+
         if (!"0".equals(rowsPerPage)) {
             sb.append("  LIMIT ${rowsPerPage} ");
         }
-        
+
         String sql = sb.toString().replace("${y}", String.valueOf(y)).replace("${m}", String.valueOf(m)).replace("${type}", type).replace("${rowsPerPage}", rowsPerPage);
         try {
             ClientRanking ct;
@@ -261,7 +272,8 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
     protected List<ClientRanking> getNowClientByCodeDA(int y, int m, LinkedHashMap<String, String> map, String type, Boolean monthchecked, Boolean aggregatechecked, String rowsPerPage) {
         String n_code_DA = map.get("n_code_DA") != null ? map.get("n_code_DA") : "";
         String n_code_DC = map.get("n_code_DC") != null ? map.get("n_code_DC") : "";
-        
+        String n_code_CD = map.get("n_code_CD") != null ? map.get("n_code_CD") : "";
+
         StringBuilder sb = new StringBuilder();
         if (aggregatechecked) {
             sb.append(" Select parentcusno,parentcusna,n_code_DA,sum(quantity),sum(amount) FROM  SalesTable where type='${type}' ");
@@ -271,6 +283,9 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
         sb.append(" AND n_code_DA ").append(n_code_DA);
         if (!"".equals(n_code_DC)) {
             sb.append(" AND n_code_DC ").append(n_code_DC);
+        }
+        if (!"".equals(n_code_CD)) {
+            sb.append(" AND n_code_CD ").append(n_code_CD);
         }
         sb.append(" AND year(cdrdate) = ${y} ");
         if (monthchecked) {
@@ -284,11 +299,11 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
             sb.append(" GROUP BY cusno,n_code_DA ORDER BY sum(amount) desc");
         }
         String sqlsize = sb.toString().replace("${y}", String.valueOf(y)).replace("${m}", String.valueOf(m)).replace("${type}", type).replace("${rowsPerPage}", rowsPerPage);
-        
+
         if (!"0".equals(rowsPerPage)) {
             sb.append("  LIMIT ${rowsPerPage} ");
         }
-        
+
         String sql = sb.toString().replace("${y}", String.valueOf(y)).replace("${m}", String.valueOf(m)).replace("${type}", type).replace("${rowsPerPage}", rowsPerPage);
         try {
             ClientRanking ct;
@@ -335,7 +350,8 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
     protected List<ClientRanking> getPastClient(int y, int m, LinkedHashMap<String, String> map, String type, Boolean monthchecked, Boolean aggregatechecked) {
         String n_code_DA = map.get("n_code_DA") != null ? map.get("n_code_DA") : "";
         String n_code_DC = map.get("n_code_DC") != null ? map.get("n_code_DC") : "";
-        
+        String n_code_CD = map.get("n_code_CD") != null ? map.get("n_code_CD") : "";
+
         StringBuilder sb = new StringBuilder();
         if (aggregatechecked) {
             sb.append(" Select parentcusno,parentcusna,sum(quantity),sum(amount) FROM  SalesTable where type='${type}' ");
@@ -345,6 +361,9 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
         sb.append(" AND n_code_DA ").append(n_code_DA);
         if (!"".equals(n_code_DC)) {
             sb.append(" AND n_code_DC ").append(n_code_DC);
+        }
+        if (!"".equals(n_code_CD)) {
+            sb.append(" AND n_code_CD ").append(n_code_CD);
         }
         sb.append(" AND year(cdrdate) = ${y} ");
         if (monthchecked) {
@@ -391,7 +410,7 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
     protected List<ClientRanking> getPastClientByCodeDA(int y, int m, LinkedHashMap<String, String> map, String type, Boolean monthchecked, Boolean aggregatechecked) {
         String n_code_DA = map.get("n_code_DA") != null ? map.get("n_code_DA") : "";
         String n_code_DC = map.get("n_code_DC") != null ? map.get("n_code_DC") : "";
-        
+        String n_code_CD = map.get("n_code_CD") != null ? map.get("n_code_CD") : "";
         StringBuilder sb = new StringBuilder();
         if (aggregatechecked) {
             sb.append(" Select parentcusno,parentcusna,n_code_DA,sum(quantity),sum(amount) FROM  SalesTable where type='${type}' ");
@@ -401,6 +420,9 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
         sb.append(" AND n_code_DA ").append(n_code_DA);
         if (!"".equals(n_code_DC)) {
             sb.append(" AND n_code_DC ").append(n_code_DC);
+        }
+        if (!"".equals(n_code_CD)) {
+            sb.append(" AND n_code_CD ").append(n_code_CD);
         }
         sb.append(" AND year(cdrdate) = ${y} ");
         if (monthchecked) {
@@ -515,7 +537,7 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
                 Double topNowshpqy1 = 0.0;
                 Double topPastshpqy1 = 0.0;
                 Double topUltshpqy1 = 0.0;
-                
+
                 Double topNowshpamts = 0.0;
                 Double topPastshpamts = 0.0;
                 Double topUltshpamts = 0.0;
@@ -525,7 +547,7 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
                             topNowshpqy1 += Double.parseDouble(ranking.getNowshpqy1());
                             topPastshpqy1 += Double.parseDouble(ranking.getPastshpqy1());
                             topUltshpqy1 += Double.parseDouble(ranking.getUltshpqy1());
-                            
+
                             topNowshpamts += Double.parseDouble(ranking.getNowshpamts());
                             topPastshpamts += Double.parseDouble(ranking.getPastshpamts());
                             topUltshpamts += Double.parseDouble(ranking.getUltshpamts());
@@ -534,7 +556,7 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
                             topNowshpqy1 = Double.parseDouble(ranking.getNowshpqy1()) - topNowshpqy1;
                             topPastshpqy1 = Double.parseDouble(ranking.getPastshpqy1()) - topPastshpqy1;
                             topUltshpqy1 = Double.parseDouble(ranking.getUltshpqy1()) - topUltshpqy1;
-                            
+
                             topNowshpamts = Double.parseDouble(ranking.getNowshpamts()) - topNowshpamts;
                             topPastshpamts = Double.parseDouble(ranking.getPastshpamts()) - topPastshpamts;
                             topUltshpamts = Double.parseDouble(ranking.getUltshpamts()) - topUltshpamts;
@@ -551,7 +573,7 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
                         ranking.setUltshpamts(topUltshpamts.toString());
                     }
                     if ("总计".equals(ranking.getCusna())) {
-                        
+
                     }
                     ranking.setDifferencevalue(CRdifferencevalue(ranking.getNowshpamts(), ranking.getPastshpamts()));
                     ranking.setGrowthrate(CRrate(ranking.getNowshpamts(), ranking.getPastshpamts()));
@@ -643,7 +665,7 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
                 Double topNowshpqy1 = 0.0;
                 Double topPastshpqy1 = 0.0;
                 Double topUltshpqy1 = 0.0;
-                
+
                 Double topNowshpamts = 0.0;
                 Double topPastshpamts = 0.0;
                 Double topUltshpamts = 0.0;
@@ -653,7 +675,7 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
                             topNowshpqy1 += Double.parseDouble(ranking.getNowshpqy1());
                             topPastshpqy1 += Double.parseDouble(ranking.getPastshpqy1());
                             topUltshpqy1 += Double.parseDouble(ranking.getUltshpqy1());
-                            
+
                             topNowshpamts += Double.parseDouble(ranking.getNowshpamts());
                             topPastshpamts += Double.parseDouble(ranking.getPastshpamts());
                             topUltshpamts += Double.parseDouble(ranking.getUltshpamts());
@@ -662,7 +684,7 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
                             topNowshpqy1 = Double.parseDouble(ranking.getNowshpqy1()) - topNowshpqy1;
                             topPastshpqy1 = Double.parseDouble(ranking.getPastshpqy1()) - topPastshpqy1;
                             topUltshpqy1 = Double.parseDouble(ranking.getUltshpqy1()) - topUltshpqy1;
-                            
+
                             topNowshpamts = Double.parseDouble(ranking.getNowshpamts()) - topNowshpamts;
                             topPastshpamts = Double.parseDouble(ranking.getPastshpamts()) - topPastshpamts;
                             topUltshpamts = Double.parseDouble(ranking.getUltshpamts()) - topUltshpamts;
@@ -718,10 +740,11 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
         } else {
             if (Double.parseDouble(now) < 0) {
                 return df.format(-100);
+                
             } else {
                 return dmf.format((Double.parseDouble(now) - Double.parseDouble(past)) / Double.parseDouble(past) * 100);
             }
         }
     }
-    
+
 }

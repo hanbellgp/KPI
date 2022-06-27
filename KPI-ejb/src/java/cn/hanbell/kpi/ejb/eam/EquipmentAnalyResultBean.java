@@ -93,7 +93,7 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
         List<Object[]> list = query.getResultList();
         if (deptname.equals("方型加工课")) {
             //  方型抓取周建档停机机台
-            sbMES.append(" SELECT A.EQPID FROM (SELECT EQPID,sum(convert(DECIMAL, WORKHOUR) * convert(INT, NUM)) ALN  FROM PLAN_SEMI_SQUARE WHERE PLANDATE = '").append(staDate.replace('-', '/')).append("' GROUP BY EQPID )A  WHERE A.ALN=0");;
+            sbMES.append(" SELECT A.EQPID FROM (SELECT EQPID,sum(convert(DECIMAL, WORKHOUR) * convert(DECIMAL, NUM)) ALN  FROM PLAN_SEMI_SQUARE WHERE PLANDATE = '").append(staDate.replace('-', '/')).append("' GROUP BY EQPID )A  WHERE A.ALN=0");;
             query = mesEJB.getEntityManager().createNativeQuery(sbMES.toString());
             sMESList = query.getResultList();
         } else {

@@ -148,9 +148,11 @@ public class BscGroupSHSaleOrderBean implements Serializable {
                 }
             }
         }
+        //涡旋机
         queryParams.clear();
         queryParams.put("facno", "C");
         queryParams.put("n_code_DA", " ='AH' ");
+        queryParams.put("n_code_DC", " IN ('SAM-5HP','SAM-7HP') ");
         tempData = getSalesOrderAmount(y, m, d, y, getQueryParams());
         if (tempData != null && !tempData.isEmpty()) {
             for (BscGroupShipment b : tempData) {
@@ -163,6 +165,24 @@ public class BscGroupSHSaleOrderBean implements Serializable {
                 }
             }
         }
+        //202204 拆分A机体。此处排除了（除涡旋机），c
+        queryParams.clear();
+        queryParams.put("facno", "C");
+        queryParams.put("n_code_DA", " ='AH' ");
+        queryParams.put("n_code_DC", " NOT IN ('SAM-5HP','SAM-7HP') ");
+        tempData = getSalesOrderAmount(y, m, d, y, getQueryParams());
+        if (tempData != null && !tempData.isEmpty()) {
+            for (BscGroupShipment b : tempData) {
+                if (resultData.contains(b)) {
+                    BscGroupShipment a = resultData.get(resultData.indexOf(b));
+                    a.setQuantity(a.getQuantity().add(b.getQuantity()));
+                    a.setAmount(a.getAmount().add(b.getAmount()));
+                } else {
+                    resultData.add(b);
+                }
+            }
+        }
+        
         queryParams.clear();
         queryParams.put("facno", "K");
         queryParams.put("n_code_DA", " ='OH' ");
@@ -217,7 +237,7 @@ public class BscGroupSHSaleOrderBean implements Serializable {
         }
     }
 
-    //订单金额
+    //202204 拆分
     protected List<BscGroupShipment> getSalesOrderAmount(int y, int m, Date d, int type, LinkedHashMap<String, Object> map) {
         //获得查询参数
         String facno = map.get("facno") != null ? map.get("facno").toString() : "";
@@ -250,7 +270,8 @@ public class BscGroupSHSaleOrderBean implements Serializable {
         if (!"".equals(n_code_DC)) {
             sb.append(" and d.n_code_DC ").append(n_code_DC);
         }
-        if (n_code_DA.contains("AA") || n_code_DA.contains("RT") || n_code_DA.contains("OH")) {
+        //20220604涡旋机金额也要加上后处理设备
+        if (n_code_DA.contains("AA") || n_code_DA.contains("RT") || n_code_DA.contains("OH")||("AH".equals(n_code_DA)&&" IN ('SAM-5HP','SAM-7HP') ".equals(n_code_CD))) {
             sb.append(" and d.n_code_DD in ('00','02') ");
         } else {
             sb.append(" and d.n_code_DD in ('00') ");
@@ -271,11 +292,15 @@ public class BscGroupSHSaleOrderBean implements Serializable {
                 protype = "A机组";
                 protypeno = "A";
                 shptype = "2";
-            } else if (n_code_DA.contains("AH")) {
-                protype = "A机体";
+            } else if (n_code_DA.contains("AH")&& " IN ('SAM-5HP','SAM-7HP') ".equals(n_code_DC)) {
+                 protype = "无油机组";
+                protypeno = "S";
+                shptype = "1";
+            }else if(n_code_DA.contains("AH")){
+                      protype = "A机体";
                 protypeno = "A";
                 shptype = "1";
-            } else if (n_code_DA.contains("P")) {
+            }else if (n_code_DA.contains("P")) {
                 protype = "真空泵";
                 protypeno = "P";
                 shptype = "2";
@@ -379,7 +404,6 @@ public class BscGroupSHSaleOrderBean implements Serializable {
             Logger.getLogger(BscGroupSHSaleOrderBean.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
-
     }
-
 }
+

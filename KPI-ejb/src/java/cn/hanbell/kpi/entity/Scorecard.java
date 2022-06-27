@@ -133,6 +133,50 @@ public class Scorecard extends SuperEntity {
     @Column(name = "isbsc")
     private boolean isbsc;
 
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 2)
+    @Column(name = "oastatus1")
+    private String oastatus1;
+
+    @Basic(optional = false)
+    @Size(min = 1, max = 50)
+    @Column(name = "oapsn1")
+    private String oapsn1;
+
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 2)
+    @Column(name = "oastatus2")
+    private String oastatus2;
+
+    @Basic(optional = false)
+    @Size(min = 1, max = 50)
+    @Column(name = "oapsn2")
+    private String oapsn2;
+
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 2)
+    @Column(name = "oastatus3")
+    private String oastatus3;
+
+    @Basic(optional = false)
+    @Size(min = 1, max = 50)
+    @Column(name = "oapsn3")
+    private String oapsn3;
+
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 2)
+    @Column(name = "oastatus4")
+    private String oastatus4;
+
+    @Basic(optional = false)
+    @Size(min = 1, max = 50)
+    @Column(name = "oapsn4")
+    private String oapsn4;
+
     public Scorecard() {
         this.sortid = 0;
         this.template = false;
@@ -409,6 +453,81 @@ public class Scorecard extends SuperEntity {
 
     public void setIsbsc(boolean isbsc) {
         this.isbsc = isbsc;
+    }
+
+    public String getOastatus1() {
+        return oastatus1;
+    }
+
+    public void setOastatus1(String oastatus1) {
+        this.oastatus1 = oastatus1;
+    }
+
+    public String getOapsn1() {
+        return oapsn1;
+    }
+
+    public void setOapsn1(String oapsn1) {
+        this.oapsn1 = oapsn1;
+    }
+
+    public String getOastatus2() {
+        return oastatus2;
+    }
+
+    public void setOastatus2(String oastatus2) {
+        this.oastatus2 = oastatus2;
+    }
+
+    public String getOapsn2() {
+        return oapsn2;
+    }
+
+    public void setOapsn2(String oapsn2) {
+        this.oapsn2 = oapsn2;
+    }
+
+    public String getOastatus3() {
+        return oastatus3;
+    }
+
+    public void setOastatus3(String oastatus3) {
+        this.oastatus3 = oastatus3;
+    }
+
+    public String getOapsn3() {
+        return oapsn3;
+    }
+
+    public void setOapsn3(String oapsn3) {
+        this.oapsn3 = oapsn3;
+    }
+
+    public String getOastatus4() {
+        return oastatus4;
+    }
+
+    public void setOastatus4(String oastatus4) {
+        this.oastatus4 = oastatus4;
+    }
+
+    public String getOapsn4() {
+        return oapsn4;
+    }
+
+    public void setOapsn4(String oapsn4) {
+        this.oapsn4 = oapsn4;
+    }
+
+    public String getLvlValue() {
+        switch (this.lvl) {
+            case "D":
+                return "部级";
+            case "S":
+                return "课级";
+            default:
+                return "";
+        }
     }
 
     @Override

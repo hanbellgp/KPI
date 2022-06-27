@@ -8,9 +8,12 @@ package cn.hanbell.kpi.ejb;
 import cn.hanbell.kpi.comm.SuperEJBForKPI;
 import cn.hanbell.kpi.entity.ScorecardDetail;
 import cn.hanbell.kpi.entity.ScorecardExplanation;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
+import javax.persistence.Query;
 
 /**
  *
@@ -119,4 +122,49 @@ public class ScorecardDetailBean extends SuperEJBForKPI<ScorecardDetail> {
         return super.update(entity);
     }
 
+    public ScorecardDetail findByPidAndContent(int pid,String content) {
+        Query query = getEntityManager().createNamedQuery("ScorecardDetail.findByPidAndContent");
+        query.setParameter("pid", pid);
+        query.setParameter("content", content);
+        try {
+            return (ScorecardDetail) query.getSingleResult();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    //把&lt;br /&gt;格式变成\r\n的格式
+      public String formatEAPEnt(Object value) {
+        if (value == null) {
+            return "";
+        }
+        String v = String.valueOf(value);
+
+        Matcher m = Pattern.compile("(?m)^.*$").matcher(v);
+        StringBuffer resultValue = new StringBuffer();
+        while (m.find()) {
+            resultValue.append(m.group()).append("\r\n");
+        }
+        return resultValue.toString().trim().replaceAll("<br />", "\r\n");
+
+    }
+      
+      //把\r\n格式变成&lt;br /&gt;的格式
+      public String formatOAEnt(Object value) {
+        if (value == null) {
+            return "";
+        }
+        String v = String.valueOf(value);
+
+        Matcher m = Pattern.compile("(?m)^.*$").matcher(v);
+        StringBuffer resultValue = new StringBuffer();
+        while (m.find()) {
+            resultValue.append(m.group().replaceAll("&", "").trim()).append("&lt;br /&gt;");
+        }
+        if (resultValue.toString().endsWith("&lt;br /&gt;")) {
+            return resultValue.substring(0, resultValue.length() - 12);
+        } else {
+            return resultValue.toString();
+        }
+    }
 }

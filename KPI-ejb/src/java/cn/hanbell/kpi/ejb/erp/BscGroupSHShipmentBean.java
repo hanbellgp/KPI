@@ -199,11 +199,13 @@ public class BscGroupSHShipmentBean implements Serializable {
                     }
                 }
             }
+            //A机体-非涡旋部分
             queryParams.clear();
             queryParams.put("facno", "C");
             queryParams.put("depno", " IN('1G100','1G110') ");
             queryParams.put("n_code_DA", " ='AH' ");
             queryParams.put("ogdkid", " IN ('RL01','RL03') ");
+            queryParams.put("n_code_DC", " NOT  IN ('SAM-5HP','SAM-7HP') ");
             tempData = getShipmentAmount(y, m, d, Calendar.MONTH, getQueryParams());
             if (tempData != null && !tempData.isEmpty()) {
                 for (BscGroupShipment b : tempData) {
@@ -216,6 +218,27 @@ public class BscGroupSHShipmentBean implements Serializable {
                     }
                 }
             }
+            //涡旋部分
+            queryParams.clear();
+            queryParams.put("facno", "C");
+            queryParams.put("depno", " IN('1G100','1G110') ");
+            queryParams.put("n_code_DA", " ='AH' ");
+            queryParams.put("ogdkid", " IN ('RL01','RL03') ");
+            queryParams.put("n_code_DC", " IN ('SAM-5HP','SAM-7HP') ");
+            tempData = getShipmentAmount(y, m, d, Calendar.MONTH, getQueryParams());
+            if (tempData != null && !tempData.isEmpty()) {
+                for (BscGroupShipment b : tempData) {
+                    if (resultData.contains(b)) {
+                        System.out.print("----" + b);
+                        BscGroupShipment a = resultData.get(resultData.indexOf(b));
+                        a.setQuantity(a.getQuantity().add(b.getQuantity()));
+                        a.setAmount(a.getAmount().add(b.getAmount()));
+                    } else {
+                        resultData.add(b);
+                    }
+                }
+            }
+
             queryParams.clear();
             queryParams.put("facno", "K");
             queryParams.put("depno", " IN('5B000') ");
@@ -482,6 +505,10 @@ public class BscGroupSHShipmentBean implements Serializable {
             if (n_code_DA.contains("R") && !n_code_DA.contains("RT")) {
                 protype = "R机体";
                 protypeno = "R";
+                shptype = "1";
+            } else if (n_code_DA.contains("AH") && " IN ('SAM-5HP','SAM-7HP') ".equals(n_code_DC)) {
+                protype = "无油机组";
+                protypeno = "S";
                 shptype = "1";
             } else if (n_code_DA.contains("AH")) {
                 protype = "A机体";

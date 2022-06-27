@@ -40,6 +40,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ScorecardDetail.findByKind", query = "SELECT s FROM ScorecardDetail s WHERE s.kind = :kind"),
     @NamedQuery(name = "ScorecardDetail.findByCategoryId", query = "SELECT s FROM ScorecardDetail s WHERE s.categoryId = :categoryId"),
     @NamedQuery(name = "ScorecardDetail.findByCategory", query = "SELECT s FROM ScorecardDetail s WHERE s.category = :category"),
+    @NamedQuery(name = "ScorecardDetail.findByPidAndSeq", query = "SELECT s FROM ScorecardDetail s WHERE s.pid =:pid  and s.seq=:seq"),
+     @NamedQuery(name = "ScorecardDetail.findByPidAndContent", query = "SELECT s FROM ScorecardDetail s WHERE s.pid =:pid  and s.content=:content"),
     @NamedQuery(name = "ScorecardDetail.findByStatus", query = "SELECT s FROM ScorecardDetail s WHERE s.status = :status")})
 public class ScorecardDetail extends SuperDetailEntity {
 
