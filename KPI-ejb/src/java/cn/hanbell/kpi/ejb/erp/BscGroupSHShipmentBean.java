@@ -523,11 +523,11 @@ public class BscGroupSHShipmentBean implements Serializable {
                 protypeno = "P";
                 shptype = "2";
             } else if (n_code_DA.contains("OH")) {
-                protype = "低环温热泵";
-                protypeno = "OH";
+                protype = "再生能源";
+                protypeno = "ORC";
                 shptype = "2";
             } else if (n_code_DA.contains("RT")) {
-                protype = "离心机体";
+                protype = "涡轮";
                 protypeno = "RT";
                 shptype = "2";
             } else {

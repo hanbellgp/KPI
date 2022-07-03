@@ -647,7 +647,41 @@ public class ProcessingProductionValueMailBean extends MailNotification {
                 setSumValue(sumIndicator);
             }
             indicators.clear();
+            indicators = indicatorBean.findByCategoryAndYear("HS-NCG", y);
+            indicatorBean.getEntityManager().clear();
+            if (indicators != null && !indicators.isEmpty()) {
+                indicators.sort((Indicator i1, Indicator i2) -> {
+                    if (i1.getProduct().compareTo(i2.getProduct()) < 1) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
+                });
+                detail = getHtmlTable(indicators, y, m, d, sheet);
+                sumIndicator = indicatorBean.getSumValue(indicators);
+                category = getHtmlTableRow(sumIndicator, y, m, d, "'background-color:#ff8e67';");
+                sb.append(category).append(detail);
+                setSumValue(sumIndicator);
+            }
+            indicators.clear();
             indicators = indicatorBean.findByCategoryAndYear("HS-TPM", y);
+            indicatorBean.getEntityManager().clear();
+            if (indicators != null && !indicators.isEmpty()) {
+                indicators.sort((Indicator i1, Indicator i2) -> {
+                    if (i1.getProduct().compareTo(i2.getProduct()) < 1) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
+                });
+                detail = getHtmlTable(indicators, y, m, d, sheet);
+                sumIndicator = indicatorBean.getSumValue(indicators);
+                category = getHtmlTableRow(sumIndicator, y, m, d, "'background-color:#ff8e67';");
+                sb.append(category).append(detail);
+                setSumValue(sumIndicator);
+            }
+            indicators.clear();
+            indicators = indicatorBean.findByCategoryAndYear("HS-NDB", y);
             indicatorBean.getEntityManager().clear();
             if (indicators != null && !indicators.isEmpty()) {
                 indicators.sort((Indicator i1, Indicator i2) -> {
