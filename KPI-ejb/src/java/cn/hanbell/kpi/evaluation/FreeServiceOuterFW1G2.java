@@ -16,10 +16,11 @@ import java.util.LinkedHashMap;
 //机体分为华南（广州）部分
 public class FreeServiceOuterFW1G2 extends FreeServiceOuterFW {
 
+    //
     public FreeServiceOuterFW1G2() {
         super();
         queryParams.put("facno", "C");
-        queryParams.put("hmark1", " not in ('CK','HD') ");
+        queryParams.put("hmark1", "  in ('HN') ");
         queryParams.put("hmark2", " ='AH' ");
     }
 
