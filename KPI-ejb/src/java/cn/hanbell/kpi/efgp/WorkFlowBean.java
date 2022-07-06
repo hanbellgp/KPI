@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * To change this license header, choose License Headers in Project Properties. To change this template file, choose
+ * Tools | Templates and open the template in the editor.
  */
 package cn.hanbell.kpi.efgp;
 
@@ -10,19 +9,13 @@ import cn.hanbell.eap.ejb.SystemUserBean;
 import cn.hanbell.eap.entity.Department;
 import cn.hanbell.eap.entity.SystemUser;
 import cn.hanbell.util.BaseLib;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.DependsOn;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -40,8 +33,8 @@ import org.apache.axis.client.Call;
 @DependsOn({"UsersBean", "FunctionsBean", "TitleBean"})
 public class WorkFlowBean implements Serializable {
 
-    //public final String HOST_ADD = "http://oa.hanbell.com.cn";
-    public final String HOST_ADD = "http://172.16.10.157";
+    public final String HOST_ADD = "http://oa.hanbell.com.cn";
+    // public final String HOST_ADD = "http://172.16.10.157";
 
     public final String HOST_PORT = "8086";
 
@@ -75,54 +68,72 @@ public class WorkFlowBean implements Serializable {
                 xmlBuilder.append(buildXmlForEFGPDetails(e.getKey(), e.getValue()));
             }
         }
-        
-        
+
         xmlBuilder.append("</").append(formName).append(">");
         return xmlBuilder.toString();
 
     }
 
-    protected void buildXmlForEFGPMaster(StringBuilder builder, String formName, Object master) throws RuntimeException {
+    protected void buildXmlForEFGPMaster(StringBuilder builder, String formName, Object master)
+        throws RuntimeException {
 
-        Field[] fields = master.getClass().getDeclaredFields();//不含继承自超类的属性
+        Field[] fields = master.getClass().getDeclaredFields();// 不含继承自超类的属性
         for (Field f : fields) {
             try {
                 f.setAccessible(true);
-                if ((f.getName().equals("creator") || f.getName().equals("empl") || f.getName().equals("emply") || f.getName().equals("employee") || f.getName().endsWith("user") || f.getName().endsWith("userno") || f.getName().endsWith("User") || f.getName().endsWith("Userno")) && (!f.getName().startsWith("hdn"))) {
+                if ((f.getName().equals("creator") || f.getName().equals("empl") || f.getName().equals("emply")
+                    || f.getName().equals("employee") || f.getName().endsWith("user") || f.getName().endsWith("userno")
+                    || f.getName().endsWith("User") || f.getName().endsWith("Userno"))
+                    && (!f.getName().startsWith("hdn"))) {
                     if (f.get(master) != null && !"".equals(f.get(master))) {
                         SystemUser user = systemUserBean.findByUserId(f.get(master).toString());
                         if (user == null) {
                             throw new RuntimeException();
                         }
-                        builder.append("<").append(f.getName()).append("  id=\"").append(f.getName()).append("\" label=\"").append(user.getUsername()).append("\"");
-//                        builder.append("  hidden=\"").append(user.getOid()).append("\" list_hidden=\"\"");
-                        builder.append("  dataType=\"").append(f.getType().getName()).append("\">").append(f.get(master)).append("</").append(f.getName()).append(">");
+                        builder.append("<").append(f.getName()).append("  id=\"").append(f.getName())
+                            .append("\" label=\"").append(user.getUsername()).append("\"");
+                        // builder.append(" hidden=\"").append(user.getOid()).append("\" list_hidden=\"\"");
+                        builder.append("  dataType=\"").append(f.getType().getName()).append("\">")
+                            .append(f.get(master)).append("</").append(f.getName()).append(">");
                     } else {
-                        builder.append("<").append(f.getName()).append("  id=\"").append(f.getName()).append("\" label=\"\" hidden=\"\" list_hidden=\"\" dataType=\"").append(f.getType().getName()).append("\" />");
+                        builder.append("<").append(f.getName()).append("  id=\"").append(f.getName())
+                            .append("\" label=\"\" hidden=\"\" list_hidden=\"\" dataType=\"")
+                            .append(f.getType().getName()).append("\" />");
                     }
-                } else if ((f.getName().equals("dept") || f.getName().equals("department") || f.getName().endsWith("dept") || f.getName().endsWith("deptno") || f.getName().endsWith("Dept") || f.getName().endsWith("Deptno") || f.getName().endsWith("depno")) && (!f.getName().startsWith("hdn"))) {
+                } else if ((f.getName().equals("dept") || f.getName().equals("department")
+                    || f.getName().endsWith("dept") || f.getName().endsWith("deptno") || f.getName().endsWith("Dept")
+                    || f.getName().endsWith("Deptno") || f.getName().endsWith("depno"))
+                    && (!f.getName().startsWith("hdn"))) {
                     if (f.get(master) != null && !"".equals(f.get(master))) {
                         Department dept = departmentBean.findByDeptno(f.get(master).toString());
                         if (dept == null) {
                             throw new RuntimeException();
                         }
-                        builder.append("<").append(f.getName()).append("  id=\"").append(f.getName()).append("\" label=\"").append(dept.getDept()).append("\"");
-//                        builder.append("  hidden=\"").append(dept.getOid()).append("\" list_hidden=\"\"");
-                        builder.append("  dataType=\"").append(f.getType().getName()).append("\">").append(f.get(master)).append("</").append(f.getName()).append(">");
+                        builder.append("<").append(f.getName()).append("  id=\"").append(f.getName())
+                            .append("\" label=\"").append(dept.getDept()).append("\"");
+                        // builder.append(" hidden=\"").append(dept.getOid()).append("\" list_hidden=\"\"");
+                        builder.append("  dataType=\"").append(f.getType().getName()).append("\">")
+                            .append(f.get(master)).append("</").append(f.getName()).append(">");
                     } else {
-                        builder.append("<").append(f.getName()).append("  id=\"").append(f.getName()).append("\" label=\"\" hidden=\"\" list_hidden=\"\" dataType=\"").append(f.getType().getName()).append("\" />");
+                        builder.append("<").append(f.getName()).append("  id=\"").append(f.getName())
+                            .append("\" label=\"\" hidden=\"\" list_hidden=\"\" dataType=\"")
+                            .append(f.getType().getName()).append("\" />");
                     }
                 } else if (f.getType().getName().equals("java.util.Date")) {
                     if (f.get(master) != null && !"".equals(f.get(master))) {
-                        builder.append("<").append(f.getName()).append("  id=\"").append(f.getName()).append("\" list_hidden=\"\" dataType=\"").append(f.getType().getName()).append("\" >");
-                        builder.append(BaseLib.formatDate("yyyy/MM/dd", (Date) f.get(master))).append("</").append(f.getName()).append(">");
+                        builder.append("<").append(f.getName()).append("  id=\"").append(f.getName())
+                            .append("\" list_hidden=\"\" dataType=\"").append(f.getType().getName()).append("\" >");
+                        builder.append(BaseLib.formatDate("yyyy/MM/dd", (Date)f.get(master))).append("</")
+                            .append(f.getName()).append(">");
                     } else {
-                        builder.append("<").append(f.getName()).append("  id=\"").append(f.getName()).append("\" list_hidden=\"\" dataType=\"").append(f.getType().getName()).append("\" />");
+                        builder.append("<").append(f.getName()).append("  id=\"").append(f.getName())
+                            .append("\" list_hidden=\"\" dataType=\"").append(f.getType().getName()).append("\" />");
                     }
                 } else {
-                    builder.append("<").append(f.getName()).append("  id=\"").append(f.getName()).append("\"  dataType=\"").append(f.getType().getName()).append("\" perDataProId=\"\">");
+                    builder.append("<").append(f.getName()).append("  id=\"").append(f.getName())
+                        .append("\"  dataType=\"").append(f.getType().getName()).append("\" perDataProId=\"\">");
                     builder.append(f.get(master)).append("</").append(f.getName()).append(">");
-                  
+
                 }
             } catch (IllegalArgumentException | IllegalAccessException ex) {
                 throw new RuntimeException(ex);
@@ -156,7 +167,8 @@ public class WorkFlowBean implements Serializable {
             f.setAccessible(true);
             try {
                 builder.append("<item id=\"").append(f.getName()).append("\"");
-                builder.append(" dataType=\"").append(f.getType().getName()).append("\" perDataProId=\"\">").append(f.get(detail)).append("</item>");
+                builder.append(" dataType=\"").append(f.getType().getName()).append("\" perDataProId=\"\">")
+                    .append(f.get(detail)).append("</item>");
             } catch (IllegalArgumentException | IllegalAccessException ex) {
                 ex.printStackTrace();
             }
@@ -164,18 +176,21 @@ public class WorkFlowBean implements Serializable {
         builder.append("</record>");
     }
 
-    public String invokeProcess(String host, String port, String processId, String formFieldValue, String subject) throws Exception {
+    public String invokeProcess(String host, String port, String processId, String formFieldValue, String subject)
+        throws Exception {
         if ((getCurrentUser() == null) || (getCurrentDept() == null)) {
-//            log4j.error("用户或部门不存在");
+            // log4j.error("用户或部门不存在");
             return "401$用户或部门不存在";
         }
-        return invokeProcess(host, port, processId, getCurrentUser().getUserid(), getCurrentDept().getDeptno(), formFieldValue, subject);
+        return invokeProcess(host, port, processId, getCurrentUser().getUserid(), getCurrentDept().getDeptno(),
+            formFieldValue, subject);
     }
 
-    public String invokeProcess(String host, String port, String processId, String userId, String orgUnitId, String formFieldValue, String subject) throws Exception {
+    public String invokeProcess(String host, String port, String processId, String userId, String orgUnitId,
+        String formFieldValue, String subject) throws Exception {
 
         if ((getCurrentUser() == null) || (getCurrentDept() == null)) {
-//            log4j.error("用户或部门不存在");
+            // log4j.error("用户或部门不存在");
             return "401$用户或部门不存在";
         }
 
@@ -185,24 +200,24 @@ public class WorkFlowBean implements Serializable {
         String formOID = null;
         String serialNo = null;
         try {
-            //建立一个WebServices调用连接
+            // 建立一个WebServices调用连接
             Call call = BaseLib.getAXISCall(host, port, "/NaNaWeb/services/WorkflowService?wsdl");
-            //查找表单FormOID，一个流程关联多个表单时，返回值用","分开
+            // 查找表单FormOID，一个流程关联多个表单时，返回值用","分开
             call.setOperationName(new QName("WorkflowService", "findFormOIDsOfProcess"));
-            //转入流程代号
-            params = new Object[]{processId};
-            //获取表单唯一代号
+            // 转入流程代号
+            params = new Object[] {processId};
+            // 获取表单唯一代号
             object = call.invoke(params);
             formOID = object.toString();
-            //发起一个流程
+            // 发起一个流程
             call.setOperationName(new QName("WorkflowService", "invokeProcess"));
-            params = new Object[]{processId, userId, orgUnitId, formOID, formFieldValue, subject};
+            params = new Object[] {processId, userId, orgUnitId, formOID, formFieldValue, subject};
             object = call.invoke(params);
             serialNo = object.toString();
             return "200$" + serialNo;
         } catch (ServiceException | RemoteException e) {
             e.printStackTrace();
-//            throw new RuntimeException(e);
+            // throw new RuntimeException(e);
         } finally {
             currentUser = null;
             currentDept = null;
