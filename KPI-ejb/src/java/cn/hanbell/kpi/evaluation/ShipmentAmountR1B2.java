@@ -66,14 +66,4 @@ public class ShipmentAmountR1B2 extends ShipmentAmount {
         return BigDecimal.ZERO;
     }
 
-    @Override
-    public BigDecimal getARM270Value(int y, int m, Date d, int type, LinkedHashMap<String, Object> map) {
-        return BigDecimal.ZERO;
-    }
-
-    @Override
-    public BigDecimal getARM423Value(int y, int m, Date d, int type, LinkedHashMap<String, Object> map) {
-        return BigDecimal.ZERO;
-    }
-
 }

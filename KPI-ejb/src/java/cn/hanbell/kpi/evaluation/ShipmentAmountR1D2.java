@@ -61,15 +61,4 @@ public class ShipmentAmountR1D2 extends ShipmentAmount {
         //SHB + GZ +   产品后续由分公司卖出的数据（广州R销售均价）
         return temp1.add(temp2).add(BigDecimal.valueOf(a));
     }
-
-    @Override
-    public BigDecimal getARM270Value(int y, int m, Date d, int type, LinkedHashMap<String, Object> map) {
-        return BigDecimal.ZERO;
-    }
-
-    @Override
-    public BigDecimal getARM423Value(int y, int m, Date d, int type, LinkedHashMap<String, Object> map) {
-        return BigDecimal.ZERO;
-    }
-
 }
