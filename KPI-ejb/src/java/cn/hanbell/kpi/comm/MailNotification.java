@@ -128,6 +128,9 @@ public abstract class MailNotification {
 
     public void setMailContent() throws Exception {
         mailContent = getMailHead() + getMailBody() + getMailFooter();
+        if(this.mailContent.contains("Exception")){
+            throw new Exception(getMailHead()+"有异常，请查核");
+        }
     }
 
     public void setMailContent(String ex) {
