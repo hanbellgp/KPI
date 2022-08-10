@@ -121,7 +121,6 @@ public class ShoppingAccomuntBean implements Serializable {
             }
         }
         list.add(o1);
-        System.out.print("集团合计");
         Object[] o2 = new Object[]{"采购中心合计", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
             BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO};
         for (int i = 1; i <= 13; i++) {
@@ -130,7 +129,6 @@ public class ShoppingAccomuntBean implements Serializable {
             }
         }
         list.add(o2);
-        System.out.print("采购中心合计");
         //调整占比：各分公司占集团的百分比
         for (int j = 0; j < list.size(); j = j + 2) {
             try {
@@ -198,11 +196,11 @@ public class ShoppingAccomuntBean implements Serializable {
      * @return
      */
     public Object[] getGroupWeightDate(String name1, String name2, String facno, Date date, String vdrnos, String itcls) throws Exception {
-   
+
 //        String sb=getWhereItlcs(itcls).toString();
         //先判断是否有漏的重量件号
         List list = getWeightDate1(facno, date, vdrnos, itcls);
-    
+
         if (list.size() > 0) {
             throw new Exception("未配置件号重量，请维护");
         }
@@ -213,7 +211,7 @@ public class ShoppingAccomuntBean implements Serializable {
         sql.append(" select CAST(right(yearmon,2) AS SIGNED) ,sum(head.payqty*detail.weight)");
         sql.append(" from (select *");
         sql.append(" from shoppingtable where itnbr<>'9' and  facno='").append(facno).append("'");
-        if("C".equals(facno)){
+        if ("C".equals(facno)) {
             sql.append(" and sponr not like 'AC%'");
         }
         sql.append(" and yearmon like '").append(BaseLib.formatDate("yyyy", date)).append("%'");
@@ -245,25 +243,26 @@ public class ShoppingAccomuntBean implements Serializable {
         return row;
     }
 
-      public StringBuffer getWhereItlcs(String itcls) {
+    public StringBuffer getWhereItlcs(String itcls) {
         StringBuffer sql = new StringBuffer("");
         try {
-               StringTokenizer stzj = new StringTokenizer(itcls, "/");
-               sql.append(" in (");
-        while (stzj.hasMoreTokens()) {
-           sql.append("'").append(stzj.nextToken()).append("',");
-        }
-        return sql.delete(sql.length()-1,sql.length()).append(")");
+            StringTokenizer stzj = new StringTokenizer(itcls, "/");
+            sql.append(" in (");
+            while (stzj.hasMoreTokens()) {
+                sql.append("'").append(stzj.nextToken()).append("',");
+            }
+            return sql.delete(sql.length() - 1, sql.length()).append(")");
         } catch (Exception e) {
             throw e;
         }
     }
+
     public List<Object[]> getWeightDate1(String facno, Date date, String vdrnos, String itcls) throws Exception {
         StringBuffer sql = new StringBuffer();
         sql.append(" select  head.facno,head.itnbr,head.itdsc");
         sql.append(" from (select *");
         sql.append(" from shoppingtable a where exists(select id from( select max(id) as id from shoppingtable where itnbr<>'9' and  facno='").append(facno).append("'");
-            if("C".equals(facno)){
+        if ("C".equals(facno)) {
             sql.append(" and  sponr not like 'AC%'");
         }
         sql.append(" and yearmon like '").append(BaseLib.formatDate("yyyy", date)).append("%'");
@@ -307,6 +306,52 @@ public class ShoppingAccomuntBean implements Serializable {
         Query query = erpEJB.getEntityManager().createNativeQuery(sql.toString());
         List<Object[]> list = query.getResultList();
         return list;
+    }
+
+    /**
+     * 获取商业流通部分数据
+     *
+     * @param name
+     * @param facno
+     * @param date
+     * @return
+     */
+    public Object[] getCommodityCirculation(String name, String facno, Date date) {
+        int year = this.findYear(date);
+        int month = this.findMonth(date);
+        Object[] row = new Object[15];
+        row[0] = name;
+        StringBuffer sql = new StringBuffer();
+        sql.append(" SELECT month(apmpyh.trdat),sum(acpamt)");
+        sql.append("  FROM apmpyh ,purvdr ,purhad");
+        sql.append(" WHERE apmpyh.vdrno = purvdr.vdrno  and  purhad.facno = apmpyh.facno  and  purhad.prono = apmpyh.prono");
+        sql.append(" and  purhad.pono = apmpyh.pono  and  apmpyh.pyhkind = '1'");
+        sql.append(" and apmpyh.vdrno in ('HHB00007','HSH00247')");
+        sql.append(" and purhad.fromcdrno is not null and purhad.fromcdrno<>''");
+        sql.append(" and year(apmpyh.trdat) =").append(year);
+        sql.append(" and month(apmpyh.trdat) <= ").append(month).append("group by  month(apmpyh.trdat) order by month(apmpyh.trdat)");
+        erpEJB.setCompany(facno);
+        Query query = erpEJB.getEntityManager().createNativeQuery(sql.toString());
+        List<Object[]> list = query.getResultList();
+        BigDecimal sum = BigDecimal.ZERO;
+        for (int i = 1; i <= 12; i++) {
+            boolean isTrue = false;
+            for (Object[] o : list) {
+                if ((int) o[0] == i) {
+                    row[i] = (BigDecimal) o[1];
+                    sum = sum.add((BigDecimal) o[1]);
+                    isTrue = true;
+                    break;
+                }
+            }
+            if (isTrue) {
+                continue;
+            } else {
+                row[i] = BigDecimal.ZERO;
+            }
+        }
+        row[13] = sum;
+        return row;
     }
 
     public List<Object[]> getShbDateDetail(String facno, Date date, String vdrnos, String itcls) {

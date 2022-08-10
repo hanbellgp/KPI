@@ -116,17 +116,20 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
             for (int i = 1; i <= 13; i++) {
                 sum[i] = ((BigDecimal) cm[i]).add((BigDecimal) shb[i]).add((BigDecimal) thb[i]);
             }
+//            新增其中卓准部分
             //调整占比
             list.clear();
             list.add(shb);
+            list.add(shoppingAccomuntBean.getCommodityCirculation("其中商流：", "H", btnDate));
             list.add(thb);
             list.add(cm);
             list.add(sum);
+            
             for (Object[] o : list) {
                 o[14] = ((BigDecimal) o[13]).multiply(BigDecimal.valueOf(100)).divide((BigDecimal) list.get(list.size() - 1)[13], 2).toString().concat("%");
             }
-            //铸件重量
-   
+            //铸件重量;
+            
             Object[] shbweigth = shoppingAccomuntBean.getGroupWeightDate("总重", "SHB", "C", btnDate, getWhereVdrnos("C", "'铸件'").toString(),ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA+"/"+ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI);
             Object[] shbgornhsweigth = shoppingAccomuntBean.getGroupWeightDate("汉声", "SHB", "C", btnDate, shbFhszj, ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA+"/"+ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI);
             //上海汉钟已作为进口列入。需手动加入上海汉钟厂商
