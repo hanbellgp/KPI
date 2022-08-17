@@ -78,6 +78,7 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
 
     protected Calendar c;
     private boolean freezed;
+    private boolean isSort;
 
     protected String queryDeptno;
     protected String queryDeptname;
@@ -308,7 +309,6 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
                     deletedDetailList.clear();
                     editedDetailList.clear();
                     addedDetailList.clear();
-
                     for (ScorecardDetail sd : detailList) {
                         ScorecardDetail detail = (ScorecardDetail) BeanUtils.cloneBean(sd);
                         detail.setId(null);
@@ -350,13 +350,22 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
         if (currentDetail.getFreezeDate() != null
                 && currentDetail.getFreezeDate().after(userManagedBean.getBaseDate())) {
             showErrorMsg("Error", "资料已经冻结,不可更新");
+             this.isSort=false;
             return;
         }
         for (ScorecardDetail detail : detailList) {
             if (!Objects.equals(currentDetail.getId(), detail.getId()) && currentDetail.getSeq() == detail.getSeq()) {
                 showErrorMsg("Error", "明细序号重复,不可更新");
+                 this.isSort=false;
                 return;
             }
+        }
+        if(this.isSort){
+            this.editedDetailList.clear();
+            this.editedDetailList.addAll(detailList);
+            super.doConfirmDetail();
+            this.isSort=false;
+            return ;
         }
         if (currentDetail.getGeneralScore() != null) {
             try {
@@ -925,6 +934,21 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
         }
     }
 
+    //修改明细排序
+    public void editSort() {
+        this.isSort=true;
+    }
+
+    @Override
+    public String edit(String path) {
+        //编辑页面时移除edit集合中的内容。关闭排序功能。
+        if("scorecardsetEdit".equals(path)){
+             this.isSort=false;
+             this.editedDetailList.clear();
+        }
+        return super.edit(path);
+    }
+
     /**
      * @description 查询不达标项
      */
@@ -1130,6 +1154,14 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
      */
     public boolean isLastDetail() {
         return lastDetail;
+    }
+
+    public boolean isIsSort() {
+        return isSort;
+    }
+
+    public void setIsSort(boolean isSort) {
+        this.isSort = isSort;
     }
 
 }

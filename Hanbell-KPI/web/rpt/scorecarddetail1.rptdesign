@@ -1041,16 +1041,11 @@ currentRow = 0;
 ejbClient = new ScorecardReport();
 ejbClient.setEJB(params["JNDIName"]);
 master = ejbClient.getEntity(params["id"]);
-System.out.println("--------");
 if(master != null){
 	detail = ejbClient.getDetail(params["id"]);
 	auditorDetail = ejbClient.getAuditorDetail(params["id"],1);
 }
-var season = params["season"];
-System.out.println("--------");
-
-System.out.println("----detail----"+detail.size());
-System.out.println("----auditorDetail----"+auditorDetail.size());]]></method>
+var season = params["season"];]]></method>
             <method name="fetch"><![CDATA[importPackage( Packages.java.lang );
 auditor = "";
 if(currentRow < detail.size()){
@@ -1178,12 +1173,6 @@ return false;]]></method>
     <body>
         <table id="1669">
             <property name="dataSet">dataDetail</property>
-            <list-property name="visibility">
-                <structure>
-                    <property name="format">all</property>
-                    <expression name="valueExpr" type="javascript">params["season"].value == 1 ? false:true;</expression>
-                </structure>
-            </list-property>
             <list-property name="boundDataColumns">
                 <structure>
                     <property name="name">content</property>

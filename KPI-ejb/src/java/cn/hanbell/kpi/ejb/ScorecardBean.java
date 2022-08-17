@@ -130,9 +130,8 @@ public class ScorecardBean extends SuperEJBForKPI<Scorecard> {
 
     public List<ScorecardAuditor> getAuditorDetail1(Object value, int quater) {
         List<ScorecardAuditor> list = scorecardAuditorBean.findByPId(value);
-       list.removeIf(auditor -> auditor.getQuarter() != quater);
+        list.removeIf(auditor -> auditor.getQuarter() != quater);
         return list;
-
     }
 
     public BigDecimal getContentScores(List<ScorecardContent> detail, String column) throws Exception {

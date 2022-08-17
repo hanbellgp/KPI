@@ -122,7 +122,7 @@ public class ScorecardDetailBean extends SuperEJBForKPI<ScorecardDetail> {
         return super.update(entity);
     }
 
-    public ScorecardDetail findByPidAndContent(int pid,String content) {
+    public ScorecardDetail findByPidAndContent(int pid, String content) {
         Query query = getEntityManager().createNamedQuery("ScorecardDetail.findByPidAndContent");
         query.setParameter("pid", pid);
         query.setParameter("content", content);
@@ -132,39 +132,32 @@ public class ScorecardDetailBean extends SuperEJBForKPI<ScorecardDetail> {
             return null;
         }
     }
-    
+
     //把&lt;br /&gt;格式变成\r\n的格式
-      public String formatEAPEnt(Object value) {
+    public String formatEAPEnt(Object value) {
         if (value == null) {
             return "";
         }
         String v = String.valueOf(value);
-
         Matcher m = Pattern.compile("(?m)^.*$").matcher(v);
         StringBuffer resultValue = new StringBuffer();
         while (m.find()) {
             resultValue.append(m.group()).append("\r\n");
         }
         return resultValue.toString().trim().replaceAll("<br />", "\r\n");
-
     }
-      
-      //把\r\n格式变成&lt;br /&gt;的格式
-      public String formatOAEnt(Object value) {
+
+    public String formatOAEnt(Object value) {
         if (value == null) {
             return "";
-        }
-        String v = String.valueOf(value);
-
-        Matcher m = Pattern.compile("(?m)^.*$").matcher(v);
-        StringBuffer resultValue = new StringBuffer();
-        while (m.find()) {
-            resultValue.append(m.group().replaceAll("&", "").trim()).append("&lt;br /&gt;");
-        }
-        if (resultValue.toString().endsWith("&lt;br /&gt;")) {
-            return resultValue.substring(0, resultValue.length() - 12);
         } else {
-            return resultValue.toString();
+            String v = String.valueOf(value);
+            Matcher m = Pattern.compile("(?m)^.*$").matcher(v);
+            StringBuffer resultValue = new StringBuffer();
+            while (m.find()) {
+                resultValue.append(m.group().trim()).append("&lt;br /&gt;");
+            }
+            return resultValue.toString().endsWith("&lt;br /&gt;") ? resultValue.substring(0, resultValue.length() - 12) : resultValue.toString();
         }
     }
 }

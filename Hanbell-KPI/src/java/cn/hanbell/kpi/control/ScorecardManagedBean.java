@@ -370,7 +370,7 @@ public class ScorecardManagedBean extends SuperSingleBean<ScorecardContent> {
                 return;
             }
         }
-
+        int length;
         HKGL076Model m = null;
         HKGL076Q1DetailModel d1;
         HKGL076Q2DetailModel d2;
@@ -391,7 +391,6 @@ public class ScorecardManagedBean extends SuperSingleBean<ScorecardContent> {
             switch (userManagedBean.getQ()) {
                 case 1://第一季度
                     for (ScorecardDetail scorecardDetail : list) {
-
                         d1 = new HKGL076Q1DetailModel();
                         if (scorecardDetail.getIndicator() != null && !"".equals(scorecardDetail.getIndicator())) {
                             //数据由产品指标生成，OA中不能修改
@@ -409,6 +408,10 @@ public class ScorecardManagedBean extends SuperSingleBean<ScorecardContent> {
                         d1.setTargetQ1(getValue(scorecardDetail.getTq1()));
                         d1.setActualValueQ1(getValue(scorecardDetail.getAq1()));
                         d1.setAchievementRateQ1("".equals(getValue(scorecardDetail.getPq1())) ? "0" : getValue(scorecardDetail.getPq1()));
+                        length = this.getExplationsLength(getValue(scorecardDetail.getDeptScore().getQ1()));
+                        if (length > 200) {
+                            throw new Exception("部门说明超过200字。");
+                        }
                         d1.setExplanation1(getValue(scorecardDetail.getDeptScore().getQ1()));
                         d1.setScoreQ1("".equals(getValue(scorecardDetail.getDeptScore().getSq1())) ? "0" : getValue(scorecardDetail.getDeptScore().getSq1()));
                         detailList1.add(d1);
@@ -427,7 +430,7 @@ public class ScorecardManagedBean extends SuperSingleBean<ScorecardContent> {
                         }
                         d2.setSeq(getValue(i));
                         i++;
-                        d2.setContent2(scorecardDetail.getContent());
+                        d2.setContent2(getValue(scorecardDetail.getContent()));
                         d2.setProportion2(getValue(scorecardDetail.getWeight()));//比重
                         d2.setBenchmarkYear2(getValue(scorecardDetail.getBfy()));//全年基准
                         d2.setTargetYear2(getValue(scorecardDetail.getTfy()));//全年目标
@@ -435,6 +438,10 @@ public class ScorecardManagedBean extends SuperSingleBean<ScorecardContent> {
                         d2.setTargetQ2(getValue(scorecardDetail.getTq2()));
                         d2.setActualValueQ2(getValue(scorecardDetail.getAq2()));
                         d2.setAchievementRateQ2("".equals(getValue(scorecardDetail.getPq2())) ? "0" : getValue(scorecardDetail.getPq2()));
+                        length = this.getExplationsLength(getValue(scorecardDetail.getDeptScore().getQ2()));
+                        if (length > 200) {
+                            throw new Exception("部门说明超过200字。");
+                        }
                         d2.setExplanation2(getValue(scorecardDetail.getDeptScore().getQ2()));
                         d2.setScoreQ2("".equals(getValue(scorecardDetail.getDeptScore().getSq2())) ? "0" : getValue(scorecardDetail.getDeptScore().getSq2()));
                         d2.setBenchmarkHalfYear(getValue(scorecardDetail.getBh1()));
@@ -466,6 +473,10 @@ public class ScorecardManagedBean extends SuperSingleBean<ScorecardContent> {
                         d3.setTargetQ3(getValue(scorecardDetail.getTq3()));
                         d3.setActualValueQ3(getValue(scorecardDetail.getAq3()));
                         d3.setAchievementRateQ3("".equals(getValue(scorecardDetail.getPq3())) ? "0" : getValue(scorecardDetail.getPq3()));
+                        length = this.getExplationsLength(getValue(scorecardDetail.getDeptScore().getQ3()));
+                        if (length > 200) {
+                            throw new Exception("部门说明超过200字。");
+                        }
                         d3.setExplanation3(getValue(scorecardDetail.getDeptScore().getQ3()));
                         d3.setScoreQ3("".equals(getValue(scorecardDetail.getDeptScore().getSq3())) ? "0" : getValue(scorecardDetail.getDeptScore().getSq3()));
                         detailList3.add(d3);
@@ -492,6 +503,10 @@ public class ScorecardManagedBean extends SuperSingleBean<ScorecardContent> {
                         d4.setTargetQ4(getValue(scorecardDetail.getTq4()));
                         d4.setActualValueQ4(getValue(scorecardDetail.getAq4()));
                         d4.setAchievementRateQ4("".equals(getValue(scorecardDetail.getPq4())) ? "0" : getValue(scorecardDetail.getPq4()));
+                        length = this.getExplationsLength(getValue(scorecardDetail.getDeptScore().getQ3()));
+                        if (length > 200) {
+                            throw new Exception("部门说明超过200字。");
+                        }
                         d4.setExplanation4(getValue(scorecardDetail.getDeptScore().getQ4()));
                         d4.setScoreQ4("".equals(getValue(scorecardDetail.getDeptScore().getSq4())) ? "0" : getValue(scorecardDetail.getDeptScore().getSq4()));
                         d4.setActualValueYear(getValue(scorecardDetail.getAfy()));
@@ -505,7 +520,7 @@ public class ScorecardManagedBean extends SuperSingleBean<ScorecardContent> {
             }
             workFlowBean.initUserInfo(userManagedBean.getUserid());
             String formInstance = workFlowBean.buildXmlForEFGP("HK_GL076", m, details);
-            String subject = this.scorecard.getName();
+            String subject = "Q" + userManagedBean.getQ() + this.scorecard.getName();
             String msg = workFlowBean.invokeProcess(workFlowBean.HOST_ADD, workFlowBean.HOST_PORT, "PKG_HK_GL076", formInstance, subject);
             String[] rm = msg.split("\\$");
             if (rm.length == 2 && rm[1] != null) {
@@ -528,12 +543,33 @@ public class ScorecardManagedBean extends SuperSingleBean<ScorecardContent> {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            showInfoMsg("error", "抛转失败");
+            showInfoMsg("error", "抛转失败" + ex.getMessage());
         }
     }
 
-    public String getValue(Object value) {
-        return scorecardDetailBean.formatOAEnt(value);
+    public String getValue(Object value) throws Exception {
+        String v = String.valueOf(value);
+
+        if (!v.contains("&") && !v.contains("<") && !v.contains(">")) {
+            return this.scorecardDetailBean.formatOAEnt(value);
+        } else {
+            throw new Exception("文本中含有&，<,>,等特殊字符。");
+        }
+    }
+
+    public int getExplationsLength(String value) {
+        if (value != null && !"".equals(value)) {
+            Matcher m = Pattern.compile("(?m)^.*$").matcher(value);
+            StringBuffer resultValue = new StringBuffer();
+
+            while (m.find()) {
+                resultValue.append(m.group().trim());
+            }
+
+            return resultValue.length();
+        } else {
+            return 0;
+        }
     }
 
     public void handleDialogReturnWhenSelect(SelectEvent event) {
@@ -566,7 +602,7 @@ public class ScorecardManagedBean extends SuperSingleBean<ScorecardContent> {
         reportParams.put("seq", scorecard.getSeq());
         reportParams.put("deptname", scorecard.getDeptname());
         reportParams.put("id", scorecard.getId());
-        reportParams.put("season", userManagedBean.getQ() - 1);
+        reportParams.put("season", userManagedBean.getQ());
         if (!this.model.getFilterFields().isEmpty()) {
             reportParams.put("filterFields", BaseLib.convertMapToStringWithClass(this.model.getFilterFields()));
         } else {
@@ -578,7 +614,17 @@ public class ScorecardManagedBean extends SuperSingleBean<ScorecardContent> {
             reportParams.put("sortFields", "");
         }
         this.fileName = "scorecard" + BaseLib.formatDate("yyyyMMddHHss", this.getDate()) + "." + "xls";
-        String reportName = reportPath + "scorecarddetail.rptdesign";
+
+        String reportName = "";
+        if (userManagedBean.getQ() == 1) {
+            reportName = reportPath + "scorecarddetail1.rptdesign";
+        } else if (userManagedBean.getQ() == 2) {
+            reportName = reportPath + "scorecarddetail2.rptdesign";
+        } else if (userManagedBean.getQ() == 3) {
+            reportName = reportPath + "scorecarddetail3.rptdesign";
+        } else if (userManagedBean.getQ() == 4) {
+            reportName = reportPath + "scorecarddetail4.rptdesign";
+        }
         String outputName = reportOutputPath + this.fileName;
         this.reportViewPath = reportViewContext + this.fileName;
         try {

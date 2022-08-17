@@ -91,17 +91,10 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
         eSql.append("  AND E.formdate ='").append(staDate).append("' and E.deptname='").append(deptname).append("'  AND standardlevel='一级' and E.company='C'");
         Query query = this.getEntityManager().createNativeQuery(eSql.toString());
         List<Object[]> list = query.getResultList();
-        if (deptname.equals("方型加工课")) {
-            //  方型抓取周建档停机机台
-            sbMES.append(" SELECT A.EQPID FROM (SELECT EQPID,sum(convert(DECIMAL, WORKHOUR) * convert(DECIMAL, NUM)) ALN  FROM PLAN_SEMI_SQUARE WHERE PLANDATE = '").append(staDate.replace('-', '/')).append("' GROUP BY EQPID )A  WHERE A.ALN=0");;
-            query = mesEJB.getEntityManager().createNativeQuery(sbMES.toString());
-            sMESList = query.getResultList();
-        } else {
-            //圆型抓取月建档停机机台
-            sbMES.append(" SELECT E.EQPID FROM EQP_AVAILABLETIME_SCHEDULE E LEFT JOIN MEQP M ON E.EQPID=M.EQPID WHERE M.PRODUCTTYPE='半成品圆型件' and PLANDATE='").append(staDate.replace('-', '/')).append("' AND AVAILABLEMINS=0");
-            query = mesEJB.getEntityManager().createNativeQuery(sbMES.toString());
-            sMESList = query.getResultList();
-        }
+        //获取整天计划停机的机台编号
+        sbMES.append("   SELECT  EQPID  FROM PLAN_DOWNTIME WHERE PLANDATE='").append(staDate.replace('-', '/')).append("' AND AVAILABLEMINS >1400");//默认停机时间大于1400算停机
+        query = mesEJB.getEntityManager().createNativeQuery(sbMES.toString());
+        sMESList = query.getResultList();
         if (!sMESList.isEmpty()) {
             for (String objects : sMESList) {
                 str = str + "'" + objects + "',";
@@ -115,7 +108,7 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
             for (Object[] eResult : list) {
                 for (Object obj : sCadeList) {
                     if (eResult[2].toString().equals(obj)) {
-                        eResult[8]=("停机");
+                        eResult[8] = ("停机");
                     }
                 }
             }

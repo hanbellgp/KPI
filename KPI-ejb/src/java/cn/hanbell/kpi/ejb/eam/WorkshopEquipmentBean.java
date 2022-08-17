@@ -26,7 +26,6 @@ public class WorkshopEquipmentBean extends SuperEJBForEAM<EquipmentAnalyResult> 
 
     @EJB
     private SuperEJBForMES mesEJB;
- 
 
     public WorkshopEquipmentBean() {
         super(EquipmentAnalyResult.class);
@@ -329,4 +328,26 @@ public class WorkshopEquipmentBean extends SuperEJBForEAM<EquipmentAnalyResult> 
     public List<Object[]> getMonthlyReport(int y, String string, String h) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    /**
+     * 获取报修异常数据
+     *
+     * @param company 公司别
+     * @param thisDate 当前日期
+     * @return
+     */
+    public List<Object[]> getEquipmentRepairAbnormal(String company, String thisDate) {
+        StringBuilder sbAbnormal = new StringBuilder();
+        sbAbnormal.append("SELECT E.formid,E.formdate,E.hitchtime,E.servicearrivetime,assetno,E.itemno,A.assetDesc,repairdeptname,E.repairusername,serviceusername,if(rstatus='10','已报修','维修到达')  rstatus FROM equipmentrepair  E  LEFT JOIN  assetcard  A  ON E.assetno=A.formid WHERE  E.formdate<'").append(thisDate).append("' AND  (rstatus='10' OR  rstatus='20')");
+        if (company != null) {
+            sbAbnormal.append("and E.company='").append(company).append("'");
+        } 
+        sbAbnormal.append("  ORDER BY  E.rstatus,E.hitchtime DESC");
+        Query query = this.getEntityManager().createNativeQuery(sbAbnormal.toString());
+        List<Object[]> abnormalList = query.getResultList();
+
+        return abnormalList;
+
+    }
+
 }

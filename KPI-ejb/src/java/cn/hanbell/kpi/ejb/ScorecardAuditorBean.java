@@ -34,8 +34,8 @@ public class ScorecardAuditorBean extends SuperEJBForKPI<ScorecardAuditor> {
             return null;
         }
     }
-    
-        public List<ScorecardAuditor> findByPidAndQuarter(int pid,int seq,int quarter) {
+
+    public List<ScorecardAuditor> findByPidAndQuarter(int pid, int seq, int quarter) {
         Query query = getEntityManager().createNamedQuery("ScorecardAuditor.findByPidAndSeqAndQuarter");
         query.setParameter("pid", pid);
         query.setParameter("seq", seq);
@@ -46,5 +46,4 @@ public class ScorecardAuditorBean extends SuperEJBForKPI<ScorecardAuditor> {
             return null;
         }
     }
-
 }

@@ -1043,13 +1043,9 @@ ejbClient.setEJB(params["JNDIName"]);
 master = ejbClient.getEntity(params["id"]);
 if(master != null){
 	detail = ejbClient.getDetail(params["id"]);
-	auditorDetail = ejbClient.getAuditorDetail(params["id"]);
+	auditorDetail = ejbClient.getAuditorDetail(params["id"],2);
 }
-var season = params["season"];
-System.out.println("--------");
-
-System.out.println("----detail----"+detail.size());
-System.out.println("----auditorDetail----"+auditorDetail.size());]]></method>
+var season = params["season"];]]></method>
             <method name="fetch"><![CDATA[importPackage( Packages.java.lang );
 auditor = "";
 if(currentRow < detail.size()){

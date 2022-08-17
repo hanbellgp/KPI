@@ -119,7 +119,7 @@ public class ScorecardDetailPrintManagedBean extends SuperSingleBean<ScorecardCo
             this.fileName = s.getName() + BaseLib.formatDate("yyyyMMddHHmmss", this.getDate()) + "." + "xls";
             String reportName = "";
             if (userManagedBean.getQ() == 1) {
-                reportName = reportPath + "scorecarddetail.rptdesign";
+                reportName = reportPath + "scorecarddetail1.rptdesign";
             } else if (userManagedBean.getQ() == 2) {
                 reportName = reportPath + "scorecarddetail2.rptdesign";
             } else if (userManagedBean.getQ() == 3) {

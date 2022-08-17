@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "ScorecardAuditor.findAll", query = "SELECT s FROM ScorecardAuditor s"),
     @NamedQuery(name = "ScorecardAuditor.findById", query = "SELECT s FROM ScorecardAuditor s WHERE s.id = :id"),
-    @NamedQuery(name = "ScorecardAuditor.findByPId", query = "SELECT s FROM ScorecardAuditor s WHERE s.pid = :pid"),
+    @NamedQuery(name = "ScorecardAuditor.findByPId", query = "SELECT s FROM ScorecardAuditor s WHERE s.pid = :pid ORDER BY s.credate ASC"),
     @NamedQuery(name = "ScorecardAuditor.findByAuditorId", query = "SELECT s FROM ScorecardAuditor s WHERE s.auditorId = :auditorId"),
     @NamedQuery(name = "ScorecardAuditor.findByAuditorName", query = "SELECT s FROM ScorecardAuditor s WHERE s.auditorName = :auditorName"),
     @NamedQuery(name = "ScorecardAuditor.findByRemark", query = "SELECT s FROM ScorecardAuditor s WHERE s.remark = :remark"),
@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ScorecardAuditor.findByCfmuser", query = "SELECT s FROM ScorecardAuditor s WHERE s.cfmuser = :cfmuser"),
     @NamedQuery(name = "ScorecardAuditor.findByCfmdate", query = "SELECT s FROM ScorecardAuditor s WHERE s.cfmdate = :cfmdate"),
     @NamedQuery(name = "ScorecardAuditor.findByPidAndAuditorId", query = "SELECT s FROM ScorecardAuditor s WHERE s.pid = :pid AND s.auditorId = :auditorId"),
-    @NamedQuery(name = "ScorecardAuditor.findByPidAndSeqAndQuarter", query = "SELECT s FROM ScorecardAuditor s WHERE s.pid = :pid AND s.seq = :seq AND s.quarter =:quarter ")})
+    @NamedQuery(name = "ScorecardAuditor.findByPidAndSeqAndQuarter", query = "SELECT s FROM ScorecardAuditor s WHERE s.pid = :pid AND s.seq = :seq AND s.quarter =:quarter ORDER BY s.credate ASC")})
 public class ScorecardAuditor extends SuperEntity {
 
     @JoinColumn(name = "pid", referencedColumnName = "id", updatable = false, insertable = false)
