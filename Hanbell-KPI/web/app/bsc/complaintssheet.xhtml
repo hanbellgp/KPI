@@ -4,162 +4,152 @@
                 template="./../../WEB-INF/bsc.xhtml"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"  
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <ui:define name="content">
         <h:form id="formOne" rendered="#{!complaintsChartReportBean.deny}">
             <div class="ui-g dashboard">
                 <div class="ui-g-12 ui-md-12" align="center">
-                    <div><h3 style="text-align: center"><span style="float: left">单位:#{complaintsChartReportBean.indicator.unit}</span>#{complaintsChartReportBean.y}客诉抱怨率<p:link value="返回" outcome="home" style="float: right"/>
+                    <div><h3 style="text-align: center">
+                            <span style="float: left">单位:#{complaintsChartReportBean.indicator.unit}</span>#{complaintsChartReportBean.y} #{complaintsChartReportBean.indicatorChart.name}
+                            <p:link value="返回" outcome="home" style="float: right"/>
                             <div style="float:right;margin-right:12px;">
                                 <h:selectBooleanCheckbox value="#{complaintsChartReportBean.monthchecked}"  title="√不选中为所以数据" style="height: 18px;width: 18px">
                                     <span>只显示当月</span>
                                     <p:ajax process="@this" update="formOne"/>
                                 </h:selectBooleanCheckbox>
                             </div>
-                        </h3>
-                    </div>
+                        </h3></div>
                     <p:panelGrid id="plgChartData" styleClass="#{complaintsChartReportBean.monthchecked==true?'plgSheetData Wid30':'plgSheetData Wid100'}">
                         <f:facet name="header">
                             <p:row>
-                                <p:column colspan="2" style="text-align:center">项目</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(1)}">1月</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(2)}">2月</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(3)}">3月</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(4)}">4月</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(5)}">5月</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(6)}">6月</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(7)}">7月</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(8)}">8月</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(9)}">9月</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(10)}">10月</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(11)}">11月</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(12)}">12月</p:column>
+                                <p:column>名称</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(1)}" priority="#{complaintsChartReportBean.m==1?3:4}">1月</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(2)}" priority="#{complaintsChartReportBean.m==2?3:4}">2月</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(3)}" priority="#{complaintsChartReportBean.m==3?3:4}">3月</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(4)}" priority="#{complaintsChartReportBean.m==4?3:4}">4月</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(5)}" priority="#{complaintsChartReportBean.m==5?3:4}">5月</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(6)}" priority="#{complaintsChartReportBean.m==6?3:4}">6月</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(7)}" priority="#{complaintsChartReportBean.m==7?3:4}">7月</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(8)}" priority="#{complaintsChartReportBean.m==8?3:4}">8月</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(9)}" priority="#{complaintsChartReportBean.m==9?3:4}">9月</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(10)}" priority="#{complaintsChartReportBean.m==10?3:4}">10月</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(11)}" priority="#{complaintsChartReportBean.m==11?3:4}">11月</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(12)}" priority="#{complaintsChartReportBean.m==12?3:4}">12月</p:column>
                                 <p:column>年移动平均</p:column>
                             </p:row>
                         </f:facet>
-                        <c:forEach items="#{complaintsChartReportBean.indicatorList}" var="item" varStatus="status">
-                            <p:row>
-                                <c:choose>
-                                    <c:when test="#{item.descript=='真空'}">
-                                          <p:column rowspan="5" style="font-size:24px">#{item.descript}</p:column>
-                                    </c:when>
-                                    <c:when test="#{item.descript=='机组'}">
-                                         <p:column rowspan="3" style="font-size:24px">#{item.descript}</p:column>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <p:column rowspan="4" style="font-size:24px;background-color: white">#{item.descript}</p:column>
-                                    </c:otherwise>
-                                </c:choose>
-
-                                <p:column>基准值</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(1)}" style="#{complaintsChartReportBean.m==1?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.benchmarkIndicator.n01)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(2)}" style="#{complaintsChartReportBean.m==2?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.benchmarkIndicator.n02)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(3)}" style="#{complaintsChartReportBean.m==3?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.benchmarkIndicator.n03)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(4)}" style="#{complaintsChartReportBean.m==4?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.benchmarkIndicator.n04)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(5)}" style="#{complaintsChartReportBean.m==5?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.benchmarkIndicator.n05)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(6)}" style="#{complaintsChartReportBean.m==6?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.benchmarkIndicator.n06)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(7)}" style="#{complaintsChartReportBean.m==7?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.benchmarkIndicator.n07)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(8)}" style="#{complaintsChartReportBean.m==8?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.benchmarkIndicator.n08)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(9)}" style="#{complaintsChartReportBean.m==9?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.benchmarkIndicator.n09)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(10)}" style="#{complaintsChartReportBean.m==10?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.benchmarkIndicator.n10)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(11)}" style="#{complaintsChartReportBean.m==11?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.benchmarkIndicator.n11)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(12)}" style="#{complaintsChartReportBean.m==12?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.benchmarkIndicator.n12)}</p:column>
-                                <p:column>#{item.benchmarkIndicator.remark1}%</p:column>
+                        <p:row>
+                            <p:column>基准</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(1)}" priority="#{complaintsChartReportBean.m==1?3:4}" style="#{complaintsChartReportBean.m==1?'color:red':''}">#{complaintsChartReportBean.doubleformat(complaintsChartReportBean.indicator.benchmarkIndicator.n01,1)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(2)}" priority="#{complaintsChartReportBean.m==2?3:4}" style="#{complaintsChartReportBean.m==2?'color:red':''}">#{complaintsChartReportBean.doubleformat(complaintsChartReportBean.indicator.benchmarkIndicator.n02,2)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(3)}" priority="#{complaintsChartReportBean.m==3?3:4}" style="#{complaintsChartReportBean.m==3?'color:red':''}">#{complaintsChartReportBean.doubleformat(complaintsChartReportBean.indicator.benchmarkIndicator.n03,3)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(4)}" priority="#{complaintsChartReportBean.m==4?3:4}" style="#{complaintsChartReportBean.m==4?'color:red':''}">#{complaintsChartReportBean.doubleformat(complaintsChartReportBean.indicator.benchmarkIndicator.n04,4)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(5)}" priority="#{complaintsChartReportBean.m==5?3:4}" style="#{complaintsChartReportBean.m==5?'color:red':''}">#{complaintsChartReportBean.doubleformat(complaintsChartReportBean.indicator.benchmarkIndicator.n05,5)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(6)}" priority="#{complaintsChartReportBean.m==6?3:4}" style="#{complaintsChartReportBean.m==6?'color:red':''}">#{complaintsChartReportBean.doubleformat(complaintsChartReportBean.indicator.benchmarkIndicator.n06,6)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(7)}" priority="#{complaintsChartReportBean.m==7?3:4}" style="#{complaintsChartReportBean.m==7?'color:red':''}">#{complaintsChartReportBean.doubleformat(complaintsChartReportBean.indicator.benchmarkIndicator.n07,7)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(8)}" priority="#{complaintsChartReportBean.m==8?3:4}" style="#{complaintsChartReportBean.m==8?'color:red':''}">#{complaintsChartReportBean.doubleformat(complaintsChartReportBean.indicator.benchmarkIndicator.n08,8)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(9)}" priority="#{complaintsChartReportBean.m==9?3:4}" style="#{complaintsChartReportBean.m==9?'color:red':''}">#{complaintsChartReportBean.doubleformat(complaintsChartReportBean.indicator.benchmarkIndicator.n09,9)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(10)}" priority="#{complaintsChartReportBean.m==10?3:4}" style="#{complaintsChartReportBean.m==10?'color:red':''}">#{complaintsChartReportBean.doubleformat(complaintsChartReportBean.indicator.benchmarkIndicator.n10,10)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(11)}" priority="#{complaintsChartReportBean.m==11?3:4}" style="#{complaintsChartReportBean.m==11?'color:red':''}">#{complaintsChartReportBean.doubleformat(complaintsChartReportBean.indicator.benchmarkIndicator.n11,11)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(12)}" priority="#{complaintsChartReportBean.m==12?3:4}" style="#{complaintsChartReportBean.m==12?'color:red':''}">#{complaintsChartReportBean.doubleformat(complaintsChartReportBean.indicator.benchmarkIndicator.n12,12)}</p:column>
+                            <p:column>#{complaintsChartReportBean.indicator.benchmarkIndicator.remark1}%</p:column>
+                        </p:row>
+                        <p:row >
+                            <p:column>目标值</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(1)}" priority="#{complaintsChartReportBean.m==1?3:4}" style="#{complaintsChartReportBean.m==1?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.targetIndicator.n01,1)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(2)}" priority="#{complaintsChartReportBean.m==2?3:4}" style="#{complaintsChartReportBean.m==2?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.targetIndicator.n02,2)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(3)}" priority="#{complaintsChartReportBean.m==3?3:4}" style="#{complaintsChartReportBean.m==3?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.targetIndicator.n03,3)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(4)}" priority="#{complaintsChartReportBean.m==4?3:4}" style="#{complaintsChartReportBean.m==4?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.targetIndicator.n04,4)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(5)}" priority="#{complaintsChartReportBean.m==5?3:4}" style="#{complaintsChartReportBean.m==5?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.targetIndicator.n05,5)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(6)}" priority="#{complaintsChartReportBean.m==6?3:4}" style="#{complaintsChartReportBean.m==6?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.targetIndicator.n06,6)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(7)}" priority="#{complaintsChartReportBean.m==7?3:4}" style="#{complaintsChartReportBean.m==7?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.targetIndicator.n07,7)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(8)}" priority="#{complaintsChartReportBean.m==8?3:4}" style="#{complaintsChartReportBean.m==8?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.targetIndicator.n08,8)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(9)}" priority="#{complaintsChartReportBean.m==9?3:4}" style="#{complaintsChartReportBean.m==9?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.targetIndicator.n09,9)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(10)}" priority="#{complaintsChartReportBean.m==10?3:4}" style="#{complaintsChartReportBean.m==10?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.targetIndicator.n10,10)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(11)}" priority="#{complaintsChartReportBean.m==11?3:4}" style="#{complaintsChartReportBean.m==11?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.targetIndicator.n11,11)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(12)}" priority="#{complaintsChartReportBean.m==12?3:4}" style="#{complaintsChartReportBean.m==12?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.targetIndicator.n12,12)}</p:column>
+                            <p:column>#{complaintsChartReportBean.indicator.targetIndicator.remark1}%</p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column>实际值</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(1)}" priority="#{complaintsChartReportBean.m==1?3:4}" style="#{complaintsChartReportBean.m==1?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.actualIndicator.n01,1)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(2)}" priority="#{complaintsChartReportBean.m==2?3:4}" style="#{complaintsChartReportBean.m==2?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.actualIndicator.n02,2)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(3)}" priority="#{complaintsChartReportBean.m==3?3:4}" style="#{complaintsChartReportBean.m==3?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.actualIndicator.n03,3)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(4)}" priority="#{complaintsChartReportBean.m==4?3:4}" style="#{complaintsChartReportBean.m==4?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.actualIndicator.n04,4)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(5)}" priority="#{complaintsChartReportBean.m==5?3:4}" style="#{complaintsChartReportBean.m==5?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.actualIndicator.n05,5)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(6)}" priority="#{complaintsChartReportBean.m==6?3:4}" style="#{complaintsChartReportBean.m==6?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.actualIndicator.n06,6)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(7)}" priority="#{complaintsChartReportBean.m==7?3:4}" style="#{complaintsChartReportBean.m==7?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.actualIndicator.n07,7)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(8)}" priority="#{complaintsChartReportBean.m==8?3:4}" style="#{complaintsChartReportBean.m==8?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.actualIndicator.n08,8)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(9)}" priority="#{complaintsChartReportBean.m==9?3:4}" style="#{complaintsChartReportBean.m==9?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.actualIndicator.n09,9)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(10)}" priority="#{complaintsChartReportBean.m==10?3:4}" style="#{complaintsChartReportBean.m==10?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.actualIndicator.n10,10)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(11)}" priority="#{complaintsChartReportBean.m==11?3:4}" style="#{complaintsChartReportBean.m==11?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.actualIndicator.n11,11)}</p:column>
+                            <p:column rendered="#{complaintsChartReportBean.visible(12)}" priority="#{complaintsChartReportBean.m==12?3:4}" style="#{complaintsChartReportBean.m==12?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.actualIndicator.n12,12)}</p:column>
+                            <p:column>#{complaintsChartReportBean.indicator.actualIndicator.remark1}%</p:column>
+                        </p:row>
+                        <c:if test="#{complaintsChartReportBean.indicator.formid!='KS-机组保内' and complaintsChartReportBean.indicator.formid!='KS-上海厂销售客诉'}">
+                            <p:row >
+                                <p:column>实际值PPM</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(1)}" priority="#{complaintsChartReportBean.m==1?3:4}" style="#{complaintsChartReportBean.m==1?'color:red':''}">#{complaintsChartReportBean.format(complaintsChartReportBean.indicator.other3Indicator.n01,1)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(2)}" priority="#{complaintsChartReportBean.m==2?3:4}" style="#{complaintsChartReportBean.m==2?'color:red':''}">#{complaintsChartReportBean.format(complaintsChartReportBean.indicator.other3Indicator.n02,2)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(3)}" priority="#{complaintsChartReportBean.m==3?3:4}" style="#{complaintsChartReportBean.m==3?'color:red':''}">#{complaintsChartReportBean.format(complaintsChartReportBean.indicator.other3Indicator.n03,3)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(4)}" priority="#{complaintsChartReportBean.m==4?3:4}" style="#{complaintsChartReportBean.m==4?'color:red':''}">#{complaintsChartReportBean.format(complaintsChartReportBean.indicator.other3Indicator.n04,4)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(5)}" priority="#{complaintsChartReportBean.m==5?3:4}" style="#{complaintsChartReportBean.m==5?'color:red':''}">#{complaintsChartReportBean.format(complaintsChartReportBean.indicator.other3Indicator.n05,5)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(6)}" priority="#{complaintsChartReportBean.m==6?3:4}" style="#{complaintsChartReportBean.m==6?'color:red':''}">#{complaintsChartReportBean.format(complaintsChartReportBean.indicator.other3Indicator.n06,6)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(7)}" priority="#{complaintsChartReportBean.m==7?3:4}" style="#{complaintsChartReportBean.m==7?'color:red':''}">#{complaintsChartReportBean.format(complaintsChartReportBean.indicator.other3Indicator.n07,7)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(8)}" priority="#{complaintsChartReportBean.m==8?3:4}" style="#{complaintsChartReportBean.m==8?'color:red':''}">#{complaintsChartReportBean.format(complaintsChartReportBean.indicator.other3Indicator.n08,8)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(9)}" priority="#{complaintsChartReportBean.m==9?3:4}" style="#{complaintsChartReportBean.m==9?'color:red':''}">#{complaintsChartReportBean.format(complaintsChartReportBean.indicator.other3Indicator.n09,9)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(10)}" priority="#{complaintsChartReportBean.m==10?3:4}" style="#{complaintsChartReportBean.m==10?'color:red':''}">#{complaintsChartReportBean.format(complaintsChartReportBean.indicator.other3Indicator.n10,10)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(11)}" priority="#{complaintsChartReportBean.m==11?3:4}" style="#{complaintsChartReportBean.m==11?'color:red':''}">#{complaintsChartReportBean.format(complaintsChartReportBean.indicator.other3Indicator.n11,11)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(12)}" priority="#{complaintsChartReportBean.m==12?3:4}" style="#{complaintsChartReportBean.m==12?'color:red':''}">#{complaintsChartReportBean.format(complaintsChartReportBean.indicator.other3Indicator.n12,12)}</p:column>
+                                <p:column>#{complaintsChartReportBean.indicator.other3Indicator.remark1}%</p:column>
                             </p:row>
-                            <p:row>
-                                <p:column>目标值</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(1)}" style="#{complaintsChartReportBean.m==1?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.targetIndicator.n01,1)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(2)}" style="#{complaintsChartReportBean.m==2?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.targetIndicator.n02,2)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(3)}" style="#{complaintsChartReportBean.m==3?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.targetIndicator.n03,3)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(4)}" style="#{complaintsChartReportBean.m==4?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.targetIndicator.n04,4)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(5)}" style="#{complaintsChartReportBean.m==5?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.targetIndicator.n05,5)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(6)}" style="#{complaintsChartReportBean.m==6?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.targetIndicator.n06,6)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(7)}" style="#{complaintsChartReportBean.m==7?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.targetIndicator.n07,7)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(8)}" style="#{complaintsChartReportBean.m==8?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.targetIndicator.n08,8)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(9)}" style="#{complaintsChartReportBean.m==9?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.targetIndicator.n09,9)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(10)}" style="#{complaintsChartReportBean.m==10?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.targetIndicator.n10,10)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(11)}" style="#{complaintsChartReportBean.m==11?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.targetIndicator.n11,11)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(12)}" style="#{complaintsChartReportBean.m==12?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.targetIndicator.n12,12)}</p:column>
-                                <p:column>#{item.targetIndicator.remark1}%</p:column>
+                        </c:if>
+                        <c:if test="#{complaintsChartReportBean.indicator.formid=='KS-上海厂销售客诉'}">
+                            <p:row >
+                                <p:column>实际值（干泵）</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(1)}" priority="#{complaintsChartReportBean.m==1?3:4}" style="#{complaintsChartReportBean.m==1?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other4Indicator.n01,1)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(2)}" priority="#{complaintsChartReportBean.m==2?3:4}" style="#{complaintsChartReportBean.m==2?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other4Indicator.n02,2)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(3)}" priority="#{complaintsChartReportBean.m==3?3:4}" style="#{complaintsChartReportBean.m==3?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other4Indicator.n03,3)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(4)}" priority="#{complaintsChartReportBean.m==4?3:4}" style="#{complaintsChartReportBean.m==4?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other4Indicator.n04,4)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(5)}" priority="#{complaintsChartReportBean.m==5?3:4}" style="#{complaintsChartReportBean.m==5?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other4Indicator.n05,5)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(6)}" priority="#{complaintsChartReportBean.m==6?3:4}" style="#{complaintsChartReportBean.m==6?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other4Indicator.n06,6)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(7)}" priority="#{complaintsChartReportBean.m==7?3:4}" style="#{complaintsChartReportBean.m==7?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other4Indicator.n07,7)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(8)}" priority="#{complaintsChartReportBean.m==8?3:4}" style="#{complaintsChartReportBean.m==8?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other4Indicator.n08,8)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(9)}" priority="#{complaintsChartReportBean.m==9?3:4}" style="#{complaintsChartReportBean.m==9?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other4Indicator.n09,9)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(10)}" priority="#{complaintsChartReportBean.m==10?3:4}" style="#{complaintsChartReportBean.m==10?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other4Indicator.n10,10)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(11)}" priority="#{complaintsChartReportBean.m==11?3:4}" style="#{complaintsChartReportBean.m==11?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other4Indicator.n11,11)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(12)}" priority="#{complaintsChartReportBean.m==12?3:4}" style="#{complaintsChartReportBean.m==12?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other4Indicator.n12,12)}</p:column>
+                                <p:column>#{complaintsChartReportBean.indicator.other4Indicator.remark1}%</p:column>
                             </p:row>
-                            <p:row>
-                                <p:column>#{item.descript!='真空'?'实际值':'实际值(总)'}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(1)}" style="#{complaintsChartReportBean.m==1?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.actualIndicator.n01,1)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(2)}" style="#{complaintsChartReportBean.m==2?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.actualIndicator.n02,2)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(3)}" style="#{complaintsChartReportBean.m==3?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.actualIndicator.n03,3)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(4)}" style="#{complaintsChartReportBean.m==4?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.actualIndicator.n04,4)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(5)}" style="#{complaintsChartReportBean.m==5?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.actualIndicator.n05,5)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(6)}" style="#{complaintsChartReportBean.m==6?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.actualIndicator.n06,6)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(7)}" style="#{complaintsChartReportBean.m==7?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.actualIndicator.n07,7)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(8)}" style="#{complaintsChartReportBean.m==8?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.actualIndicator.n08,8)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(9)}" style="#{complaintsChartReportBean.m==9?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.actualIndicator.n09,9)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(10)}" style="#{complaintsChartReportBean.m==10?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.actualIndicator.n10,10)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(11)}" style="#{complaintsChartReportBean.m==11?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.actualIndicator.n11,11)}</p:column>
-                                <p:column rendered="#{complaintsChartReportBean.visible(12)}" style="#{complaintsChartReportBean.m==12?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.actualIndicator.n12,12)}</p:column>
-                                <p:column>#{item.actualIndicator.remark1}%</p:column>
+                            <p:row >
+                                <p:column>实际值（湿泵）</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(1)}" priority="#{complaintsChartReportBean.m==1?3:4}" style="#{complaintsChartReportBean.m==1?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other5Indicator.n01,1)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(2)}" priority="#{complaintsChartReportBean.m==2?3:4}" style="#{complaintsChartReportBean.m==2?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other5Indicator.n02,2)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(3)}" priority="#{complaintsChartReportBean.m==3?3:4}" style="#{complaintsChartReportBean.m==3?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other5Indicator.n03,3)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(4)}" priority="#{complaintsChartReportBean.m==4?3:4}" style="#{complaintsChartReportBean.m==4?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other5Indicator.n04,4)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(5)}" priority="#{complaintsChartReportBean.m==5?3:4}" style="#{complaintsChartReportBean.m==5?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other5Indicator.n05,5)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(6)}" priority="#{complaintsChartReportBean.m==6?3:4}" style="#{complaintsChartReportBean.m==6?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other5Indicator.n06,6)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(7)}" priority="#{complaintsChartReportBean.m==7?3:4}" style="#{complaintsChartReportBean.m==7?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other5Indicator.n07,7)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(8)}" priority="#{complaintsChartReportBean.m==8?3:4}" style="#{complaintsChartReportBean.m==8?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other5Indicator.n08,8)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(9)}" priority="#{complaintsChartReportBean.m==9?3:4}" style="#{complaintsChartReportBean.m==9?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other5Indicator.n09,9)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(10)}" priority="#{complaintsChartReportBean.m==10?3:4}" style="#{complaintsChartReportBean.m==10?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other5Indicator.n10,10)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(11)}" priority="#{complaintsChartReportBean.m==11?3:4}" style="#{complaintsChartReportBean.m==11?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other5Indicator.n11,11)}</p:column>
+                                <p:column rendered="#{complaintsChartReportBean.visible(12)}" priority="#{complaintsChartReportBean.m==12?3:4}" style="#{complaintsChartReportBean.m==12?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other5Indicator.n12,12)}</p:column>
+                                <p:column>#{complaintsChartReportBean.indicator.other5Indicator.remark1}%</p:column>
                             </p:row>
-                            <c:choose>
-                                <c:when test="${item.descript != '真空' and item.descript != '机组' }">
-                                    <p:row>
-                                        <p:column>实际值PPM</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(1)}" style="#{complaintsChartReportBean.m==1?'color:red':''}">#{complaintsChartReportBean.format(item.other3Indicator.n01,1)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(2)}" style="#{complaintsChartReportBean.m==2?'color:red':''}">#{complaintsChartReportBean.format(item.other3Indicator.n02,2)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(3)}" style="#{complaintsChartReportBean.m==3?'color:red':''}">#{complaintsChartReportBean.format(item.other3Indicator.n03,3)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(4)}" style="#{complaintsChartReportBean.m==4?'color:red':''}">#{complaintsChartReportBean.format(item.other3Indicator.n04,4)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(5)}" style="#{complaintsChartReportBean.m==5?'color:red':''}">#{complaintsChartReportBean.format(item.other3Indicator.n05,5)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(6)}" style="#{complaintsChartReportBean.m==6?'color:red':''}">#{complaintsChartReportBean.format(item.other3Indicator.n06,6)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(7)}" style="#{complaintsChartReportBean.m==7?'color:red':''}">#{complaintsChartReportBean.format(item.other3Indicator.n07,7)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(8)}" style="#{complaintsChartReportBean.m==8?'color:red':''}">#{complaintsChartReportBean.format(item.other3Indicator.n08,8)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(9)}" style="#{complaintsChartReportBean.m==9?'color:red':''}">#{complaintsChartReportBean.format(item.other3Indicator.n09,9)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(10)}" style="#{complaintsChartReportBean.m==10?'color:red':''}">#{complaintsChartReportBean.format(item.other3Indicator.n10,10)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(11)}" style="#{complaintsChartReportBean.m==11?'color:red':''}">#{complaintsChartReportBean.format(item.other3Indicator.n11,11)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(12)}" style="#{complaintsChartReportBean.m==12?'color:red':''}">#{complaintsChartReportBean.format(item.other3Indicator.n12,12)}</p:column>
-                                        <p:column>#{item.other3Indicator.remark1}</p:column>
-                                    </p:row>
-                                </c:when>
-                                <c:when test="${item.descript == '真空' }">
-                                    <p:row>
-                                        <p:column>实际值(干泵)</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(1)}" style="#{complaintsChartReportBean.m==1?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other4Indicator.n01,1)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(2)}" style="#{complaintsChartReportBean.m==2?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other4Indicator.n02,2)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(3)}" style="#{complaintsChartReportBean.m==3?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other4Indicator.n03,3)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(4)}" style="#{complaintsChartReportBean.m==4?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other4Indicator.n04,4)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(5)}" style="#{complaintsChartReportBean.m==5?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other4Indicator.n05,5)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(6)}" style="#{complaintsChartReportBean.m==6?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other4Indicator.n06,6)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(7)}" style="#{complaintsChartReportBean.m==7?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other4Indicator.n07,7)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(8)}" style="#{complaintsChartReportBean.m==8?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other4Indicator.n08,8)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(9)}" style="#{complaintsChartReportBean.m==9?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other4Indicator.n09,9)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(10)}" style="#{complaintsChartReportBean.m==10?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other4Indicator.n10,10)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(11)}" style="#{complaintsChartReportBean.m==11?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other4Indicator.n11,11)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(12)}" style="#{complaintsChartReportBean.m==12?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other4Indicator.n12,12)}</p:column>
-                                        <p:column>#{item.other4Indicator.remark1}%</p:column>
-                                    </p:row>
-                                    <p:row>
-                                        <p:column>实际值(旋片泵)</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(1)}" style="#{complaintsChartReportBean.m==1?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other5Indicator.n01,1)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(2)}" style="#{complaintsChartReportBean.m==2?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other5Indicator.n02,2)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(3)}" style="#{complaintsChartReportBean.m==3?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other5Indicator.n03,3)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(4)}" style="#{complaintsChartReportBean.m==4?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other5Indicator.n04,4)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(5)}" style="#{complaintsChartReportBean.m==5?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other5Indicator.n05,5)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(6)}" style="#{complaintsChartReportBean.m==6?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other5Indicator.n06,6)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(7)}" style="#{complaintsChartReportBean.m==7?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other5Indicator.n07,7)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(8)}" style="#{complaintsChartReportBean.m==8?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other5Indicator.n08,8)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(9)}" style="#{complaintsChartReportBean.m==9?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other5Indicator.n09,9)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(10)}" style="#{complaintsChartReportBean.m==10?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other5Indicator.n10,10)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(11)}" style="#{complaintsChartReportBean.m==11?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other5Indicator.n11,11)}</p:column>
-                                        <p:column rendered="#{complaintsChartReportBean.visible(12)}" style="#{complaintsChartReportBean.m==12?'color:red':''}">#{complaintsChartReportBean.doubleformat(item.other5Indicator.n12,12)}</p:column>
-                                        <p:column>#{item.other5Indicator.remark1}%</p:column>
-                                    </p:row>
-                                </c:when>
-                            </c:choose>
-                        </c:forEach>
+                        </c:if>
                     </p:panelGrid>
+                </div>
+                <div class="ui-g-12 ui-md-12">
+                    <p:chart type="line" model="#{complaintsChartReportBean.initLineChartModel('月份','指标')}" style="height:380px"
+                             responsive="true" >
+                    </p:chart>
                 </div>
                 <div id="indicatorSummary" class="ui-g-12 ui-md-12">
                     <p:repeat id="repSummary" value="#{complaintsChartReportBean.summaryList}" var="s" rendered="#{complaintsChartReportBean.summaryCount>0}">
-                        <p:panel  id="summaryPanel" header="指标说明" toggleable="true" style="height:min-content">
+                        <p:panel  id="summaryPanel" header="#{s.title}" toggleable="true" style="height:min-content">
                             <h:panelGrid>
                                 <h:outputText id="summary"/>
                                 <h:inputHidden id="hdnSummary" value="#{s.summary}"/>
@@ -190,7 +180,7 @@
                     <h:inputHidden id="ac" value="#{complaintsChartReportBean.analysisCount}"></h:inputHidden>
                 </div>
             </div>
-            <h:outputScript name="bsc-analysis-sheet.js" library="js"/>
+            <h:outputScript  name="bsc-analysis-sheet1.js" library="js"/>
         </h:form>
         <h:form id="formTwo"  rendered="#{complaintsChartReportBean.deny}">
             <h1 style="text-align: center;margin-top: 50px;">你想干嘛</h1>
