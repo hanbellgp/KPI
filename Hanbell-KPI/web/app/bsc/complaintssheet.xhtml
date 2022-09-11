@@ -103,7 +103,7 @@
                                 <p:column rendered="#{complaintsChartReportBean.visible(10)}" priority="#{complaintsChartReportBean.m==10?3:4}" style="#{complaintsChartReportBean.m==10?'color:red':''}">#{complaintsChartReportBean.format(complaintsChartReportBean.indicator.other3Indicator.n10,10)}</p:column>
                                 <p:column rendered="#{complaintsChartReportBean.visible(11)}" priority="#{complaintsChartReportBean.m==11?3:4}" style="#{complaintsChartReportBean.m==11?'color:red':''}">#{complaintsChartReportBean.format(complaintsChartReportBean.indicator.other3Indicator.n11,11)}</p:column>
                                 <p:column rendered="#{complaintsChartReportBean.visible(12)}" priority="#{complaintsChartReportBean.m==12?3:4}" style="#{complaintsChartReportBean.m==12?'color:red':''}">#{complaintsChartReportBean.format(complaintsChartReportBean.indicator.other3Indicator.n12,12)}</p:column>
-                                <p:column>#{complaintsChartReportBean.indicator.other3Indicator.remark1}%</p:column>
+                                <p:column>#{complaintsChartReportBean.indicator.other3Indicator.remark1}</p:column>
                             </p:row>
                         </c:if>
                         <c:if test="#{complaintsChartReportBean.indicator.formid=='KS-上海厂销售客诉'}">
