@@ -69,13 +69,13 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
         if (id == null) {
             fc.getApplication().getNavigationHandler().handleNavigation(fc, null, "error");
         }
-        y=Integer.valueOf(BaseLib.formatDate("yyyy", getUserManagedBean().getBaseDate()));
-        m=Integer.valueOf(BaseLib.formatDate("MM", getUserManagedBean().getBaseDate()));  
-        indicatorChart = indicatorChartBean.findById(Integer.valueOf(id)); 
+        y = Integer.valueOf(BaseLib.formatDate("yyyy", getUserManagedBean().getBaseDate()));
+        m = Integer.valueOf(BaseLib.formatDate("MM", getUserManagedBean().getBaseDate()));
+        indicatorChart = indicatorChartBean.findById(Integer.valueOf(id));
         if (getIndicatorChart() == null) {
             fc.getApplication().getNavigationHandler().handleNavigation(fc, null, "error");
         } else {
-            indicator = indicatorBean.findByFormidYearAndDeptno(indicatorChart.getFormid(),this.getY() , indicatorChart.getDeptno());
+            indicator = indicatorBean.findByFormidYearAndDeptno(indicatorChart.getFormid(), this.getY(), indicatorChart.getDeptno());
             for (RoleGrantModule m1 : userManagedBean.getRoleGrantDeptList()) {
                 if (m1.getDeptno().equals(indicatorChart.getPid())) {
                     deny = false;
@@ -87,11 +87,9 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
         statusMap = new LinkedHashMap<>();
         statusMap.put("displaydiv1", "block");
         statusMap.put("displaydiv2", "none");
-
         btnDate = settlementDate().getTime();
         statusMap.put("title", BaseLib.formatDate("yyyy", btnDate));
 
-//        btnquery();
     }
 
     public void query() {
@@ -101,9 +99,9 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
             String twFhszj = " in ('1139')";
             String scmFhszj = " in ('KZJ00053')";
             String zcmFhszj = " in ('EZJ00053')";
-            Object[] shb = shoppingAccomuntBean.getShbDate("SHB", "C", btnDate, shbFhszj,"");
+            Object[] shb = shoppingAccomuntBean.getShbDate("SHB", "C", btnDate, shbFhszj, "");
             Object[] thb = shoppingAccomuntBean.getShbDate("THB", "A", btnDate, twFhszj, "");
-            Object[] scm = shoppingAccomuntBean.getShbDate("SCOMER", "K", btnDate, scmFhszj,"");
+            Object[] scm = shoppingAccomuntBean.getShbDate("SCOMER", "K", btnDate, scmFhszj, "");
             Object[] zcm = shoppingAccomuntBean.getShbDate("ZCOMER", "E", btnDate, zcmFhszj, "");
             Object[] cm = new Object[15];
             cm[0] = "CM";
@@ -124,17 +122,17 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
             list.add(thb);
             list.add(cm);
             list.add(sum);
-            
+
             for (Object[] o : list) {
                 o[14] = ((BigDecimal) o[13]).multiply(BigDecimal.valueOf(100)).divide((BigDecimal) list.get(list.size() - 1)[13], 2).toString().concat("%");
             }
             //铸件重量;
-            
-            Object[] shbweigth = shoppingAccomuntBean.getGroupWeightDate("总重", "SHB", "C", btnDate, getWhereVdrnos("C", "'铸件'").toString(),ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA+"/"+ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI);
-            Object[] shbgornhsweigth = shoppingAccomuntBean.getGroupWeightDate("汉声", "SHB", "C", btnDate, shbFhszj, ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA+"/"+ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI);
+
+            Object[] shbweigth = shoppingAccomuntBean.getGroupWeightDate("总重", "SHB", "C", btnDate, getWhereVdrnos("C", "'铸件'").toString(), ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA + "/" + ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI);
+            Object[] shbgornhsweigth = shoppingAccomuntBean.getGroupWeightDate("汉声", "SHB", "C", btnDate, shbFhszj, ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA + "/" + ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI);
             //上海汉钟已作为进口列入。需手动加入上海汉钟厂商
-            StringBuffer sb= getWhereVdrnos("A", "'鑄件'");
-            Object[] thbweigth = shoppingAccomuntBean.getGroupWeightDate("总重", "THB", "A", btnDate, sb.substring(0, sb.length()-1).concat(",'86005')"), "");
+            StringBuffer sb = getWhereVdrnos("A", "'鑄件'");
+            Object[] thbweigth = shoppingAccomuntBean.getGroupWeightDate("总重", "THB", "A", btnDate, sb.substring(0, sb.length() - 1).concat(",'86005')"), "");
             Object[] thbgornhsweigth = shoppingAccomuntBean.getGroupWeightDate("汉声", "THB", "A", btnDate, twFhszj, "");
             weightList.clear();
             weightList.add(shbweigth);
@@ -186,13 +184,13 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
             weightList.add(zhanbi3);
             statusMap.put("displaydiv1", "none");
             statusMap.put("displaydiv2", "block");
-            
+
             //根据指标ID加载指标说明、指标分析
             analysisList = indicatorAnalysisBean.findByPIdAndMonth(indicator.getId(), this.m);//指标分析
             if (analysisList != null) {
                 this.analysisCount = analysisList.size();
             }
-            summaryList = indicatorSummaryBean.findByPIdAndMonth(indicator.getId(),this.m);//指标说明
+            summaryList = indicatorSummaryBean.findByPIdAndMonth(indicator.getId(), this.m);//指标说明
             if (summaryList != null) {
                 this.summaryCount = summaryList.size();
             }
@@ -227,7 +225,6 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
         }
     }
 
- 
     public String percentFormat(BigDecimal value1, BigDecimal value2, int i) {
         if (value1 == null || value1 == BigDecimal.ZERO) {
             return "0.00%";
@@ -261,14 +258,21 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
             return floatFormat.format(value);
         }
     }
-    
-    
+
     public String weightdoubleformat(BigDecimal value) {
         if (value == null || value.compareTo(BigDecimal.ZERO) == 0) {
             return "0";
         } else {
             value = value.divide(new BigDecimal(1000), 2);
             return floatFormat.format(value);
+        }
+    }
+
+    public boolean visible(int m) {
+        if (m == this.m) {
+            return true;
+        } else {
+            return false;
         }
     }
 

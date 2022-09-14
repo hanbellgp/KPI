@@ -2,133 +2,102 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 template="./../../WEB-INF/bsc.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                >
+
     <ui:define name="content">
-
-        <h:form id="formOne" style="height: 100%" rendered="#{!shoppingCenterAmountReportBean.deny}">
-            <p:growl id="growl" showSummary="false" showDetail="true" />
-            <p:panelGrid id="plgQuery" columns="6" columnClasses="Wid20,Wid30,Wid30,Wid10,Wid10,Wid5" styleClass="plgQuery Wid100">
-                <p:outputLabel value="请输入查询日期*" for="btndate" />
-                <p:calendar id="btndate" value="#{shoppingCenterAmountReportBean.btnDate}" title="日期" pattern="yyyy/MM/dd" />
-                <p:outputLabel style="visibility: hidden"/>
-                <p:commandButton id="btnReset" value="重置" actionListener="#{shoppingCenterAmountReportBean.reset()}"  icon="ui-icon-refresh"
-                                 update="formOne" process="plgQuery" />
-                <p:commandButton id="btnQuery" value="查询" actionListener="#{shoppingCenterAmountReportBean.query()}"  icon="ui-icon-search"
-                                 update="formOne" process="plgQuery"/>
-
-                <p:link  value="返回"  outcome="home" style="float: left"/>
-
-            </p:panelGrid>
-            <div>
-                <p:panelGrid id="exchangeRateValue" styleClass="plgDetail Wid100">
-                    <f:facet name="header"  >
-                        <p:row >
-                            <p:column style="font-size: 22px;letter-spacing:2px;" >#{shoppingCenterAmountReportBean.statusMap.title}年采购中心采购金额（RMB）</p:column>
-                        </p:row>
-                    </f:facet>
-                </p:panelGrid >
-                <div style="padding-top: 10px;display:#{shoppingCenterAmountReportBean.statusMap.displaydiv1};" align="center" >
-                    <span style="font-weight: bold;color: #2F4050;font-size: 18px;padding-right: 25px" >No records found.</span>
+        <h:form id="formOne" rendered="#{!shoppingCenterAmountReportBean.deny}">
+            <div class="ui-g dashboard">
+                <div class="ui-g-12 ui-md-12" align="center">
+                    <div><h3 style="text-align: center">
+                            <span style="float: left">单位:#{shoppingCenterAmountReportBean.indicator.unit}</span>#{shoppingCenterAmountReportBean.y} #{shoppingCenterAmountReportBean.indicatorChart.name}
+                            <p:link value="返回" outcome="home" style="float: right"/>
+                            <div style="float:right;margin-right:12px;">
+                                <h:selectBooleanCheckbox value="#{shoppingCenterAmountReportBean.monthchecked}"  title="√不选中为所以数据" style="height: 18px;width: 18px">
+                                    <span>只显示当月</span>
+                                    <p:ajax process="@this" update="formOne"/>
+                                </h:selectBooleanCheckbox>
+                            </div>
+                        </h3></div>
+                    <p:panelGrid id="plgChartData" styleClass="#{shoppingCenterAmountReportBean.monthchecked==true?'plgSheetData Wid30':'plgSheetData Wid100'}">
+                        <f:facet name="header">
+                            <p:row>
+                                <p:column style="width: 10%">名称</p:column>
+                                <p:column style="width: 6%" rendered="#{shoppingCenterAmountReportBean.visible(1)}" priority="#{shoppingCenterAmountReportBean.m==1?3:4}">1月</p:column>
+                                <p:column style="width: 6%" rendered="#{shoppingCenterAmountReportBean.visible(2)}" priority="#{shoppingCenterAmountReportBean.m==2?3:4}">2月</p:column>
+                                <p:column style="width: 6%" rendered="#{shoppingCenterAmountReportBean.visible(3)}" priority="#{shoppingCenterAmountReportBean.m==3?3:4}">3月</p:column>
+                                <p:column style="width: 6%" rendered="#{shoppingCenterAmountReportBean.visible(4)}" priority="#{shoppingCenterAmountReportBean.m==4?3:4}">4月</p:column>
+                                <p:column style="width: 6%" rendered="#{shoppingCenterAmountReportBean.visible(5)}" priority="#{shoppingCenterAmountReportBean.m==5?3:4}">5月</p:column>
+                                <p:column style="width: 6%" rendered="#{shoppingCenterAmountReportBean.visible(6)}" priority="#{shoppingCenterAmountReportBean.m==6?3:4}">6月</p:column>
+                                <p:column style="width: 6%" rendered="#{shoppingCenterAmountReportBean.visible(7)}" priority="#{shoppingCenterAmountReportBean.m==7?3:4}">7月</p:column>
+                                <p:column style="width: 6%" rendered="#{shoppingCenterAmountReportBean.visible(8)}" priority="#{shoppingCenterAmountReportBean.m==8?3:4}">8月</p:column>
+                                <p:column style="width: 6%" rendered="#{shoppingCenterAmountReportBean.visible(9)}" priority="#{shoppingCenterAmountReportBean.m==9?3:4}">9月</p:column>
+                                <p:column style="width: 6%" rendered="#{shoppingCenterAmountReportBean.visible(10)}" priority="#{shoppingCenterAmountReportBean.m==10?3:4}">10月</p:column>
+                                <p:column style="width: 6%" rendered="#{shoppingCenterAmountReportBean.visible(11)}" priority="#{shoppingCenterAmountReportBean.m==11?3:4}">11月</p:column>
+                                <p:column style="width: 6%" rendered="#{shoppingCenterAmountReportBean.visible(12)}" priority="#{shoppingCenterAmountReportBean.m==12?3:4}">12月</p:column>
+                                <p:column style="width: 9%" >合计</p:column>
+                                <p:column style="width: 9%" >占比</p:column>
+                            </p:row>
+                          </f:facet>
+                        <c:forEach items="#{shoppingCenterAmountReportBean.list}" var="item" >
+                            <p:row>
+                                <p:column>#{item[0]}</p:column>
+                                <p:column rendered="#{shoppingCenterAmountReportBean.visible(1)}" priority="#{shoppingCenterAmountReportBean.m==1?3:4}" style="#{shoppingCenterAmountReportBean.m==1?'color:red':''}">#{shoppingCenterAmountReportBean.doubleformat(item[1],10000)}</p:column>
+                                <p:column rendered="#{shoppingCenterAmountReportBean.visible(2)}" priority="#{shoppingCenterAmountReportBean.m==2?3:4}" style="#{shoppingCenterAmountReportBean.m==2?'color:red':''}">#{shoppingCenterAmountReportBean.doubleformat(item[2],10000)}</p:column>
+                                <p:column rendered="#{shoppingCenterAmountReportBean.visible(3)}" priority="#{shoppingCenterAmountReportBean.m==3?3:4}" style="#{shoppingCenterAmountReportBean.m==3?'color:red':''}">#{shoppingCenterAmountReportBean.doubleformat(item[3],10000)}</p:column>
+                                <p:column rendered="#{shoppingCenterAmountReportBean.visible(4)}" priority="#{shoppingCenterAmountReportBean.m==4?3:4}" style="#{shoppingCenterAmountReportBean.m==4?'color:red':''}">#{shoppingCenterAmountReportBean.doubleformat(item[4],10000)}</p:column>
+                                <p:column rendered="#{shoppingCenterAmountReportBean.visible(5)}" priority="#{shoppingCenterAmountReportBean.m==5?3:4}" style="#{shoppingCenterAmountReportBean.m==5?'color:red':''}">#{shoppingCenterAmountReportBean.doubleformat(item[5],10000)}</p:column>
+                                <p:column rendered="#{shoppingCenterAmountReportBean.visible(6)}" priority="#{shoppingCenterAmountReportBean.m==6?3:4}" style="#{shoppingCenterAmountReportBean.m==6?'color:red':''}">#{shoppingCenterAmountReportBean.doubleformat(item[6],10000)}</p:column>
+                                <p:column rendered="#{shoppingCenterAmountReportBean.visible(7)}" priority="#{shoppingCenterAmountReportBean.m==7?3:4}" style="#{shoppingCenterAmountReportBean.m==7?'color:red':''}">#{shoppingCenterAmountReportBean.doubleformat(item[7],10000)}</p:column>
+                                <p:column rendered="#{shoppingCenterAmountReportBean.visible(8)}" priority="#{shoppingCenterAmountReportBean.m==8?3:4}" style="#{shoppingCenterAmountReportBean.m==8?'color:red':''}">#{shoppingCenterAmountReportBean.doubleformat(item[8],10000)}</p:column>
+                                <p:column rendered="#{shoppingCenterAmountReportBean.visible(9)}" priority="#{shoppingCenterAmountReportBean.m==9?3:4}" style="#{shoppingCenterAmountReportBean.m==9?'color:red':''}">#{shoppingCenterAmountReportBean.doubleformat(item[9],10000)}</p:column>
+                                <p:column rendered="#{shoppingCenterAmountReportBean.visible(10)}" priority="#{shoppingCenterAmountReportBean.m==10?3:4}" style="#{shoppingCenterAmountReportBean.m==10?'color:red':''}">#{shoppingCenterAmountReportBean.doubleformat(item[10],10000)}</p:column>
+                                <p:column rendered="#{shoppingCenterAmountReportBean.visible(11)}" priority="#{shoppingCenterAmountReportBean.m==11?3:4}" style="#{shoppingCenterAmountReportBean.m==11?'color:red':''}">#{shoppingCenterAmountReportBean.doubleformat(item[11],10000)}</p:column>
+                                <p:column rendered="#{shoppingCenterAmountReportBean.visible(12)}" priority="#{shoppingCenterAmountReportBean.m==12?3:4}" style="#{shoppingCenterAmountReportBean.m==12?'color:red':''}">#{shoppingCenterAmountReportBean.doubleformat(item[12],10000)}</p:column>
+                                <p:column>#{shoppingCenterAmountReportBean.doubleformat(item[13],10000)}</p:column>
+                                <p:column>#{item[14]}</p:column>
+                            </p:row>
+                        </c:forEach>
+                   
+                    </p:panelGrid>
                 </div>
-                <div  style="display:#{shoppingCenterAmountReportBean.statusMap.displaydiv2};" align="center">
-                    <script type="text/javascript">
-                        $(function () {
-                            var tr = $("tr.ui-widget-content");
-                            for (var i =tr.length-1; i >=0; i--) {
-                                tr[i].style.backgroundColor = (tr[i].sectionRowIndex % 2 === 0) ? "" : "#E6E6FA";
-                            }
-                        });
-                    </script> 
-                    <p:dataTable var="item" value="#{shoppingCenterAmountReportBean.list}"  >
-
-                        <p:column headerText="类别">
-                            <h:outputText value="#{item[0]}" />
-                        </p:column>
-                        <p:column headerText="1月">
-                            <h:outputText value="#{shoppingCenterAmountReportBean.doubleformat(item[1],10000)}" />
-                        </p:column>
-                        <p:column headerText="2月">
-                            <h:outputText value="#{shoppingCenterAmountReportBean.doubleformat(item[2],10000)}" />
-                        </p:column>
-                        <p:column headerText="3月">
-                            <h:outputText value="#{shoppingCenterAmountReportBean.doubleformat(item[3],10000)}" />
-                        </p:column>
-                        <p:column headerText="4月">
-                            <h:outputText value="#{shoppingCenterAmountReportBean.doubleformat(item[4],10000)}" />
-                        </p:column>
-                        <p:column headerText="5月">
-                            <h:outputText value="#{shoppingCenterAmountReportBean.doubleformat(item[5],10000)}" />
-                        </p:column> 
-                        <p:column headerText="6月">
-                            <h:outputText value="#{shoppingCenterAmountReportBean.doubleformat(item[6],10000)}" />
-                        </p:column>
-                        <p:column headerText="7月">
-                            <h:outputText value="#{shoppingCenterAmountReportBean.doubleformat(item[7],10000)}" />
-                        </p:column>
-                        <p:column headerText="8月">
-                            <h:outputText value="#{shoppingCenterAmountReportBean.doubleformat(item[8],10000)}" />
-                        </p:column>
-                        <p:column headerText="9月">
-                            <h:outputText value="#{shoppingCenterAmountReportBean.doubleformat(item[9],10000)}" />
-                        </p:column>
-                        <p:column headerText="10月">
-                            <h:outputText value="#{shoppingCenterAmountReportBean.doubleformat(item[10],10000)}" />
-                        </p:column>
-                        <p:column headerText="11月">
-                            <h:outputText value="#{shoppingCenterAmountReportBean.doubleformat(item[11],10000)}" />
-                        </p:column>
-                        <p:column headerText="12月">
-                            <h:outputText value="#{shoppingCenterAmountReportBean.doubleformat(item[12],10000)}" />
-                        </p:column>
-                        <p:column headerText="合计">
-                            <h:outputText value="#{shoppingCenterAmountReportBean.doubleformat(item[13],10000)}" />
-                        </p:column>
-                        <p:column headerText="占比">
-                            <h:outputText value="#{item[14]}" />
-                        </p:column>
-                    </p:dataTable>
+                <div id="indicatorSummary" class="ui-g-12 ui-md-12">
+                    <p:repeat id="repSummary" value="#{shoppingCenterAmountReportBean.summaryList}" var="s" rendered="#{shoppingCenterAmountReportBean.summaryCount>0}">
+                        <p:panel  id="summaryPanel" header="#{s.title}" toggleable="true" style="height:min-content">
+                            <h:panelGrid>
+                                <h:outputText id="summary"/>
+                                <h:inputHidden id="hdnSummary" value="#{s.summary}"/>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:repeat>
                 </div>
-                <div style="width: 100%;">
-                    <div id="indicatorSummary" class="ui-g-12 ui-md-12">
-                        <p:repeat id="repSummary" value="#{shoppingCenterAmountReportBean.summaryList}" var="s" rendered="#{shoppingCenterAmountReportBean.summaryCount>0}">
-                            <p:panel  id="summaryPanel" header="#{s.title}" toggleable="true" style="height:min-content">
-                                <h:panelGrid>
-                                    <h:outputText id="summary"/>
-                                    <h:inputHidden id="hdnSummary" value="#{s.summary}"/>
-                                </h:panelGrid>
-                            </p:panel>
-                        </p:repeat>
-                    </div>
-                    <div id="indicatorAnalysis" class="ui-g-12 ui-md-12">
-                        <p:repeat id="repAnalysis" value="#{shoppingCenterAmountReportBean.analysisList}" var="a" rendered="#{shoppingCenterAmountReportBean.analysisCount>0}">
-                            <p:panel  id="analysisPanel" header="#{a.title}" toggleable="true" style="height:min-content">
-                                <h:panelGrid columns="3" columnClasses="Wid30,Wid30,Wid40" styleClass="plgDetail Wid100">
-                                    <h:outputText id="issueLabel" value="问题"/>
-                                    <h:outputText id="factorLabel" value="原因"/>
-                                    <h:outputText id="countermeasureLabel" value="对策"/>
-                                    <h:outputText id="issue"/>
-                                    <h:outputText id="factor"/>
-                                    <h:outputText id="countermeasure"/>
-                                    <h:inputHidden id="hdnIssue" value="#{a.issue}"/>
-                                    <h:inputHidden id="hdnFactor" value="#{a.factor}"/>
-                                    <h:inputHidden id="hdnCountermeasure" value="#{a.countermeasure}"/>
-                                </h:panelGrid>
-                            </p:panel>
-                        </p:repeat>
-                    </div>
-                    <div>
-                        <h:outputScript name="bsc-clientranking.js" library="js"/>
-                        <h:inputHidden id="sc" value="#{shoppingCenterAmountReportBean.summaryCount}"></h:inputHidden>
-                        <h:inputHidden id="ac" value="#{shoppingCenterAmountReportBean.analysisCount}"></h:inputHidden>
-                    </div>
+                <div id="indicatorAnalysis" class="ui-g-12 ui-md-12">
+                    <p:repeat id="repAnalysis" value="#{shoppingCenterAmountReportBean.analysisList}" var="a" rendered="#{shoppingCenterAmountReportBean.analysisCount>0}">
+                        <p:panel  id="analysisPanel" header="#{a.title}" toggleable="true" style="height:min-content">
+                            <h:panelGrid columns="3" columnClasses="Wid30,Wid30,Wid40" styleClass="plgDetail Wid100">
+                                <h:outputText id="issueLabel" value="问题"/>
+                                <h:outputText id="factorLabel" value="原因"/>
+                                <h:outputText id="countermeasureLabel" value="对策"/>
+                                <h:outputText id="issue"/>
+                                <h:outputText id="factor"/>
+                                <h:outputText id="countermeasure"/>
+                                <h:inputHidden id="hdnIssue" value="#{a.issue}"/>
+                                <h:inputHidden id="hdnFactor" value="#{a.factor}"/>
+                                <h:inputHidden id="hdnCountermeasure" value="#{a.countermeasure}"/>
+                            </h:panelGrid>
+                        </p:panel>
+                    </p:repeat>
+                </div>
+                <div>
+                    <h:inputHidden id="m" value="#{shoppingCenterAmountReportBean.m}"></h:inputHidden>
+                    <h:inputHidden id="sc" value="#{shoppingCenterAmountReportBean.summaryCount}"></h:inputHidden>
+                    <h:inputHidden id="ac" value="#{shoppingCenterAmountReportBean.analysisCount}"></h:inputHidden>
                 </div>
             </div>
-            <p:blockUI id="blockUI" block="formOne" trigger="btnQuery">
-                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
-            </p:blockUI>
+            <h:outputScript name="bsc-analysis.js" library="js"/>
         </h:form>
         <h:form id="formTwo"  rendered="#{shoppingCenterAmountReportBean.deny}">
             <h1 style="text-align: center;margin-top: 50px;">你想干嘛</h1>
@@ -139,4 +108,5 @@
             </div>
         </h:form>
     </ui:define>
+
 </ui:composition>

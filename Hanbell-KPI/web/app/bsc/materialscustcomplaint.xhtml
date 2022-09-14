@@ -136,7 +136,7 @@
                         <p:panel  id="summaryPanel" header="#{s.title}" toggleable="true" style="height:min-content">
                             <h:panelGrid>
                                 <h:outputText id="summary"/>
-                                <h:outputText id="hdnSummary" value="#{s.summary}"/>
+                                <h:inputHidden id="hdnSummary" value="#{s.summary}"/>
                             </h:panelGrid>
                         </p:panel>
                     </p:repeat>
@@ -164,7 +164,7 @@
                     <h:inputHidden id="ac" value="#{materialsComplaintReportBean.analysisCount}"></h:inputHidden>
                 </div>
             </div>
-            <h:outputScript name="bsc-analysis.js" library="js"/>
+            <h:outputScript name="bsc-clientranking.js" library="js"/>
         </h:form>
         <h:form id="formTwo"  rendered="#{materialsComplaintReportBean.deny}">
             <h1 style="text-align: center;margin-top: 50px;">你想干嘛</h1>

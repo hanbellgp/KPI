@@ -39,66 +39,45 @@ public class VietnamShipmentMailBean extends ShipmentMail {
         return sb.toString();
     }
 
-
     protected String getQuantityTable() {
-        StringBuilder sb = new StringBuilder();
-        Indicator total;
         try {
-            sb.append("<div class=\"tbl\"><table width=\"100%\">");
-            sb.append("<tr><th rowspan=\"2\" colspan=\"1\">公司别</th><th rowspan=\"2\" colspan=\"1\">本日</th>");
-            sb.append("<th rowspan=\"1\" colspan=\"5\">本月</th><th rowspan=\"1\" colspan=\"5\">年累计</th>");
-            sb.append("<th rowspan=\"2\" colspan=\"1\">年度目标</th><th rowspan=\"2\" colspan=\"1\">年度达成率</th><th rowspan=\"2\" colspan=\"1\">订单未交</th></tr>");
-            sb.append("<tr><th colspan=\"1\">实际</th><th colspan=\"1\">目标</th><th colspan=\"1\">达成率</th><th colspan=\"1\">去年同期</th><th colspan=\"1\">成长率</th>");
-            sb.append("<th colspan=\"1\">实际</th><th colspan=\"1\">目标</th><th colspan=\"1\">达成率</th><th colspan=\"1\">去年同期</th><th colspan=\"1\">成长率</th>");
-            sb.append("</tr>");
-
             salesOrder = new SalesOrderQuantity();
-
             indicators.clear();
             indicators = indicatorBean.findByCategoryAndYear("越南出货台数", y);
             indicatorBean.getEntityManager().clear();
-            getHtmlTable(indicators, y, m, d, true);
-            total = getSumIndicator();
-            total.setName("越南出货台数");
-            sb.append(getHtmlTableRow(total, y, m, d));          
-
-            sb.append("</table></div>");
+            if (indicators != null && !indicators.isEmpty()) {
+                salesOrder = new SalesOrderQuantity();
+                return getHtmlTable(this.indicators, y, m, d, true);
+            } else {
+                return "越南出货台数设定错误";
+            }
         } catch (Exception ex) {
             return ex.toString();
         }
-        return sb.toString();
+
     }
 
     protected String getAmountTable() {
-        StringBuilder sb = new StringBuilder();
-        Indicator total;
         try {
-            sb.append("<div class=\"tbl\"><table width=\"100%\">");
-            sb.append("<tr><th rowspan=\"2\" colspan=\"1\">公司别</th><th rowspan=\"2\" colspan=\"1\">本日</th>");
-            sb.append("<th rowspan=\"1\" colspan=\"5\">本月</th><th rowspan=\"1\" colspan=\"5\">年累计</th>");
-            sb.append("<th rowspan=\"2\" colspan=\"1\">年度目标</th><th rowspan=\"2\" colspan=\"1\">年度达成率</th><th rowspan=\"2\" colspan=\"1\">订单未交</th></tr>");
-            sb.append("<tr><th colspan=\"1\">实际</th><th colspan=\"1\">目标</th><th colspan=\"1\">达成率</th><th colspan=\"1\">去年同期</th><th colspan=\"1\">成长率</th>");
-            sb.append("<th colspan=\"1\">实际</th><th colspan=\"1\">目标</th><th colspan=\"1\">达成率</th><th colspan=\"1\">去年同期</th><th colspan=\"1\">成长率</th>");
-            sb.append("</tr>");
-
-            salesOrder = new SalesOrderAmount();
-
+            salesOrder = new SalesOrderQuantity();
             indicators.clear();
+            //越南的出货金额 = 整机出货金额 + 零件收费服务金额
             indicators = indicatorBean.findByCategoryAndYear("越南出货金额", y);
+            indicators.addAll(indicatorBean.findByCategoryAndYear("越南出货收费服务金额", y));
             indicatorBean.getEntityManager().clear();
-            indicators.stream().forEach((i) -> {
-                indicatorBean.divideByRate(i, 2);
-            });
-            getHtmlTable(indicators, y, m, d, true);
-            total = getSumIndicator();
-            total.setName("越南出货金额");
-            sb.append(getHtmlTableRow(total, y, m, d));         
-
-            sb.append("</table></div>");
+            salesOrder = new SalesOrderQuantity();
+            if (indicators != null && !indicators.isEmpty()) {
+                indicators.stream().forEach((i) -> {
+                    indicatorBean.divideByRate(i, 2);
+                });
+                salesOrder = new SalesOrderAmount();
+                return getHtmlTable(this.indicators, y, m, d, true);
+            } else {
+                return "越南出货金额设定错误";
+            }
         } catch (Exception ex) {
             return ex.toString();
         }
-        return sb.toString();
     }
 
 }
