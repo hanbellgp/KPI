@@ -36,7 +36,7 @@ public class SalesOrderAmountVN extends SalesOrderAmount {
         if (!"".equals(hmark2)) {
             sb.append(" and h.hmark2 ").append(hmark2);
         }
-   
+
         sb.append(" and year(h.recdate) = ${y} and month(h.recdate)= ${m} ");
         switch (type) {
             case 2:
@@ -63,4 +63,34 @@ public class SalesOrderAmountVN extends SalesOrderAmount {
         return tram;
     }
 
+    @Override
+    public BigDecimal getNotDelivery(Date d, LinkedHashMap<String, Object> map) {
+        //获得查询参数
+        String facno = map.get("facno") != null ? map.get("facno").toString() : "";
+        String hmark1 = map.get("hmark1") != null ? map.get("hmark1").toString() : "";
+        String hmark2 = map.get("hmark2") != null ? map.get("hmark2").toString() : "";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("select isnull(sum((d.cdrqy1 - d.shpqy1) * d.unpris * h.ratio/(case h.tax when '1' then 1 else (h.taxrate + 1) end)),0) from cdrdmas d inner join cdrhmas h on h.facno=d.facno and h.cdrno=d.cdrno where h.hrecsta <> 'W' ");
+        sb.append(" and d.drecsta not in ('98','99') ");
+        sb.append(" and h.cusno not in ('SSD00328') and  h.facno='${facno}' ");
+        if (!"".equals(hmark1)) {
+            sb.append(" and h.hmark1 ").append(hmark1);
+        }
+        if (!"".equals(hmark2)) {
+            sb.append(" and h.hmark2 ").append(hmark2);
+        }
+        sb.append(" and h.recdate<= '${d}' ");
+        String cdrdmas = sb.toString().replace("${d}", BaseLib.formatDate("yyyyMMdd", d))
+                .replace("${facno}", facno);
+        superEJB.setCompany(facno);
+        Query query = superEJB.getEntityManager().createNativeQuery(cdrdmas);
+        System.out.print("cdrdmas=="+cdrdmas);
+        try {
+            Object o1 = query.getSingleResult();
+            return (BigDecimal) o1;
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
 }

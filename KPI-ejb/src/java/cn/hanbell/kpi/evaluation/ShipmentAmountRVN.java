@@ -14,7 +14,7 @@ public class ShipmentAmountRVN extends ShipmentAmountVN {
     public ShipmentAmountRVN() {
         super();
         queryParams.put("facno", "V");
-        queryParams.put("hmark1", " ='R'");
+        queryParams.put("hmark1", " in ('R','DR')");
         queryParams.put("hmark2", " ='ZJ'");
     }
 }

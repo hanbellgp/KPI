@@ -8,7 +8,9 @@ package cn.hanbell.kpi.mail;
 import cn.hanbell.kpi.comm.ShipmentMail;
 import cn.hanbell.kpi.entity.Indicator;
 import cn.hanbell.kpi.evaluation.SalesOrderAmount;
+import cn.hanbell.kpi.evaluation.SalesOrderAmountVN;
 import cn.hanbell.kpi.evaluation.SalesOrderQuantity;
+import cn.hanbell.kpi.evaluation.SalesOrderQuantityVN;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
@@ -41,12 +43,12 @@ public class VietnamShipmentMailBean extends ShipmentMail {
 
     protected String getQuantityTable() {
         try {
-            salesOrder = new SalesOrderQuantity();
             indicators.clear();
             indicators = indicatorBean.findByCategoryAndYear("越南出货台数", y);
             indicatorBean.getEntityManager().clear();
             if (indicators != null && !indicators.isEmpty()) {
-                salesOrder = new SalesOrderQuantity();
+                //越南明细中无归类栏位，不适用上海汉钟的分类方法。
+                salesOrder = new SalesOrderQuantityVN();
                 return getHtmlTable(this.indicators, y, m, d, true);
             } else {
                 return "越南出货台数设定错误";
@@ -59,18 +61,17 @@ public class VietnamShipmentMailBean extends ShipmentMail {
 
     protected String getAmountTable() {
         try {
-            salesOrder = new SalesOrderQuantity();
             indicators.clear();
             //越南的出货金额 = 整机出货金额 + 零件收费服务金额
             indicators = indicatorBean.findByCategoryAndYear("越南出货金额", y);
             indicators.addAll(indicatorBean.findByCategoryAndYear("越南出货收费服务金额", y));
             indicatorBean.getEntityManager().clear();
-            salesOrder = new SalesOrderQuantity();
             if (indicators != null && !indicators.isEmpty()) {
                 indicators.stream().forEach((i) -> {
                     indicatorBean.divideByRate(i, 2);
                 });
-                salesOrder = new SalesOrderAmount();
+                //越南明细中无归类栏位，不适用上海汉钟的分类方法。
+                salesOrder = new SalesOrderAmountVN();
                 return getHtmlTable(this.indicators, y, m, d, true);
             } else {
                 return "越南出货金额设定错误";

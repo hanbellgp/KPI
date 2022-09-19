@@ -63,4 +63,36 @@ public class SalesOrderQuantityVN extends SalesOrderQuantity {
         return cdrqy1;
     }
 
+    @Override
+    public BigDecimal getNotDelivery(Date d, LinkedHashMap<String, Object> map) {
+        //获得查询参数
+        String facno = map.get("facno") != null ? map.get("facno").toString() : "";
+        String hmark1 = map.get("hmark1") != null ? map.get("hmark1").toString() : "";
+        String hmark2 = map.get("hmark2") != null ? map.get("hmark2").toString() : "";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("select isnull(sum(d.cdrqy1 - d.shpqy1),0)  from cdrdmas d inner join cdrhmas h on h.facno=d.facno and h.cdrno=d.cdrno where h.hrecsta <> 'W'  ");
+        sb.append(" and d.drecsta not in ('98','99') ");
+        sb.append(" and h.cusno not in ('SSD00328') and  h.facno='${facno}' ");
+        sb.append(" and ( d.itnbr in (select itnbr from invmas where itcls in('RC2','AA','3176','3576','3579','3580','3679','3705','3707','3716','3733','3735','3738','3766','3776','3780','3801','3802','3806','3833','3835','3838','3866','3879','3880','3A76','3A79','CDU','7110')) )");
+        if (!"".equals(hmark1)) {
+            sb.append(" and h.hmark1 ").append(hmark1);
+        }
+        if (!"".equals(hmark2)) {
+            sb.append(" and h.hmark2 ").append(hmark2);
+        }
+        sb.append(" and h.recdate<= '${d}' ");
+        String cdrdmas = sb.toString().replace("${d}", BaseLib.formatDate("yyyyMMdd", d))
+                .replace("${facno}", facno);
+
+        superEJB.setCompany(facno);
+        Query query = superEJB.getEntityManager().createNativeQuery(cdrdmas);
+        System.out.print("cdrdmas=="+cdrdmas);
+        try {
+            Object o1 = query.getSingleResult();
+            return (BigDecimal) o1;
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
 }
