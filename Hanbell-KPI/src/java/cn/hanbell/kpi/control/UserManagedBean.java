@@ -1,6 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * To change this template, choose Tools | Templates and open the template in the editor.
  */
 package cn.hanbell.kpi.control;
 
@@ -30,14 +29,15 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.el.ELContext;
-import javax.el.ExpressionFactory;
-import javax.el.MethodExpression;
-import javax.faces.component.html.HtmlCommandButton;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
+
 /**
  *
  * @author C0160
@@ -76,6 +76,7 @@ public class UserManagedBean implements Serializable {
     private List<RoleGrantModule> roleGrantDeptList;
     private List<Company> companyList;
     private String token;
+
     public UserManagedBean() {
         status = false;
         c = Calendar.getInstance();
@@ -88,18 +89,56 @@ public class UserManagedBean implements Serializable {
         c.add(Calendar.DATE, 0 - c.get(Calendar.DATE));
         setBaseDate(c.getTime());
     }
-  /**
+
+    /**
      * 获取当前访问URL （含协议、域名、端口号[忽略80端口]、项目名）
      *
      * @param url
      * @param param
      * @return: String
      */
-//新增一个接口
+    // 新增一个接口
     public String sendPostLogin(String url, String param) throws IOException {
-        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        FacesContext fc = FacesContext.getCurrentInstance();
+        HttpServletRequest request = (HttpServletRequest)fc.getExternalContext().getRequest();
+        // unicorn-sso
+        if (request.getParameter("unicorn-sso") != null) {
+            String sessionId = request.getParameter("unicorn-sso");
+            // session验证地址
+            String unicornEapUrl = fc.getExternalContext().getInitParameter("unicorn.sso.url");
+            CloseableHttpClient httpClient = HttpClients.createDefault();
+            HttpGet httpGet = new HttpGet(unicornEapUrl + sessionId);
+            try {
+                CloseableHttpResponse response = httpClient.execute(httpGet);
+                if (response.getStatusLine().getStatusCode() == 200) {
+                    HttpEntity httpEntity = response.getEntity();
+                    JSONObject jo = new JSONObject(EntityUtils.toString(httpEntity, "UTF-8"));
+                    if (jo.has("code") && jo.getString("code").equals("200") && jo.has("object")) {
+                        userid = jo.getJSONObject("object").getString("username");
+                        currentUser = systemUserBean.findByUserId(userid);
+                        if (currentUser != null) {
+                            company = currentUser.getDept().getCompany();
+                            if (company == null || "".equals(company)) {
+                                company = this.currentUser.getUserid().substring(0, 1);
+                            }
+                            // 此处加入公司授权检查
+                            status = setCompanyInfo(company, userid);
+                            if (!status) {
+                                return "";
+                            }
+                            updateLoginTime();
+                            status = true;
+                            FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
+                            return "";
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                System.out.print(ex);
+            }
+        }
         token = request.getQueryString();
-        if (token==null || token.equals("")) {
+        if (token == null || token.equals("")) {
             return "";
         }
         PrintWriter out = null;
@@ -125,8 +164,7 @@ public class UserManagedBean implements Serializable {
             // flush输出流的缓冲
             out.flush();
             // 定义BufferedReader输入流来读取URL的响应
-            in = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream(), "utf-8"));
+            in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
             String line;
             while ((line = in.readLine()) != null) {
                 result += line;
@@ -134,7 +172,7 @@ public class UserManagedBean implements Serializable {
         } catch (Exception e) {
             System.out.println("发送 POST 请求出现异常！" + e);
             e.printStackTrace();
-        } //使用finally块来关闭输出流、输入流
+        } // 使用finally块来关闭输出流、输入流
         finally {
             try {
                 if (out != null) {
@@ -150,8 +188,8 @@ public class UserManagedBean implements Serializable {
         String userNo = "";
 
         JSONObject jsonObject = new JSONObject(result);
-        int resultTemp = jsonObject.getInt("result");//获取成功状态
-        if (resultTemp == 1) {//成功则获取员工id
+        int resultTemp = jsonObject.getInt("result");// 获取成功状态
+        if (resultTemp == 1) {// 成功则获取员工id
             JSONObject data = jsonObject.getJSONObject("data");
             userid = data.getString("userNo");
             SystemUser u = null;
@@ -161,19 +199,22 @@ public class UserManagedBean implements Serializable {
                 if ("Admin".equals(u.getUserid())) {
                     currentCompany = companyBean.findByCompany(company);
                     if (currentCompany == null) {
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "请维护公司信息"));
+                        FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "请维护公司信息"));
                     }
                 } else {
-                    //此处加入公司授权检查
+                    // 此处加入公司授权检查
                     CompanyGrant cg = companyGrantBean.findByCompanyAndUserid(company, userid);
                     if (cg == null) {
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "您无权访问此公司别,请联系管理员"));
+                        FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "您无权访问此公司别,请联系管理员"));
                         status = false;
                         return "";
                     }
                     currentCompany = companyBean.findByCompany(company);
                     if (currentCompany == null) {
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "请维护公司信息"));
+                        FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "请维护公司信息"));
                         status = false;
                         return "";
                     }
@@ -185,12 +226,13 @@ public class UserManagedBean implements Serializable {
 
             }
         } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "您无权免密登入,请联系管理员"));
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "您无权免密登入,请联系管理员"));
             status = false;
             return "login";
         }
         token = "";
-         FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
+        FacesContext.getCurrentInstance().getExternalContext().redirect("home.xhtml");
         return "home";
     }
 
@@ -227,7 +269,8 @@ public class UserManagedBean implements Serializable {
 
     public String login() {
         if (getUserid().length() == 0 || getPwd().length() == 0) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "请输入用户名和密码"));
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "请输入用户名和密码"));
             return "";
         }
         secpwd = BaseLib.securityMD5(getPwd());
@@ -236,7 +279,8 @@ public class UserManagedBean implements Serializable {
             if ("Admin".equals(userid)) {
                 u = systemUserBean.findByUserIdAndPwd(userid, secpwd);
                 if (u == null) {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "用户名或密码错误"));
+                    FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "用户名或密码错误"));
                     status = false;
                     return "";
                 }
@@ -247,20 +291,13 @@ public class UserManagedBean implements Serializable {
                 if ("Admin".equals(u.getUserid())) {
                     currentCompany = companyBean.findByCompany(company);
                     if (currentCompany == null) {
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "请维护公司信息"));
+                        FacesContext.getCurrentInstance().addMessage(null,
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "请维护公司信息"));
                     }
                 } else {
-                    //此处加入公司授权检查
-                    CompanyGrant cg = companyGrantBean.findByCompanyAndUserid(company, userid);
-                    if (cg == null) {
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "您无权访问此公司别"));
-                        status = false;
-                        return "";
-                    }
-                    currentCompany = companyBean.findByCompany(company);
-                    if (currentCompany == null) {
-                        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "请维护公司信息"));
-                        status = false;
+                    // 此处加入公司授权检查
+                    status = setCompanyInfo(company, userid);
+                    if (!status) {
                         return "";
                     }
                 }
@@ -268,20 +305,42 @@ public class UserManagedBean implements Serializable {
                 status = true;
                 mobile = u.getUserid();
                 updateLoginTime();
+            } else {
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "用户名或密码错误"));
+                status = false;
+                return "";
             }
         } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "用户名或密码不正确！"));
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "用户名或密码不正确！"));
             status = false;
-            return "login";
+            return "";
         }
         return "home";
+    }
+
+    private Boolean setCompanyInfo(String company, String userid) {
+        CompanyGrant cg = companyGrantBean.findByCompanyAndUserid(company, userid);
+        if (cg == null) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "您无权访问此公司别"));
+            return false;
+        }
+        currentCompany = companyBean.findByCompany(company);
+        if (currentCompany == null) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "请维护公司信息"));
+            return false;
+        }
+        return true;
     }
 
     public String logout() {
         if (status) {
             currentUser = null;
             status = false;
-            HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+            HttpSession session = (HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false);
             if (session != null) {
                 session.invalidate();
             }
@@ -301,9 +360,11 @@ public class UserManagedBean implements Serializable {
             }
             try {
                 systemUserBean.update(currentUser);
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "更新成功"));
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "更新成功"));
             } catch (Exception e) {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "更新失败！"));
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "更新失败！"));
             }
         }
     }
@@ -325,9 +386,11 @@ public class UserManagedBean implements Serializable {
             update();
             pwd = "";
             newpwd = "";
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "更新密码成功"));
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "更新密码成功"));
         } else {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn", "原密码错误"));
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn", "原密码错误"));
         }
     }
 
