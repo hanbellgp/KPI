@@ -127,6 +127,9 @@ public class ScorecardContent extends SuperEntity {
     @Size(max = 20)
     @Column(name = "indicator")
     private String indicator;
+    @Size(max = 45)
+    @Column(name = "projectName")
+    private String projectName;
     @Size(max = 10)
     @Column(name = "deptno")
     private String deptno;
@@ -286,7 +289,9 @@ public class ScorecardContent extends SuperEntity {
     @Size(max = 200)
     @Column(name = "remark")
     private String remark;
-
+    @Size(max = 45)
+    @Column(name = "projectSeq")
+    private String projectSeq;
     public ScorecardContent() {
         this.sortid = 0;
         this.status = "N";
@@ -508,6 +513,14 @@ public class ScorecardContent extends SuperEntity {
 
     public void setIndicator(String indicator) {
         this.indicator = indicator;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 
     public String getDeptno() {
@@ -1124,6 +1137,14 @@ public class ScorecardContent extends SuperEntity {
 
     public void setSummaryScore2(ScorecardExplanation summaryScore2) {
         this.summaryScore2 = summaryScore2;
+    }
+
+    public String getProjectSeq() {
+        return projectSeq;
+    }
+
+    public void setProjectSeq(String projectSeq) {
+        this.projectSeq = projectSeq;
     }
 
     @Override

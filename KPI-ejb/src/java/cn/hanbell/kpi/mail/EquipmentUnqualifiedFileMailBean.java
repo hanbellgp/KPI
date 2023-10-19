@@ -70,7 +70,7 @@ public class EquipmentUnqualifiedFileMailBean extends MailNotification {
         sb.append("<div class=\"tableTitle\" style=\"margin-top: 30px\" >附件是不合格点检报表，请查收。");
         sb.append("<div class=\"tableTitle\" style=\"margin-top: 30px\">谢谢!");
         sb.append("<div class=\"tableTitle\" style=\"margin-top: 30px\">此邮件是系统自动发送，请不要回复。");
-        sb.append("<div class=\"tableTitle\" style=\"margin-top: 30px\">报表责任人：刘贵莲。");
+        sb.append("<div class=\"tableTitle\" style=\"margin-top: 30px\">报表责任人：许兵。");
         sb.append("<div class=\"tableTitle\" style=\"margin-top: 30px\">");
         return sb.toString();
     }
@@ -91,18 +91,21 @@ public class EquipmentUnqualifiedFileMailBean extends MailNotification {
         Date thisDate = new Date();//获取当前时间
         String strDate = sdf.format(thisDate);
         // Date d = sdf.parse(strDate);//将String格式转为日期格式
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(thisDate);
-        cal.add(Calendar.DATE, -1);
-        int hor = thisDate.getHours();//当前时间为几时
-        if (hor > 12) {//当时间是下午时，推送方型的不合格数据
-            deptName = "方型加工课";
-        } else {
-            deptName = "圆型加工课";
-            strDate = sdf.format(cal.getTime());//推送圆型数据时推送前一天的数据
-        }
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTime(thisDate);
+//        cal.add(Calendar.DATE, -1);
+//        int hor = thisDate.getHours();//当前时间为几时
+//        if (hor > 12) {//当时间是下午时，推送方型的不合格数据
+//            deptName = "方型加工课";
+//        } else {
+//            deptName = "圆型加工课";
+//            strDate = sdf.format(cal.getTime());//推送圆型数据时推送前一天的数据
+//        }
+        String []  str =new String[2];
+        str[0]="方型加工课";
+        str[1]="圆型加工课";
         try {
-            List<Object[]> equipmentAnalyResultList = equipmentAnalyResultBean.getUnqualifiedEquipmentAnalyResult(deptName, strDate);
+
             finalFilePath = this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
             int index = finalFilePath.indexOf("KPI-ejb");
             InputStream is = new FileInputStream(finalFilePath.substring(1, index) + "Hanbell-KPI_war/rpt/不合格点检表模板.xls");
@@ -110,7 +113,9 @@ public class EquipmentUnqualifiedFileMailBean extends MailNotification {
             //获得表格样式
             Map<String, CellStyle> style = createStyles(workbook);
             Sheet sheet;
-            sheet = workbook.getSheetAt(0);
+           for (int i = 0; i < str.length; i++) {
+            List<Object[]> equipmentAnalyResultList = equipmentAnalyResultBean.getUnqualifiedEquipmentAnalyResult(str[i], strDate);
+            sheet = workbook.getSheetAt(i);
             Row row;
             Row row1;
             row = sheet.createRow(0);
@@ -120,7 +125,7 @@ public class EquipmentUnqualifiedFileMailBean extends MailNotification {
             sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 6));
             Cell cellTitle = row.createCell(0);
             cellTitle.setCellStyle(style.get("title"));
-            cellTitle.setCellValue(strDate + "点检不合格表-----" + deptName);
+            cellTitle.setCellValue(strDate + "点检不合格表-----" + str[i]);
             Cell cellTime = row1.createCell(13);
             cellTime.setCellStyle(style.get("right"));
             cellTime.setCellValue("汉钟版");
@@ -169,10 +174,11 @@ public class EquipmentUnqualifiedFileMailBean extends MailNotification {
                     cell0.setCellValue(eq[8].toString());
                 }
                 cell0.setCellStyle(style.get("cell"));
-              
+              }
 
             }
-            String path = "../" + strDate + "不合格点检单---" + deptName + ".xls";//新建文件保存路径
+            
+            String path = "../" + strDate + "不合格点检单.xls";//新建文件保存路径
             FileOutputStream out = null;
             File file = new File(path);
             try {

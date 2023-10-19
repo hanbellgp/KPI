@@ -20,7 +20,7 @@ public class ShipmentQuantityAYD extends ShipmentQuantity {
         queryParams.put("facno", "G");
         //queryParams.put("decode", "1");
         queryParams.put("n_code_DA", "='AH' ");
-        queryParams.put("n_code_DC", " in ( 'AYD','AY') ");
+        queryParams.put("n_code_DC", " in ( 'AYD','AY','AXD') ");
         queryParams.put("n_code_DD", " ='00' ");
     }
      @Override

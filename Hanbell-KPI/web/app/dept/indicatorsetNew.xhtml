@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="indicatorset" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存" actionListener="#{indicatorSetManagedBean.persist()}" icon="ui-icon-save"
+                                     process="@this,plgHead" update="formOne"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">部门KPI维护－新增</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="指标编号" for="formid"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:inputText id="formid" value="#{indicatorSetManagedBean.newEntity.formid}" title="formid"
+                                     required="true" requiredMessage="请输入指标编号"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="指标名称" for="name"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:inputText id="name" value="#{indicatorSetManagedBean.newEntity.name}" title="Name"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="指标年度" for="seq" /></p:column>
+                    <p:column>
+                        <p:inputText id="seq" value="#{indicatorSetManagedBean.newEntity.seq}" title="seq"
+                                     required="true" requiredMessage="请输入指标年度"/>
+                    </p:column>
+                    <p:column><p:outputLabel value="产品" for="pid"/></p:column>
+                    <p:column>
+                        <p:inputText id="pid" value="#{indicatorSetManagedBean.newEntity.product}" title="Pid" styleClass="inputWithButton"
+                                     required="true" requiredMessage="请输入指标产品"/>
+                        <p:commandButton id="btnProductSelect" actionListener="#{indicatorSetManagedBean.openDialog('categorySelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{indicatorSetManagedBean.handleDialogReturnProductWhenNew}"
+                                    update="pid,sortid" />
+                        </p:commandButton>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="考核部门" for="deptno"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:inputText id="deptno" value="#{indicatorSetManagedBean.newEntity.deptno}" title="deptno"  styleClass="inputWithButton"
+                                     required="true" requiredMessage="请输入考核部门"/>
+                        <p:commandButton id="btnDepartmentSelect" actionListener="#{indicatorSetManagedBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{indicatorSetManagedBean.handleDialogReturnWhenNew}"
+                                    update="deptno,deptname" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="部门名称" for="deptname"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:inputText id="deptname" value="#{indicatorSetManagedBean.newEntity.deptname}" title="deptname" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="考核人员" for="userid" /></p:column>
+                    <p:column>
+                        <p:inputText id="userid" value="#{indicatorSetManagedBean.newEntity.userid}" title="userid" styleClass="inputWithButton"
+                                     />
+                        <p:commandButton id="btnSystemUserSelect" actionListener="#{indicatorSetManagedBean.openDialog('sysuserSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{indicatorSetManagedBean.handleDialogReturnUserWhenDetailNew}"
+                                    process="@this" update="userid,username" />
+                        </p:commandButton>
+                    </p:column>
+                    <p:column><h:outputText value="姓名"/></p:column>
+                    <p:column>
+                        <h:outputText id="username" value="#{indicatorSetManagedBean.newEntity.username}" title="username" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="单位" for="unit" /></p:column>
+                    <p:column>
+                        <p:inputText id="unit" value="#{indicatorSetManagedBean.newEntity.unit}" title="unit" />
+                    </p:column>
+                    <p:column><p:outputLabel value="换算率" for="rate" /></p:column>
+                    <p:column>
+                        <p:inputNumber id="rate" value="#{indicatorSetManagedBean.newEntity.rate}" title="rate" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="数字格式" for="symbol" /></p:column>
+                    <p:column>
+                        <p:inputText id="symbol" value="#{indicatorSetManagedBean.newEntity.symbol}" title="symbol" />
+                    </p:column>
+                    <p:column><p:outputLabel value="系統排程" for="jobSchedule" /></p:column>
+                    <p:column>
+                        <p:inputText id="jobSchedule" value="#{indicatorSetManagedBean.newEntity.jobSchedule}" title="jobSchedule" styleClass="inputWithButton"/>
+                        <p:commandButton id="btnJobScheduleSelect" actionListener="#{indicatorSetManagedBean.openDialog('jobscheduleSelect')}" icon="ui-icon-extlink"
+                                         process="@this" >
+                            <p:ajax event="dialogReturn" listener="#{indicatorSetManagedBean.handleDialogReturnJobScheduleWhenNew}"
+                                    update="jobSchedule" />
+                        </p:commandButton>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="API" for="api" /></p:column>
+                    <p:column>
+                        <p:inputText id="api" value="#{indicatorSetManagedBean.newEntity.api}" title="api"
+                                     required="true" requiredMessage="请输入API"/>
+                    </p:column>
+                    <p:column><p:outputLabel value="排序" for="sortid" /></p:column>
+                    <p:column>
+                        <p:inputText id="sortid" value="#{indicatorSetManagedBean.newEntity.sortid}" title="sortid"
+                                     required="true" requiredMessage="请输入指标顺序"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="计算接口" for="actualInterface" /></p:column>
+                    <p:column colspan="3">
+                        <p:inputText id="actualInterface" value="#{indicatorSetManagedBean.newEntity.actualInterface}" title="actualInterface"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="接口EJB" for="actualEJB" /></p:column>
+                    <p:column colspan="3">
+                        <p:inputText id="actualEJB" value="#{indicatorSetManagedBean.newEntity.actualEJB}" title="actualEJB"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="备注" for="remark" /></p:column>
+                    <p:column colspan="3">
+                        <p:inputText id="remark" value="#{indicatorSetManagedBean.newEntity.remark}" title="Remark" />
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

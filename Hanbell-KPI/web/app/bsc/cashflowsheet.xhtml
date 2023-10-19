@@ -68,10 +68,13 @@
                                 <tr name="#{mp.value[6] ? 'btitle' : 'btitle1'}" style="#{mp.value[6] ? 'background-color: #8CB4E2;' : ''}" >
                                     <c:forEach items="#{mp.value}" var="item"  varStatus="st" >
                                         <c:if test="${st.first}">
-                                            <td style="text-align: left;">#{item=='0' || item=='0％'? '-': item}</td>
+                                              <td style="text-align: left;">#{item=='0' || item=='0％'? '-': item}</td>
                                         </c:if>
-                                        <c:if test="${!st.first and st.count != 7 }">
-                                            <td style="text-align: ${st.count == 2?'center' :'right'}">#{item=='0' || item=='0％'? '-': item}</td>
+                                        <c:if test="${!st.first and st.count == 2 and st.count != 7 }">
+                                            <td style="text-align: ${st.count == 2?'center' :'right'}">#{item}</td>
+                                        </c:if>
+                                        <c:if test="${!st.first  and st.count != 7 and st.count != 2}">
+                                            <td style="text-align: ${st.count == 2?'center' :'right'}">#{cashFlowSheetReportBean.format(item)}</td>
                                         </c:if>
                                     </c:forEach>
                                 </tr>

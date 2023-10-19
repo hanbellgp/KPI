@@ -22,6 +22,7 @@ public class ShipmentAmountR1D9 extends ShipmentAmount9 {
         queryParams.put("ogdkid", "RL01");
         queryParams.put("n_code_DA", " ='R' ");
         queryParams.put("n_code_CD", " ='GZ' ");
+        queryParams.put("n_code_DD", " not in ('00','ZZ') ");
     }
 
     @Override

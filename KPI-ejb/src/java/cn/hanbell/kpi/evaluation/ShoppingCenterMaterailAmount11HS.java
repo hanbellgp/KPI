@@ -14,7 +14,6 @@ public class ShoppingCenterMaterailAmount11HS extends ShoppingCenterMaterailAmou
     public ShoppingCenterMaterailAmount11HS() {
         super();
         queryParams.put("facno", "H");
-        queryParams.put("prono", "1");
-        queryParams.put("material", "select vdrno from shoppingmanufacturer where facno='H' and materialTypeName='接线盒'");
+        queryParams.put("type", "='接线盒'");
     }
 }

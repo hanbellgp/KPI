@@ -94,9 +94,9 @@
                             <c:forEach items="#{balanceSheet2ReportBean.list}" var="mp" varStatus="status" >
                                 <tr name="#{mp[6]  ? 'btitle' : 'btitle1'}" style="#{mp[6] ? 'background-color: #8CB4E2;' : ''}" >
                                     <td style="#{mp[5] ? 'text-align: left;' : ''}">#{mp[0]}</td>
-                                    <td style="text-align: right">#{mp[1]=='0.00'? '-': balanceSheet2ReportBean.format(mp[1])}</td>
-                                    <td style="text-align: right">#{mp[2]=='0.00'? '-': balanceSheet2ReportBean.format(mp[2])}</td>
-                                    <td style="text-align: right">#{mp[3]=='0.00'? '-': balanceSheet2ReportBean.format(mp[3])}</td>
+                                    <td style="text-align: right">#{mp[1]=='0.00'? '-': balanceSheet2ReportBean.format(mp[0],mp[1])}</td>
+                                    <td style="text-align: right">#{mp[2]=='0.00'? '-': balanceSheet2ReportBean.format(mp[0],mp[2])}</td>
+                                    <td style="text-align: right">#{mp[3]=='0.00'? '-': balanceSheet2ReportBean.format(mp[0],mp[3])}</td>
                                     <td style="text-align: right">#{mp[4]=='0.00%'? '-': mp[4]}</td>
                                 </tr>
 

@@ -18,7 +18,7 @@ public class ShipmentQuantityAJ2 extends ShipmentQuantity {
         queryParams.put("deptno", " '1T100' ");
         // queryParams.put("decode", "2");
         queryParams.put("n_code_DA", "='AH' ");
-        queryParams.put("n_code_CD", " LIKE 'WX%' ");
+        queryParams.put("n_code_CD", " ='WX' ");
         queryParams.put("n_code_DC", " NOT LIKE 'SAM%' ");
         queryParams.put("n_code_DD", " ='00' ");
     }

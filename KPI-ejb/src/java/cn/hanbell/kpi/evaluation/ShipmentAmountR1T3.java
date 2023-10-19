@@ -20,20 +20,11 @@ public class ShipmentAmountR1T3 extends ShipmentAmount {
         queryParams.put("facno", "C");
         queryParams.put("deptno", " '1T000','1T100' ");
         queryParams.put("decode", "2");
+        queryParams.put("ogdkid", "RL03");
         queryParams.put("n_code_DA", " ='R' ");
         queryParams.put("n_code_CD", "  LIKE 'WX%' ");
         queryParams.put("n_code_DC", " ='L' ");
         queryParams.put("n_code_DD", " ='00' ");
-    }
-
-    @Override
-    public BigDecimal getARM270Value(int y, int m, Date d, int type, LinkedHashMap<String, Object> map) {
-        return BigDecimal.ZERO;
-    }
-
-    @Override
-    public BigDecimal getARM423Value(int y, int m, Date d, int type, LinkedHashMap<String, Object> map) {
-        return BigDecimal.ZERO;
     }
 
 }

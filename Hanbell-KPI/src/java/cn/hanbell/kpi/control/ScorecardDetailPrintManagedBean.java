@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.ejb.EJB;
@@ -84,7 +85,7 @@ public class ScorecardDetailPrintManagedBean extends SuperSingleBean<ScorecardCo
          Calendar cal = Calendar.getInstance();
          cal.setTime(this.printDate);
         List<Scorecard> list = scorecardBean.findByStatusAndYear("V",cal.get(Calendar.YEAR));
-
+        List<Scorecard> scorecards =list.stream().filter(sc -> sc.getCompany().equals(this.userManagedBean.getCompany())).collect(Collectors.toList());
         if (list == null || list.isEmpty()) {
             showMsg(FacesMessage.SEVERITY_WARN, "Warn", "没有可打印数据");
             return;
@@ -97,7 +98,7 @@ public class ScorecardDetailPrintManagedBean extends SuperSingleBean<ScorecardCo
                 xlscs[i].delete();
             }
         }
-        for (Scorecard s : list) {
+        for (Scorecard s : scorecards) {
             HashMap<String, Object> reportParams = new HashMap<>();
             reportParams.put("company", userManagedBean.getCurrentCompany().getName());
             reportParams.put("companyFullName", userManagedBean.getCurrentCompany().getFullname());

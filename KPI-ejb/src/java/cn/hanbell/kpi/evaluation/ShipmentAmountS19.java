@@ -24,7 +24,7 @@ public class ShipmentAmountS19 extends ShipmentAmount9 {
         queryParams.put("facno", "C");
         queryParams.put("ogdkid", "RL01");
         queryParams.put("n_code_DA", " ='AH' ");
-        queryParams.put("n_code_DC", " in ('SAM-5HP','SAM-7HP') ");
+        queryParams.put("n_code_DC", "  LIKE 'SAM%'");
     }
     
      @Override

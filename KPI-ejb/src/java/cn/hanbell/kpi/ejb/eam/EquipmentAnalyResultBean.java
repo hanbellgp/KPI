@@ -14,7 +14,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
@@ -45,7 +47,7 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
     public List<EquipmentStandard> getMonthlyReport(String date, String standardlevel) throws ParseException {
         StringBuilder sbSql = new StringBuilder();
         StringBuilder sbMES = new StringBuilder();
-        sbSql.append(" SELECT E.* FROM equipmentstandard E  LEFT JOIN assetcard A  ON E.assetno=A.formid  WHERE  E.status='V' ");
+        sbSql.append(" SELECT E.* FROM equipmentstandard E   WHERE  E.status='V' ");
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date d = formatter.parse(date);//将String格式转为日期格式
         Calendar cal = Calendar.getInstance();
@@ -91,10 +93,8 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
         eSql.append("  AND E.formdate ='").append(staDate).append("' and E.deptname='").append(deptname).append("'  AND standardlevel='一级' and E.company='C'");
         Query query = this.getEntityManager().createNativeQuery(eSql.toString());
         List<Object[]> list = query.getResultList();
-        //获取整天计划停机的机台编号
-        sbMES.append("   SELECT  EQPID  FROM PLAN_DOWNTIME WHERE PLANDATE='").append(staDate.replace('-', '/')).append("' AND AVAILABLEMINS >1400");//默认停机时间大于1400算停机
-        query = mesEJB.getEntityManager().createNativeQuery(sbMES.toString());
-        sMESList = query.getResultList();
+        //获取整天计划停机的机台编号  
+        sMESList = getEPQIDDowntime();
         if (!sMESList.isEmpty()) {
             for (String objects : sMESList) {
                 str = str + "'" + objects + "',";
@@ -116,5 +116,149 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
 
         return list;
     }
+    /**
+     * 获取自主保全阶段超时未点选数据
+     * @return 
+     */
+    public List getOvertimeEquipmentAnalyStage() {
+        String resultSql = "SELECT B.deptname,B.formid,B.assetDesc,B.remark,A.stage,A.plandate,TIMESTAMPDIFF(DAY ,plandate,NOW()) DIFF FROM equipmentanalystage A LEFT JOIN assetcard B ON A.formid=B.formid WHERE A.status!='Y' AND  TIMESTAMPDIFF(DAY ,plandate,NOW())>2 ORDER BY  formid,stage";
+        Query query = getEntityManager().createNativeQuery(resultSql);
+        List<Object[]> results = query.getResultList();//已生成的计划保全单
+        return results;
+    }
 
+    /**
+     * 自主保全实施表
+     *
+     * @param formdate
+     * @return
+     */
+    public List getImplementation(String formdate) {
+        String resultSql = "SELECT A.deptname,A.assetno,a.assetdesc, B.totCount,b.sCount,DAY FROM (SELECT formid,assetno,assetdesc,deptname,DAY(formdate) DAY  FROM equipmentanalyresult WHERE formdate LIKE '%" + formdate + "%' AND company='C'AND standardlevel='一级' ) A LEFT JOIN (SELECT pid,COUNT(PID) totCount,CASE pid WHEN edate IS     NULL THEN count(pid) ELSE 0 END sCount FROM equipmentanalyresultdta GROUP BY pid) B ON A.formid=B.pid ORDER BY A.deptname";
+        Query query = getEntityManager().createNativeQuery(resultSql);
+        List<Object[]> results = query.getResultList();//已生成的计划保全单
+        String assetCardSql = "SELECT A.formid, A.remark,deptname FROM assetcard A LEFT JOIN  assetitem I ON A.itemno=I.itemno WHERE  A.remark IS NOT NULL  and I.categoryid=3 AND A. company='C'  AND qty!=0 ORDER BY remark";
+        query = getEntityManager().createNativeQuery(assetCardSql);
+        List<Object[]> cList = query.getResultList();//已生成的计划保全单
+        Map<String, List<Object[]>> map = new HashMap<>();
+        results.forEach(result -> {
+            if (map.containsKey(result[1].toString())) {//判断是否已存在对应键号
+                map.get(result[1].toString()).add(result);//直接在对应的map中添加数据
+            } else {//map中不存在，新建key，用来存放数据
+                List<Object[]> tmpList = new ArrayList<>();
+                tmpList.add(result);
+                map.put(result[1].toString(), tmpList);//新增一个键号
+            }
+        });
+        List moList1 = new ArrayList();
+        for (Map.Entry<String, List<Object[]>> entry : map.entrySet()) {
+            List<Object[]> list = entry.getValue();//取出对应的值
+            Object[] obj1 = new Object[69];
+            for (Object[] obj : list) {
+                obj1[0] = obj[0];
+                obj1[1] = obj[1];
+                obj1[2] = obj[2];
+                for (Object[] c : cList) {
+                    if (c[0].equals(obj[1])) {
+                        obj1[3] = c[1];
+                    }
+                }
+                for (int i = 1; i <= 31; i++) {
+                    if (Integer.parseInt(obj[5].toString()) == i) {
+                        obj1[i * 2 + 2] = obj[3];
+                        obj1[i * 2 + 3] = obj[4];
+                    }
+                }
+            }
+            moList1.add(obj1);
+        }
+        return moList1;
+    }
+
+    /**
+     * 计划保全实施表
+     *
+     * @param formdate
+     * @return
+     */
+    public List getImplementationYear(String formdate) {
+        String resultSql = "SELECT A.deptname,A.assetno,a.assetdesc, B.totCount,b.sCount,DAY FROM (SELECT formid,assetno,assetdesc,deptname,MONTH(formdate) DAY  FROM equipmentanalyresult WHERE formdate LIKE '%" + formdate + "%' AND company='C' and standardlevel!='一级' ) A LEFT JOIN (SELECT pid,COUNT(PID) totCount,CASE pid WHEN edate IS     NULL THEN count(pid) ELSE 0 END sCount FROM equipmentanalyresultdta GROUP BY pid) B ON A.formid=B.pid ORDER BY A.deptname";
+        Query query = getEntityManager().createNativeQuery(resultSql);
+        List<Object[]> results = query.getResultList();//已生成的计划保全单
+        String assetCardSql = "SELECT A.formid, A.remark,deptname FROM assetcard A LEFT JOIN  assetitem I ON A.itemno=I.itemno WHERE  A.remark IS NOT NULL  and I.categoryid=3 AND A. company='C'  AND qty!=0 ORDER BY remark";
+        query = getEntityManager().createNativeQuery(assetCardSql);
+        List<Object[]> cList = query.getResultList();//已生成的计划保全单
+        Map<String, List<Object[]>> map = new HashMap<>();
+        results.forEach(result -> {
+            if (map.containsKey(result[1].toString())) {//判断是否已存在对应键号
+                map.get(result[1].toString()).add(result);//直接在对应的map中添加数据
+            } else {//map中不存在，新建key，用来存放数据
+                List<Object[]> tmpList = new ArrayList<>();
+                tmpList.add(result);
+                map.put(result[1].toString(), tmpList);//新增一个键号
+            }
+        });
+        List moList1 = new ArrayList();
+        for (Map.Entry<String, List<Object[]>> entry : map.entrySet()) {
+            List<Object[]> list = entry.getValue();//取出对应的值
+            Object[] obj1 = new Object[29];
+            for (Object[] obj : list) {
+                obj1[0] = obj[0];
+                obj1[1] = obj[1];
+                obj1[2] = obj[2];
+                for (Object[] c : cList) {
+                    if (c[0].equals(obj[1])) {
+                        obj1[3] = c[1];
+                    }
+                }
+                for (int i = 1; i <= 12; i++) {
+                    if (Integer.parseInt(obj[5].toString()) == i) {
+                        obj1[i * 2 + 2] = obj[3];
+                        obj1[i * 2 + 3] = obj[4];
+                    }
+                }
+            }
+            moList1.add(obj1);
+        }
+        return moList1;
+    }
+
+    //获取当天停机的机台编号
+    public List<String> getEPQIDDowntime() {
+        List<String> fMESList = new ArrayList<>();
+        List<String> yMESList = new ArrayList<>();
+        String stopSql = "";
+        stopSql = " SELECT EQPID FROM  PLAN_SEMI_SQUARE WHERE  PLANDATE = convert(char,getdate(),111)  AND PRODUCTID='计划停机' AND WORKHOUR LIKE '%1440%'";
+
+        Query query = mesEJB.getEntityManager().createNativeQuery(stopSql.toString());
+        fMESList = query.getResultList();
+        stopSql = "   SELECT EQPID FROM  PLAN_SEMI_CIRCLE WHERE  PLANDATE =convert(char,dateadd(dd,-1,getdate()),111) AND PRODUCTID='计划停机' AND WORKHOUR LIKE '%1440%'";
+        query = mesEJB.getEntityManager().createNativeQuery(stopSql.toString());
+        yMESList = query.getResultList();
+        fMESList.addAll(yMESList);
+        return fMESList;
+    }
+    /**
+     * 获取备件库存到预警线的数据
+     * @return 
+     */
+       public List getEquipmentSpare() {
+        String resultSql = "SELECT A.sparenum,A.sparedesc,A.sparemodel,A.qty,B.minstock FROM(SELECT T.sparenum,S.sparedesc,S.sparemodel,sum(T.qty) as qty"
+                + "   FROM equipmentsparestock T LEFT JOIN equipmentspare S ON T.sparenum = S.sparenum AND S.company = 'C'  LEFT JOIN equipmentspareclass C ON S.scategory = C.scategory AND C.company = 'C'"
+                + "   LEFT JOIN equipmentsparemid M ON S.scategory = M.scategory AND S.mcategory = M.mcategory AND M.company = 'C'  WHERE T.sarea = '枫泾厂' AND T.company = 'C'  GROUP BY  sparenum,sparemodel) A LEFT JOIN equipmentspare B ON A.sparenum = B.sparenum AND B.company = 'C'  WHERE A.qty<minstock ORDER BY  sparenum";
+        Query query = getEntityManager().createNativeQuery(resultSql);
+        List<Object[]> results = query.getResultList();
+        return results;
+    }
+       /**
+        * 获取维修完成后48小时未结案单子
+        * @return 
+        */
+      public List getPendingEquipment() {
+        String resultSql = "SELECT formid,assetno,repairusername,serviceusername,TIMESTAMPDIFF(HOUR, hitchtime, NOW()),rstatus FROM equipmentrepair WHERE rstatus>30  and rstatus<95 AND TIMESTAMPDIFF(HOUR, hitchtime, NOW())>48";
+        Query query = getEntityManager().createNativeQuery(resultSql);
+        List<Object[]> results = query.getResultList();
+        return results;
+    }
+    
 }

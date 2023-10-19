@@ -403,6 +403,11 @@
                     <property name="name">weight</property>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="position">79</property>
+                    <property name="name">msfy</property>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <list-property name="columnHints">
                 <structure>
@@ -638,6 +643,9 @@
                 </structure>
                 <structure>
                     <property name="columnName">weight</property>
+                </structure>
+                <structure>
+                    <property name="columnName">msfy</property>
                 </structure>
             </list-property>
             <structure name="cachedMetaData">
@@ -1032,6 +1040,11 @@
                         <property name="name">weight</property>
                         <property name="dataType">string</property>
                     </structure>
+                    <structure>
+                        <property name="position">79</property>
+                        <property name="name">msfy</property>
+                        <property name="dataType">string</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">scriptDS</property>
@@ -1069,6 +1082,7 @@ if(currentRow < detail.size()){
 	dataSetRow["msq4"] = master.getSq4();
 	dataSetRow["msh1"] = master.getSh1();
 	dataSetRow["msh2"] = master.getSh2();
+	dataSetRow["msfy"] = master.getSfy();
 	
 	dataSetRow["aq1"] = detail.get(currentRow).getAq1() + detail.get(currentRow).getSymbol();
 	dataSetRow["aq2"] = detail.get(currentRow).getAq2() + detail.get(currentRow).getSymbol();
@@ -1648,42 +1662,45 @@ return false;]]></method>
                     <expression name="expression" type="javascript">dataSetRow["weight"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">msfy</property>
+                    <text-property name="displayName">msfy</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["msfy"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <column id="2429">
-                <property name="width">1.8cm</property>
+                <property name="width">2.4cm</property>
             </column>
             <column id="2430">
                 <property name="width">1cm</property>
             </column>
-            <column id="2431">
-                <property name="width">2cm</property>
-            </column>
             <column id="2432">
-                <property name="width">2cm</property>
+                <property name="width">2.4cm</property>
             </column>
             <column id="2433">
-                <property name="width">2cm</property>
+                <property name="width">2.4cm</property>
             </column>
             <column id="2434">
-                <property name="width">2cm</property>
+                <property name="width">2.4cm</property>
             </column>
             <column id="2435">
-                <property name="width">2cm</property>
-            </column>
-            <column id="2436">
                 <property name="width">1.2cm</property>
             </column>
+            <column id="2436">
+                <property name="width">2.4cm</property>
+            </column>
             <column id="2437">
-                <property name="width">2cm</property>
+                <property name="width">2.4cm</property>
             </column>
             <column id="2438">
-                <property name="width">2cm</property>
+                <property name="width">2.4cm</property>
             </column>
             <column id="2439">
                 <property name="width">1.2cm</property>
             </column>
             <column id="2440">
-                <property name="width">2cm</property>
+                <property name="width">2.6cm</property>
             </column>
             <column id="2441">
                 <property name="width">0.9cm</property>
@@ -1692,18 +1709,15 @@ return false;]]></method>
                 <property name="width">0.9cm</property>
             </column>
             <column id="2443">
-                <property name="width">2cm</property>
+                <property name="width">2.6cm</property>
             </column>
             <column id="2444">
                 <property name="width">0.9cm</property>
             </column>
-            <column id="2445">
-                <property name="width">2cm</property>
-            </column>
             <header>
                 <row id="2446">
                     <cell id="2447">
-                        <property name="colSpan">17</property>
+                        <property name="colSpan">15</property>
                         <property name="rowSpan">1</property>
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -1751,21 +1765,6 @@ return false;]]></method>
                             <text-property name="text">比重</text-property>
                         </label>
                     </cell>
-                    <cell id="2378">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="verticalAlign">middle</property>
-                        <label id="2467">
-                            <property name="fontSize">7pt</property>
-                            <text-property name="text">全年基准</text-property>
-                        </label>
-                    </cell>
                     <cell id="2379">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -1791,27 +1790,12 @@ return false;]]></method>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
-                        <label id="2469">
-                            <property name="fontSize">7pt</property>
-                            <text-property name="text">全年目标</text-property>
-                        </label>
-                    </cell>
-                    <cell id="2381">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="verticalAlign">middle</property>
                         <label id="2470">
                             <property name="fontSize">7pt</property>
                             <text-property name="text">Q4目标值</text-property>
                         </label>
                     </cell>
-                    <cell id="2382">
+                    <cell id="2381">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1826,7 +1810,7 @@ return false;]]></method>
                             <text-property name="text">Q4实际值</text-property>
                         </label>
                     </cell>
-                    <cell id="2383">
+                    <cell id="2382">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -1841,6 +1825,21 @@ return false;]]></method>
                             <text-property name="text">Q4达成率</text-property>
                         </label>
                     </cell>
+                    <cell id="2383">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <property name="verticalAlign">middle</property>
+                        <label id="2630">
+                            <property name="fontSize">7pt</property>
+                            <text-property name="text">全年基准</text-property>
+                        </label>
+                    </cell>
                     <cell id="2384">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -1853,7 +1852,7 @@ return false;]]></method>
                         <property name="verticalAlign">middle</property>
                         <label id="2473">
                             <property name="fontSize">7pt</property>
-                            <text-property name="text">下半年目标值</text-property>
+                            <text-property name="text">全年目标值</text-property>
                         </label>
                     </cell>
                     <cell id="2385">
@@ -1868,7 +1867,7 @@ return false;]]></method>
                         <property name="verticalAlign">middle</property>
                         <label id="2474">
                             <property name="fontSize">7pt</property>
-                            <text-property name="text">下半年实际值</text-property>
+                            <text-property name="text">全年实际值</text-property>
                         </label>
                     </cell>
                     <cell id="2386">
@@ -1883,7 +1882,7 @@ return false;]]></method>
                         <property name="verticalAlign">middle</property>
                         <label id="2475">
                             <property name="fontSize">7pt</property>
-                            <text-property name="text">下半年达成率</text-property>
+                            <text-property name="text">全年达成率</text-property>
                         </label>
                     </cell>
                     <cell id="2387">
@@ -1928,7 +1927,7 @@ return false;]]></method>
                         <property name="verticalAlign">middle</property>
                         <label id="2478">
                             <property name="fontSize">7pt</property>
-                            <text-property name="text">下半年分数</text-property>
+                            <text-property name="text">全年分数</text-property>
                         </label>
                     </cell>
                     <cell id="2390">
@@ -1959,21 +1958,6 @@ return false;]]></method>
                         <label id="2480">
                             <property name="fontSize">7pt</property>
                             <text-property name="text">系数</text-property>
-                        </label>
-                    </cell>
-                    <cell id="2392">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="verticalAlign">middle</property>
-                        <label id="2481">
-                            <property name="fontSize">7pt</property>
-                            <text-property name="text">说明</text-property>
                         </label>
                     </cell>
                 </row>
@@ -2010,21 +1994,6 @@ return false;]]></method>
                             <property name="resultSetColumn">weight</property>
                         </data>
                     </cell>
-                    <cell id="2396">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="verticalAlign">middle</property>
-                        <data id="2505">
-                            <property name="fontSize">7pt</property>
-                            <property name="resultSetColumn">bfy</property>
-                        </data>
-                    </cell>
                     <cell id="2397">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
@@ -2050,27 +2019,12 @@ return false;]]></method>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
-                        <data id="2503">
-                            <property name="fontSize">7pt</property>
-                            <property name="resultSetColumn">tfy</property>
-                        </data>
-                    </cell>
-                    <cell id="2399">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="verticalAlign">middle</property>
                         <data id="2502">
                             <property name="fontSize">7pt</property>
                             <property name="resultSetColumn">tq4</property>
                         </data>
                     </cell>
-                    <cell id="2400">
+                    <cell id="2399">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -2085,7 +2039,7 @@ return false;]]></method>
                             <property name="resultSetColumn">aq4</property>
                         </data>
                     </cell>
-                    <cell id="2401">
+                    <cell id="2400">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -2100,7 +2054,7 @@ return false;]]></method>
                             <property name="resultSetColumn">pq4</property>
                         </data>
                     </cell>
-                    <cell id="2402">
+                    <cell id="2401">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -2110,9 +2064,24 @@ return false;]]></method>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
-                        <data id="2499">
+                        <data id="2631">
                             <property name="fontSize">7pt</property>
-                            <property name="resultSetColumn">th2</property>
+                            <property name="resultSetColumn">bfy</property>
+                        </data>
+                    </cell>
+                    <cell id="2402">
+                        <property name="fontSize">7pt</property>
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <property name="verticalAlign">middle</property>
+                        <data id="2512">
+                            <property name="resultSetColumn">tfy</property>
                         </data>
                     </cell>
                     <cell id="2403">
@@ -2125,9 +2094,9 @@ return false;]]></method>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
-                        <data id="2498">
+                        <data id="2513">
                             <property name="fontSize">7pt</property>
-                            <property name="resultSetColumn">ah2</property>
+                            <property name="resultSetColumn">afy</property>
                         </data>
                     </cell>
                     <cell id="2404">
@@ -2140,9 +2109,9 @@ return false;]]></method>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
-                        <data id="2497">
+                        <data id="2514">
                             <property name="fontSize">7pt</property>
-                            <property name="resultSetColumn">ph2</property>
+                            <property name="resultSetColumn">pfy</property>
                         </data>
                     </cell>
                     <cell id="2405">
@@ -2185,468 +2154,9 @@ return false;]]></method>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
-                        <data id="2494">
+                        <data id="2515">
                             <property name="fontSize">7pt</property>
-                            <property name="dataSet">dataDetail</property>
-                            <list-property name="boundDataColumns">
-                                <structure>
-                                    <property name="name">content</property>
-                                    <text-property name="displayName">content</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["content"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">type</property>
-                                    <text-property name="displayName">type</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["type"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">weight</property>
-                                    <text-property name="displayName">weight</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["weight"]</expression>
-                                    <property name="dataType">integer</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">name</property>
-                                    <text-property name="displayName">name</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["name"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">tq1</property>
-                                    <text-property name="displayName">tq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["tq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">tq2</property>
-                                    <text-property name="displayName">tq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["tq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">tq3</property>
-                                    <text-property name="displayName">tq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["tq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">tq4</property>
-                                    <text-property name="displayName">tq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["tq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">th1</property>
-                                    <text-property name="displayName">th1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["th1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">th2</property>
-                                    <text-property name="displayName">th2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["th2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">tfy</property>
-                                    <text-property name="displayName">tfy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["tfy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">bq1</property>
-                                    <text-property name="displayName">bq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["bq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">bq2</property>
-                                    <text-property name="displayName">bq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["bq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">bq3</property>
-                                    <text-property name="displayName">bq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["bq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">bq4</property>
-                                    <text-property name="displayName">bq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["bq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">bh1</property>
-                                    <text-property name="displayName">bh1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["bh1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">bh2</property>
-                                    <text-property name="displayName">bh2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["bh2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">bfy</property>
-                                    <text-property name="displayName">bfy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["bfy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">fq1</property>
-                                    <text-property name="displayName">fq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["fq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">fq2</property>
-                                    <text-property name="displayName">fq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["fq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">fq3</property>
-                                    <text-property name="displayName">fq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["fq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">fq4</property>
-                                    <text-property name="displayName">fq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["fq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">fh1</property>
-                                    <text-property name="displayName">fh1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["fh1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">fh2</property>
-                                    <text-property name="displayName">fh2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["fh2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">ffy</property>
-                                    <text-property name="displayName">ffy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["ffy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">aq1</property>
-                                    <text-property name="displayName">aq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["aq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">aq2</property>
-                                    <text-property name="displayName">aq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["aq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">aq3</property>
-                                    <text-property name="displayName">aq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["aq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">aq4</property>
-                                    <text-property name="displayName">aq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["aq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">ah1</property>
-                                    <text-property name="displayName">ah1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["ah1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">ah2</property>
-                                    <text-property name="displayName">ah2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["ah2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">afy</property>
-                                    <text-property name="displayName">afy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["afy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">pq1</property>
-                                    <text-property name="displayName">pq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["pq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">pq2</property>
-                                    <text-property name="displayName">pq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["pq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">pq3</property>
-                                    <text-property name="displayName">pq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["pq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">pq4</property>
-                                    <text-property name="displayName">pq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["pq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">ph1</property>
-                                    <text-property name="displayName">ph1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["ph1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">ph2</property>
-                                    <text-property name="displayName">ph2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["ph2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">pfy</property>
-                                    <text-property name="displayName">pfy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["pfy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">sq1</property>
-                                    <text-property name="displayName">sq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["sq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">sq2</property>
-                                    <text-property name="displayName">sq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["sq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">sq3</property>
-                                    <text-property name="displayName">sq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["sq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">sq4</property>
-                                    <text-property name="displayName">sq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["sq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">sh1</property>
-                                    <text-property name="displayName">sh1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["sh1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">sh2</property>
-                                    <text-property name="displayName">sh2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["sh2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">sfy</property>
-                                    <text-property name="displayName">sfy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["sfy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">cq1</property>
-                                    <text-property name="displayName">cq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["cq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">cq2</property>
-                                    <text-property name="displayName">cq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["cq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">cq3</property>
-                                    <text-property name="displayName">cq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["cq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">cq4</property>
-                                    <text-property name="displayName">cq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["cq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">ch1</property>
-                                    <text-property name="displayName">ch1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["ch1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">ch2</property>
-                                    <text-property name="displayName">ch2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["ch2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">cfy</property>
-                                    <text-property name="displayName">cfy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["cfy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">remark</property>
-                                    <text-property name="displayName">remark</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["remark"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">drq1</property>
-                                    <text-property name="displayName">drq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["drq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">drq2</property>
-                                    <text-property name="displayName">drq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["drq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">drq3</property>
-                                    <text-property name="displayName">drq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["drq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">drq4</property>
-                                    <text-property name="displayName">drq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["drq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">drh1</property>
-                                    <text-property name="displayName">drh1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["drh1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">drh2</property>
-                                    <text-property name="displayName">drh2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["drh2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">drfy</property>
-                                    <text-property name="displayName">drfy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["drfy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">mrq1</property>
-                                    <text-property name="displayName">mrq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["mrq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">mrq2</property>
-                                    <text-property name="displayName">mrq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["mrq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">mrq3</property>
-                                    <text-property name="displayName">mrq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["mrq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">mrq4</property>
-                                    <text-property name="displayName">mrq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["mrq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">mrh1</property>
-                                    <text-property name="displayName">mrh1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["mrh1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">mrh2</property>
-                                    <text-property name="displayName">mrh2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["mrh2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">mrfy</property>
-                                    <text-property name="displayName">mrfy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["mrfy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">seq</property>
-                                    <text-property name="displayName">seq</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["seq"]</expression>
-                                    <property name="dataType">integer</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">season</property>
-                                    <text-property name="displayName">season</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["season"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">msq1</property>
-                                    <text-property name="displayName">msq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["msq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">msq2</property>
-                                    <text-property name="displayName">msq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["msq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">msq3</property>
-                                    <text-property name="displayName">msq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["msq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">msq4</property>
-                                    <text-property name="displayName">msq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["msq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">msh1</property>
-                                    <text-property name="displayName">msh1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["msh1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">msh2</property>
-                                    <text-property name="displayName">msh2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["msh2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                            </list-property>
-                            <property name="resultSetColumn">sh2</property>
+                            <property name="resultSetColumn">sfy</property>
                         </data>
                     </cell>
                     <cell id="2408">
@@ -2659,9 +2169,9 @@ return false;]]></method>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
-                        <data id="2493">
+                        <data id="2650">
                             <property name="fontSize">7pt</property>
-                            <property name="resultSetColumn">drq4</property>
+                            <property name="resultSetColumn">mrq4</property>
                         </data>
                     </cell>
                     <cell id="2409">
@@ -2677,21 +2187,6 @@ return false;]]></method>
                         <data id="2483">
                             <property name="fontSize">7pt</property>
                             <property name="resultSetColumn">cq4</property>
-                        </data>
-                    </cell>
-                    <cell id="2410">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="verticalAlign">middle</property>
-                        <data id="2482">
-                            <property name="fontSize">7pt</property>
-                            <property name="resultSetColumn">remark</property>
                         </data>
                     </cell>
                 </row>
@@ -2714,17 +2209,6 @@ return false;]]></method>
                         </label>
                     </cell>
                     <cell id="2413">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="verticalAlign">middle</property>
-                    </cell>
-                    <cell id="2414">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
@@ -2844,456 +2328,9 @@ return false;]]></method>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
-                        <data id="2511">
+                        <data id="2517">
                             <property name="fontSize">7pt</property>
-                            <property name="dataSet">dataDetail</property>
-                            <list-property name="boundDataColumns">
-                                <structure>
-                                    <property name="name">content</property>
-                                    <text-property name="displayName">content</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["content"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">type</property>
-                                    <text-property name="displayName">type</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["type"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">weight</property>
-                                    <text-property name="displayName">weight</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["weight"]</expression>
-                                    <property name="dataType">integer</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">name</property>
-                                    <text-property name="displayName">name</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["name"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">tq1</property>
-                                    <text-property name="displayName">tq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["tq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">tq2</property>
-                                    <text-property name="displayName">tq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["tq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">tq3</property>
-                                    <text-property name="displayName">tq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["tq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">tq4</property>
-                                    <text-property name="displayName">tq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["tq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">th1</property>
-                                    <text-property name="displayName">th1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["th1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">th2</property>
-                                    <text-property name="displayName">th2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["th2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">tfy</property>
-                                    <text-property name="displayName">tfy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["tfy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">bq1</property>
-                                    <text-property name="displayName">bq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["bq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">bq2</property>
-                                    <text-property name="displayName">bq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["bq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">bq3</property>
-                                    <text-property name="displayName">bq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["bq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">bq4</property>
-                                    <text-property name="displayName">bq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["bq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">bh1</property>
-                                    <text-property name="displayName">bh1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["bh1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">bh2</property>
-                                    <text-property name="displayName">bh2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["bh2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">bfy</property>
-                                    <text-property name="displayName">bfy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["bfy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">fq1</property>
-                                    <text-property name="displayName">fq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["fq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">fq2</property>
-                                    <text-property name="displayName">fq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["fq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">fq3</property>
-                                    <text-property name="displayName">fq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["fq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">fq4</property>
-                                    <text-property name="displayName">fq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["fq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">fh1</property>
-                                    <text-property name="displayName">fh1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["fh1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">fh2</property>
-                                    <text-property name="displayName">fh2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["fh2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">ffy</property>
-                                    <text-property name="displayName">ffy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["ffy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">aq1</property>
-                                    <text-property name="displayName">aq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["aq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">aq2</property>
-                                    <text-property name="displayName">aq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["aq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">aq3</property>
-                                    <text-property name="displayName">aq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["aq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">aq4</property>
-                                    <text-property name="displayName">aq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["aq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">ah1</property>
-                                    <text-property name="displayName">ah1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["ah1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">ah2</property>
-                                    <text-property name="displayName">ah2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["ah2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">afy</property>
-                                    <text-property name="displayName">afy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["afy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">pq1</property>
-                                    <text-property name="displayName">pq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["pq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">pq2</property>
-                                    <text-property name="displayName">pq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["pq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">pq3</property>
-                                    <text-property name="displayName">pq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["pq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">pq4</property>
-                                    <text-property name="displayName">pq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["pq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">ph1</property>
-                                    <text-property name="displayName">ph1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["ph1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">ph2</property>
-                                    <text-property name="displayName">ph2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["ph2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">pfy</property>
-                                    <text-property name="displayName">pfy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["pfy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">sq1</property>
-                                    <text-property name="displayName">sq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["sq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">sq2</property>
-                                    <text-property name="displayName">sq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["sq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">sq3</property>
-                                    <text-property name="displayName">sq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["sq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">sq4</property>
-                                    <text-property name="displayName">sq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["sq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">sh1</property>
-                                    <text-property name="displayName">sh1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["sh1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">sh2</property>
-                                    <text-property name="displayName">sh2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["sh2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">sfy</property>
-                                    <text-property name="displayName">sfy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["sfy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">cq1</property>
-                                    <text-property name="displayName">cq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["cq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">cq2</property>
-                                    <text-property name="displayName">cq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["cq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">cq3</property>
-                                    <text-property name="displayName">cq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["cq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">cq4</property>
-                                    <text-property name="displayName">cq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["cq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">ch1</property>
-                                    <text-property name="displayName">ch1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["ch1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">ch2</property>
-                                    <text-property name="displayName">ch2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["ch2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">cfy</property>
-                                    <text-property name="displayName">cfy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["cfy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">remark</property>
-                                    <text-property name="displayName">remark</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["remark"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">drq1</property>
-                                    <text-property name="displayName">drq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["drq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">drq2</property>
-                                    <text-property name="displayName">drq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["drq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">drq3</property>
-                                    <text-property name="displayName">drq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["drq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">drq4</property>
-                                    <text-property name="displayName">drq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["drq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">drh1</property>
-                                    <text-property name="displayName">drh1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["drh1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">drh2</property>
-                                    <text-property name="displayName">drh2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["drh2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">drfy</property>
-                                    <text-property name="displayName">drfy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["drfy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">mrq1</property>
-                                    <text-property name="displayName">mrq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["mrq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">mrq2</property>
-                                    <text-property name="displayName">mrq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["mrq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">mrq3</property>
-                                    <text-property name="displayName">mrq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["mrq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">mrq4</property>
-                                    <text-property name="displayName">mrq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["mrq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">mrh1</property>
-                                    <text-property name="displayName">mrh1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["mrh1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">mrh2</property>
-                                    <text-property name="displayName">mrh2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["mrh2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">mrfy</property>
-                                    <text-property name="displayName">mrfy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["mrfy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">seq</property>
-                                    <text-property name="displayName">seq</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["seq"]</expression>
-                                    <property name="dataType">integer</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">season</property>
-                                    <text-property name="displayName">season</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["season"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">msq1</property>
-                                    <text-property name="displayName">msq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["msq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">msq2</property>
-                                    <text-property name="displayName">msq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["msq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">msq3</property>
-                                    <text-property name="displayName">msq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["msq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">msq4</property>
-                                    <text-property name="displayName">msq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["msq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                            </list-property>
-                            <property name="resultSetColumn">mrq4</property>
+                            <property name="resultSetColumn">msq4</property>
                         </data>
                     </cell>
                     <cell id="2425">
@@ -3306,468 +2343,9 @@ return false;]]></method>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
-                        <data id="2510">
+                        <data id="2632">
                             <property name="fontSize">7pt</property>
-                            <property name="dataSet">dataDetail</property>
-                            <list-property name="boundDataColumns">
-                                <structure>
-                                    <property name="name">content</property>
-                                    <text-property name="displayName">content</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["content"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">type</property>
-                                    <text-property name="displayName">type</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["type"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">weight</property>
-                                    <text-property name="displayName">weight</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["weight"]</expression>
-                                    <property name="dataType">integer</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">name</property>
-                                    <text-property name="displayName">name</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["name"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">tq1</property>
-                                    <text-property name="displayName">tq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["tq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">tq2</property>
-                                    <text-property name="displayName">tq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["tq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">tq3</property>
-                                    <text-property name="displayName">tq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["tq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">tq4</property>
-                                    <text-property name="displayName">tq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["tq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">th1</property>
-                                    <text-property name="displayName">th1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["th1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">th2</property>
-                                    <text-property name="displayName">th2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["th2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">tfy</property>
-                                    <text-property name="displayName">tfy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["tfy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">bq1</property>
-                                    <text-property name="displayName">bq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["bq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">bq2</property>
-                                    <text-property name="displayName">bq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["bq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">bq3</property>
-                                    <text-property name="displayName">bq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["bq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">bq4</property>
-                                    <text-property name="displayName">bq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["bq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">bh1</property>
-                                    <text-property name="displayName">bh1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["bh1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">bh2</property>
-                                    <text-property name="displayName">bh2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["bh2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">bfy</property>
-                                    <text-property name="displayName">bfy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["bfy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">fq1</property>
-                                    <text-property name="displayName">fq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["fq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">fq2</property>
-                                    <text-property name="displayName">fq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["fq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">fq3</property>
-                                    <text-property name="displayName">fq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["fq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">fq4</property>
-                                    <text-property name="displayName">fq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["fq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">fh1</property>
-                                    <text-property name="displayName">fh1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["fh1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">fh2</property>
-                                    <text-property name="displayName">fh2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["fh2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">ffy</property>
-                                    <text-property name="displayName">ffy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["ffy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">aq1</property>
-                                    <text-property name="displayName">aq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["aq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">aq2</property>
-                                    <text-property name="displayName">aq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["aq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">aq3</property>
-                                    <text-property name="displayName">aq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["aq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">aq4</property>
-                                    <text-property name="displayName">aq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["aq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">ah1</property>
-                                    <text-property name="displayName">ah1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["ah1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">ah2</property>
-                                    <text-property name="displayName">ah2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["ah2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">afy</property>
-                                    <text-property name="displayName">afy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["afy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">pq1</property>
-                                    <text-property name="displayName">pq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["pq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">pq2</property>
-                                    <text-property name="displayName">pq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["pq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">pq3</property>
-                                    <text-property name="displayName">pq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["pq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">pq4</property>
-                                    <text-property name="displayName">pq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["pq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">ph1</property>
-                                    <text-property name="displayName">ph1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["ph1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">ph2</property>
-                                    <text-property name="displayName">ph2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["ph2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">pfy</property>
-                                    <text-property name="displayName">pfy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["pfy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">sq1</property>
-                                    <text-property name="displayName">sq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["sq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">sq2</property>
-                                    <text-property name="displayName">sq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["sq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">sq3</property>
-                                    <text-property name="displayName">sq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["sq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">sq4</property>
-                                    <text-property name="displayName">sq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["sq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">sh1</property>
-                                    <text-property name="displayName">sh1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["sh1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">sh2</property>
-                                    <text-property name="displayName">sh2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["sh2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">sfy</property>
-                                    <text-property name="displayName">sfy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["sfy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">cq1</property>
-                                    <text-property name="displayName">cq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["cq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">cq2</property>
-                                    <text-property name="displayName">cq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["cq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">cq3</property>
-                                    <text-property name="displayName">cq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["cq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">cq4</property>
-                                    <text-property name="displayName">cq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["cq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">ch1</property>
-                                    <text-property name="displayName">ch1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["ch1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">ch2</property>
-                                    <text-property name="displayName">ch2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["ch2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">cfy</property>
-                                    <text-property name="displayName">cfy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["cfy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">remark</property>
-                                    <text-property name="displayName">remark</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["remark"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">drq1</property>
-                                    <text-property name="displayName">drq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["drq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">drq2</property>
-                                    <text-property name="displayName">drq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["drq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">drq3</property>
-                                    <text-property name="displayName">drq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["drq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">drq4</property>
-                                    <text-property name="displayName">drq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["drq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">drh1</property>
-                                    <text-property name="displayName">drh1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["drh1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">drh2</property>
-                                    <text-property name="displayName">drh2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["drh2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">drfy</property>
-                                    <text-property name="displayName">drfy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["drfy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">mrq1</property>
-                                    <text-property name="displayName">mrq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["mrq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">mrq2</property>
-                                    <text-property name="displayName">mrq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["mrq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">mrq3</property>
-                                    <text-property name="displayName">mrq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["mrq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">mrq4</property>
-                                    <text-property name="displayName">mrq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["mrq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">mrh1</property>
-                                    <text-property name="displayName">mrh1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["mrh1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">mrh2</property>
-                                    <text-property name="displayName">mrh2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["mrh2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">mrfy</property>
-                                    <text-property name="displayName">mrfy</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["mrfy"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">seq</property>
-                                    <text-property name="displayName">seq</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["seq"]</expression>
-                                    <property name="dataType">integer</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">season</property>
-                                    <text-property name="displayName">season</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["season"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">msq1</property>
-                                    <text-property name="displayName">msq1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["msq1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">msq2</property>
-                                    <text-property name="displayName">msq2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["msq2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">msq3</property>
-                                    <text-property name="displayName">msq3</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["msq3"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">msq4</property>
-                                    <text-property name="displayName">msq4</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["msq4"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">msh1</property>
-                                    <text-property name="displayName">msh1</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["msh1"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
-                                    <property name="name">msh2</property>
-                                    <text-property name="displayName">msh2</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["msh2"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                            </list-property>
-                            <property name="resultSetColumn">msh2</property>
+                            <property name="resultSetColumn">msfy</property>
                         </data>
                     </cell>
                     <cell id="2426">
@@ -3792,17 +2370,6 @@ return false;]]></method>
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
                     </cell>
-                    <cell id="2428">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="verticalAlign">middle</property>
-                    </cell>
                 </row>
             </footer>
         </table>
@@ -3816,7 +2383,9 @@ return false;]]></method>
             <column id="1949">
                 <property name="width">1.8cm</property>
             </column>
-            <column id="1950"/>
+            <column id="1950">
+                <property name="width">26.3cm</property>
+            </column>
             <row id="1951">
                 <cell id="1952">
                     <property name="borderRightStyle">solid</property>

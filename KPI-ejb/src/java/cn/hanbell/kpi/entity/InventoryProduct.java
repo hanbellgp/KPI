@@ -55,9 +55,12 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "InventoryProduct.findByCfmdate", query = "SELECT i FROM InventoryProduct i WHERE i.cfmdate = :cfmdate"),
     @NamedQuery(name = "InventoryProduct.findByUnique", query = "SELECT i FROM InventoryProduct i WHERE i.yearmon = :yearmon "
             + " and i.whdsc = :whdsc and i.genre = :genre and i.trtype = :trtype and i.itclscode = :itclscode and i.categories = :categories"),
+    @NamedQuery(name = "InventoryProduct.findYearmon", query = "SELECT i FROM InventoryProduct i WHERE i.yearmon = :yearmon"),
+    @NamedQuery(name = "InventoryProduct.findByFacnoAndYearmon", query = "SELECT i FROM InventoryProduct i WHERE i.facno = :facno and i.yearmon = :yearmon"),
     @NamedQuery(name = "InventoryProduct.findByEditRow", query = "SELECT i FROM InventoryProduct i WHERE i.facno = :facno and i.yearmon = :yearmon"
-            + " and i.wareh = :wareh and i.itclscode = :itclscode")})
-public class InventoryProduct extends SuperEntity {
+            + " and i.wareh = :wareh and i.itclscode = :itclscode and i.genre = :genre"),
+    @NamedQuery(name = "InventoryProduct.findByFacnoAndYearmonAndCategories", query = "SELECT i FROM InventoryProduct i WHERE i.facno = :facno and i.yearmon = :yearmon and i.categories = :categories")})
+public class InventoryProduct extends SuperEntity implements Cloneable {
 
     @Basic(optional = false)
     @NotNull
@@ -158,6 +161,11 @@ public class InventoryProduct extends SuperEntity {
         return id;
     }
 
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
     public void setId(Integer id) {
         this.id = id;
     }
@@ -168,6 +176,10 @@ public class InventoryProduct extends SuperEntity {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public Double getDoubleAmount() {
+        return this.amamount.add(this.amount).doubleValue();
     }
 
     public BigDecimal getAmamount() {
@@ -347,4 +359,7 @@ public class InventoryProduct extends SuperEntity {
         this.cfmuser = cfmuser;
     }
 
+    public Double getSumAmount() {
+        return this.getAmamount().doubleValue()+this.getAmount().doubleValue();
+    }
 }

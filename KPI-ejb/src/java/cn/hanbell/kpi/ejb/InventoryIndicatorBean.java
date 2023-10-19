@@ -119,6 +119,7 @@ public class InventoryIndicatorBean implements Serializable {
             BigDecimal upactAmt = BigDecimal.ZERO;
             if (m == 1) {
                 Indicator lastindicator = indicatorBean.findByFormidYearAndDeptno(indicator.getFormid(), y - 1, indicator.getDeptno());
+                this.divideByRateOther(lastindicator, 2);
                 IndicatorDetail upa = lastindicator.getActualIndicator();//去年的实际值
                 mon = this.getIndicatorColumn("N", 12);
                 f = upa.getClass().getDeclaredField(mon);

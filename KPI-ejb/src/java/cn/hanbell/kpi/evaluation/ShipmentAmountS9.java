@@ -24,7 +24,7 @@ public class ShipmentAmountS9 extends ShipmentAmount9 {
         queryParams.put("facno", "C");
         queryParams.put("ogdkid", "RL01");
         queryParams.put("n_code_DA", " ='AH' ");
-        queryParams.put("n_code_DC", " in ('SAM-5HP','SAM-7HP') ");
+        queryParams.put("n_code_DC", "  LIKE 'SAM%'");
     }
 
     @Override
@@ -62,7 +62,6 @@ public class ShipmentAmountS9 extends ShipmentAmount9 {
         } else {
             sb.append(" and d.n_code_DD <> 'ZZ' ");
         }
-        sb.append(" and isnull(c.hmark2, '') <> 'WX' ");
         sb.append(" and year(h.shpdate) = ${y} and month(h.shpdate)= ${m} ");
         switch (type) {
             case 2:

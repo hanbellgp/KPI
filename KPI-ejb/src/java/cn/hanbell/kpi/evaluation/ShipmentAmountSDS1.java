@@ -18,7 +18,7 @@ public class ShipmentAmountSDS1 extends ShipmentAmount {
     public ShipmentAmountSDS1() {
         super();
         queryParams.put("facno", "C");
-        queryParams.put("decode", "1");
+        //queryParams.put("decode", "1");
         queryParams.put("deptno", " '1Q000' ");
         queryParams.put("ogdkid", "RL01");
         queryParams.put("n_code_DA", "='AA' ");

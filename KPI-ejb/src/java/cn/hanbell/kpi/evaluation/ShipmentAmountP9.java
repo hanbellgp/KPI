@@ -16,6 +16,8 @@ public class ShipmentAmountP9 extends ShipmentAmount9 {
         queryParams.put("facno", "C");
         queryParams.put("ogdkid", "RL01");
         queryParams.put("n_code_DA", " ='P' ");
+        queryParams.put("n_code_CD", " NOT LIKE 'WX%' ");
+        queryParams.put("n_code_DD", "  in ('01','04','05') ");
     }
 
 }

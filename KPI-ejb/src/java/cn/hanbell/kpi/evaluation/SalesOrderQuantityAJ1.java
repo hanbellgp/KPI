@@ -16,7 +16,7 @@ public class SalesOrderQuantityAJ1 extends SalesOrderQuantity {
         queryParams.put("facno", "C");
         // queryParams.put("decode", "1");
         queryParams.put("n_code_DA", "='AH' ");
-        queryParams.put("n_code_CD", " not in ('WX','WXTW','WXVN','GZ') ");
+        queryParams.put("n_code_CD", " not in ('WX','WXTW','WXOZ','WXHG','GZ') ");
         queryParams.put("n_code_DC", " NOT LIKE 'SAM%' ");
         queryParams.put("n_code_DD", " ='00' ");
     }

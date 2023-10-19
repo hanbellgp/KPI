@@ -18,7 +18,7 @@ public class ShipmentAmountAJ2 extends ShipmentAmount {
         // queryParams.put("decode", "2");
         queryParams.put("ogdkid", "RL03");
         queryParams.put("n_code_DA", "='AH' ");
-        queryParams.put("n_code_CD", " LIKE 'WX%' ");
+        queryParams.put("n_code_CD", " ='WX' ");
         queryParams.put("n_code_DC", " NOT LIKE 'SAM%' ");
         queryParams.put("n_code_DD", " ='00' ");
     }

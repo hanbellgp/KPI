@@ -37,7 +37,9 @@
                                 <p:column rendered="#{complaintsChartReportBean.visible(10)}" priority="#{complaintsChartReportBean.m==10?3:4}">10月</p:column>
                                 <p:column rendered="#{complaintsChartReportBean.visible(11)}" priority="#{complaintsChartReportBean.m==11?3:4}">11月</p:column>
                                 <p:column rendered="#{complaintsChartReportBean.visible(12)}" priority="#{complaintsChartReportBean.m==12?3:4}">12月</p:column>
-                                <p:column>年移动平均</p:column>
+                                <c:if test="#{complaintsChartReportBean.indicator.actualIndicator.remark1!='' and complaintsChartReportBean.indicator.actualIndicator.remark1 !=null }">
+                                    <p:column>年移动平均</p:column>
+                                </c:if>
                             </p:row>
                         </f:facet>
                         <p:row>
@@ -54,7 +56,9 @@
                             <p:column rendered="#{complaintsChartReportBean.visible(10)}" priority="#{complaintsChartReportBean.m==10?3:4}" style="#{complaintsChartReportBean.m==10?'color:red':''}">#{complaintsChartReportBean.doubleformat(complaintsChartReportBean.indicator.benchmarkIndicator.n10,10)}</p:column>
                             <p:column rendered="#{complaintsChartReportBean.visible(11)}" priority="#{complaintsChartReportBean.m==11?3:4}" style="#{complaintsChartReportBean.m==11?'color:red':''}">#{complaintsChartReportBean.doubleformat(complaintsChartReportBean.indicator.benchmarkIndicator.n11,11)}</p:column>
                             <p:column rendered="#{complaintsChartReportBean.visible(12)}" priority="#{complaintsChartReportBean.m==12?3:4}" style="#{complaintsChartReportBean.m==12?'color:red':''}">#{complaintsChartReportBean.doubleformat(complaintsChartReportBean.indicator.benchmarkIndicator.n12,12)}</p:column>
-                            <p:column>#{complaintsChartReportBean.indicator.benchmarkIndicator.remark1}%</p:column>
+                            <c:if test="#{complaintsChartReportBean.indicator.actualIndicator.remark1!='' and complaintsChartReportBean.indicator.actualIndicator.remark1 !=null }">
+                                <p:column>#{complaintsChartReportBean.indicator.benchmarkIndicator.remark1}%</p:column>
+                            </c:if>
                         </p:row>
                         <p:row >
                             <p:column>目标值</p:column>
@@ -70,7 +74,9 @@
                             <p:column rendered="#{complaintsChartReportBean.visible(10)}" priority="#{complaintsChartReportBean.m==10?3:4}" style="#{complaintsChartReportBean.m==10?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.targetIndicator.n10,10)}</p:column>
                             <p:column rendered="#{complaintsChartReportBean.visible(11)}" priority="#{complaintsChartReportBean.m==11?3:4}" style="#{complaintsChartReportBean.m==11?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.targetIndicator.n11,11)}</p:column>
                             <p:column rendered="#{complaintsChartReportBean.visible(12)}" priority="#{complaintsChartReportBean.m==12?3:4}" style="#{complaintsChartReportBean.m==12?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.targetIndicator.n12,12)}</p:column>
-                            <p:column>#{complaintsChartReportBean.indicator.targetIndicator.remark1}%</p:column>
+                            <c:if test="#{complaintsChartReportBean.indicator.actualIndicator.remark1!='' and complaintsChartReportBean.indicator.actualIndicator.remark1 !=null }">
+                                <p:column>#{complaintsChartReportBean.indicator.targetIndicator.remark1}%</p:column>
+                            </c:if>
                         </p:row>
                         <p:row>
                             <p:column>实际值</p:column>
@@ -86,9 +92,11 @@
                             <p:column rendered="#{complaintsChartReportBean.visible(10)}" priority="#{complaintsChartReportBean.m==10?3:4}" style="#{complaintsChartReportBean.m==10?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.actualIndicator.n10,10)}</p:column>
                             <p:column rendered="#{complaintsChartReportBean.visible(11)}" priority="#{complaintsChartReportBean.m==11?3:4}" style="#{complaintsChartReportBean.m==11?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.actualIndicator.n11,11)}</p:column>
                             <p:column rendered="#{complaintsChartReportBean.visible(12)}" priority="#{complaintsChartReportBean.m==12?3:4}" style="#{complaintsChartReportBean.m==12?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.actualIndicator.n12,12)}</p:column>
-                            <p:column>#{complaintsChartReportBean.indicator.actualIndicator.remark1}%</p:column>
+                            <c:if test="#{complaintsChartReportBean.indicator.actualIndicator.remark1!='' and complaintsChartReportBean.indicator.actualIndicator.remark1 !=null}">
+                                <p:column>#{complaintsChartReportBean.indicator.actualIndicator.remark1}%</p:column>
+                            </c:if>
                         </p:row>
-                        <c:if test="#{complaintsChartReportBean.indicator.formid!='KS-机组保内' and complaintsChartReportBean.indicator.formid!='KS-上海厂销售客诉'}">
+                        <c:if test="#{complaintsChartReportBean.indicator.other3Interface!=''}">
                             <p:row >
                                 <p:column>实际值PPM</p:column>
                                 <p:column rendered="#{complaintsChartReportBean.visible(1)}" priority="#{complaintsChartReportBean.m==1?3:4}" style="#{complaintsChartReportBean.m==1?'color:red':''}">#{complaintsChartReportBean.format(complaintsChartReportBean.indicator.other3Indicator.n01,1)}</p:column>
@@ -103,7 +111,9 @@
                                 <p:column rendered="#{complaintsChartReportBean.visible(10)}" priority="#{complaintsChartReportBean.m==10?3:4}" style="#{complaintsChartReportBean.m==10?'color:red':''}">#{complaintsChartReportBean.format(complaintsChartReportBean.indicator.other3Indicator.n10,10)}</p:column>
                                 <p:column rendered="#{complaintsChartReportBean.visible(11)}" priority="#{complaintsChartReportBean.m==11?3:4}" style="#{complaintsChartReportBean.m==11?'color:red':''}">#{complaintsChartReportBean.format(complaintsChartReportBean.indicator.other3Indicator.n11,11)}</p:column>
                                 <p:column rendered="#{complaintsChartReportBean.visible(12)}" priority="#{complaintsChartReportBean.m==12?3:4}" style="#{complaintsChartReportBean.m==12?'color:red':''}">#{complaintsChartReportBean.format(complaintsChartReportBean.indicator.other3Indicator.n12,12)}</p:column>
-                                <p:column>#{complaintsChartReportBean.indicator.other3Indicator.remark1}</p:column>
+                                <c:if test="#{complaintsChartReportBean.indicator.other3Indicator.remark1!='' and complaintsChartReportBean.indicator.other3Indicator.remark1 !=null }">
+                                    <p:column>#{complaintsChartReportBean.indicator.other3Indicator.remark1}</p:column>
+                                </c:if>
                             </p:row>
                         </c:if>
                         <c:if test="#{complaintsChartReportBean.indicator.formid=='KS-上海厂销售客诉'}">
@@ -121,7 +131,9 @@
                                 <p:column rendered="#{complaintsChartReportBean.visible(10)}" priority="#{complaintsChartReportBean.m==10?3:4}" style="#{complaintsChartReportBean.m==10?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other4Indicator.n10,10)}</p:column>
                                 <p:column rendered="#{complaintsChartReportBean.visible(11)}" priority="#{complaintsChartReportBean.m==11?3:4}" style="#{complaintsChartReportBean.m==11?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other4Indicator.n11,11)}</p:column>
                                 <p:column rendered="#{complaintsChartReportBean.visible(12)}" priority="#{complaintsChartReportBean.m==12?3:4}" style="#{complaintsChartReportBean.m==12?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other4Indicator.n12,12)}</p:column>
-                                <p:column>#{complaintsChartReportBean.indicator.other4Indicator.remark1}%</p:column>
+                                <c:if test="#{complaintsChartReportBean.indicator.other4Indicator.remark1!='' and complaintsChartReportBean.indicator.other4Indicator.remark1 !=null}">
+                                    <p:column>#{complaintsChartReportBean.indicator.other4Indicator.remark1}%</p:column>
+                                </c:if>
                             </p:row>
                             <p:row >
                                 <p:column>实际值（湿泵）</p:column>
@@ -137,7 +149,9 @@
                                 <p:column rendered="#{complaintsChartReportBean.visible(10)}" priority="#{complaintsChartReportBean.m==10?3:4}" style="#{complaintsChartReportBean.m==10?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other5Indicator.n10,10)}</p:column>
                                 <p:column rendered="#{complaintsChartReportBean.visible(11)}" priority="#{complaintsChartReportBean.m==11?3:4}" style="#{complaintsChartReportBean.m==11?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other5Indicator.n11,11)}</p:column>
                                 <p:column rendered="#{complaintsChartReportBean.visible(12)}" priority="#{complaintsChartReportBean.m==12?3:4}" style="#{complaintsChartReportBean.m==12?'color:red':''}">#{complaintsChartReportBean.percentFormat(complaintsChartReportBean.indicator.other5Indicator.n12,12)}</p:column>
-                                <p:column>#{complaintsChartReportBean.indicator.other5Indicator.remark1}%</p:column>
+                                <c:if test="#{complaintsChartReportBean.indicator.other5Indicator.remark1!='' and complaintsChartReportBean.indicator.other5Indicator.remark1 !=null}">
+                                    <p:column>#{complaintsChartReportBean.indicator.other5Indicator.remark1}%</p:column>
+                                </c:if>
                             </p:row>
                         </c:if>
                     </p:panelGrid>

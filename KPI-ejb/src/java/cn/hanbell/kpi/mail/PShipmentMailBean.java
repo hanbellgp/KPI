@@ -78,7 +78,7 @@ public class PShipmentMailBean extends ShipmentMail {
                 indicatorBean.divideByRate(i, 2);
             }
             salesOrder = null;
-            return getHtmlTable(this.indicators, y, m, d, false);
+            return getHtmlTable(this.indicators, y, m, d, true);
         } else {
             return "P收费服务金额设定错误";
         }

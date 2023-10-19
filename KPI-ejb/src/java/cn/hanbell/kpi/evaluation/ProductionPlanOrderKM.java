@@ -19,7 +19,7 @@ import javax.persistence.Query;
 
 /**
  *
- * @author C1879
+ * @author C1879 柯茂机组部分
  */
 public class ProductionPlanOrderKM extends ProductionPlanOrder {
 
@@ -27,9 +27,9 @@ public class ProductionPlanOrderKM extends ProductionPlanOrder {
         super();
         queryParams.put("facno", "K");
         //#ITCLS CHANGE TODO #
-        queryParams.put("itcls", " in ('3H80','3W76','3W80','3H76','3H79','3W79')");
+        queryParams.put("itcls", " in ('3H76','3H79','3H80','3W80','3W76','3W79')");
         //#ITCLS CHANGE TODO #
-        queryParams.put("itnbrf", " in ('3J76','3J79','3J80') ");
+        queryParams.put("itnbrf", " in ('3H76','3H79','3H80','3W80','3W76','3W79') ");
     }
 
     @Override

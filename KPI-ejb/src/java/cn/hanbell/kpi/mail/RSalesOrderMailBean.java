@@ -40,10 +40,12 @@ public class RSalesOrderMailBean extends SalesOrderMail {
         StringBuilder sb = new StringBuilder();
         sb.append("<div class=\"tableTitle\">单位：台</div>");
         sb.append(getQuantityTable());
+        sb.append("<div class=\"tableTitle\">单位：台</div>");
         sb.append(getQuantityTable_DC());
         sb.append("<br/>");
         sb.append("<div class=\"tableTitle\">单位：万元</div>");
         sb.append(getAmountTable());
+        sb.append("<div class=\"tableTitle\">单位：万元</div>");
         sb.append(getAmountTable_DC());
         return sb.toString();
     }

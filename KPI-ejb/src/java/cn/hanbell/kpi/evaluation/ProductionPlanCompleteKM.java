@@ -7,8 +7,8 @@ package cn.hanbell.kpi.evaluation;
 
 /**
  *
- * @author C1879
- * 2019年7月9日生管提出更改完工逻辑
+ * @author C1879 柯茂机组部分
+ *
  */
 public class ProductionPlanCompleteKM extends ProductionPlanComplete {
 
@@ -21,6 +21,6 @@ public class ProductionPlanCompleteKM extends ProductionPlanComplete {
         queryParams.put("typecode", " ='01' ");
         queryParams.put("prosscode", " IN ('LX08','KQ10','OR08') ");
         queryParams.put("wrcode", " IN ('ZP01','ZP02','ZP03','WL2','ZS1') ");
-
+        queryParams.put("itcls", " in ('3H76','3H79','3H80','3W80','3W76','3W79') ");
     }
 }

@@ -7,7 +7,7 @@ package cn.hanbell.kpi.evaluation;
 
 /**
  *
- * @author C1879 柯茂
+ * @author C1879 柯茂机组部分
  */
 public class ProductionQuantityKM extends ProductionQuantity {
 
@@ -19,7 +19,7 @@ public class ProductionQuantityKM extends ProductionQuantity {
         queryParams.put("linecode", " IN('AT','ORC','RT') ");
         queryParams.put("typecode", "= '01' ");
         //#ITCLS CHANGE TODO #
-        queryParams.put("itcls", " in ('3H76','3H79','3H80','3W76','3W79','3W80','3J76','3J79','3J80')");
+        queryParams.put("itcls", " in ('3H76','3H79','3H80','3W80','3W76','3W79')");
         //#ITCLS CHANGE TODO #
 //        queryParams.put("itnbrf", " and itnbrf not in (select itnbr from invmas where itcls in ('3J76','3J79','3J80')) ");
         

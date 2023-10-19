@@ -19,23 +19,25 @@ import javax.persistence.Query;
 
 /**
  *
- * @author C1879
+ * @author C1879 柯茂机组部分
  */
 public class ProductionPlanShipmentKM extends ProductionPlanShipment {
 
     public ProductionPlanShipmentKM() {
         super();
         queryParams.put("facno", "K");
-        //#ITCLS CHANGE TODO #
-        queryParams.put("itcls", " in ('3H80','3W76','3W80','3H76','3H79','3W79')");
-        //#ITCLS CHANGE TODO #
-        queryParams.put("itnbrf", " in ('3J76','3J79','3J80') ");
+        queryParams.put("n_code_DA", " ='RT' ");
+        queryParams.put("n_code_DD", " ='00' ");
+        queryParams.put("itcls", " in ('3H76','3H79','3H80','3W80','3W76','3W79')");
+        queryParams.put("itnbrf", " in ('3H76','3H79','3H80','3W80','3W76','3W79') ");
     }
 
     @Override
     public BigDecimal getValue(int y, int m, Date d, int type, LinkedHashMap<String, Object> map) {
         String facno = map.get("facno") != null ? map.get("facno").toString() : "";
         String n_code_DA = map.get("n_code_DA") != null ? map.get("n_code_DA").toString() : "";
+        String n_code_DC = map.get("n_code_DC") != null ? map.get("n_code_DC").toString() : "";
+        String n_code_DD = map.get("n_code_DD") != null ? map.get("n_code_DD").toString() : "";
         String itcls = map.get("itcls") != null ? map.get("itcls").toString() : "";
         String itnbrf = map.get("itnbrf") != null ? map.get("itnbrf").toString() : "";
         String id = map.get("id") != null ? map.get("id").toString() : "";
@@ -44,9 +46,15 @@ public class ProductionPlanShipmentKM extends ProductionPlanShipment {
 
         StringBuilder sb = new StringBuilder();
         sb.append(" select isnull(sum(d.shpqy1),0) as totshpqy from cdrhad h, cdrdta d ");
-        sb.append(" where  h.houtsta<>'W' and h.shpno=d.shpno and  h.facno=d.facno  and h.facno='${facno}' ");
+        sb.append(" where  h.houtsta<>'W' and h.shpno=d.shpno and  h.facno=d.facno  and h.facno='${facno}' and d.issevdta='N' and h.cusno NOT IN ('SSD00107','SGD00088','SJS00254','SCQ00146','KZJ00029')");
         if (!"".equals(n_code_DA)) {
             sb.append(" and d.n_code_DA ").append(n_code_DA);
+        }
+        if (!"".equals(n_code_DC)) {
+            sb.append(" and d.n_code_DC ").append(n_code_DC);
+        }
+        if (!"".equals(n_code_DD)) {
+            sb.append(" and d.n_code_DD ").append(n_code_DD);
         }
         if (!"".equals(itcls)) {
             sb.append(" and (d.itnbr in(select itnbr from invmas where itcls ").append(itcls).append(") ");
@@ -102,15 +110,23 @@ public class ProductionPlanShipmentKM extends ProductionPlanShipment {
     public List getLastValue(int y, int m, Date d, LinkedHashMap<String, Object> map) {
         String facno = map.get("facno") != null ? map.get("facno").toString() : "";
         String n_code_DA = map.get("n_code_DA") != null ? map.get("n_code_DA").toString() : "";
+        String n_code_DC = map.get("n_code_DC") != null ? map.get("n_code_DC").toString() : "";
+        String n_code_DD = map.get("n_code_DD") != null ? map.get("n_code_DD").toString() : "";
         String itcls = map.get("itcls") != null ? map.get("itcls").toString() : "";
         String itnbrf = map.get("itnbrf") != null ? map.get("itnbrf").toString() : "";
-
         StringBuilder sb = new StringBuilder();
         sb.append(" select day(h.shpdate),isnull(sum(d.shpqy1),0) as totshpqy from cdrhad h, cdrdta d ");
-        sb.append(" where  h.houtsta<>'W' and h.shpno=d.shpno and  h.facno=d.facno  and h.facno='${facno}' ");
+        sb.append(" where  h.houtsta<>'W' and h.shpno=d.shpno and  h.facno=d.facno  and h.facno='${facno}' and d.issevdta='N' and h.cusno NOT IN ('SSD00107','SGD00088','SJS00254','SCQ00146','KZJ00029')");
         if (!"".equals(n_code_DA)) {
             sb.append(" and d.n_code_DA ").append(n_code_DA);
         }
+        if (!"".equals(n_code_DC)) {
+            sb.append(" and d.n_code_DC ").append(n_code_DC);
+        }
+        if (!"".equals(n_code_DD)) {
+            sb.append(" and d.n_code_DD ").append(n_code_DD);
+        }
+
         if (!"".equals(itcls)) {
             sb.append(" and (d.itnbr in(select itnbr from invmas where itcls ").append(itcls).append(") ");
             sb.append(" and d.itnbr  in(select itnbr from invmas where itcls ").append(itnbrf).append(")) ");

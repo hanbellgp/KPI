@@ -45,6 +45,7 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
     protected final DecimalFormat floatFormat;
     private List<Object[]> list;
     private List<Object[]> weightList;
+    private List<Object[]> salaryList;
     protected LinkedHashMap<String, String> statusMap;
     private Date btnDate;
     private int y;
@@ -84,6 +85,7 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
         }
         list = new ArrayList<>();
         weightList = new ArrayList<>();
+        salaryList= new ArrayList<>();
         statusMap = new LinkedHashMap<>();
         statusMap.put("displaydiv1", "block");
         statusMap.put("displaydiv2", "none");
@@ -99,10 +101,10 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
             String twFhszj = " in ('1139')";
             String scmFhszj = " in ('KZJ00053')";
             String zcmFhszj = " in ('EZJ00053')";
-            Object[] shb = shoppingAccomuntBean.getShbDate("SHB", "C", btnDate, shbFhszj, "");
-            Object[] thb = shoppingAccomuntBean.getShbDate("THB", "A", btnDate, twFhszj, "");
-            Object[] scm = shoppingAccomuntBean.getShbDate("SCOMER", "K", btnDate, scmFhszj, "");
-            Object[] zcm = shoppingAccomuntBean.getShbDate("ZCOMER", "E", btnDate, zcmFhszj, "");
+            Object[] shb = shoppingAccomuntBean.getShbDateByVdrno("SHB", "C", btnDate, shbFhszj);
+            Object[] thb = shoppingAccomuntBean.getShbDateByVdrno("THB", "A", btnDate, twFhszj);
+            Object[] scm = shoppingAccomuntBean.getShbDateByVdrno("SCOMER", "K", btnDate, scmFhszj);
+            Object[] zcm = shoppingAccomuntBean.getShbDateByVdrno("ZCOMER", "E", btnDate, zcmFhszj);
             Object[] cm = new Object[15];
             cm[0] = "CM";
             for (int i = 1; i <= 13; i++) {
@@ -127,7 +129,6 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
                 o[14] = ((BigDecimal) o[13]).multiply(BigDecimal.valueOf(100)).divide((BigDecimal) list.get(list.size() - 1)[13], 2).toString().concat("%");
             }
             //铸件重量;
-
             Object[] shbweigth = shoppingAccomuntBean.getGroupWeightDate("总重", "SHB", "C", btnDate, getWhereVdrnos("C", "'铸件'").toString(), ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA + "/" + ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI);
             Object[] shbgornhsweigth = shoppingAccomuntBean.getGroupWeightDate("汉声", "SHB", "C", btnDate, shbFhszj, ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA + "/" + ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI);
             //上海汉钟已作为进口列入。需手动加入上海汉钟厂商
@@ -182,6 +183,66 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
             }
             zhanbi3[14] = ((BigDecimal) sumall2[14]).multiply(new BigDecimal(100)).divide((BigDecimal) sumall1[14], 0, BigDecimal.ROUND_HALF_UP).toString().concat("%");
             weightList.add(zhanbi3);
+            
+            //铸件金额
+            Object[] shbsalary = shoppingAccomuntBean.getGroupSalaryDate("总金额", "SHB", "C", btnDate, getWhereVdrnos("C", "'铸件'").toString(), ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA + "/" + ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI);
+            Object[] shbgornhsalary = shoppingAccomuntBean.getGroupSalaryDate("汉声金额", "SHB", "C", btnDate, shbFhszj, ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA + "/" + ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI);
+            //上海汉钟已作为进口列入。需手动加入上海汉钟厂商
+            sb.setLength(0);
+            sb = getWhereVdrnos("A", "'鑄件'");
+            Object[] thbsalary = shoppingAccomuntBean.getGroupSalaryDate("总金额", "THB", "A", btnDate, sb.substring(0, sb.length() - 1).concat(",'86005')"), "");
+            Object[] thbgroupsalary = shoppingAccomuntBean.getGroupSalaryDate("汉声金额", "THB", "A", btnDate, twFhszj, "");
+            salaryList.clear();
+            salaryList.add(shbsalary);
+            salaryList.add(shbgornhsalary);
+            zhanbi1 = new Object[16];
+            zhanbi1[0] = "占比";
+            zhanbi1[1] = "SHB";
+            for (int i = 2; i <= Integer.valueOf(BaseLib.formatDate("MM", btnDate)) + 1; i++) {
+                zhanbi1[i] = ((BigDecimal) shbgornhsalary[i]).multiply(new BigDecimal(100)).divide((BigDecimal) shbsalary[i], 0, BigDecimal.ROUND_HALF_UP).toString().concat("%");
+            }
+            zhanbi1[14] = ((BigDecimal) shbgornhsalary[14]).multiply(new BigDecimal(100)).divide((BigDecimal) shbsalary[14], 0, BigDecimal.ROUND_HALF_UP).toString().concat("%");
+            salaryList.add(zhanbi1);
+            salaryList.add(thbsalary);
+            salaryList.add(thbgroupsalary);
+            zhanbi2 = new Object[16];
+            zhanbi2[0] = "占比";
+            zhanbi2[1] = "THB";
+            for (int i = 2; i <= Integer.valueOf(BaseLib.formatDate("MM", btnDate)) + 1; i++) {
+                zhanbi2[i] = ((BigDecimal) thbgroupsalary[i]).multiply(new BigDecimal(100)).divide((BigDecimal) thbsalary[i], 0, BigDecimal.ROUND_HALF_UP).toString().concat("%");
+            }
+            zhanbi2[14] = ((BigDecimal) thbgroupsalary[14]).multiply(new BigDecimal(100)).divide((BigDecimal) thbsalary[14], 0, BigDecimal.ROUND_HALF_UP).toString().concat("%");
+            salaryList.add(zhanbi2);
+
+            sumall1 = new Object[16];
+            sumall1[0] = "总金额";
+            sumall1[1] = "SHB+THB";
+            for (int i = 2; i <= Integer.valueOf(BaseLib.formatDate("MM", btnDate)) + 1; i++) {
+                sumall1[i] = ((BigDecimal) shbsalary[i]).add((BigDecimal) thbsalary[i]);
+            }
+            sumall1[14] = ((BigDecimal) shbsalary[14]).add((BigDecimal) thbsalary[14]);
+            salaryList.add(sumall1);
+
+            sumall2 = new Object[16];
+            sumall2[0] = "汉声金额";
+            sumall2[1] = "SHB+THB";
+            for (int i = 2; i <= Integer.valueOf(BaseLib.formatDate("MM", btnDate)) + 1; i++) {
+                sumall2[i] = ((BigDecimal) shbgornhsalary[i]).add((BigDecimal) thbgroupsalary[i]);
+            }
+            sumall2[14] = ((BigDecimal) shbgornhsalary[14]).add((BigDecimal) thbgroupsalary[14]);
+            salaryList.add(sumall2);
+
+            zhanbi3 = new Object[16];
+            zhanbi3[0] = "占比";
+            zhanbi3[1] = "SHB+THB";
+            for (int i = 2; i <= Integer.valueOf(BaseLib.formatDate("MM", btnDate)) + 1; i++) {
+                zhanbi3[i] = ((BigDecimal) sumall2[i]).multiply(new BigDecimal(100)).divide((BigDecimal) sumall1[i], 0, BigDecimal.ROUND_HALF_UP).toString().concat("%");
+            }
+            zhanbi3[14] = ((BigDecimal) sumall2[14]).multiply(new BigDecimal(100)).divide((BigDecimal) sumall1[14], 0, BigDecimal.ROUND_HALF_UP).toString().concat("%");
+            salaryList.add(zhanbi3);
+            
+            
+            
             statusMap.put("displaydiv1", "none");
             statusMap.put("displaydiv2", "block");
 
@@ -267,6 +328,14 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
             return floatFormat.format(value);
         }
     }
+        public String salarydoubleformat(BigDecimal value) {
+        if (value == null || value.compareTo(BigDecimal.ZERO) == 0) {
+            return "0";
+        } else {
+            value = value.divide(new BigDecimal(10000), 2);
+            return floatFormat.format(value);
+        }
+    }
 
     public boolean visible(int m) {
         if (m == this.m) {
@@ -322,6 +391,14 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
 
     public void setM(int m) {
         this.m = m;
+    }
+
+    public List<Object[]> getSalaryList() {
+        return salaryList;
+    }
+
+    public void setSalaryList(List<Object[]> salaryList) {
+        this.salaryList = salaryList;
     }
 
 }

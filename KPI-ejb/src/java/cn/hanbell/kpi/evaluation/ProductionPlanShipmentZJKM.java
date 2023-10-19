@@ -26,16 +26,16 @@ public class ProductionPlanShipmentZJKM extends ProductionPlanShipment {
     public ProductionPlanShipmentZJKM() {
         super();
         queryParams.put("facno", "E");
-        //#ITCLS CHANGE TODO #
-        queryParams.put("itcls", " in ('3W76','3W80','3W79','3Y76','3Y79','3Y80','3X76','3X79','3X80')");
-        //#ITCLS CHANGE TODO #
-        queryParams.put("itnbrf", " in ('3J76','3J79','3J80') ");
+        queryParams.put("n_code_DA", " ='OH' ");
+        queryParams.put("n_code_DD", " ='00' ");
     }
 
     @Override
     public BigDecimal getValue(int y, int m, Date d, int type, LinkedHashMap<String, Object> map) {
         String facno = map.get("facno") != null ? map.get("facno").toString() : "";
         String n_code_DA = map.get("n_code_DA") != null ? map.get("n_code_DA").toString() : "";
+        String n_code_DC = map.get("n_code_DC") != null ? map.get("n_code_DC").toString() : "";
+        String n_code_DD = map.get("n_code_DD") != null ? map.get("n_code_DD").toString() : "";
         String itcls = map.get("itcls") != null ? map.get("itcls").toString() : "";
         String itnbrf = map.get("itnbrf") != null ? map.get("itnbrf").toString() : "";
         String id = map.get("id") != null ? map.get("id").toString() : "";
@@ -47,6 +47,12 @@ public class ProductionPlanShipmentZJKM extends ProductionPlanShipment {
         sb.append(" where  h.houtsta<>'W' and h.shpno=d.shpno and  h.facno=d.facno  and h.facno='${facno}' ");
         if (!"".equals(n_code_DA)) {
             sb.append(" and d.n_code_DA ").append(n_code_DA);
+        }
+        if (!"".equals(n_code_DC)) {
+            sb.append(" and d.n_code_DC ").append(n_code_DC);
+        }
+        if (!"".equals(n_code_DD)) {
+            sb.append(" and d.n_code_DD ").append(n_code_DD);
         }
         if (!"".equals(itcls)) {
             sb.append(" and (d.itnbr in(select itnbr from invmas where itcls ").append(itcls).append(") ");
@@ -102,6 +108,8 @@ public class ProductionPlanShipmentZJKM extends ProductionPlanShipment {
     public List getLastValue(int y, int m, Date d, LinkedHashMap<String, Object> map) {
         String facno = map.get("facno") != null ? map.get("facno").toString() : "";
         String n_code_DA = map.get("n_code_DA") != null ? map.get("n_code_DA").toString() : "";
+        String n_code_DC = map.get("n_code_DC") != null ? map.get("n_code_DC").toString() : "";
+        String n_code_DD = map.get("n_code_DD") != null ? map.get("n_code_DD").toString() : "";
         String itcls = map.get("itcls") != null ? map.get("itcls").toString() : "";
         String itnbrf = map.get("itnbrf") != null ? map.get("itnbrf").toString() : "";
 
@@ -110,6 +118,12 @@ public class ProductionPlanShipmentZJKM extends ProductionPlanShipment {
         sb.append(" where  h.houtsta<>'W' and h.shpno=d.shpno and  h.facno=d.facno  and h.facno='${facno}' ");
         if (!"".equals(n_code_DA)) {
             sb.append(" and d.n_code_DA ").append(n_code_DA);
+        }
+        if (!"".equals(n_code_DC)) {
+            sb.append(" and d.n_code_DC ").append(n_code_DC);
+        }
+        if (!"".equals(n_code_DD)) {
+            sb.append(" and d.n_code_DD ").append(n_code_DD);
         }
         if (!"".equals(itcls)) {
             sb.append(" and (d.itnbr in(select itnbr from invmas where itcls ").append(itcls).append(") ");

@@ -92,12 +92,27 @@
                 </f:facet>
                 <p:ajax event="rowSelect"  update="formList:dlgStageDescription" oncomplete="PF('dlgStageDescription').show();" listener="#{scorecardManagedBean.handleDialogReturnWhenSelect}" />
 
-                <p:column styleClass="Wid20">
+                <p:column styleClass="Wid30" rendered="#{empty item.indicator and empty item.projectName}">
                     <f:facet name="header">
                         <h:outputText value="考核内容"/>
                     </f:facet>
-                    <h:outputText value="#{item.content}"/>
+                    <h:outputText  value="#{item.content}"></h:outputText>
                 </p:column>
+                <p:column styleClass="Wid30" rendered="#{!empty item.indicator and empty item.projectName}">
+                    <f:facet name="header">
+                        <h:outputText value="考核内容"/>
+                    </f:facet>
+                    <p:graphicImage name="images/K.png" library="ultima-layout" style="height:15px;width:15px;background-color: #EEE8AA"/>
+                    <h:outputText value="#{item.content}"></h:outputText>
+                </p:column>
+                <p:column styleClass="Wid30" rendered="#{empty item.indicator and !empty item.projectName}">
+                    <f:facet name="header">
+                        <h:outputText value="考核内容"/>
+                    </f:facet>
+                    <p:graphicImage name="images/P.png" library="ultima-layout" style="height:15px;width:15px;background-color: #EEE8AA"/>
+                    <h:outputText value="#{item.content}"></h:outputText>
+                </p:column>
+
                 <p:column style="text-align: right">
                     <f:facet name="header">
                         <h:outputText value="权重"/>
@@ -108,7 +123,7 @@
                     <f:facet name="header">
                         <h:outputText value="Q1达成"/>
                     </f:facet>
-                    <h:outputText value="#{item.pq1}%" style="#{(item.pq1 &lt; 100 and item.pq1 &gt; 0)?'color:red':'' }"/>
+                    <h:outputText value="#{item.pq1}%" style="#{((item.pq1 &lt; 100 and item.pq1 &gt; 0) or item.pq1 &lt; 0 )?'color:red':'' }"/>
                 </p:column>
                 <p:column style="text-align: right">
                     <f:facet name="header">
@@ -120,7 +135,7 @@
                     <f:facet name="header">
                         <h:outputText value="Q2达成"/>
                     </f:facet>
-                    <h:outputText value="#{item.pq2}%" style="#{(item.pq2 &lt; 100 and item.pq2 &gt; 0)?'color:red':'' }"/>
+                    <h:outputText value="#{item.pq2}%" style="#{((item.pq2 &lt; 100 and item.pq2 &gt; 0) or item.pq2 &lt; 0)?'color:red':'' }"/>
                 </p:column>
                 <p:column style="text-align: right">
                     <f:facet name="header">
@@ -132,7 +147,7 @@
                     <f:facet name="header">
                         <h:outputText value="HY达成"/>
                     </f:facet>
-                    <h:outputText value="#{item.ph1}%" style="#{(item.ph1 &lt; 100 and item.ph1 &gt; 0)?'color:red':'' }"/>
+                    <h:outputText value="#{item.ph1}%"  style="#{((item.ph1 &lt; 100 and item.ph1 &gt; 0) or item.ph1 &lt; 0)?'color:red':'' }"/>
                 </p:column>
                 <p:column style="text-align: right">
                     <f:facet name="header">
@@ -144,7 +159,7 @@
                     <f:facet name="header">
                         <h:outputText value="Q3达成"/>
                     </f:facet>
-                    <h:outputText value="#{item.pq3}%" style="#{(item.pq3 &lt; 100 and item.pq3 &gt; 0)?'color:red':'' }"/>
+                    <h:outputText value="#{item.pq3}%" style="#{((item.pq3 &lt; 100 and item.pq3 &gt; 0) or item.pq3 &lt; 0 )?'color:red':'' }"/>
                 </p:column>
                 <p:column style="text-align: right">
                     <f:facet name="header">
@@ -156,7 +171,7 @@
                     <f:facet name="header">
                         <h:outputText value="Q4达成"/>
                     </f:facet>
-                    <h:outputText value="#{item.pq4}%" style="#{(item.pq4 &lt; 100 and item.pq4 &gt; 0)?'color:red':'' }"/>
+                    <h:outputText value="#{item.pq4}%" style="#{((item.pq4 &lt; 100 and item.pq4 &gt; 0) or item.pq4 &lt; 0 )?'color:red':'' }"/>
                 </p:column>
                 <p:column style="text-align: right">
                     <f:facet name="header">
@@ -168,7 +183,7 @@
                     <f:facet name="header">
                         <h:outputText value="FY达成"/>
                     </f:facet>
-                    <h:outputText value="#{item.pfy}%" style="#{(item.pfy &lt; 100 and item.pfy &gt; 0)?'color:red':'' }"/>
+                    <h:outputText value="#{item.pfy}%" style="#{((item.pfy &lt; 100 and item.pfy &gt; 0) or item.pfy &lt; 0 )?'color:red':'' }"/>
                 </p:column>
                 <p:column style="text-align: right">
                     <f:facet name="header">

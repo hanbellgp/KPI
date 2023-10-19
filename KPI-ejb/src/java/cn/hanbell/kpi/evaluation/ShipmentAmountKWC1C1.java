@@ -21,7 +21,7 @@ public class ShipmentAmountKWC1C1 extends ShipmentAmount {
         queryParams.put("deptno", " '5B000' ");
         queryParams.put("ogdkid", "RL01");
         queryParams.put("n_code_DA", " ='OH' ");
-        queryParams.put("n_code_CD", " NOT LIKE 'WX%' ");
+//        queryParams.put("n_code_CD", " NOT LIKE 'WX%' ");
         queryParams.put("n_code_DC", " ='WC' ");
         queryParams.put("n_code_DD", "  IN ('00','02') ");
     }

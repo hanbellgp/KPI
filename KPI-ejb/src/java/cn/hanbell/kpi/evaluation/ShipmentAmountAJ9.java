@@ -22,7 +22,7 @@ public class ShipmentAmountAJ9 extends ShipmentAmount9 {
     public ShipmentAmountAJ9() {
         super();
         queryParams.put("facno", "C");
-        queryParams.put("decode", "1");
+//        queryParams.put("decode", "1");
         queryParams.put("ogdkid", "RL01");
         queryParams.put("n_code_DA", "='AH' ");
         queryParams.put("n_code_CD"," not in ('GZ')");
@@ -64,7 +64,6 @@ public class ShipmentAmountAJ9 extends ShipmentAmount9 {
         } else {
             sb.append(" and d.n_code_DD <> 'ZZ' ");
         }
-        sb.append(" and isnull(c.hmark2, '') <> 'WX' ");
         sb.append(" and year(h.shpdate) = ${y} and month(h.shpdate)= ${m} ");
         switch (type) {
             case 2:

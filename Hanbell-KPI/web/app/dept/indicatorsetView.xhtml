@@ -20,6 +20,10 @@
                                      rendered="#{indicatorSetManagedBean.hasNext}"/>
                 </f:facet>
                 <f:facet name="right">
+                    <p:commandButton id="btnCopy" value="复制" action="#{indicatorSetManagedBean.copyEntity('indicatorsetNew')}" icon="ui-icon-content-copy"
+                                     process="@this">
+                        <p:confirm header="系统提示" message="复制吗?" icon="ui-icon-alert" />
+                    </p:commandButton>
                     <p:commandButton id="btnVerify" value="审核" actionListener="#{indicatorSetManagedBean.verify()}" icon="ui-icon-check"
                                      rendered="#{indicatorSetManagedBean.doCfm}" process="@this" update="toolbar">
                         <p:confirm header="系统提示" message="审核吗?" icon="ui-icon-alert" />

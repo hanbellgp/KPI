@@ -1,0 +1,409 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="policyset" icon="ui-icon-restore"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">方针展开-查看</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="方针名称" for="name" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="name" value="#{policySetManagedBean.currentEntity.name}" title="Name"
+                                       />
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="方针年度" for="year" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="year" value="#{policySetManagedBean.currentEntity.year}" title="year"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="部门愿景" for="vision" /></p:column>
+                    <p:column colspan="3">
+                        <p:outputLabel id="vision" value="#{policySetManagedBean.currentEntity.vision}" title="vision"   />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="部门方针" for="policydescript" /></p:column>
+                    <p:column colspan="3">
+                        <p:outputLabel id="policydescript" value="#{policySetManagedBean.currentEntity.policydescript}" title="policydescript" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="部门" for="deptno" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="deptno" value="#{policySetManagedBean.currentEntity.deptno}" title="deptno"  styleClass="inputWithButton"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="部门名称" for="deptna" /></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="deptna" value="#{policySetManagedBean.currentEntity.deptna}" title="deptname" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="负责人员" for="userno" /></p:column>
+                    <p:column>
+                        <p:inputText id="userno" value="#{policySetManagedBean.currentEntity.userno}" title="userno" styleClass="inputWithButton"/>
+                    </p:column>
+                    <p:column><h:outputText value="姓名"/></p:column>
+                    <p:column>
+                        <h:outputText id="userna" value="#{policySetManagedBean.currentEntity.userna}" title="userna" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column><p:outputLabel value="API" for="api" /></p:column>
+                    <p:column>
+                        <h:outputText id="api" value="#{policySetManagedBean.currentEntity.api}" title="API"/>
+                    </p:column>
+                    <p:column><p:outputLabel value="菜单部门" for="menudeptno" /></p:column>
+                    <p:column>
+                        <h:outputText id="menudeptno" value="#{policySetManagedBean.currentEntity.menudeptno}" title="menudeptno"  />
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <p:tabView id="tabView" styleClass="tabView">
+                <p:tab title="方针明细">
+                    <p:dataTable id="tableList" value="#{policySetManagedBean.detailList}" var="item" styleClass="tableList Mtop10" scrollable="true"  scrollHeight="550" 
+                                 rowKey="#{item.seq}" selectionMode="single" selection="#{policySetManagedBean.currentDetail}" >
+                        <p:ajax event="rowSelect"  update=":formOne:dlgDetail" oncomplete="PF('dlgDetail').show();" />
+                        <p:ajax event="rowUnselect"  update=":formOne:dlgDetail" oncomplete="" />
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="目标类别"/>
+                            </f:facet>
+                            <h:outputText value="#{item.perspective}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="目标"/>
+                            </f:facet>
+                            <h:outputText value="#{item.objective}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10">
+                            <f:facet name="header" >
+                                <h:outputText value="类别序号"/>
+                            </f:facet>
+                            <h:outputText value="#{item.seqname}"/>
+                        </p:column>
+                        <p:column styleClass="Wid20" rendered="#{empty item.fromkpi and empty item.fromplm}">
+                            <f:facet name="header">
+                                <h:outputText value="方针内容"/>
+                            </f:facet>
+                            <h:outputText value="#{item.name}"/>
+                        </p:column>
+                        <p:column styleClass="Wid30" rendered="#{!empty item.fromkpi and empty item.fromplm}">
+                            <f:facet name="header">
+                                <h:outputText value="方针内容"/>
+                            </f:facet>
+                            <p:graphicImage name="images/K.png" library="ultima-layout" style="height:15px;width:15px;background-color: #EEE8AA"/>
+                            <h:outputText value="#{item.name}"/>
+                        </p:column>
+                        <p:column styleClass="Wid30" rendered="#{empty item.fromkpi and !empty item.fromplm}">
+                            <f:facet name="header">
+                                <h:outputText value="方针内容"/>
+                            </f:facet>
+                            <p:graphicImage name="images/P.png" library="ultima-layout" style="height:15px;width:15px;background-color: #EEE8AA"/>
+                            <h:outputText value="#{item.name}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Q1基准"/>
+                            </f:facet>
+                            <h:outputText value="#{item.bq1}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Q1目标"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tq1}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Q2基准"/>
+                            </f:facet>
+                            <h:outputText value="#{item.bq2}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Q2目标"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tq2}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="上本年基准"/>
+                            </f:facet>
+                            <h:outputText value="#{item.bhy}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="上本年目标"/>
+                            </f:facet>
+                            <h:outputText value="#{item.thy}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Q3基准"/>
+                            </f:facet>
+                            <h:outputText value="#{item.bq3}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Q3目标"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tq3}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Q4基准"/>
+                            </f:facet>
+                            <h:outputText value="#{item.bq4}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Q4目标"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tq4}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="全年基准"/>
+                            </f:facet>
+                            <h:outputText value="#{item.bfy}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="全年目标"/>
+                            </f:facet>
+                            <h:outputText value="#{item.tfy}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:dialog id="dlgDetail" widgetVar="dlgDetail" maximizable="true" height="600" width="100%"
+                      header="#{policySetManagedBean.currentDetail.name}">
+                <p:panelGrid id="plgFillDetail"  styleClass="plgDetail Wid100">
+                    <f:facet name="header">
+                        <p:row>
+                            <p:column styleClass="Wid5"><p:outputLabel value="期间"/></p:column>
+                            <p:column styleClass="Wid15" colspan="2" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}"><p:outputLabel value="基准或目标"/></p:column>
+                            <p:column  rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}"><p:outputLabel value="基准"/></p:column>
+                            <p:column  rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}"><p:outputLabel value="目标"/></p:column>
+                            <p:column styleClass="Wid15"><p:outputLabel value="实际"/></p:column>
+                            <p:column><p:outputLabel value="达成"/></p:column>
+                            <p:column><p:outputLabel value="原因"/></p:column>
+                            <p:column><p:outputLabel value="对策"/></p:column>
+                        </p:row>
+                    </f:facet>
+                    <p:row>
+                        <p:column><h:outputText value="Q1"/></p:column>
+                        <p:column colspan="2" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
+                            <p:inputTextarea id="tq1" value="#{policySetManagedBean.currentDetail.tq1}" rows="5" styleClass="Wid100"  title="tq1" readonly="true"/>
+                        </p:column>
+                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
+                            <p:inputNumber id="bq1n" value="#{policySetManagedBean.currentDetail.bq1}" styleClass="Wid100"  title="bq1" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" readonly="true"/>
+                        </p:column>
+                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
+                            <p:inputNumber id="tq1n" value="#{policySetManagedBean.currentDetail.tq1}" styleClass="Wid100"  title="tq1" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" readonly="true"/>
+                        </p:column>
+                        <p:column>
+                            <p:inputTextarea id="aq1" value="#{policySetManagedBean.currentDetail.aq1}" rows="5" styleClass="Wid100"  title="aq1" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}" readonly="true"/>
+                            <p:inputNumber id="aq1n" value="#{policySetManagedBean.currentDetail.aq1}" styleClass="Wid100"  title="aq1" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}" readonly="true"/>
+                        </p:column>
+                        <p:column styleClass="Wid5">
+                            <p:inputNumber id="pq1" value="#{policySetManagedBean.currentDetail.pq1}" title="pq1"
+                                           symbol="%" symbolPosition="s" emptyValue="zero" readonly="true"/>
+                        </p:column>
+                        <p:column>
+                            <!--一阶原因-->
+                            <p:inputTextarea id="q1reason1" value="#{policySetManagedBean.currentDetail.q1reason1}" rows="5" styleClass="Wid100"  title="q1reason1" readonly="true"/>
+                        </p:column>
+                        <p:column>
+                            <!--一阶对策-->
+                            <p:inputTextarea id="q1countermeasure1" value="#{policySetManagedBean.currentDetail.q1countermeasure1}" rows="5" styleClass="Wid100"  title="q1countermeasure1" readonly="true"/>
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column><h:outputText value="Q2"/></p:column>
+                        <p:column colspan="2" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
+                            <p:inputTextarea id="tq2" value="#{policySetManagedBean.currentDetail.tq2}" rows="5" styleClass="Wid100"  title="tq2" readonly="true"/>
+                        </p:column>
+                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
+                            <p:inputNumber id="bq2n" value="#{policySetManagedBean.currentDetail.bq2}" styleClass="Wid100"  title="bq2" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" readonly="true"/>
+                        </p:column>
+                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
+                            <p:inputNumber id="tq2n" value="#{policySetManagedBean.currentDetail.tq2}" styleClass="Wid100"  title="tq2" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" readonly="true"/>
+                        </p:column>
+                        <p:column>
+                            <p:inputTextarea id="aq2" value="#{policySetManagedBean.currentDetail.aq2}" rows="5" styleClass="Wid100"  title="aq2" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}" readonly="true"/>
+                            <p:inputNumber id="aq2n" value="#{policySetManagedBean.currentDetail.aq2}" styleClass="Wid100"  title="aq2" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}" readonly="true"/>
+                        </p:column>
+                        <p:column styleClass="Wid5">
+                            <p:inputNumber id="pq2" value="#{policySetManagedBean.currentDetail.pq2}" title="pq2"
+                                           symbol="%" symbolPosition="s"  emptyValue="zero" readonly="true"/>
+                        </p:column>
+                        <p:column>
+                            <!--一阶原因-->
+                            <p:inputTextarea id="q2reason1" value="#{policySetManagedBean.currentDetail.q2reason1}" rows="5" styleClass="Wid100"  title="q2reason1" readonly="true"/>
+                        </p:column>
+                        <p:column>
+                            <!--一阶对策-->
+                            <p:inputTextarea id="q2countermeasure1" value="#{policySetManagedBean.currentDetail.q2countermeasure1}" rows="5" styleClass="Wid100"  title="q2countermeasure1" readonly="true"/>
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column><h:outputText value="上半年"/></p:column>
+                        <p:column colspan="2" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
+                            <p:inputTextarea id="thy" value="#{policySetManagedBean.currentDetail.thy}" rows="5" styleClass="Wid100"  title="thy" readonly="true"/>
+                        </p:column>
+                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
+                            <p:inputNumber id="bhyn" value="#{policySetManagedBean.currentDetail.bhy}" styleClass="Wid100"  title="bhy" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" readonly="true"/>
+                        </p:column>
+                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
+                            <p:inputNumber id="thyn" value="#{policySetManagedBean.currentDetail.thy}" styleClass="Wid100"  title="thy" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" readonly="true"/>
+                        </p:column>
+                        <p:column>
+                            <p:inputTextarea id="ahy" value="#{policySetManagedBean.currentDetail.ahy}" rows="5" styleClass="Wid100"  title="ahy" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}" readonly="true"/>
+                            <p:inputNumber id="ahyn" value="#{policySetManagedBean.currentDetail.ahy}" styleClass="Wid100"  title="ahy" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}" readonly="true"/>
+                        </p:column>
+                        <p:column styleClass="Wid5">
+                            <p:inputNumber id="phy" value="#{policySetManagedBean.currentDetail.phy}" title="phy"
+                                           symbol="%" symbolPosition="s" emptyValue="zero" readonly="true"/>
+                        </p:column>
+                        <p:column>
+                            <!--一阶原因-->
+                            <p:inputTextarea id="hyreason1" value="#{policySetManagedBean.currentDetail.hyreason1}" rows="5" styleClass="Wid100"  title="hyreason1" readonly="true"/>
+                        </p:column>
+                        <p:column>
+                            <!--一阶对策-->
+                            <p:inputTextarea id="hycountermeasure1" value="#{policySetManagedBean.currentDetail.hycountermeasure1}" rows="5" styleClass="Wid100"  title="hycountermeasure1" readonly="true"/>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column><h:outputText value="Q3"/></p:column>
+                        <p:column colspan="2" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
+                            <p:inputTextarea id="tq3" value="#{policySetManagedBean.currentDetail.tq3}" rows="5" styleClass="Wid100"  title="tq3" readonly="true"/>
+                        </p:column>
+                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
+                            <p:inputNumber id="bq3n" value="#{policySetManagedBean.currentDetail.bq3}" styleClass="Wid100"  title="bq3" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" readonly="true"/>
+                        </p:column>
+                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
+                            <p:inputNumber id="tq3n" value="#{policySetManagedBean.currentDetail.tq3}" styleClass="Wid100"  title="tq3" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" readonly="true"/>
+                        </p:column>
+                        <p:column>
+                            <p:inputTextarea id="aq3" value="#{policySetManagedBean.currentDetail.aq3}" rows="5" styleClass="Wid100"  title="aq3" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}" readonly="true"/>
+                            <p:inputNumber id="aq3n" value="#{policySetManagedBean.currentDetail.aq3}" styleClass="Wid100"  title="aq3" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}" readonly="true"/>
+                        </p:column>
+                        <p:column styleClass="Wid5">
+                            <p:inputNumber id="pq3" value="#{policySetManagedBean.currentDetail.pq3}" title="pq3"
+                                           symbol="%" symbolPosition="s" emptyValue="zero" readonly="true"/>
+                        </p:column>
+                        <p:column>
+                            <!--一阶原因-->
+                            <p:inputTextarea id="q3reason1" value="#{policySetManagedBean.currentDetail.q3reason1}" rows="5" styleClass="Wid100"  title="q3reason1" readonly="true"/>
+                        </p:column>
+                        <p:column>
+                            <!--一阶对策-->
+                            <p:inputTextarea id="q3countermeasure1" value="#{policySetManagedBean.currentDetail.q3countermeasure1}" rows="5" styleClass="Wid100"  title="q3countermeasure1" readonly="true"/>
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column><h:outputText value="Q4"/></p:column>
+                        <p:column colspan="2" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
+                            <p:inputTextarea id="tq4" value="#{policySetManagedBean.currentDetail.tq4}" rows="5" styleClass="Wid100"  title="tq4" readonly="true"/>
+                        </p:column>
+                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
+                            <p:inputNumber id="bq4n" value="#{policySetManagedBean.currentDetail.bq4}" styleClass="Wid100"  title="bq4" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" readonly="true"/>
+                        </p:column>
+                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
+                            <p:inputNumber id="tq4n" value="#{policySetManagedBean.currentDetail.tq4}" styleClass="Wid100"  title="tq4" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" readonly="true"/>
+                        </p:column>
+                        <p:column>
+                            <p:inputTextarea id="aq4" value="#{policySetManagedBean.currentDetail.aq4}" rows="5" styleClass="Wid100"  title="aq4" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}" readonly="true"/>
+                            <p:inputNumber id="aq4n" value="#{policySetManagedBean.currentDetail.aq4}" styleClass="Wid100"  title="aq4" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}" readonly="true"/>
+                        </p:column>
+                        <p:column styleClass="Wid5">
+                            <p:inputNumber id="pq4" value="#{policySetManagedBean.currentDetail.pq4}" title="pq4"
+                                           symbol="%" symbolPosition="s" emptyValue="zero" readonly="true"/>
+                        </p:column>
+                        <p:column>
+                            <!--一阶原因-->
+                            <p:inputTextarea id="q4reason1" value="#{policySetManagedBean.currentDetail.q4reason1}" rows="5" styleClass="Wid100"  title="q4reason1" readonly="true"/>
+                        </p:column>
+                        <p:column>
+                            <!--一阶对策-->
+                            <p:inputTextarea id="q4countermeasure1" value="#{policySetManagedBean.currentDetail.q4countermeasure1}" rows="5" styleClass="Wid100"  title="q4countermeasure1" readonly="true"/>
+                        </p:column>
+                    </p:row>
+
+                    <p:row>
+                        <p:column><h:outputText value="全年"/></p:column>
+                        <p:column colspan="2" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
+                            <p:inputTextarea id="tfy" value="#{policySetManagedBean.currentDetail.tfy}" rows="5" styleClass="Wid100"  title="tfy" readonly="true"/>
+                        </p:column>
+                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
+                            <p:inputNumber id="bfyn" value="#{policySetManagedBean.currentDetail.bfy}" styleClass="Wid100"  title="bfy" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" readonly="true"/>
+                        </p:column>
+                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
+                            <p:inputNumber id="tfyn" value="#{policySetManagedBean.currentDetail.tfy}" styleClass="Wid100"  title="tfy" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" readonly="true"/>
+                        </p:column>
+                        <p:column>
+                            <p:inputTextarea id="afy" value="#{policySetManagedBean.currentDetail.afy}" rows="5" styleClass="Wid100"  title="afy" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}" readonly="true"/>
+                            <p:inputNumber id="afyn" value="#{policySetManagedBean.currentDetail.afy}" styleClass="Wid100"  title="afy" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}" readonly="true"/>
+                        </p:column>
+                        <p:column styleClass="Wid5">
+                            <p:inputNumber id="pfy" value="#{policySetManagedBean.currentDetail.pfy}" title="pfy"
+                                           symbol="%" symbolPosition="s" emptyValue="zero" readonly="true"/>
+                        </p:column>
+                        <p:column>
+                            <!--一阶原因-->
+                            <p:inputTextarea id="fyreason1" value="#{policySetManagedBean.currentDetail.fyreason1}" rows="5" styleClass="Wid100"  title="fyreason1" readonly="true"/>
+                        </p:column>
+                        <p:column>
+                            <!--一阶对策-->
+                            <p:inputTextarea id="fycountermeasure1" value="#{policySetManagedBean.currentDetail.fycountermeasure1}" rows="5" styleClass="Wid100"  title="fycountermeasure1" readonly="true"/>
+                        </p:column>
+                    </p:row>
+
+                </p:panelGrid>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+</ui:composition>

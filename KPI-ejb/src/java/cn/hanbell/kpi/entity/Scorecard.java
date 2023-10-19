@@ -9,6 +9,8 @@ import com.lightshell.comm.SuperEntity;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,14 +42,14 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Scorecard.findByDeptname", query = "SELECT s FROM Scorecard s WHERE s.deptname = :deptname"),
     @NamedQuery(name = "Scorecard.findByUserid", query = "SELECT s FROM Scorecard s WHERE s.userid = :userid"),
     @NamedQuery(name = "Scorecard.findByUsername", query = "SELECT s FROM Scorecard s WHERE s.username = :username"),
-    @NamedQuery(name = "Scorecard.findByMenuAndYear", query = "SELECT s FROM Scorecard s WHERE s.menu = :menu AND s.seq = :seq ORDER BY s.sortid,s.deptno"),
+    @NamedQuery(name = "Scorecard.findByCompanyAndMenuAndYear", query = "SELECT s FROM Scorecard s WHERE s.company = :company and s.menu = :menu AND s.isbsc = :isbsc AND s.seq = :seq ORDER BY s.sortid,s.deptno"),
     @NamedQuery(name = "Scorecard.findByTemplate", query = "SELECT s FROM Scorecard s WHERE s.template = :template"),
     @NamedQuery(name = "Scorecard.findByTemplateId", query = "SELECT s FROM Scorecard s WHERE s.templateId = :templateId"),
     @NamedQuery(name = "Scorecard.findByStatusAndYear", query = "SELECT s FROM Scorecard s WHERE s.status = :status  AND s.seq = :seq"),
     @NamedQuery(name = "Scorecard.findByRowCount", query = "SELECT COUNT(s) FROM Scorecard s WHERE s.company = :company AND s.seq = :seq"),
     @NamedQuery(name = "Scorecard.findByCompanyAndSeq", query = "SELECT s FROM Scorecard s WHERE s.company = :company AND s.seq = :seq"),
     @NamedQuery(name = "Scorecard.findByCompanyAndSeqAndIsbsc", query = "SELECT s FROM Scorecard s WHERE s.company = :company AND s.seq = :seq AND s.isbsc = :isbsc")})
-public class Scorecard extends SuperEntity {
+public class Scorecard extends SuperEntity implements Comparable<Scorecard> {
 
     @Basic(optional = false)
     @NotNull
@@ -553,6 +555,15 @@ public class Scorecard extends SuperEntity {
     @Override
     public String toString() {
         return "cn.hanbell.kpi.entity.Scorecard[ id=" + id + " ]";
+    }
+
+    @Override
+    public int compareTo(Scorecard o) {
+        if (this.getDeptno().compareTo(o.getDeptno()) < 0) {
+            return -1;
+        } else {
+            return 1;
+        }
     }
 
 }

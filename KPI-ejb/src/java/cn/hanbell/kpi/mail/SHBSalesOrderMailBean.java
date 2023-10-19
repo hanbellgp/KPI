@@ -74,7 +74,7 @@ public class SHBSalesOrderMailBean extends SalesOrderMail {
             sb.append(getHtmlTableRow(total, y, m, d));
 
             indicators.clear();
-            indicators = indicatorBean.findByCategoryAndYear("A机体订单台数", y);
+            indicators = indicatorBean.findByCategoryAndYear("A机体订单台数-按机型", y);
             indicatorBean.getEntityManager().clear();
             getHtmlTable(indicators, y, m, d, true);
             total = getSumIndicator();
@@ -174,7 +174,7 @@ public class SHBSalesOrderMailBean extends SalesOrderMail {
             sum1 = sum1.add(getData().get("sum1"));
 
             indicators.clear();
-            indicators = indicatorBean.findByCategoryAndYear("A机体订单金额", y);
+            indicators = indicatorBean.findByCategoryAndYear("A机体订单金额-按机型", y);
             indicatorBean.getEntityManager().clear();
             indicators.stream().forEach((i) -> {
                 indicatorBean.divideByRate(i, 2);

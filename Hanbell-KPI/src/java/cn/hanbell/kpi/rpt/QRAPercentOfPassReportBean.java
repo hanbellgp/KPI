@@ -54,7 +54,7 @@ public class QRAPercentOfPassReportBean extends BscChartManagedBean {
     protected boolean hasOther;
 
     public QRAPercentOfPassReportBean() {
-        this.floatFormat = new DecimalFormat("##.##");
+        this.floatFormat = new DecimalFormat("##.00");
     }
 
     @Override
@@ -107,11 +107,11 @@ public class QRAPercentOfPassReportBean extends BscChartManagedBean {
                 return format(value, i);
             default:
                 if (value == null) {
-                    return "";
+                    return "0.00";
                 } else if (i <= m) {
                     return floatFormat.format(value);
                 } else if (value.compareTo(BigDecimal.ZERO) == 0) {
-                    return "";
+                    return "0.00";
                 } else {
                     return floatFormat.format(value);
                 }

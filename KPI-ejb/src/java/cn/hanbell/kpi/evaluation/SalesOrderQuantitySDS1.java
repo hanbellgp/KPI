@@ -14,7 +14,7 @@ public class SalesOrderQuantitySDS1 extends SalesOrderQuantity{
     public SalesOrderQuantitySDS1() {
         super();
         queryParams.put("facno", "C");
-        queryParams.put("decode", "1");
+        //queryParams.put("decode", "1");
         queryParams.put("n_code_DA", "='AA' ");
         queryParams.put("n_code_DC", " ='SDS' ");
         queryParams.put("n_code_DD", " ='00' ");

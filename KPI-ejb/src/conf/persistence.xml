@@ -98,6 +98,14 @@
       <property name="eclipselink.canonicalmodel.subpackage" value="cq"/>
     </properties>
   </persistence-unit>
+   <persistence-unit name="PU_chuxiongerp" transaction-type="JTA">
+        <jta-data-source>jdbc/chuxiongerp</jta-data-source>
+        <shared-cache-mode>NONE</shared-cache-mode>
+        <validation-mode>NONE</validation-mode>
+        <properties>
+            <property name="eclipselink.canonicalmodel.subpackage" value="cx"/>
+        </properties>
+    </persistence-unit>
   <persistence-unit name="PU_hansonerp" transaction-type="JTA">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <jta-data-source>jdbc/hansonerp</jta-data-source>

@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.LocalBean;
@@ -67,6 +68,7 @@ public class InventoryProductBean extends SuperEJBForKPI<InventoryProduct> {
             query.setParameter("yearmon", ip.getYearmon());
             query.setParameter("wareh", ip.getWareh());
             query.setParameter("itclscode", ip.getItclscode());
+            query.setParameter("genre", ip.getGenre());
             List result = query.getResultList();
             return result;
         } catch (Exception ex) {
@@ -91,10 +93,10 @@ public class InventoryProductBean extends SuperEJBForKPI<InventoryProduct> {
     private List getDataForERPList(int y, int m, LinkedHashMap<String, String> map, String facno) {
         StringBuilder sb = new StringBuilder();
         if (facno.equals("C")) {
-            sb.append("  SELECT facno,yearmon,trtype,deptno,wareh,whdsc,genre,itclscode,'' as genreno,''genzles,sum(amount),0.0 as amamount FROM invamount WHERE facno = 'C' AND prono = '1' AND yearmon = '${y}${m}' AND genre NOT LIKE '%,%' AND genre NOT LIKE '%QT%'");
+            sb.append("  SELECT facno,yearmon,wareh,whdsc,genre,trtype,deptno,itclscode,sum(amount),0.0 as amamount FROM invamount WHERE facno = 'C' AND prono = '1' AND yearmon = '${y}${m}' AND genre NOT LIKE '%,%' AND genre NOT LIKE '%QT%'");
             sb.append("  group by facno,yearmon,trtype,deptno,wareh,whdsc,genre,itclscode");
             sb.append("  UNION ALL");
-            sb.append(" SELECT facno,yearmon,trtype,deptno,wareh,whdsc,genre,itclscode,'' as genreno,''genzles,sum(amount),0.0 as amamount  FROM invamount WHERE facno <> 'C' AND prono = '1' AND yearmon = '${y}${m}'");
+            sb.append(" SELECT facno,yearmon,wareh,whdsc,genre,trtype,deptno,itclscode,sum(amount),0.0 as amamount  FROM invamount WHERE facno <> 'C' AND prono = '1' AND yearmon = '${y}${m}'");
             sb.append(" group by facno,yearmon,trtype,deptno,wareh,whdsc,genre,itclscode");
 
         } else {
@@ -140,43 +142,52 @@ public class InventoryProductBean extends SuperEJBForKPI<InventoryProduct> {
                     Object[] row = (Object[]) dataList.get(i);
                     ip.setFacno(row[0].toString());
                     ip.setYearmon(row[1].toString());
-                    ip.setTrtype(row[2].toString());
-                    ip.setDeptno(row[3] != null ? row[3].toString() : "");
-                    ip.setWareh(row[4].toString());
-                    ip.setWhdsc(row[5].toString());
-                    //兴塔的空压机体整机归为空压机组库存(兴塔成品仓库）
-                    String genre = row[6] != null ? row[6].toString() : "";
+                    ip.setTrtype(row[5].toString());
+                    ip.setDeptno(row[6] != null ? row[6].toString() : "");
+                    ip.setWareh(row[2].toString());
+                    ip.setWhdsc(row[3].toString());
+                    ip.setIndicatorno("");
+
+                    String genre = row[4] != null ? row[4].toString() : "";
                     String itclscode = row[7].toString();
-                    if (row[4].toString().equals("EW01") && genre.equals("AJ") && itclscode.equals("2") && row[0].toString().equals("C")) {
+                    //兴塔的空压机体整机归为空压机组库存(兴塔成品仓库）
+                    if (row[2].toString().equals("EW01") && genre.equals("AJ") && itclscode.equals("2") && row[0].toString().equals("C")) {
                         ip.setGenre("A");
                     } else {
                         ip.setGenre(genre);
                     }
-                    //EPM01中分类1除S外，全部替换为“P”
-//                    if (row[4].toString().equals("EPM01") && itclscode.equals("1") && row[0].toString().equals("C")) {
-//                        if (genre.equals("S")) {
-//                            ip.setGenre("S");
-//                        }else{
-//                            ip.setGenre("P");
-//                        }
-//                    }else{
-//                        ip.setGenre(genre);
-//                    }
-                    //EM01中分类1除S和P，全部替换为“A”
-//                    if (row[4].toString().equals("EM01") && row[0].toString().equals("C")) {
-//                        if (!genre.equals("S") || !genre.equals("P")) {
-//                            ip.setGenre("A");
-//                        }else{
-//                            ip.setGenre(genre);
-//                        }
-//                    }else{
-//                        ip.setGenre(genre);
-//                    }
                     ip.setItclscode(itclscode);
-                    ip.setCategories(row[8] != null ? row[8].toString() : "");
-                    ip.setIndicatorno(row[9] != null ? row[9].toString() : "");
-                    ip.setAmount(BigDecimal.valueOf(Double.valueOf(row[10].toString())));
+                    ip.setCategories("");
+                    ip.setAmount(BigDecimal.valueOf(Double.valueOf(row[8].toString())));
                     ip.setAmamount(BigDecimal.ZERO);
+                    //“兴塔空压零件库”，将“分类1”剔除日立、A、AJ后，将不是“A”的全部替换为“A,AJ”；
+                    if (row[2].toString().equals("EAKF02") && !genre.equals("AJ") && !genre.equals("AD") && !genre.equals("A") && row[0].toString().equals("C")) {
+                        StringBuffer sql = new StringBuffer("select genre2,ratio from invshare where genre1='A,AJ' and year(validtime)=");
+                        superEJBForERP.setCompany(facno);
+                        Query query = superEJBForERP.getEntityManager().createNativeQuery(sql.append(y).toString());
+                        List<Object[]> result = query.getResultList();
+                        if (result == null || result.isEmpty() || result.size() != 2) {
+                            throw new Exception("invshare表中A,AJ部分有问题，请检查！");
+                        }
+                        InventoryProduct entity = (InventoryProduct) ip.clone();
+                        BigDecimal amount = (BigDecimal) row[8];
+                        for (Object[] o : result) {
+                            if ("A".equals(o[0])) {
+                                ip.setAmount(amount.multiply((BigDecimal) o[1]));
+                                ip.setGenre("A");
+                            } else if ("AJ".equals(o[0])) {
+//                                entity.setAmount(BigDecimal.valueOf(Double.valueOf(row[8].toString())).multiply(new BigDecimal((String) o[1])));
+//                                entity.setAmount((BigDecimal) row[8]);
+                                entity.setAmount(amount.multiply((BigDecimal) o[1]));
+                                entity.setGenre("AJ");
+                            }
+
+                        }
+                        ipResultList.add(entity);
+                    } else {
+                        ip.setGenre(genre);
+                    }
+
                     ipResultList.add(ip);
                 }
                 if (!ipResultList.isEmpty()) {
@@ -190,10 +201,67 @@ public class InventoryProductBean extends SuperEJBForKPI<InventoryProduct> {
                     for (InventoryProduct e : ipResultList) {
                         this.persist(e);
                     }
+                    //先调整借厂商，借客户，借员工
+                    if (!facno.equals("") && facno.equals("C")) {
+                        this.getEntityManager().createNativeQuery("update inventoryproduct set wareh='JCZC-JKH' where facno <> 'K' and whdsc='借客户' and yearmon='" + y + getMon(m) + "'").executeUpdate();
+                        this.getEntityManager().createNativeQuery("update inventoryproduct set wareh='JCZC-JYG' where facno <> 'K' and whdsc='借员工' and yearmon='" + y + getMon(m) + "'").executeUpdate();
+                        this.getEntityManager().createNativeQuery("update inventoryproduct set wareh='JCZC-JCS' where facno <> 'K' and whdsc='借厂商' and yearmon='" + y + getMon(m) + "'").executeUpdate();
+
+                        //在调整叶愉芬的19条逻辑
+                        this.getEntityManager()
+                                .createNativeQuery("update inventoryproduct set genre='P' where (genre<>'P')and (whdsc like '%真空%' or whdsc like '%P%') and yearmon='" + y + getMon(m) + "'").executeUpdate();
+
+                        this.getEntityManager()
+                                .createNativeQuery("update inventoryproduct set genre='AJ' where (genre<>'P')and (whdsc like '%A机体倒扣仓%' or whdsc like '%装二判别库%') and yearmon='" + y + getMon(m) + "'").executeUpdate();
+
+                        this.getEntityManager()
+                                .createNativeQuery("update inventoryproduct set genre='A'  where (whdsc like '%华东A零件库%' or whdsc like '%重庆A零件库%') and yearmon='" + y + getMon(m) + "'").executeUpdate();
+
+                        this.getEntityManager()
+                                .createNativeQuery("update inventoryproduct set genre='R' where (whdsc like '%装配一倒扣仓%' or whdsc like '%装一判别库%' or whdsc like '%美的外租仓%') and yearmon='" + y + getMon(m) + "'").executeUpdate();
+
+                        this.getEntityManager()
+                                .createNativeQuery("update inventoryproduct set genre='P' where   wareh='EPM01' and genre in('R','L','R,A','R,AJ','A','AJ') and yearmon='" + y + getMon(m) + "'").executeUpdate();
+
+                        this.getEntityManager()
+                                .createNativeQuery("update inventoryproduct set genre='A' where   wareh='EM01' and genre in('R','L','R,A','R,AJ','A','AJ') and yearmon='" + y + getMon(m) + "'").executeUpdate();
+
+                        this.getEntityManager()
+                                .createNativeQuery("update inventoryproduct set genre='S' where  whdsc like '%涡旋%' and yearmon='" + y + getMon(m) + "'").executeUpdate();
+
+                        this.getEntityManager()
+                                .createNativeQuery("update inventoryproduct set genre='A' where  whdsc like  '%机组%' and yearmon='" + y + getMon(m) + "'").executeUpdate();
+
+                        this.getEntityManager()
+                                .createNativeQuery("update inventoryproduct set genre='P' where  whdsc like '%隆基%' or whdsc like '%四川晶科%'"
+                                        + "or whdsc like '%内蒙古中环%' or whdsc like '%包头阿特斯%'"
+                                        + "or whdsc like '%楚雄零件库%' or whdsc like '%内蒙古中环%'"
+                                        + "or whdsc like '%青海高景%' or whdsc like '%眉山成品库%'"
+                                        + "or whdsc like '%四川京运通%' or whdsc like '%包头双良%' and yearmon='" + y + getMon(m) + "'").executeUpdate();
+
+                        this.getEntityManager()
+                                .createNativeQuery("update inventoryproduct set genre='日立' where whdsc like '%兴塔无油零件%' and yearmon='" + y + getMon(m) + "'").executeUpdate();
+
+                        this.getEntityManager()
+                                .createNativeQuery("update inventoryproduct set genre='AJ' where whdsc like '%A机体倒扣二%' and yearmon='" + y + getMon(m) + "'").executeUpdate();
+
+                        this.getEntityManager()
+                                .createNativeQuery("update inventoryproduct set genre='AJ' where whdsc like '%AC专线库%' and yearmon='" + y + getMon(m) + "'").executeUpdate();
+
+                        this.getEntityManager()
+                                .createNativeQuery("update inventoryproduct set genre='A' where whdsc like '%兴塔补料库%' and genre not in ('P','S') and yearmon='" + y + getMon(m) + "'").executeUpdate();
+
+                        this.getEntityManager()
+                                .createNativeQuery("update inventoryproduct set genre='AJ' where wareh='ETKF02' and yearmon='" + y + getMon(m) + "'").executeUpdate();
+
+                        this.getEntityManager()
+                                .createNativeQuery("update inventoryproduct set genre='A'  where wareh='EW01'  and genre not in('AD','P','S','RT') and yearmon='" + y + getMon(m) + "'").executeUpdate();
+                    }
                 }
             }
             return true;
         } catch (Exception ex) {
+            ex.printStackTrace();
             log4j.error("InventoryProductBean.updateInventoryProduct()方法异常！！", ex.toString());
         }
         return false;
@@ -302,57 +370,37 @@ public class InventoryProductBean extends SuperEJBForKPI<InventoryProduct> {
         return String.valueOf(m);
     }
 
-    //获取生产计划的金额明细
-    public List<String> get(int y, int m,String facno, String genreno,String indicatorFormid) throws Exception {
-    
-            List<InventoryProduct> a=getDetailsByWareh(y,m,facno,getWarehs(genreno,indicatorFormid));
-            //需加入生产在制
-            List<InventoryProduct> b=getDetailsByWareh(y,m,facno,"in ('SCZZ')");
-            
-            List<InventoryProduct> c=getDetailsByWhdsc(y,m,facno,"借厂商");
-        
-        return null;
-    }
     //根据仓库号获取数据
     public List<InventoryProduct> getDetailsByWareh(int y, int m, String facno, String wareh) throws Exception {
         StringBuffer sql = new StringBuffer();
         sql.append(" select * from inventoryproduct where facno ='").append(facno).append("'");
         sql.append(" and yearmon='").append(String.valueOf(y)).append(getMon(m)).append("'");
-        if(wareh==null ||wareh.length()==0){
-            throw new Exception("搜索明细必须加入仓库条件");
-        }
         sql.append(" and wareh ").append(wareh);
         Query query = this.getEntityManager().createNativeQuery(sql.toString(), InventoryProduct.class);
         return query.getResultList();
     }
-        //根据仓库名称获取数据
-    public List<InventoryProduct> getDetailsByWhdsc(int y, int m, String facno, String whdsc) throws Exception {
-        StringBuffer sql = new StringBuffer();
-        sql.append(" select * from inventoryproduct where facno ='").append(facno).append("'");
-        sql.append(" and yearmon='").append(String.valueOf(y)).append(getMon(m)).append("'");
-        sql.append(" and whdsc ").append(whdsc);
-        Query query = this.getEntityManager().createNativeQuery(sql.toString(), InventoryProduct.class);
-        return query.getResultList();
+
+    public List<InventoryProduct> findByFacnoAndYearmon(String facno, int y, int m) {
+
+        Query query = this.getEntityManager().createNamedQuery("InventoryProduct.findByFacnoAndYearmon");
+        try {
+            query.setParameter("yearmon", String.valueOf(y) + getMon(m));
+            query.setParameter("facno", facno);
+            return query.getResultList();
+        } catch (Exception ex) {
+            throw ex;
+        }
     }
 
-    public String getWarehs(String genreno,String indicatorFormid) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(" select detail.wareh");
-        sb.append(" from invindexdta detail left join   invindexhad head");
-        sb.append(" on detail.facno=head.facno and  detail.prono=head.prono");
-        sb.append(" AND detail.indno=head.indno and  detail.genreno=head.genreno where head.genreno ").append(genreno);
-        sb.append(" and indicatorformid='").append(indicatorFormid).append("'");
+    public List<InventoryProduct> findByFacnoAndYearmonAndCategories(String facno, String yearmon,String categories) {
+        Query query = this.getEntityManager().createNamedQuery("InventoryProduct.findByFacnoAndYearmonAndCategories");
         try {
-            Query q = superEJBForERP.getEntityManager().createNativeQuery(sb.toString());
-            List<String> warehs = q.getResultList();
-            sb.setLength(0);
-            if(warehs !=null&&!warehs.isEmpty()){
-                 sb.append("  in ('").append(StringUtils.join(warehs.toArray(), "\',\'")).append("')");
-                 return sb.toString();
-            }
-            return null;
-        } catch (Exception e) {
-            return null;
+            query.setParameter("yearmon", yearmon);
+            query.setParameter("facno", facno);
+             query.setParameter("categories", categories);
+            return query.getResultList();
+        } catch (Exception ex) {
+            throw ex;
         }
     }
 }

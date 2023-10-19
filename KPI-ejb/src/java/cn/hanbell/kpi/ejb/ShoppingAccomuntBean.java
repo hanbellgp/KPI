@@ -6,21 +6,15 @@
 package cn.hanbell.kpi.ejb;
 
 import cn.hanbell.kpi.comm.SuperEJBForERP;
-import cn.hanbell.kpi.comm.SuperEJBForKPI;
-import cn.hanbell.kpi.entity.AccountsReceivables;
 import cn.hanbell.kpi.entity.ShoppingManufacturer;
 import cn.hanbell.util.BaseLib;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.StringTokenizer;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -47,7 +41,7 @@ public class ShoppingAccomuntBean implements Serializable {
         this.dfpercent = new DecimalFormat("0.00％");
     }
     //上海汉钟
-    public static final String SHB_ITCLS_ZHUJIA = "1014/1016/1102/1202/1401/1402/1802/2013/2015/2102/2202/2402/2802/3133/3202/3233/3401/3402/3433/3802/3833/9014/9017/1C02/3C33/3733/2012/3102/3716/3C02";
+    public static final String SHB_ITCLS_ZHUJIA = "1014/1016/1102/1202/1401/1402/1802/2013/2015/2102/2202/2402/2802/3202/3233/3401/3402/3433/3802/3833/9014/9017/1C02/3C33/3733/2012/3102/3716/3C02";
     public static final String SHB_ITCLS_DIANJI = "3703/3104/9019/RDJF/4504/3504";//电机
     public static final String SHB_ITCLS_ZHOUCHENG = "4009/4018/3235";
     public static final String SHB_ITCLS_YOUPING = "5061/5062";
@@ -56,8 +50,10 @@ public class ShoppingAccomuntBean implements Serializable {
     public static final String SHB_ITCLS_DAOJU = "BS1/B001/C002";//刀具
     public static final String SHB_ITCLS_CHENGDIAN = "3133/3231/3233/3433/3533/4049";
     public static final String SHB_FACT_JIEXIANGAIBAN = "3139/3239/3131";
-    public static final String SHB_FACT_JIEXIANGHE = "3231/3133";
+    public static final String SHB_FACT_JIEXIANGHE = "3231";
     public static final String SHB_ITCLS_MOJU = "B005";
+    public static final String SHB_ITCLS_CHILUN = "3406/3806/3E06";
+    public static final String SHB_ITCLS_LVCAI = "3140/3240";
 
     //浙江汉声
     public static final String HS_ITCLS_ZHUJIA = "2A05/2A02/2A05/2A06/2HJK/2HMD/1A03/1HJK/1HYF/1HMD/3A03/3A01/3HMD/3HYF/2AZ1/2AZ3/3H/1/3A06/1102/2H/3/2HZC/3HJK";
@@ -100,21 +96,21 @@ public class ShoppingAccomuntBean implements Serializable {
     //
     public List<Object[]> getList(Date date) {
         List<Object[]> list = new ArrayList<>();
-        list.add(getShbDate("SHB全部", "C", date, "", ""));
-        list.add(getShbDate("SHB采购中心", "C", date, getWhereVdrnos("C").toString(), ""));
-        list.add(getShbDate("THB全部", "A", date, "", ""));
-        list.add(getShbDate("THB采购中心", "A", date, getWhereVdrnos("A").toString(), ""));
-        list.add(getShbDate("HS全部", "H", date, "", ""));
-        list.add(getShbDate("HS采购中心", "H", date, getWhereVdrnos("H").toString(), ""));
-        list.add(getShbDate("SCM全部", "K", date, "", ""));
-        list.add(getShbDate("SCM采购中心", "K", date, getWhereVdrnos("K").toString(), ""));
-        list.add(getShbDate("ZCM全部", "E", date, "", ""));
-        list.add(getShbDate("ZCM采购中心", "E", date, getWhereVdrnos("E").toString(), ""));
-        list.add(getShbDate("HY全部", "Y", date, "", ""));
-        list.add(getShbDate("HY采购中心", "Y", date, getWhereVdrnos("Y").toString(), ""));
+        list.add(getDateByIsCenter("SHB全部", "C", date, false));
+        list.add(getDateByIsCenter("SHB采购中心", "C", date,true));
+        list.add(getDateByIsCenter("THB全部", "A", date, false));
+        list.add(getDateByIsCenter("THB采购中心", "A", date,true));
+        list.add(getDateByIsCenter("HS全部", "H", date, false));
+        list.add(getDateByIsCenter("HS采购中心", "H", date, true));
+        list.add(getDateByIsCenter("SCM全部", "K", date, false));
+        list.add(getDateByIsCenter("SCM采购中心", "K", date, true));
+        list.add(getDateByIsCenter("ZCM全部", "E", date, false));
+        list.add(getDateByIsCenter("ZCM采购中心", "E", date, true));
+        list.add(getDateByIsCenter("HY全部", "Y", date,false));
+        list.add(getDateByIsCenter("HY采购中心", "Y", date, true));
         //计算合计指标
         Object[] o1 = new Object[]{"集团合计", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
-            BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO};
+            BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, ""};
         for (int i = 1; i <= 13; i++) {
             for (int j = 0; j < list.size(); j = j + 2) {
                 o1[i] = ((BigDecimal) o1[i]).add((BigDecimal) list.get(j)[i]);
@@ -122,7 +118,7 @@ public class ShoppingAccomuntBean implements Serializable {
         }
         list.add(o1);
         Object[] o2 = new Object[]{"采购中心合计", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
-            BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO};
+            BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,"", ""};
         for (int i = 1; i <= 13; i++) {
             for (int j = 1; j < list.size(); j = j + 2) {
                 o2[i] = ((BigDecimal) o2[i]).add((BigDecimal) list.get(j)[i]);
@@ -132,26 +128,26 @@ public class ShoppingAccomuntBean implements Serializable {
         //调整占比：各分公司占集团的百分比
         for (int j = 0; j < list.size(); j = j + 2) {
             try {
-                BigDecimal value = ((BigDecimal) list.get(j)[13]).divide(((BigDecimal) list.get(list.size() - 2)[13]), 2).multiply(new BigDecimal(100));
+                BigDecimal value = ((BigDecimal) list.get(j)[13]).multiply(new BigDecimal(100)).divide(((BigDecimal) list.get(list.size() - 2)[13]), 2, BigDecimal.ROUND_HALF_UP);
                 list.get(j)[14] = value.toString() + "%";
             } catch (ArithmeticException e) {
-                list.get(j)[14] = "0%";
+                list.get(j)[14] = "-";
             }
         }
         for (int j = 1; j < list.size(); j = j + 2) {
             try {
-                BigDecimal value = ((BigDecimal) list.get(j)[13]).divide(((BigDecimal) list.get(j - 1)[13]), 2).multiply(new BigDecimal(100));
-                list.get(j)[14] = value.toString() + "%";
+                BigDecimal value = ((BigDecimal) list.get(j)[13]).multiply(new BigDecimal(100)).divide(((BigDecimal) list.get(j - 1)[13]), 2, BigDecimal.ROUND_HALF_UP);
+                list.get(j)[15] = value.toString() + "%";
             } catch (ArithmeticException e) {
-                list.get(j)[14] = "0%";
+                list.get(j)[15] = "-";
             }
         }
         return list;
     }
 
-    //汉声和大陆的采购金额逻辑相同
-    public Object[] getShbDate(String name, String facno, Date date, String vdrnos, String itcls) {
-        Object[] row = new Object[15];
+
+    public Object[] getShbDateByVdrno(String name, String facno, Date date, String vdrnos) {
+        Object[] row = new Object[16];
         row[0] = name;
         //循环获取12个月的数据
         StringBuffer sql = new StringBuffer();
@@ -161,8 +157,37 @@ public class ShoppingAccomuntBean implements Serializable {
         if (vdrnos != null && !"".equals(vdrnos)) {
             sql.append(" AND vdrno ").append(vdrnos);
         }
-        if (itcls != null && !"".equals(itcls)) {
-            sql.append(" AND itcls ").append(getWhereItlcs(itcls).toString());
+        sql.append(" and yearmon like '").append(String.valueOf(findYear(date))).append("%' group by yearmon order by yearmon ASC");
+        Query query = shoppingManufacturerBean.getEntityManager().createNativeQuery(sql.toString());
+        BigDecimal sum = BigDecimal.ZERO;
+        try {
+            List<Object[]> data = query.getResultList();
+            for (int i = 1; i <= 12; i++) {
+                if (i <= data.size()) {
+                    row[i] = (java.math.BigDecimal) data.get(i - 1)[1];
+                } else {
+                    row[i] = new BigDecimal(0.0);
+                }
+                sum = sum.add((java.math.BigDecimal) row[i]);
+            }
+            row[13] = sum;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+        return row;
+    }
+    
+      public Object[] getDateByIsCenter(String name, String facno, Date date,boolean iscenter) {
+        Object[] row = new Object[16];
+        row[0] = name;
+        //循环获取12个月的数据
+        StringBuffer sql = new StringBuffer();
+        sql.append(" select CAST(right(yearmon,2) AS SIGNED) ,sum(acpamt)");
+        sql.append(" from shoppingtable");
+        sql.append(" where facno ='").append(facno).append("'");
+        if(iscenter){
+            sql.append(" and iscenter=1 ");
         }
         sql.append(" and yearmon like '").append(String.valueOf(findYear(date))).append("%' group by yearmon order by yearmon ASC");
         Query query = shoppingManufacturerBean.getEntityManager().createNativeQuery(sql.toString());
@@ -223,6 +248,44 @@ public class ShoppingAccomuntBean implements Serializable {
         }
         sql.append(" ) head left join shoppingmenuweight detail on  head.itnbr=detail.itnbr where detail.id is not null");
         sql.append(" group by yearmon order by yearmon asc");
+        Query query = shoppingManufacturerBean.getEntityManager().createNativeQuery(sql.toString());
+        BigDecimal sum = BigDecimal.ZERO;
+        try {
+            List<Object[]> data = query.getResultList();
+            for (int i = 1; i <= 12; i++) {
+                if (i <= data.size()) {
+
+                    row[i + 1] = (java.math.BigDecimal) data.get(i - 1)[1];
+                } else {
+                    row[i + 1] = new BigDecimal(0.0);
+                }
+                sum = sum.add((java.math.BigDecimal) row[i + 1]);
+            }
+            row[14] = sum;
+        } catch (Exception e) {
+            throw e;
+        }
+        return row;
+    }
+      public Object[] getGroupSalaryDate(String name1, String name2, String facno, Date date, String vdrnos, String itcls) throws Exception {
+        Object[] row = new Object[16];
+        row[0] = name1;
+        row[1] = name2;
+        StringBuffer sql = new StringBuffer();
+        sql.append("select  CAST(right(yearmon,2) AS SIGNED),sum(acpamt) from  shoppingtable");
+        sql.append(" where yearmon like '").append(BaseLib.formatDate("yyyy", date)).append("%'");
+        sql.append(" and facno='").append(facno).append("'");
+        if ("C".equals(facno)) {
+            sql.append(" and sponr not like 'AC%'");
+        }
+       
+        if (vdrnos != null && !"".equals(vdrnos)) {
+            sql.append(" and vdrno").append(vdrnos);
+        }
+        if (itcls != null && !"".equals(itcls)) {
+            sql.append(" and itcls").append(getWhereItlcs(itcls).toString());
+        }
+        sql.append(" group by yearmon;");
         Query query = shoppingManufacturerBean.getEntityManager().createNativeQuery(sql.toString());
         BigDecimal sum = BigDecimal.ZERO;
         try {
@@ -356,7 +419,7 @@ public class ShoppingAccomuntBean implements Serializable {
 
     public List<Object[]> getShbDateDetail(String facno, Date date, String vdrnos, String itcls) {
         StringBuffer sql = new StringBuffer();
-        sql.append(" select a.*,b.itcls,''");
+        sql.append(" select a.*,b.itcls");
         sql.append(" from (");
         sql.append(" SELECT apmpyh.facno ,apmpyh.vdrno , purvdr.vdrna , apmpyh.itnbr,apmpyh.itdsc,  apmpyh.acpamt ,apmpyh.payqty");
         sql.append(" FROM apmpyh ,purvdr ,purhad");

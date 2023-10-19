@@ -38,8 +38,9 @@
                                 <p:column style="width: 6%" rendered="#{shoppingCenterAmountReportBean.visible(10)}" priority="#{shoppingCenterAmountReportBean.m==10?3:4}">10月</p:column>
                                 <p:column style="width: 6%" rendered="#{shoppingCenterAmountReportBean.visible(11)}" priority="#{shoppingCenterAmountReportBean.m==11?3:4}">11月</p:column>
                                 <p:column style="width: 6%" rendered="#{shoppingCenterAmountReportBean.visible(12)}" priority="#{shoppingCenterAmountReportBean.m==12?3:4}">12月</p:column>
-                                <p:column style="width: 9%" >合计</p:column>
-                                <p:column style="width: 9%" >占比</p:column>
+                                <p:column style="width: 7%" >合计</p:column>
+                                <p:column style="width: 5%" >集团占比</p:column>
+                                <p:column style="width: 5%" >采购中心占比</p:column>
                             </p:row>
                           </f:facet>
                         <c:forEach items="#{shoppingCenterAmountReportBean.list}" var="item" >
@@ -59,6 +60,7 @@
                                 <p:column rendered="#{shoppingCenterAmountReportBean.visible(12)}" priority="#{shoppingCenterAmountReportBean.m==12?3:4}" style="#{shoppingCenterAmountReportBean.m==12?'color:red':''}">#{shoppingCenterAmountReportBean.doubleformat(item[12],10000)}</p:column>
                                 <p:column>#{shoppingCenterAmountReportBean.doubleformat(item[13],10000)}</p:column>
                                 <p:column>#{item[14]}</p:column>
+                                <p:column>#{item[15]}</p:column>
                             </p:row>
                         </c:forEach>
                    

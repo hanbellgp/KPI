@@ -10,6 +10,8 @@ import cn.hanbell.kpi.ejb.IndicatorChartBean;
 import cn.hanbell.kpi.entity.RoleGrantModule;
 import cn.hanbell.kpi.web.BscQueryTableManageBean;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -34,13 +36,14 @@ public class CashFlowSheetReportBean extends BscQueryTableManageBean implements 
 
     @EJB
     protected IndicatorChartBean indicatorChartBean;
-
+    protected final DecimalFormat floatFormat;
     protected Date btndate;
     protected LinkedHashMap<String, String[]> map;
     protected LinkedHashMap<String, String> statusMap;
     protected String facno;
 
     public CashFlowSheetReportBean() {
+        this.floatFormat = new DecimalFormat("#,##0.00");
     }
 
     public Calendar settlementDate() {
@@ -120,6 +123,19 @@ public class CashFlowSheetReportBean extends BscQueryTableManageBean implements 
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "无法查询到该日期的数据，请重新查询！"));
             }
         }
+    }
+
+    public String format(String value) {
+        if ("0.00".equals(value) || "0％".equals(value)) {
+            return "-";
+        }
+        if(value.matches("^(-?\\d+)(\\.\\d+)?$")){
+            return floatFormat.format(new BigDecimal(value));
+        }
+        if(value.replace("％", "").matches("^(-?\\d+)(\\.\\d+)?$")){
+              return floatFormat.format(new BigDecimal(value.replace("％", ""))) + "%";
+        }
+        return value;
     }
 
     private String getTitle(int y, int m) {

@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="content">
+
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="invindex" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnSave" value="保存" actionListener="#{invindexManagedBean.update()}" icon="ui-icon-save"
+                                     process="@this,plgHead" update="formOne"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" columns="4" columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                   仓库-修改
+                </f:facet>
+                <p:column><p:outputLabel value="编号" for="roleno" /></p:column>
+                <p:column>
+                    <p:outputLabel id="roleno" value="#{invindexManagedBean.currentEntity.indno}" title="roleno" />
+                </p:column>
+                <p:column><p:outputLabel value="指标编号" for="rolename" /></p:column>
+                <p:column>
+                    <p:outputLabel id="rolename" value="#{invindexManagedBean.currentEntity.formid}" title="rolename"/>
+                </p:column>
+            </p:panelGrid>
+            <p:tabView id="tabView" styleClass="tabView">
+                <p:tab title="仓库配置">
+                    <p:toolbar id="detailToolbar" styleClass="detailToolbar">
+                        <f:facet name="left">
+                            <p:commandButton id="btnAddDetail" widgetVar="btnAddDetail" value="添加" actionListener="#{invindexManagedBean.createDetail()}" icon="ui-icon-plus"
+                                             oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').enable();"
+                                             process="@this" update="formOne:tabView:plgDetail"/>
+                            <p:commandButton id="btnDeleteDetail" widgetVar="btnDeleteDetail" value="删除" actionListener="#{invindexManagedBean.deleteDetail()}" icon="ui-icon-trash"
+                                             oncomplete="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
+                                             process="@this" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList" />
+                        </f:facet>
+                        <f:facet name="right">
+                            <p:commandButton id="btnSaveDetail" widgetVar="btnSaveDetail" value="确定" actionListener="#{invindexManagedBean.doConfirmDetail()}" icon="ui-icon-check"
+                                             onsuccess="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
+                                             process="@this,:formOne:tabView:plgDetail" update=":formOne:tabView:plgDetail,:formOne:tabView:tableList"/>
+                        </f:facet>
+                    </p:toolbar>
+                    <p:panelGrid id="plgDetail" columns="4" columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgDetail Wid100">
+                        <p:column><p:outputLabel value="库号" for="wareh" /></p:column>
+                        <p:column>
+                            <p:inputText id="wareh" value="#{invindexManagedBean.currentDetail.wareh}" title="contacter" styleClass="inputWithButton"
+                                         required="true" requiredMessage="请输入库号"/>
+                        </p:column>
+                        <p:column>
+                            <p:outputLabel value="库名" for="whdsc" />
+                        </p:column>
+                        <p:column>
+                             <p:inputText id="whdsc" value="#{invindexManagedBean.currentDetail.whdsc}" title="contacter" styleClass="inputWithButton"
+                                         required="true" requiredMessage="请输入库名"  />
+                        </p:column>
+                    </p:panelGrid>
+                    <p:dataTable id="tableList" value="#{invindexManagedBean.detailList}" var="item" styleClass="tableList Mtop10"
+                                 selectionMode="single" selection="#{invindexManagedBean.currentDetail}" rowKey="#{item.seq}" >
+                        <p:ajax event="rowSelect"  update=":formOne:tabView:plgDetail" oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').enable();PF('btnSaveDetail').enable();" />
+                        <p:ajax event="rowUnselect"  update=":formOne:tabView:plgDetail" oncomplete="" />
+                        <p:column headerText="库号" styleClass="Wid20">
+                            <h:outputText value="#{item.wareh}"/>
+                        </p:column>
+                        <p:column headerText="库名" styleClass="Wid20">
+                            <h:outputText value="#{item.whdsc}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+        </h:form>
+
+    </ui:define>
+
+</ui:composition>

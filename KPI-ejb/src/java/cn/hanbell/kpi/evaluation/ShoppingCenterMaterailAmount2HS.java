@@ -14,7 +14,6 @@ public class ShoppingCenterMaterailAmount2HS extends ShoppingCenterMaterailAmoun
     public ShoppingCenterMaterailAmount2HS() {
         super();
         queryParams.put("facno", "H");
-        queryParams.put("prono", "1");
-        queryParams.put("material", "select vdrno from shoppingmanufacturer where facno='H' and materialTypeName='电机'");
+        queryParams.put("type", " ='电机'");
     }
 }

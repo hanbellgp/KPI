@@ -28,7 +28,7 @@ public class DataRecordBean extends SuperEJBForKPI<DataRecord> {
 
     public DataRecordBean() {
         super(DataRecord.class);
-        this.df = new DecimalFormat("#,##0.##");
+        this.df = new DecimalFormat("#,##0.00");
     }
 
     public List<DataRecord> findByYeaAndMon(DataRecord dr) {

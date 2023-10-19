@@ -17,10 +17,10 @@ public class ProductionPlanCompleteAJT1 extends ProductionPlanComplete {
         queryParams.put("facno", "C");
         queryParams.put("prono", "1");
         queryParams.put("stats", "2");
-        queryParams.put("linecode", " ='AH' ");
+        queryParams.put("linecode", " ='VP2' ");
         queryParams.put("typecode", " ='01' ");
-        queryParams.put("prosscode", " in ('S1','S1-1','FAA09','FAA08') ");
-        queryParams.put("wrcode", "  ='S4' ");
+        queryParams.put("prosscode", " ='FPSC' ");
+        queryParams.put("wrcode", "  ='T11' ");
         //#ITCLS CHANGE TODO #
         queryParams.put("itcls", " IN ('3476','3479','3480') ");
     }

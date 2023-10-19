@@ -250,7 +250,17 @@
         </navigation-case>
         <navigation-case>
             <from-outcome>balanceimport</from-outcome>
-            <to-view-id>/app/prod/balanceimport</to-view-id>
+            <to-view-id>/app/prod/balanceimport.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>invindex</from-outcome>
+            <to-view-id>/app/prod/invindex.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>invindexEdit</from-outcome>
+            <to-view-id>/app/prod/invindexEdit.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>
@@ -540,7 +550,12 @@
             <to-view-id>/app/bsc/scorecardbsc.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-                <navigation-case>
+       <navigation-case>
+            <from-outcome>policysheet</from-outcome>
+            <to-view-id>/app/bsc/policysheet.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
             <from-outcome>shoppingcenteramountfromhs</from-outcome>
             <to-view-id>/app/bsc/shoppingcenteramountfromhs.xhtml</to-view-id>
             <redirect/>
@@ -572,6 +587,37 @@
             <redirect/>
         </navigation-case>
     </navigation-rule>
+    <!--方针展开导航栏-->
+    <navigation-rule>
+        <description>方针展开导航栏</description>
+        <from-view-id>/*</from-view-id>
+        <navigation-case>
+            <from-outcome>policy</from-outcome>
+            <to-view-id>/app/pdep/policy.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>policyset</from-outcome>
+            <to-view-id>/app/pdep/policyset.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <description>方针展开导航栏</description>
+        <from-view-id>/*</from-view-id>
+        <navigation-case>
+            <from-outcome>personset</from-outcome>
+            <to-view-id>/app/ppem/personset.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>personscorecard</from-outcome>
+            <to-view-id>/app/ppem/personscorecard.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+    </navigation-rule>
+    
     <!--模态开窗-->
     <navigation-rule>
         <description>模态开窗</description>
@@ -619,6 +665,11 @@
         <navigation-case>
             <from-outcome>scorecardDetailSelect</from-outcome>
             <to-view-id>/app/df/scorecardDetailSelect.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>policySelect</from-outcome>
+            <to-view-id>/app/df/policySelect.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>

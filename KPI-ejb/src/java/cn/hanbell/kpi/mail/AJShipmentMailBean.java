@@ -33,42 +33,69 @@ public class AJShipmentMailBean extends ShipmentMail {
     @Override
     public String getMailBody() throws Exception {
         StringBuilder sb = new StringBuilder();
-        sb.append("<div class=\"tableTitle\">单位：台</div>");
+        sb.append("<div class=\"tableTitle\">按机型统计 单位：台</div>");
         sb.append(getQuantityTableDomesticMarket());
 
-        sb.append("<div class=\"tableTitle\">单位：万元</div>");
+        sb.append("<div class=\"tableTitle\">按机型统计 单位：万元</div>");
         sb.append(getAmountTableDomesticMarket());
 
-        sb.append("<div class=\"tableTitle\">单位：台</div>");
-        sb.append(getQuantityTable());
+        sb.append("<div class=\"tableTitle\">按区域统计 单位：台</div>");
+        sb.append(getQuantityNXTable());
 
-        sb.append("<div class=\"tableTitle\">单位：万元</div>");
-        sb.append(getAmountTable());
+        sb.append("<div class=\"tableTitle\">按区域统计 单位：万元</div>");
+        sb.append(getAmountNXTable());
 
-//        sb.append("<div class=\"tableTitle\">单位：台</div>");
-//        sb.append(getQuantityTable_SAM());
-//
-//        sb.append("<div class=\"tableTitle\">单位：万元</div>");
-//        sb.append(getAmountTable_SAM());
+        sb.append("<div class=\"tableTitle\">外销统计 单位：台</div>");
+        sb.append(getQuantityWXTable());
 
-        sb.append("<div class=\"tableTitle\">单位：台</div>");
+        sb.append("<div class=\"tableTitle\">外销统计 单位：万元</div>");
+        sb.append(getAmountWXTable());
+
+        sb.append("<div class=\"tableTitle\">涡旋统计 单位：台</div>");
         sb.append(getQuantityTable_SAMAll());
 
-        sb.append("<div class=\"tableTitle\">单位：万元</div>");
+        sb.append("<div class=\"tableTitle\">涡旋统计 单位：万元</div>");
         sb.append(getAmountTable_SAMAll());
 
-        sb.append("<div class=\"tableTitle\">单位：万元</div>");
+        sb.append("<div class=\"tableTitle\">机体收费统计 单位：万元</div>");
         sb.append(getServiceTable());
 
-        sb.append("<div class=\"tableTitle\">单位：万元</div>");
+        sb.append("<div class=\"tableTitle\">涡旋收费统计 单位：万元</div>");
         sb.append(getServiceTable_SAM());
 
-        sb.append("<div class=\"tableTitle\">单位：台</div>");
+        sb.append("<div class=\"tableTitle\">机体调拨统计 单位：台</div>");
         sb.append(getTransferTable());
         return sb.toString();
     }
 
     protected String getQuantityTableDomesticMarket() throws Exception {
+        this.indicators.clear();
+        this.indicators = indicatorBean.findByCategoryAndYear("A机体每日出货台数-按机型", y);
+        indicatorBean.getEntityManager().clear();
+        if (indicators != null && !indicators.isEmpty()) {
+            salesOrder = new SalesOrderQuantity();
+            return getHtmlTable(this.indicators, y, m, d, true);
+        } else {
+            return "A机体每日出货台数-按机型设定错误";
+        }
+    }
+
+    protected String getAmountTableDomesticMarket() throws Exception {
+        this.indicators.clear();
+        indicators = indicatorBean.findByCategoryAndYear("A机体每日出货金额-按机型", y);
+        indicatorBean.getEntityManager().clear();
+        if (indicators != null && !indicators.isEmpty()) {
+            for (Indicator i : indicators) {
+                indicatorBean.divideByRate(i, 2);
+            }
+            salesOrder = new SalesOrderAmount();
+            return getHtmlTable(this.indicators, y, m, d, true);
+        } else {
+            return "A机体每日出货金额-按机型设定错误";
+        }
+    }
+
+    protected String getQuantityNXTable() throws Exception {
         this.indicators.clear();
         this.indicators = indicatorBean.findByCategoryAndYear("A机体每日出货台数-内销", y);
         indicatorBean.getEntityManager().clear();
@@ -80,45 +107,7 @@ public class AJShipmentMailBean extends ShipmentMail {
         }
     }
 
-    //无油涡旋内销
-    protected String getQuantityTable_SAM() throws Exception {
-        this.indicators.clear();
-        this.indicators = indicatorBean.findByCategoryAndYear("A机体每日出货台数-涡旋内销", y);
-        indicatorBean.getEntityManager().clear();
-        if (indicators != null && !indicators.isEmpty()) {
-            salesOrder = new SalesOrderQuantity();
-            return getHtmlTable(this.indicators, y, m, d, true);
-        } else {
-            return "A机体每日出货台数设定错误";
-        }
-    }
-
-    //无油涡旋合计
-    protected String getQuantityTable_SAMAll() throws Exception {
-        this.indicators.clear();
-        indicators = indicatorBean.findByCategoryAndYear("A机体每日出货台数-涡旋", y);
-        indicatorBean.getEntityManager().clear();
-        if (indicators != null && !indicators.isEmpty()) {
-            salesOrder = new SalesOrderQuantity();
-            return getHtmlTable(this.indicators, y, m, d, true);
-        } else {
-            return "A机体每日出货台数设定错误";
-        }
-    }
-
-    protected String getQuantityTable() throws Exception {
-        this.indicators.clear();
-        this.indicators = indicatorBean.findByCategoryAndYear("A机体每日出货台数", y);
-        indicatorBean.getEntityManager().clear();
-        if (indicators != null && !indicators.isEmpty()) {
-            salesOrder = new SalesOrderQuantity();
-            return getHtmlTable(this.indicators, y, m, d, true);
-        } else {
-            return "A机体每日出货台数设定错误";
-        }
-    }
-
-    protected String getAmountTableDomesticMarket() throws Exception {
+    protected String getAmountNXTable() throws Exception {
         this.indicators.clear();
         indicators = indicatorBean.findByCategoryAndYear("A机体每日出货金额-内销", y);
         indicatorBean.getEntityManager().clear();
@@ -129,14 +118,25 @@ public class AJShipmentMailBean extends ShipmentMail {
             salesOrder = new SalesOrderAmount();
             return getHtmlTable(this.indicators, y, m, d, true);
         } else {
-            return "A机体每日出货金额-内销设定错误";
+            return "A机体每日出货金额-内设定错误";
         }
     }
 
-    //无油涡旋内销
-    protected String getAmountTable_SAM() throws Exception {
+    protected String getQuantityWXTable() throws Exception {
         this.indicators.clear();
-        indicators = indicatorBean.findByCategoryAndYear("A机体每日出货金额-涡旋内销", y);
+        this.indicators = indicatorBean.findByCategoryAndYear("A机体每日出货台数-外销", y);
+        indicatorBean.getEntityManager().clear();
+        if (indicators != null && !indicators.isEmpty()) {
+            salesOrder = new SalesOrderQuantity();
+            return getHtmlTable(this.indicators, y, m, d, true);
+        } else {
+            return "A机体每日出货台数-外销设定错误";
+        }
+    }
+
+    protected String getAmountWXTable() throws Exception {
+        this.indicators.clear();
+        indicators = indicatorBean.findByCategoryAndYear("A机体每日出货金额-外销", y);
         indicatorBean.getEntityManager().clear();
         if (indicators != null && !indicators.isEmpty()) {
             for (Indicator i : indicators) {
@@ -145,11 +145,23 @@ public class AJShipmentMailBean extends ShipmentMail {
             salesOrder = new SalesOrderAmount();
             return getHtmlTable(this.indicators, y, m, d, true);
         } else {
-            return "A机体每日出货金额设定错误";
+            return "A机体每日出货金额-外销设定错误";
+        }
+    }
+    
+ 
+    protected String getQuantityTable_SAMAll() throws Exception {
+        this.indicators.clear();
+        indicators = indicatorBean.findByCategoryAndYear("A机体每日出货台数-涡旋", y);
+        indicatorBean.getEntityManager().clear();
+        if (indicators != null && !indicators.isEmpty()) {
+            salesOrder = new SalesOrderQuantity();
+            return getHtmlTable(this.indicators, y, m, d, true);
+        } else {
+            return "A机体每日出货台数-涡旋设定错误";
         }
     }
 
-    //无油涡旋合计
     protected String getAmountTable_SAMAll() throws Exception {
         this.indicators.clear();
         indicators = indicatorBean.findByCategoryAndYear("A机体每日出货金额-涡旋", y);
@@ -161,26 +173,11 @@ public class AJShipmentMailBean extends ShipmentMail {
             salesOrder = new SalesOrderAmount();
             return getHtmlTable(this.indicators, y, m, d, true);
         } else {
-            return "A机体每日出货金额设定错误";
+            return "A机体每日出货金额-涡旋设定错误";
         }
     }
 
-    protected String getAmountTable() throws Exception {
-        this.indicators.clear();
-        indicators = indicatorBean.findByCategoryAndYear("A机体每日出货金额", y);
-        indicatorBean.getEntityManager().clear();
-        if (indicators != null && !indicators.isEmpty()) {
-            for (Indicator i : indicators) {
-                indicatorBean.divideByRate(i, 2);
-            }
-            salesOrder = new SalesOrderAmount();
-            return getHtmlTable(this.indicators, y, m, d, true);
-        } else {
-            return "A机体每日出货金额设定错误";
-        }
-    }
-
-    protected String getServiceTable() throws Exception {
+     protected String getServiceTable() throws Exception {
         this.indicators.clear();
         indicators = indicatorBean.findByCategoryAndYear("A机体收费服务", y);
         indicatorBean.getEntityManager().clear();
@@ -194,10 +191,10 @@ public class AJShipmentMailBean extends ShipmentMail {
             setDecimalFormat("#,###");
             return t;
         } else {
-            return "A机体每日出货金额设定错误";
+            return "A机体收费服务设定错误";
         }
     }
-
+    
     protected String getServiceTable_SAM() throws Exception {
         this.indicators.clear();
         indicators = indicatorBean.findByCategoryAndYear("涡旋收费服务", y);
@@ -212,7 +209,7 @@ public class AJShipmentMailBean extends ShipmentMail {
             setDecimalFormat("#,###");
             return t;
         } else {
-            return "S涡旋每日出货金额设定错误";
+            return "涡旋收费服务设定错误";
         }
     }
 

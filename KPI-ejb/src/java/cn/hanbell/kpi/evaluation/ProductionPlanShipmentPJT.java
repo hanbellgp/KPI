@@ -15,7 +15,7 @@ public class ProductionPlanShipmentPJT extends ProductionPlanShipment {
         super();
         queryParams.put("facno", "C");
         queryParams.put("n_code_DA", " ='P' ");
-         //#ITCLS CHANGE TODO #
-        queryParams.put("itcls", " in ('3376','3379','3380','3476','3478','3480') ");
+        queryParams.put("n_code_DD", " ='00' ");
+        queryParams.put("itcls", " in ('6053','3376','3476','3379','3380','3480') ");
     }
 }

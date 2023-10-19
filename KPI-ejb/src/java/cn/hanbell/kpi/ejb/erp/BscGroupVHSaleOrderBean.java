@@ -63,6 +63,22 @@ public class BscGroupVHSaleOrderBean implements Serializable {
             }
         }
         queryParams.remove("hmark1");
+        queryParams.put("hmark1", " ='O' ");
+        tempData = getSalesOrderAmount(y, m, d, y, getQueryParams());
+        if (tempData != null && !tempData.isEmpty()) {
+            for (BscGroupShipment b : tempData) {
+                if (resultData.contains(b)) {
+                    BscGroupShipment a = resultData.get(resultData.indexOf(b));
+                    a.setQuantity(a.getQuantity().add(b.getQuantity()));
+                    a.setAmount(a.getAmount().add(b.getAmount()));
+                } else {
+                    //沈里达提出代理品不计算台数，实际越南打单为ZJ，故在此处调整
+                    b.setQuantity(BigDecimal.ZERO);
+                    resultData.add(b);
+                }
+            }
+        }
+        queryParams.remove("hmark1");
         queryParams.put("hmark1", " ='DR' ");
         tempData = getSalesOrderAmount(y, m, d, y, getQueryParams());
         if (tempData != null && !tempData.isEmpty()) {
@@ -195,7 +211,11 @@ public class BscGroupVHSaleOrderBean implements Serializable {
                 protype = "真空泵";
                 protypeno = "P";
                 shptype = "2";
-            } else {
+            } else if (hmark1.contains("O")) {
+                protype = "代理品";
+                protypeno = "O";
+                shptype = "21";
+            }else {
                 protype = "";
                 protypeno = "";
                 shptype = "";

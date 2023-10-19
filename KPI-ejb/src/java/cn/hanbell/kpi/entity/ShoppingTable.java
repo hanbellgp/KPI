@@ -73,12 +73,18 @@ public class ShoppingTable extends SuperEntity {
     @Size(max = 50)
     @Column(name = "vdrno")
     private String vdrno;
-        @Size(max = 50)
+    @Size(max = 20)
+    @Column(name = "type")
+    private String type;
+    @Size(max = 50)
+    @Column(name = "userno")
+    private String userno;
+    @Size(max = 50)
     @Column(name = "acpno")
     private String acpno;
-            @Size(max = 50)
+    @Size(max = 50)
     @Column(name = "sponr")
-    private String sponr;      
+    private String sponr;
     @Size(max = 50)
     @Column(name = "vdrna")
     private String vdrna;
@@ -157,8 +163,24 @@ public class ShoppingTable extends SuperEntity {
         this.vdrna = vdrna;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public Boolean getIscenter() {
         return iscenter;
+    }
+
+    public String getUserno() {
+        return userno;
+    }
+
+    public void setUserno(String userno) {
+        this.userno = userno;
     }
 
     public void setIscenter(Boolean iscenter) {

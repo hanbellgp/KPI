@@ -21,7 +21,7 @@ public class ProductionQuantityPR600 extends ProductionQuantity {
         //*生产地
         queryParams.put("prono", "1");
         //*生产线别
-        queryParams.put("linecode", " = 'AH' ");
+        queryParams.put("linecode", " = 'VP2' ");
         //制令等级
         queryParams.put("typecode", "= '01' ");
         //品号大类

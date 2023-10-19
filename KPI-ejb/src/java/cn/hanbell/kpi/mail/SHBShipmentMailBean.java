@@ -80,7 +80,7 @@ public class SHBShipmentMailBean extends ShipmentMail {
             sb.append(getHtmlTableRow(total, y, m, d));
 
             indicators.clear();
-            indicators = indicatorBean.findByCategoryAndYear("A机体每日出货台数", y);
+            indicators = indicatorBean.findByCategoryAndYear("A机体每日出货台数-按机型", y);
             indicatorBean.getEntityManager().clear();
             getHtmlTable(indicators, y, m, d, true);
             total = getSumIndicator();
@@ -185,7 +185,7 @@ public class SHBShipmentMailBean extends ShipmentMail {
 
             //涡旋并到机体
             indicators.clear();
-            indicators = indicatorBean.findByCategoryAndYear("A机体每日出货金额", y);
+            indicators = indicatorBean.findByCategoryAndYear("A机体每日出货金额-按机型", y);
             indicatorBean.getEntityManager().clear();
             if (indicators != null && indicators.size() > 0) {
                 indicators.stream().forEach((i) -> {
@@ -299,7 +299,7 @@ public class SHBShipmentMailBean extends ShipmentMail {
             }
 
             indicators.clear();
-            indicators = indicatorBean.findByCategoryAndYear("S涡旋收费服务", y);
+            indicators = indicatorBean.findByCategoryAndYear("涡旋收费服务", y);
             indicatorBean.getEntityManager().clear();
             if (indicators != null && indicators.size() > 0) {
                 indicators.stream().forEach((i) -> {

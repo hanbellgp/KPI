@@ -36,6 +36,9 @@ public class SuperEJBForERP implements Serializable {
     @PersistenceContext(unitName = "PU_cqerp")
     private EntityManager em_cqerp;
 
+    @PersistenceContext(unitName = "PU_chuxiongerp")
+    private EntityManager em_chuxiongerp;
+        
     @PersistenceContext(unitName = "PU_hansonerp")
     private EntityManager em_hansonerp;
 
@@ -86,6 +89,8 @@ public class SuperEJBForERP implements Serializable {
                 return em_njerp;
             case "C4":
                 return em_cqerp;
+            case "F":
+                return em_chuxiongerp;
             case "H":
                 return em_hansonerp;
             case "Y":

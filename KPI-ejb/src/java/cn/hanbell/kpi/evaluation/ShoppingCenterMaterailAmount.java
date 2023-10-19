@@ -8,10 +8,13 @@ package cn.hanbell.kpi.evaluation;
 import cn.hanbell.kpi.comm.Actual;
 import cn.hanbell.kpi.comm.SuperEJBForERP;
 import cn.hanbell.kpi.comm.SuperEJBForKPI;
+import cn.hanbell.kpi.ejb.IndicatorBean;
+import cn.hanbell.util.BaseLib;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.logging.Level;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -39,47 +42,14 @@ public class ShoppingCenterMaterailAmount implements Actual {
     @Override
     public BigDecimal getValue(int y, int m, Date d, int type, LinkedHashMap<String, Object> map) {
         String facno = map.get("facno") != null ? map.get("facno").toString() : "";
-        String prono = map.get("prono") != null ? map.get("prono").toString() : "";
-        String materialSql = map.get("material") != null ? map.get("material").toString() : "";
+        String matype = map.get("type") != null ? map.get("type").toString() : "";
         try {
-            StringBuffer materials = new StringBuffer();
-            EntityManager em = superEJBForKPI.getEntityManager();
-            Query query1 = em.createNativeQuery(materialSql);
-            List<String> vdrnos = query1.getResultList();
-            for (String o : vdrnos) {
-                materials.append("'").append(o).append("',");
-            }
-
-            StringBuffer sql = new StringBuffer();
-            sql.append(" SELECT sum(acpamt) as cp_acpamt");
-            sql.append(" FROM apmpyh ,purvdr ,purhad");
-            sql.append(" WHERE apmpyh.vdrno = purvdr.vdrno  and  purhad.facno = apmpyh.facno");
-            sql.append(" and purhad.prono = apmpyh.prono and purhad.pono = apmpyh.pono");
-            sql.append(" and  apmpyh.pyhkind = '1'");
-            //台湾汉钟的公司别和生产地与大陆的ERP规范不一样
-            if (!"A".equals(facno)) {
-                sql.append(" AND apmpyh.facno = '${facno}'  and apmpyh.prono ='${prono}'");
-            }
-            if (materials != null && !"".equals(materials.toString())) {
-                sql.append(" and apmpyh.vdrno in(").append(materials.substring(0, materials.length() - 1)).append(")");
-            } else {
-                sql.append(" and apmpyh.vdrno in ('')");
-            }
-            sql.append(" and year(apmpyh.trdat) = ${year} and month(apmpyh.trdat)= ${month}");
-            String sqlString = sql.toString().replace("${year}", String.valueOf(y)).replace("${month}", String.valueOf(m)).replace("${facno}", facno).replace("${prono}", prono);
-
-            superEJB.setCompany(facno);
-            Query query = superEJB.getEntityManager().createNativeQuery(sqlString);
-            Object o1 = query.getSingleResult();
-            BigDecimal result = (BigDecimal) o1;
-            if (result == null) {
-                result = BigDecimal.ZERO;
-            }
-            //台湾的币别除以汇率
-            if ("A".equals(facno)) {
-                result = result.divide(new BigDecimal("4.3"), 2);
-            }
-            return result;
+            StringBuilder sb = new StringBuilder();
+            sb.append("select IFNULL(sum(acpamt),0)");
+            sb.append("from shoppingtable a  where  a.facno='");
+            sb.append(facno).append("' and iscenter=1 and type ").append(matype).append(" and yearmon='").append(BaseLib.formatDate("yyyyMM", d)).append("'");
+            Query query = superEJBForKPI.getEntityManager().createNativeQuery(sb.toString());
+            return (BigDecimal) query.getSingleResult();
         } catch (Exception ex) {
             return BigDecimal.ZERO;
         }

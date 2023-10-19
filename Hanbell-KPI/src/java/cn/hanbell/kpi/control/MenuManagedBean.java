@@ -14,17 +14,22 @@ import cn.hanbell.eap.entity.SystemRole;
 import cn.hanbell.eap.entity.SystemRoleDetail;
 import cn.hanbell.kpi.ejb.IndicatorChartBean;
 import cn.hanbell.kpi.ejb.IndicatorDepartmentBean;
+import cn.hanbell.kpi.ejb.PolicyBean;
 import cn.hanbell.kpi.ejb.RoleDetailBean;
 import cn.hanbell.kpi.ejb.RoleGrantModuleBean;
 import cn.hanbell.kpi.ejb.ScorecardBean;
 import cn.hanbell.kpi.entity.IndicatorChart;
 import cn.hanbell.kpi.entity.IndicatorDepartment;
+import cn.hanbell.kpi.entity.Policy;
 import cn.hanbell.kpi.entity.RoleDetail;
 import cn.hanbell.kpi.entity.RoleGrantModule;
 import cn.hanbell.kpi.entity.Scorecard;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
@@ -50,7 +55,8 @@ public class MenuManagedBean implements Serializable {
     private IndicatorDepartmentBean indicatorDepartmentBean;
     @EJB
     private ScorecardBean scorecardBean;
-
+    @EJB
+    private PolicyBean policyBean;
     @EJB
     private RoleDetailBean roleDetailBean;
     @EJB
@@ -83,7 +89,7 @@ public class MenuManagedBean implements Serializable {
     private List<IndicatorChart> indicatorChartList;
     private List<IndicatorDepartment> indicatorDepartmentList;
     private List<Scorecard> scorecardList;
-
+    private List<Policy> policyList;
     private MenuModel model;
 
     public MenuManagedBean() {
@@ -121,14 +127,14 @@ public class MenuManagedBean implements Serializable {
             appmenu.setIcon("menu");
             // 将用户权限和角色权限合并后产生菜单,用户权限优先角色权限
             moduleGrantList.clear();
-            userModuleGrantList =
-                systemGrantModuleBean.findBySystemNameAndUserId("KPI", userManagedBean.getCurrentUser().getId());
+            userModuleGrantList
+                    = systemGrantModuleBean.findBySystemNameAndUserId("KPI", userManagedBean.getCurrentUser().getId());
             userModuleGrantList.forEach((m) -> {
                 moduleGrantList.add(m);
             });
             prgGrantList.clear();
-            userPrgGrantList =
-                systemGrantPrgBean.findBySystemNameAndUserId("KPI", userManagedBean.getCurrentUser().getId());
+            userPrgGrantList
+                    = systemGrantPrgBean.findBySystemNameAndUserId("KPI", userManagedBean.getCurrentUser().getId());
             userPrgGrantList.forEach((p) -> {
                 prgGrantList.add(p);
             });
@@ -232,14 +238,14 @@ public class MenuManagedBean implements Serializable {
             kpimenu = new DefaultSubMenu("部门KPI");
             kpimenu.setIcon("menu");
             for (RoleGrantModule r : grantList) {
-                indicatorDepartmentList =
-                    indicatorDepartmentBean.findByCompanyDeptnoTypeAndYear(company, r.getDeptno(), "D", y);
+                indicatorDepartmentList
+                        = indicatorDepartmentBean.findByCompanyDeptnoTypeAndYear(company, r.getDeptno(), "D", y);
                 if (indicatorDepartmentList != null && !indicatorDepartmentList.isEmpty()) {
                     submenu = new DefaultSubMenu(r.getDept());
                     submenu.setIcon("menu");
                     for (IndicatorDepartment i : indicatorDepartmentList) {
-                        menuitem =
-                            new DefaultMenuItem(String.valueOf(i.getParent().getSeq()) + i.getParent().getName());
+                        menuitem
+                                = new DefaultMenuItem(String.valueOf(i.getParent().getSeq()) + i.getParent().getName());
                         menuitem.setIcon("menu");
                         menuitem.setOutcome(i.getParent().getApi());
                         menuitem.setParam("id", i.getParent().getId());
@@ -256,14 +262,14 @@ public class MenuManagedBean implements Serializable {
             kpimenu = new DefaultSubMenu("产品KPI");
             kpimenu.setIcon("menu");
             for (RoleGrantModule r : grantList) {
-                indicatorDepartmentList =
-                    indicatorDepartmentBean.findByCompanyDeptnoTypeAndYear(company, r.getDeptno(), "P", y);
+                indicatorDepartmentList
+                        = indicatorDepartmentBean.findByCompanyDeptnoTypeAndYear(company, r.getDeptno(), "P", y);
                 if (indicatorDepartmentList != null && !indicatorDepartmentList.isEmpty()) {
                     submenu = new DefaultSubMenu(r.getDept());
                     submenu.setIcon("menu");
                     for (IndicatorDepartment i : indicatorDepartmentList) {
-                        menuitem =
-                            new DefaultMenuItem(String.valueOf(i.getParent().getSeq()) + i.getParent().getName());
+                        menuitem
+                                = new DefaultMenuItem(String.valueOf(i.getParent().getSeq()) + i.getParent().getName());
                         menuitem.setIcon("menu");
                         menuitem.setOutcome(i.getParent().getApi());
                         menuitem.setParam("id", i.getParent().getId());
@@ -272,38 +278,6 @@ public class MenuManagedBean implements Serializable {
                     if (submenu != null) {
                         kpimenu.addElement(submenu);
                     }
-                }
-            }
-            model.addElement(kpimenu);
-
-            kpimenu = new DefaultSubMenu("经营汇报");
-            kpimenu.setIcon("menu");
-            for (RoleGrantModule r : grantList) {
-                submenu = null;
-                indicatorChartList = indicatorChartBean.findByCompanyAndPId(company, r.getDeptno());
-                if (indicatorChartList != null && !indicatorChartList.isEmpty()) {
-                    if (submenu == null) {
-                        submenu = new DefaultSubMenu(r.getDept());
-                        submenu.setIcon("menu");
-                    }
-                    // 按报表名称重新排序
-                    indicatorChartList.sort((IndicatorChart o1, IndicatorChart o2) -> {
-                        if (o1.getSortid() <= o2.getSortid()) {
-                            return -1;
-                        } else {
-                            return 1;
-                        }
-                    });
-                    for (IndicatorChart i : indicatorChartList) {
-                        menuitem = new DefaultMenuItem(i.getName());
-                        menuitem.setIcon("menu");
-                        menuitem.setOutcome(i.getApi());
-                        menuitem.setParam("id", i.getId());
-                        submenu.addElement(menuitem);
-                    }
-                }
-                if (submenu != null) {
-                    kpimenu.addElement(submenu);
                 }
             }
             model.addElement(kpimenu);
@@ -343,32 +317,111 @@ public class MenuManagedBean implements Serializable {
                     kpimenu.addElement(submenu);
                 }
             }
-
             model.addElement(kpimenu);
-            // KPI001角色的人员才能打开BSC汇报
-            boolean isAdmin = false;
-            List<SystemRoleDetail> list = systemRoleDetailBean.findByUserId(userManagedBean.getCurrentUser().getId());
-            for (SystemRoleDetail u : list) {
-                SystemRole role = systemRoleBean.findById(u.getPid());
-                if ("KPI001".equals(role.getRoleno())) {
-                    isAdmin = true;
-                    break;
-                }
-            }
-            if (isAdmin) {
-                kpimenu = new DefaultSubMenu("BSC汇报");
-                kpimenu.setIcon("menu");
-                List<Scorecard> scards = scorecardBean.findByCompanyAndIsbsc(company, true, y);
-                for (Scorecard s : scards) {
-                    menuitem = new DefaultMenuItem(s.getName());
-                    menuitem.setIcon("menu");
-                    menuitem.setOutcome("scorecardbsc");
-                    menuitem.setParam("id", s.getId());
-                    kpimenu.addElement(menuitem);
-                }
-                model.addElement(kpimenu);
-            }
 
+            kpimenu = new DefaultSubMenu("方针展开");
+            kpimenu.setIcon("menu");
+            for (RoleGrantModule r : grantList) {
+                submenu = null;
+                // scorecardList = scorecardBean.findByMenuAndYear(r.getDeptno(), y);
+                policyList = policyBean.findByCompanyMenuAndYear(company, r.getDeptno(), y);
+                if (policyList != null && !policyList.isEmpty()) {
+                    if (submenu == null) {
+                        submenu = new DefaultSubMenu(r.getDept());
+                        submenu.setIcon("menu");
+                    }
+                    // 重新排序
+                    policyList.sort((Policy o1, Policy o2) -> {
+                        if (o1.getDeptno().compareTo(o2.getDeptno()) < 0) {
+                            return -1;
+                        } else {
+                            return 1;
+                        }
+                    });
+                    for (Policy i : policyList) {
+                        menuitem = new DefaultMenuItem(i.getName());
+                        menuitem.setIcon("menu");
+                        menuitem.setOutcome(i.getApi());
+                        menuitem.setParam("id", i.getId());
+                        submenu.addElement(menuitem);
+                    }
+                }
+                if (submenu != null) {
+                    kpimenu.addElement(submenu);
+                }
+            }
+            model.addElement(kpimenu);
+
+            kpimenu = new DefaultSubMenu("经营汇报");
+            kpimenu.setIcon("menu");
+            for (RoleGrantModule r : grantList) {
+                submenu = null;
+                indicatorChartList = indicatorChartBean.findByCompanyAndPId(company, r.getDeptno());
+                if (indicatorChartList != null && !indicatorChartList.isEmpty()) {
+                    if (submenu == null) {
+                        submenu = new DefaultSubMenu(r.getDept());
+                        submenu.setIcon("menu");
+                    }
+                    // 按报表名称重新排序
+                    indicatorChartList.sort((IndicatorChart o1, IndicatorChart o2) -> {
+                        if (o1.getSortid() <= o2.getSortid()) {
+                            return -1;
+                        } else {
+                            return 1;
+                        }
+                    });
+                    for (IndicatorChart i : indicatorChartList) {
+                        menuitem = new DefaultMenuItem(i.getName());
+                        menuitem.setIcon("menu");
+                        menuitem.setOutcome(i.getApi());
+                        menuitem.setParam("id", i.getId());
+                        submenu.addElement(menuitem);
+                    }
+                }
+                if (submenu != null) {
+                    kpimenu.addElement(submenu);
+                }
+            }
+            model.addElement(kpimenu);
+
+            kpimenu = new DefaultSubMenu("KPI汇报");
+            kpimenu.setIcon("menu");
+            Set<Scorecard> list = new TreeSet<Scorecard>((o1, o2) -> o2.compareTo(o1));
+            for (RoleGrantModule r : grantList) {
+                submenu = null;
+                scorecardList = scorecardBean.findByCompanyAndMenuAndIsBscAndYear(company, r.getDeptno(), true, y);
+                if (scorecardList != null && !scorecardList.isEmpty()) {
+                    list.addAll(scorecardList);
+                }
+            }
+            for (Scorecard s : list) {
+                menuitem = new DefaultMenuItem(s.getName());
+                menuitem.setIcon("menu");
+                menuitem.setOutcome("scorecardbsc");
+                menuitem.setParam("id", s.getId());
+                kpimenu.addElement(menuitem);
+            }
+            model.addElement(kpimenu);
+
+            kpimenu = new DefaultSubMenu("方针汇报");
+            kpimenu.setIcon("menu");
+            Set<Policy> list1 = new TreeSet<Policy>((o1, o2) -> o2.compareTo(o1));
+            for (RoleGrantModule r : grantList) {
+                submenu = null;
+                System.out.println("---"+r.getDeptno());
+                policyList = policyBean.findByDepeno(r.getDeptno());
+                if (policyList != null && !policyList.isEmpty()) {
+                    list1.addAll(policyList);
+                }
+            }
+            for (Policy s : list1) {
+                menuitem = new DefaultMenuItem(s.getName());
+                menuitem.setIcon("menu");
+                menuitem.setOutcome("policysheet");
+                menuitem.setParam("id", s.getId());
+                kpimenu.addElement(menuitem);
+            }
+            model.addElement(kpimenu);
         }
     }
 
@@ -396,8 +449,7 @@ public class MenuManagedBean implements Serializable {
     }
 
     /**
-     * @param userManagedBean
-     *                            the userManagedBean to set
+     * @param userManagedBean the userManagedBean to set
      */
     public void setUserManagedBean(UserManagedBean userManagedBean) {
         this.userManagedBean = userManagedBean;
@@ -411,8 +463,7 @@ public class MenuManagedBean implements Serializable {
     }
 
     /**
-     * @param model
-     *                  the model to set
+     * @param model the model to set
      */
     public void setModel(MenuModel model) {
         this.model = model;

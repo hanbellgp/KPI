@@ -20,6 +20,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -41,7 +42,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ScorecardDetail.findByCategoryId", query = "SELECT s FROM ScorecardDetail s WHERE s.categoryId = :categoryId"),
     @NamedQuery(name = "ScorecardDetail.findByCategory", query = "SELECT s FROM ScorecardDetail s WHERE s.category = :category"),
     @NamedQuery(name = "ScorecardDetail.findByPidAndSeq", query = "SELECT s FROM ScorecardDetail s WHERE s.pid =:pid  and s.seq=:seq"),
-     @NamedQuery(name = "ScorecardDetail.findByPidAndContent", query = "SELECT s FROM ScorecardDetail s WHERE s.pid =:pid  and s.content=:content"),
+    @NamedQuery(name = "ScorecardDetail.findByPidAndContent", query = "SELECT s FROM ScorecardDetail s WHERE s.pid =:pid  and s.content=:content"),
     @NamedQuery(name = "ScorecardDetail.findByStatus", query = "SELECT s FROM ScorecardDetail s WHERE s.status = :status")})
 public class ScorecardDetail extends SuperDetailEntity {
 
@@ -305,6 +306,9 @@ public class ScorecardDetail extends SuperDetailEntity {
     @Column(name = "cfmdate")
     @Temporal(TemporalType.TIMESTAMP)
     private Date cfmdate;
+
+    @Transient
+    private String jexlName;
 
     public ScorecardDetail() {
         this.sortid = 0;
@@ -1141,6 +1145,15 @@ public class ScorecardDetail extends SuperDetailEntity {
         this.projectName = projectName;
     }
 
+    public String getJexlName() {
+        return jexlName;
+    }
+
+    public void setJexlName(String jexlName) {
+        this.jexlName = jexlName;
+    }
+
+    
     @Override
     public int hashCode() {
         int hash = 0;

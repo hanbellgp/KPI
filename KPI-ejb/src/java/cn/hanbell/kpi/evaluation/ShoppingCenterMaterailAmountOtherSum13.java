@@ -14,7 +14,7 @@ public class ShoppingCenterMaterailAmountOtherSum13  extends ShoppingCenterMater
 //    java:global/KPI/KPI-ejb/SuperEJBForERP!cn.hanbell.kpi.comm.SuperEJBForERP
     public ShoppingCenterMaterailAmountOtherSum13() {
         super();
-        queryParams.put("formid", "A-其他类采购金额");
+        queryParams.put("formid", "A-齿轮类采购金额");
         queryParams.put("deptno", "1X000");
     }
 }

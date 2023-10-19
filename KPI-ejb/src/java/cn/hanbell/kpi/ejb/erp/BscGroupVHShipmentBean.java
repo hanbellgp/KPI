@@ -63,6 +63,22 @@ public class BscGroupVHShipmentBean implements Serializable {
             }
         }
         queryParams.remove("hmark1");
+        queryParams.put("hmark1", " ='O' ");
+        tempData = getShipment(y, m, d, Calendar.MONTH, getQueryParams());
+        if (tempData != null && !tempData.isEmpty()) {
+            for (BscGroupShipment b : tempData) {
+                if (resultData.contains(b)) {
+                    BscGroupShipment a = resultData.get(resultData.indexOf(b));
+                    a.setQuantity(a.getQuantity().add(b.getQuantity()));
+                    a.setAmount(a.getAmount().add(b.getAmount()));
+                } else {
+                    //沈里达提出代理品不计算台数，实际越南打单为ZJ，故在此处调整
+                    b.setQuantity(BigDecimal.ZERO);
+                    resultData.add(b);
+                }
+            }
+        }
+        queryParams.remove("hmark1");
         queryParams.put("hmark1", " ='DR' ");
         tempData = getShipment(y, m, d, Calendar.MONTH, getQueryParams());
         if (tempData != null && !tempData.isEmpty()) {
@@ -208,7 +224,11 @@ public class BscGroupVHShipmentBean implements Serializable {
                 protype = "真空泵";
                 protypeno = "P";
                 shptype = "2";
-            } else {
+            } else if (hmark1.contains("O")) {
+                protype = "代理品";
+                protypeno = "O";
+                shptype = "21";
+            }else {
                 protype = "";
                 protypeno = "";
                 shptype = "";
@@ -305,12 +325,12 @@ public class BscGroupVHShipmentBean implements Serializable {
     public void updataServerActualValue(int y, int m, Date d) {
         queryParams.clear();
         queryParams.put("facno", "V");
-        queryParams.put("hmark1", " ='O' ");
+        queryParams.put("hmark1", " in ('R','P','L','DR')");
         List<BscGroupShipment> resultData = getServiceValue(y, m, d, Calendar.MONTH, getQueryParams());
         List<BscGroupShipment> tempData;
         queryParams.clear();
         queryParams.put("facno", "V");
-        queryParams.put("hmark1", " ='R' ");
+        queryParams.put("hmark1", " ='A'");
         tempData = getServiceValue(y, m, d, Calendar.MONTH, getQueryParams());
         if (tempData != null && !tempData.isEmpty()) {
             for (BscGroupShipment b : tempData) {
@@ -325,7 +345,7 @@ public class BscGroupVHShipmentBean implements Serializable {
         }
         queryParams.clear();
         queryParams.put("facno", "V");
-        queryParams.put("hmark1", " ='A' ");
+        queryParams.put("hmark1", " ='M' ");
         tempData = getServiceValue(y, m, d, Calendar.MONTH, getQueryParams());
         if (tempData != null && !tempData.isEmpty()) {
             for (BscGroupShipment b : tempData) {
@@ -379,13 +399,13 @@ public class BscGroupVHShipmentBean implements Serializable {
             List shpResult = query1.getResultList();
             Date shpdate;
             String protype, protypeno, shptype;
-            if (hmark1.contains("O")) {
-                protype = "其他代理品";
-                protypeno = "O";
-                shptype = "21";
-            } else if (hmark1.contains("R") && !hmark1.contains("DR")) {
-                protype = "R/CDU/Dorin服务收费";
+            if (hmark1.contains("R") || hmark1.contains("P") || hmark1.contains("L") || hmark1.contains("DR")) {
+                protype = "越南R&P&L出货收费服务";
                 protypeno = "R";
+                shptype = "21";
+            } else if (hmark1.contains("M")) {
+                protype = "越南M出货收费服务";
+                protypeno = "M";
                 shptype = "21";
             } else if (hmark1.contains("A")) {
                 protype = "空压机服务收费";

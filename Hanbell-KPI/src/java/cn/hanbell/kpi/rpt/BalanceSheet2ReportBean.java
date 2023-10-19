@@ -40,6 +40,7 @@ public class BalanceSheet2ReportBean extends BscQueryTableManageBean implements 
     @EJB
     protected IndicatorChartBean indicatorChartBean;
     protected final DecimalFormat floatFormat;
+    protected final DecimalFormat centFormat;
     protected Date btndate;
 //    protected LinkedHashMap<String, String[]> map;
     protected List<Object[]> list;
@@ -48,7 +49,8 @@ public class BalanceSheet2ReportBean extends BscQueryTableManageBean implements 
     protected boolean showchecked;
 
     public BalanceSheet2ReportBean() {
-        this.floatFormat = new DecimalFormat("#,###.00");
+        this.floatFormat = new DecimalFormat("#,##0.00");
+        this.centFormat = new DecimalFormat("#.##");
     }
 
     public Calendar settlementDate() {
@@ -63,9 +65,11 @@ public class BalanceSheet2ReportBean extends BscQueryTableManageBean implements 
         return c;
     }
 
-    public String format(BigDecimal value) {
+    public String format(String title, BigDecimal value) {
         if (value == null || value.compareTo(BigDecimal.ZERO) == 0) {
             return "0";
+        }else if(title.contains("率")){
+             return centFormat.format(value)+"%";
         } else {
             return floatFormat.format(value);
         }

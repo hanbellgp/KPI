@@ -5,32 +5,46 @@
  */
 package cn.hanbell.kpi.control;
 
-import cn.hanbell.kpi.ejb.IndicatorBean;
+import cn.hanbell.kpi.ejb.IndexWarehBean;
 import cn.hanbell.kpi.ejb.IndicatorDetailBean;
 import cn.hanbell.kpi.ejb.InventoryDepartmentBean;
 import cn.hanbell.kpi.ejb.InventoryProductBean;
+import cn.hanbell.kpi.ejb.InvindexBean;
+import cn.hanbell.kpi.ejb.InvindexDetailBean;
+import cn.hanbell.kpi.entity.IndexWareh;
+import cn.hanbell.kpi.entity.Indicator;
 import cn.hanbell.kpi.entity.IndicatorDetail;
 import cn.hanbell.kpi.entity.InventoryProduct;
+import cn.hanbell.kpi.entity.Invindex;
+import cn.hanbell.kpi.entity.InvindexDetail;
 import cn.hanbell.kpi.lazy.InventoryProductModel;
 import cn.hanbell.kpi.web.SuperSingleBean;
 import com.lightshell.comm.BaseLib;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.persistence.Query;
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -58,12 +72,20 @@ public class InventoryProductManagedBean extends SuperSingleBean<InventoryProduc
     @EJB
     private InventoryDepartmentBean inventoryDepartmentBean;
 
+    @EJB
+    private InvindexDetailBean invindexDetailBean;
+
+    @EJB
+    private InvindexBean invindexBean;
+
+    @EJB
+    private IndexWarehBean indexWarehBean;
+    protected String facno;
     protected String queryYearmon;
     protected String queryWhdsc;
+    protected String queryWareh;
     protected String queryGenre;
-    protected String queryItclscode;
     protected String fileFullName;
-    protected String facno;
 
     protected List<InventoryProduct> editInventoryProductList;
     protected List<InventoryProduct> inventoryProductList;
@@ -71,8 +93,6 @@ public class InventoryProductManagedBean extends SuperSingleBean<InventoryProduc
     protected final DecimalFormat doubleFormat;
 
     protected final Logger log4j = LogManager.getLogger("cn.hanbell.eap");
-
-    protected List<InventoryProduct> inventoryProductList1;//生产在制
 
     public InventoryProductManagedBean() {
         super(InventoryProduct.class);
@@ -99,6 +119,7 @@ public class InventoryProductManagedBean extends SuperSingleBean<InventoryProduc
 
     @Override
     public void init() {
+        this.facno = "C";
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
         int month = cal.get(Calendar.MONTH);
@@ -109,16 +130,15 @@ public class InventoryProductManagedBean extends SuperSingleBean<InventoryProduc
         model.getFilterFields().put("facno =", facno);
         queryYearmon = y.concat(month < 10 ? "0" + m : m);
         queryWhdsc = "";
-        queryItclscode = "";
         setEditInventoryProductList(new ArrayList<>());
         setInventoryProductList(new ArrayList<>());
         query();
-        super.init(); // To change body of generated methods, choose Tools | Templates.
+        super.init();
     }
 
     @Override
     public void query() {
-        super.query(); // To change body of generated methods, choose Tools | Templates.
+        super.query();
         if (model != null) {
             model.getFilterFields().clear();
             if (!"".equals(facno) && facno != null) {
@@ -127,30 +147,30 @@ public class InventoryProductManagedBean extends SuperSingleBean<InventoryProduc
             if (!"".equals(queryYearmon) && queryYearmon != null) {
                 model.getFilterFields().put("yearmon", queryYearmon);
             }
+            if (!"".equals(queryWareh) && queryWareh != null) {
+                model.getFilterFields().put("wareh", queryWareh);
+            }
             if (!"".equals(queryWhdsc) && queryWhdsc != null) {
                 model.getFilterFields().put("whdsc", queryWhdsc);
             }
             if (!"".equals(queryGenre) && queryGenre != null) {
                 model.getFilterFields().put("genre", queryGenre);
             }
-            if (!"".equals(queryItclscode) && queryItclscode != null) {
-                model.getFilterFields().put("itclscode", queryItclscode);
-            }
         }
     }
 
     @Override
     public void reset() {
-        super.reset(); // To change body of generated methods, choose Tools | Templates.
+        super.reset();
         queryYearmon = "";
         queryWhdsc = "";
+        queryWareh = "";
         queryGenre = "";
-        queryItclscode = "";
     }
 
     @Override
     public void update() {
-        super.update(); // To change body of generated methods, choose Tools | Templates.
+        super.update();
         unverify();
     }
 
@@ -265,15 +285,17 @@ public class InventoryProductManagedBean extends SuperSingleBean<InventoryProduc
         Map<String, CellStyle> style = createStyles(workbook);
         // 生成一个表格
         HSSFSheet sheet1 = workbook.createSheet("库存金额明细");
-        // 设置表格宽度
+        HSSFSheet sheet2 = workbook.createSheet("生产目标统计表");
+        HSSFSheet sheet3 = workbook.createSheet("营业目标统计表");
+        HSSFSheet sheet4 = workbook.createSheet("服务目标统计表");
+        HSSFSheet sheet5 = workbook.createSheet("借出未归统计表");
+        HSSFSheet sheet6 = workbook.createSheet("其他目标统计表");
+        // 表格宽度
         int[] wt = getInventoryProductWidth();
-        for (int i = 0; i < wt.length; i++) {
-            sheet1.setColumnWidth(i, wt[i] * 256);
-        }
-        //创建标题行
-        Row row;
-        //Sheet1
+        //标题行
         String[] title = getInventoryProductTitle();
+
+        Row row;
         row = sheet1.createRow(0);
         row.setHeight((short) 800);
         for (int i = 0; i < title.length; i++) {
@@ -281,33 +303,35 @@ public class InventoryProductManagedBean extends SuperSingleBean<InventoryProduc
             cell.setCellStyle(style.get("head"));
             cell.setCellValue(title[i]);
         }
+        for (int i = 0; i < wt.length; i++) {
+            sheet1.setColumnWidth(i, wt[i] * 256);
+        }
         int j = 1;
-        //添加数据内容
         for (InventoryProduct ip : inventoryProductList) {
             row = sheet1.createRow(j);
             j++;
             row.setHeight((short) 400);
             Cell cell0 = row.createCell(0);
             cell0.setCellStyle(style.get("cell"));
-            cell0.setCellValue(ip.getFacno());
+            cell0.setCellValue(ip.getId());
             Cell cell1 = row.createCell(1);
             cell1.setCellStyle(style.get("cell"));
-            cell1.setCellValue(ip.getYearmon());
+            cell1.setCellValue(ip.getFacno());
             Cell cell2 = row.createCell(2);
             cell2.setCellStyle(style.get("cell"));
-            cell2.setCellValue(ip.getWareh());
+            cell2.setCellValue(ip.getYearmon());
             Cell cell3 = row.createCell(3);
             cell3.setCellStyle(style.get("cell"));
-            cell3.setCellValue(ip.getWhdsc());
+            cell3.setCellValue(ip.getWareh());
             Cell cell4 = row.createCell(4);
             cell4.setCellStyle(style.get("cell"));
-            cell4.setCellValue(ip.getGenre());
+            cell4.setCellValue(ip.getWhdsc());
             Cell cell5 = row.createCell(5);
             cell5.setCellStyle(style.get("cell"));
-            cell5.setCellValue(ip.getTrtype());
+            cell5.setCellValue(ip.getGenre());
             Cell cell6 = row.createCell(6);
             cell6.setCellStyle(style.get("cell"));
-            cell6.setCellValue(ip.getDeptno());
+            cell6.setCellValue(ip.getTrtype());
             Cell cell7 = row.createCell(7);
             cell7.setCellStyle(style.get("cell"));
             cell7.setCellValue(ip.getItclscode());
@@ -319,11 +343,17 @@ public class InventoryProductManagedBean extends SuperSingleBean<InventoryProduc
             cell9.setCellValue(ip.getIndicatorno() != null ? ip.getIndicatorno() : "");
             Cell cell10 = row.createCell(10);
             cell10.setCellStyle(style.get("cell"));
-            cell10.setCellValue(String.valueOf(ip.getAmount()));
+            cell10.setCellValue(ip.getAmount().doubleValue());
             Cell cell11 = row.createCell(11);
             cell11.setCellStyle(style.get("cell"));
-            cell11.setCellValue(String.valueOf(ip.getAmamount()));
+            cell11.setCellValue(ip.getAmamount().doubleValue());
         }
+        setSheet(sheet2, style, "A1",invindexBean.getGengerna("A1"));
+        setSheet(sheet3, style, "A2", invindexBean.getGengerna("A2"));
+        setSheet(sheet4, style, "A3", invindexBean.getGengerna("A3"));
+        setSheet(sheet5, style, "A4", invindexBean.getGengerna("A4"));
+        setSheet(sheet6, style, "A5", invindexBean.getGengerna("A5"));
+
         OutputStream os = null;
         try {
             os = new FileOutputStream(fileFullName);
@@ -340,6 +370,61 @@ public class InventoryProductManagedBean extends SuperSingleBean<InventoryProduc
                 }
             } catch (IOException ex) {
                 log4j.error(ex.getMessage());
+            }
+        }
+    }
+
+    public void setSheet(HSSFSheet sheet, Map<String, CellStyle> style, String generno, String generna) {
+        List<IndexWareh> rows = indexWarehBean.findByGenerno(generno);
+        List<Object[]> columns = invindexBean.getRemarkByGenerno(generno);
+        List<InventoryProduct> list = inventoryProductBean.findByFacnoAndYearmonAndCategories(facno, this.queryYearmon, generna);
+        if ("C".equals(facno)) {
+            list.addAll(inventoryProductBean.findByFacnoAndYearmonAndCategories("G", this.queryYearmon, generna));
+            list.addAll(inventoryProductBean.findByFacnoAndYearmonAndCategories("J", this.queryYearmon, generna));
+            list.addAll(inventoryProductBean.findByFacnoAndYearmonAndCategories("N", this.queryYearmon, generna));
+            list.addAll(inventoryProductBean.findByFacnoAndYearmonAndCategories("C4", this.queryYearmon, generna));
+            list.addAll(inventoryProductBean.findByFacnoAndYearmonAndCategories("C5", this.queryYearmon, generna));
+        }
+
+        Row row;
+        row = sheet.createRow(0);
+        row.setHeight((short) 800);
+        Cell cell = row.createCell(0);
+        cell.setCellStyle(style.get("head"));
+        //设置列数据
+        for (int i = 0; i < columns.size(); i++) {
+            cell = row.createCell(i + 1);
+            cell.setCellStyle(style.get("head"));
+            cell.setCellValue(columns.get(i)[0].toString());
+        }
+        //设置行数据
+        for (int i = 0; i < rows.size(); i++) {
+            row = sheet.createRow(i + 1);
+            row.setHeight((short) 500);
+            cell = row.createCell(0);
+            cell.setCellStyle(style.get("head"));
+            cell.setCellValue(rows.get(i).getWhdsc());
+        }
+
+        for (int i = 0; i <=columns.size(); i++) {
+            sheet.setColumnWidth(i, 5000);
+        }
+        for (int x = 0; x < rows.size(); x++) {
+            row = sheet.getRow(x+1);
+            String wareh=rows.get(x).getWareh();
+            String whdsc=rows.get(x).getWhdsc();
+            for (int y = 0; y < columns.size(); y++) {
+                String indicatorno=columns.get(y)[0].toString();
+                int i=0;
+                for(InventoryProduct p:list){
+                    if( p.getWareh().equals(wareh) && p.getIndicatorno().equals(indicatorno)){
+                        i++;
+                    }
+                }
+                Double sum = list.stream().filter(d ->  d.getWhdsc().equals(whdsc) &&d.getWareh().equals(wareh) && d.getIndicatorno().equals(indicatorno)).collect(Collectors.toList()).stream().mapToDouble(InventoryProduct::getSumAmount).sum();
+                cell = row.createCell(y+1);
+                cell.setCellStyle(style.get("cell"));
+                cell.setCellValue(sum);
             }
         }
     }
@@ -391,84 +476,112 @@ public class InventoryProductManagedBean extends SuperSingleBean<InventoryProduc
     }
 
     public String[] getInventoryProductTitle() {
-        return new String[]{"公司别", "日期", "库号", "库名", "产品别", "类别", "部门代号", "物料归类码", "大类编号", "中类编号", "库存金额", "调差金额"};
+        return new String[]{"编号", "公司别", "日期", "库号", "库名", "产品别", "类别", "物料归类码", "大类编号", "中类编号", "库存金额", "调差金额"};
     }
 
     private int[] getInventoryProductWidth() {
         return new int[]{15, 10, 15, 15, 15, 15, 10, 20, 10, 10, 20, 20};
     }
 
-    public void updateIndicator() {
+    public void updateHanbellIndicator() {
         int y = Integer.parseInt(queryYearmon.substring(0, 4), 10);
         int m = Integer.parseInt(queryYearmon.substring(queryYearmon.length() - 2, queryYearmon.length()), 10);
-        try { 
-            //生产库存=生产在制+实际库存+借厂商
-            inventoryProductList1.clear();
-            this.inventoryProductList1 = inventoryProductBean.getDetailsByWareh(y, m, facno, inventoryProductBean.getWarehs("A1", "生产性库存金额"));
-            this.inventoryProductList1.addAll(inventoryProductBean.getDetailsByWareh(y, m, facno, "in ('SCZZ')"));
-            this.inventoryProductList1.addAll(inventoryProductBean.getDetailsByWhdsc(y, m, facno, "借厂商"));
-            //更新指标
-            updateInventory1(y, m);
-
-        } catch (Exception ex) {
-            java.util.logging.Logger.getLogger(InventoryProductManagedBean.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    @EJB
-    private IndicatorDetailBean indicatorDetailBean;
-    @EJB
-    private IndicatorBean indicatorBean;
-
-    public void updateInventory1(int y, int m) throws Exception {
-        BigDecimal sumA = new BigDecimal(0);
-        BigDecimal sumR = new BigDecimal(0);
-        BigDecimal sumP = new BigDecimal(0);
-        BigDecimal sumAH = new BigDecimal(0);
-        BigDecimal sumS = new BigDecimal(0);
-        for (InventoryProduct entity : this.inventoryProductList1) {
-            if ("A".equals(entity.getGenre())) {
-                sumR = sumR.add(entity.getAmamount()).add(entity.getAmount());
-                entity.setCategories("A生产库存");
-            } else if ("AH".equals(entity.getGenre())) {
-                sumAH = sumAH.add(entity.getAmamount()).add(entity.getAmount());
-                entity.setCategories("AH生产库存");
-            } else if ("P".equals(entity.getGenre())) {
-                sumP = sumP.add(entity.getAmamount()).add(entity.getAmount());
-                entity.setCategories("P生产库存");
-            } else if ("S".equals(entity.getGenre())) {
-                sumS = sumS.add(entity.getAmamount()).add(entity.getAmount());
-                entity.setCategories("S生产库存");
-            } else if ("R".equals(entity.getGenre()) || "L".equals(entity.getGenre()) || "RG".equals(entity.getGenre())) {
-                sumR = sumR.add(entity.getAmamount()).add(entity.getAmount());
-                entity.setCategories("R生产库存");
+        try {
+            model.getFilterFields().clear();
+            model.getFilterFields().put("yearmon", this.queryYearmon);
+            List<InventoryProduct> list = this.inventoryProductBean.findByFilters(model.getFilterFields());
+            for (InventoryProduct entity : list) {
+                entity.setCategories("");
+                entity.setIndicatorno("");
             }
-            updateIndicatorDetail(indicatorBean.findByFormidYearAndDeptno("冷媒生产库存", y, "1X000").getOther1Indicator(), sumR, m);
-            updateIndicatorDetail(indicatorBean.findByFormidYearAndDeptno("机组生产库存", y, "1X000").getOther1Indicator(), sumA, m);
-            updateIndicatorDetail(indicatorBean.findByFormidYearAndDeptno("真空生产库存", y, "1X000").getOther1Indicator(), sumP, m);
-            updateIndicatorDetail(indicatorBean.findByFormidYearAndDeptno("机体生产库存", y, "1X000").getOther1Indicator(), sumAH, m);
-            updateIndicatorDetail(indicatorBean.findByFormidYearAndDeptno("涡旋生产库存", y, "1X000").getOther1Indicator(), sumS, m);
+            List<InventoryProduct> CList = list.stream().filter(d -> "C".equals(d.getFacno())).collect(Collectors.toList());
+            List<Object[]> A1List = invindexDetailBean.getWarehs("A1");
+            List<Object[]> A2List = invindexDetailBean.getWarehs("A2");
+            List<Object[]> A3List = invindexDetailBean.getWarehs("A3");
+            List<Object[]> A4List = invindexDetailBean.getWarehs("A4");
+            List<Object[]> A5List = invindexDetailBean.getWarehs("A5");
+            for (InventoryProduct entity : CList) {
+                for (Object[] o : A1List) {
+                    if (entity.getWareh().equals(o[1]) && this.genzlsToList((String) o[0]).contains(entity.getGenre())) {
+                        entity.setCategories(entity.getCategories() == null || "".equals(entity.getCategories()) ? invindexBean.getGengerna("A1"): String.format("%s,%s", entity.getCategories(), invindexBean.getGengerna("A1")));
+                        entity.setIndicatorno(entity.getIndicatorno() == null || "".equals(entity.getIndicatorno()) ? (String) o[3] : String.format("%s,%s", entity.getIndicatorno(), (String) o[3]));
+                    }
+                }
+                for (Object[] o : A2List) {
+                    if (entity.getWareh().equals(o[1]) && this.genzlsToList((String) o[0]).contains(entity.getGenre())) {
+                        entity.setCategories(entity.getCategories() == null || "".equals(entity.getCategories()) ?invindexBean.getGengerna("A2"): String.format("%s,%s", entity.getCategories(), invindexBean.getGengerna("A2")));
+                        entity.setIndicatorno(entity.getIndicatorno() == null || "".equals(entity.getIndicatorno()) ? (String) o[3] : String.format("%s,%s", entity.getIndicatorno(), (String) o[3]));
+                    }
+                }
+                for (Object[] o : A3List) {
+                    if (entity.getWareh().equals(o[1])) {
+                        entity.setCategories(entity.getCategories() == null || "".equals(entity.getCategories()) ? invindexBean.getGengerna("A3"): String.format("%s,%s", entity.getCategories(),invindexBean.getGengerna("A3")));
+                        entity.setIndicatorno(entity.getIndicatorno() == null || "".equals(entity.getIndicatorno()) ? (String) o[3] : String.format("%s,%s", entity.getIndicatorno(), (String) o[3]));
+                    }
+                }
+                for (Object[] o : A4List) {
+                    if (entity.getWareh().equals(o[1]) && startWithDeptno((String) o[0], entity.getDeptno())) {
+                        entity.setCategories(entity.getCategories() == null || "".equals(entity.getCategories()) ? invindexBean.getGengerna("A4") : String.format("%s,%s", entity.getCategories(),invindexBean.getGengerna("A3")));
+                        entity.setIndicatorno(entity.getIndicatorno() == null || "".equals(entity.getIndicatorno()) ? (String) o[3] : String.format("%s,%s", entity.getIndicatorno(), (String) o[3]));
+                    }
+                }
+                for (Object[] o : A5List) {
+                    if (entity.getWareh().equals(o[1])) {
+                        entity.setCategories(entity.getCategories() == null || "".equals(entity.getCategories()) ? invindexBean.getGengerna("A5") : String.format("%s,%s",entity.getCategories(), invindexBean.getGengerna("A5")));
+                        entity.setIndicatorno(entity.getIndicatorno() == null || "".equals(entity.getIndicatorno()) ? (String) o[3] : String.format("%s,%s", entity.getIndicatorno(), (String) o[3]));
+                    }
+                }
+            }
+            this.inventoryProductBean.update(CList);
+
+            List<InventoryProduct> GList = list.stream().filter(d -> !"C".equals(d.getFacno())).collect(Collectors.toList());
+            for (InventoryProduct entity : list) {
+                if ("J".equals(entity.getFacno())) {
+                    entity.setCategories(entity.getCategories() == null || "".equals(entity.getCategories()) ? invindexBean.getGengerna("A3") : String.format("%s,%s", entity.getCategories(),invindexBean.getGengerna("A3")));
+                    entity.setIndicatorno(entity.getIndicatorno() == null || "".equals(entity.getIndicatorno()) ? "济南服务库存金额" : String.format("%s,%s", entity.getIndicatorno(), "济南服务库存金额"));
+                } else if ("G".equals(entity.getFacno())) {
+                    entity.setCategories(entity.getCategories() == null || "".equals(entity.getCategories()) ? invindexBean.getGengerna("A3") : String.format("%s,%s", entity.getCategories(), invindexBean.getGengerna("A3") ));
+                    entity.setIndicatorno(entity.getIndicatorno() == null || "".equals(entity.getIndicatorno()) ? "广州服务库存金额" : String.format("%s,%s", entity.getIndicatorno(), "广州服务库存金额"));
+                } else if ("N".equals(entity.getFacno())) {
+                    entity.setCategories(entity.getCategories() == null || "".equals(entity.getCategories()) ? invindexBean.getGengerna("A3")  : String.format("%s,%s", entity.getCategories(),invindexBean.getGengerna("A3") ));
+                    entity.setIndicatorno(entity.getIndicatorno() == null || "".equals(entity.getIndicatorno()) ? "南京服务库存金额" : String.format("%s,%s", entity.getIndicatorno(), "南京服务库存金额"));
+                } else if ("C4".equals(entity.getFacno())) {
+                    entity.setCategories(entity.getCategories() == null || "".equals(entity.getCategories()) ? invindexBean.getGengerna("A3") : String.format("%s,%s", entity.getCategories(), invindexBean.getGengerna("A3") ));
+                    entity.setIndicatorno(entity.getIndicatorno() == null || "".equals(entity.getIndicatorno()) ? "重庆服务库存金额" : String.format("%s,%s", entity.getIndicatorno(), "重庆服务库存金额"));
+                } else if ("C5".equals(entity.getFacno())) {
+                    entity.setCategories(entity.getCategories() == null || "".equals(entity.getCategories()) ? invindexBean.getGengerna("A3") : String.format("%s,%s", entity.getCategories(), invindexBean.getGengerna("A3") ));
+                    entity.setIndicatorno(entity.getIndicatorno() == null || "".equals(entity.getIndicatorno()) ? "银川服务库存金额" : String.format("%s,%s", entity.getIndicatorno(), "银川服务库存金额"));
+                }
+            }
+            this.inventoryProductBean.update(GList);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Info", "数据更新成功，请导出月报表核查"));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "ERROR", ex.getMessage()));
         }
     }
 
-    public boolean updateIndicatorDetail(IndicatorDetail detail, BigDecimal account, int m) throws Exception {
-        Method setMethod = detail.getClass()
-                .getDeclaredMethod("set" + getIndicatorColumn("N", m).toUpperCase(), BigDecimal.class);
-        setMethod.invoke(detail, account);
-        indicatorDetailBean.update(detail);
-        return true;
+    public boolean startWithDeptno(String deptnos, String deptno) {
+        String args[] = deptnos.replace("，", ",").split(",");
+        for (int i = 0; i < args.length; i++) {
+            if (deptno.startsWith(args[i])) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public String getIndicatorColumn(String formtype, int m) {
-        if (formtype.equals("N")) {
-            return "n" + String.format("%02d", m);
-        } else if (formtype.equals("D")) {
-            return "d" + String.format("%02d", m);
-        } else if (formtype.equals("NQ")) {
-            return "nq" + String.valueOf(m);
-        } else {
-            return "";
-
+    public List<String> genzlsToList(String genzls) {
+        List<String> list = new ArrayList();
+        if (genzls != null && !"".equals(genzls)) {
+            genzls = genzls.replaceAll("，", ",");
+            String[] st = genzls.split(",");
+            for (int i = 0; i < st.length; i++) {
+                list.add(st[i]);
+            }
+            return list;
         }
+        return list;
     }
 
     public String getQueryYearmon() {
@@ -487,20 +600,20 @@ public class InventoryProductManagedBean extends SuperSingleBean<InventoryProduc
         this.queryWhdsc = queryWhdsc;
     }
 
+    public String getQueryWareh() {
+        return queryWareh;
+    }
+
+    public void setQueryWareh(String queryWareh) {
+        this.queryWareh = queryWareh;
+    }
+
     public String getQueryGenre() {
         return queryGenre;
     }
 
     public void setQueryGenre(String queryGenre) {
         this.queryGenre = queryGenre;
-    }
-
-    public String getQueryItclscode() {
-        return queryItclscode;
-    }
-
-    public void setQueryItclscode(String queryItclscode) {
-        this.queryItclscode = queryItclscode;
     }
 
     public InventoryProduct getInventoryProduct() {
@@ -531,13 +644,6 @@ public class InventoryProductManagedBean extends SuperSingleBean<InventoryProduc
         this.inventoryProductList = inventoryProductList;
     }
 
-    public List<InventoryProduct> getInventoryProductList1() {
-        return inventoryProductList1;
-    }
-
-    public void setInventoryProductList1(List<InventoryProduct> inventoryProductList1) {
-        this.inventoryProductList1 = inventoryProductList1;
-    }
 
     public String getFacno() {
         return facno;

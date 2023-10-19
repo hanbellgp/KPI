@@ -14,8 +14,8 @@ public class ProductionPlanShipmentAJT extends ProductionPlanShipment {
     public ProductionPlanShipmentAJT() {
         super();
         queryParams.put("facno", "C");
-        //queryParams.put("n_code_DA", " ='AH' ");
-        //#ITCLS CHANGE TODO #
-        queryParams.put("itcls", " in('3886','3889','3890','3876','3879','3880','3976','3979','3980') and itnbr <> '39011-GBA00' ");
+        queryParams.put("n_code_DA", " ='AH' ");
+        queryParams.put("n_code_DC", " NOT LIKE 'SAM%' ");
+        queryParams.put("n_code_DD", " ='00' ");
     }
 }

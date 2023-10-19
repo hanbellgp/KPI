@@ -127,12 +127,12 @@ public abstract class ShipmentAmount extends Shipment {
         return shp1.subtract(bshp1).add(arm232).add(arm235).add(arm270).add(arm423);
     }
 
-     
-   //它项金额,关联部门
+    //它项金额,关联部门
     public BigDecimal getARM270Value(int y, int m, Date d, int type, LinkedHashMap<String, Object> map) {
         String facno = map.get("facno") != null ? map.get("facno").toString() : "";
         String n_code_DA = map.get("n_code_DA") != null ? map.get("n_code_DA").toString() : "";
         String n_code_DC = map.get("n_code_DC") != null ? map.get("n_code_DC").toString() : "";
+        String n_code_CD = map.get("n_code_CD") != null ? map.get("n_code_CD").toString() : "";
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT ISNULL(SUM(h.shpamt),0) FROM armbil h WHERE h.rkd='RQ11' AND h.facno='${facno}'");
         if (n_code_DA != null && !"".equals(n_code_DA)) {
@@ -141,7 +141,10 @@ public abstract class ShipmentAmount extends Shipment {
         if (n_code_DC != null && !"".equals(n_code_DC)) {
             sb.append(" and n_code_DC ").append(n_code_DC);
         }
-        //收费服务金额
+        if (n_code_CD != null && !"".equals(n_code_CD)) {
+            sb.append(" and address3 ").append(n_code_CD);
+        }
+        //非收费服务金额
         sb.append(" and address5 ='N'");
         sb.append(" AND year(h.bildat) = ${y} AND month(h.bildat)= ${m} ");
         switch (type) {
