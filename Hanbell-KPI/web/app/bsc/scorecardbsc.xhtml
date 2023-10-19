@@ -214,7 +214,7 @@
                                 <p:row>
                                     <p:column><p:outputLabel value="Q1"/></p:column>
                                     <p:column rendered="#{scorecardManagedBean.currentEntity.type!='N'}">
-                                        <p:outputLabel id="tq1" value="#{scorecardManagedBean.currentEntity.tq1}"  styleClass="Wid100"  title="tq1"/>
+                                        <p:outputLabel id="tq1" value="#{scorecardManagedBean.currentEntity.tq1}"  styleClass="Wid100"  title="tq1" />
                                     </p:column>
                                     <p:column rendered="#{scorecardManagedBean.currentEntity.type=='N'}">
                                         <p:outputLabel id="tq1n" value="#{scorecardManagedBean.currentEntity.tq1}" styleClass="Wid100"  title="tq1"/>
@@ -333,64 +333,64 @@
                             <c:when test="#{scorecardManagedBean.userManagedBean.q==1}">
                                 <p:row>
                                     <p:column style="width: 23%">
-                                        <p:inputTextarea id="c1q1" value="#{scorecardManagedBean.currentEntity.causeScore1.q1}" rows="40" styleClass="Wid100"  readonly="true" />
+                                        <p:inputTextarea id="c1q1" value="#{scorecardManagedBean.currentEntity.causeScore1.q1}" rows="40" styleClass="Wid100"  readonly="true"  style="font-size: 20px;"/>
                                     </p:column>
                                     <p:column style="width: 23%">
-                                        <p:inputTextarea id="s1q1" value="#{scorecardManagedBean.currentEntity.summaryScore1.q1}" rows="40"  styleClass="Wid100" readonly="true"/>
+                                        <p:inputTextarea id="s1q1" value="#{scorecardManagedBean.currentEntity.summaryScore1.q1}" rows="40"  styleClass="Wid100" readonly="true"  style="font-size: 20px;"/>
                                     </p:column>
                                     <p:column style="width: 23%">
-                                        <p:inputTextarea id="c2q1" value="#{scorecardManagedBean.currentEntity.causeScore2.q1}"  rows="40" styleClass="Wid100" readonly="true" />
+                                        <p:inputTextarea id="c2q1" value="#{scorecardManagedBean.currentEntity.causeScore2.q1}"  rows="40" styleClass="Wid100" readonly="true"  style="font-size: 20px;"/>
                                     </p:column>
                                     <p:column style="width: 23%">
-                                        <p:inputTextarea id="s2q1" value="#{scorecardManagedBean.currentEntity.summaryScore2.q1}" rows="40" styleClass="Wid100"  readonly="true"/>
+                                        <p:inputTextarea id="s2q1" value="#{scorecardManagedBean.currentEntity.summaryScore2.q1}" rows="40" styleClass="Wid100"  readonly="true"  style="font-size: 20px;"/>
                                     </p:column>
                                 </p:row>
                             </c:when>
                             <c:when test="#{scorecardManagedBean.userManagedBean.q==2}">
                                 <p:row>
                                     <p:column style="width: 23%">
-                                        <p:inputTextarea id="c1q2" value="#{scorecardManagedBean.currentEntity.causeScore1.q2}" rows="40" styleClass="Wid100"  readonly="true"/>
+                                        <p:inputTextarea id="c1q2" value="#{scorecardManagedBean.currentEntity.causeScore1.q2}" rows="40" styleClass="Wid100"  readonly="true"  style="font-size: 20px;"/>
                                     </p:column>
                                     <p:column style="width: 23%">
-                                        <p:inputTextarea id="s1q2" value="#{scorecardManagedBean.currentEntity.summaryScore1.q2}" rows="40" styleClass="Wid100"  readonly="true" />
+                                        <p:inputTextarea id="s1q2" value="#{scorecardManagedBean.currentEntity.summaryScore1.q2}" rows="40" styleClass="Wid100"  readonly="true"  style="font-size: 20px;"/>
                                     </p:column>
                                     <p:column style="width: 23%">
-                                        <p:inputTextarea id="c2q2" value="#{scorecardManagedBean.currentEntity.causeScore2.q2}" rows="40" styleClass="Wid100"  readonly="true"/>
+                                        <p:inputTextarea id="c2q2" value="#{scorecardManagedBean.currentEntity.causeScore2.q2}" rows="40" styleClass="Wid100"  readonly="true"  style="font-size: 20px;"/>
                                     </p:column>
                                     <p:column style="width: 23%">
-                                        <p:inputTextarea id="s2q2" value="#{scorecardManagedBean.currentEntity.summaryScore2.q2}" rows="40" styleClass="Wid100" readonly="true"/>
+                                        <p:inputTextarea id="s2q2" value="#{scorecardManagedBean.currentEntity.summaryScore2.q2}" rows="40" styleClass="Wid100" readonly="true"  style="font-size: 20px;"/>
                                     </p:column>
                                 </p:row>
                             </c:when>
                             <c:when test="#{scorecardManagedBean.userManagedBean.q==3}">
                                 <p:row>
                                     <p:column style="width: 23%">
-                                        <p:inputTextarea id="c1q3" value="#{scorecardManagedBean.currentEntity.causeScore1.q3}" rows="40"  styleClass="Wid100"  readonly="true"/>
+                                        <p:inputTextarea id="c1q3" value="#{scorecardManagedBean.currentEntity.causeScore1.q3}" rows="40"  styleClass="Wid100"  readonly="true"  style="font-size: 20px;"/>
                                     </p:column>
                                     <p:column style="width: 23%">
-                                        <p:inputTextarea id="s1q3" value="#{scorecardManagedBean.currentEntity.summaryScore1.q3}"  rows="40" styleClass="Wid100" readonly="true" />
+                                        <p:inputTextarea id="s1q3" value="#{scorecardManagedBean.currentEntity.summaryScore1.q3}"  rows="40" styleClass="Wid100" readonly="true"  style="font-size: 20px;"/>
                                     </p:column>
                                     <p:column style="width: 23%">
-                                        <p:inputTextarea id="c2q3" value="#{scorecardManagedBean.currentEntity.causeScore2.q3}"  rows="40" styleClass="Wid100"  readonly="true"/>
+                                        <p:inputTextarea id="c2q3" value="#{scorecardManagedBean.currentEntity.causeScore2.q3}"  rows="40" styleClass="Wid100"  readonly="true" style="font-size: 20px;"/>
                                     </p:column>
                                     <p:column style="width: 23%">
-                                        <p:inputTextarea id="s2q3" value="#{scorecardManagedBean.currentEntity.summaryScore2.q3}"  rows="40" styleClass="Wid100"  readonly="true"/>
+                                        <p:inputTextarea id="s2q3" value="#{scorecardManagedBean.currentEntity.summaryScore2.q3}"  rows="40" styleClass="Wid100"  readonly="true" style="font-size: 20px;"/>
                                     </p:column>
                                 </p:row>
                             </c:when>
                             <c:when test="#{scorecardManagedBean.userManagedBean.q==4}">
                                 <p:row >
                                     <p:column style="width: 23%">
-                                        <p:inputTextarea id="c1q4" style="font-size:24px" value="#{scorecardManagedBean.currentEntity.causeScore1.q4}" rows="40"  styleClass="Wid100"  readonly="true"/>
+                                        <p:inputTextarea id="c1q4" style="font-size: 20px;" value="#{scorecardManagedBean.currentEntity.causeScore1.q4}" rows="40"  styleClass="Wid100"  readonly="true"/>
                                     </p:column>
                                     <p:column style="width: 23%">
-                                        <p:inputTextarea id="s1q4" style="font-size:24px" value="#{scorecardManagedBean.currentEntity.summaryScore1.q4}"  rows="40" styleClass="Wid100" readonly="true"/>
+                                        <p:inputTextarea id="s1q4"  style="font-size: 20px;" value="#{scorecardManagedBean.currentEntity.summaryScore1.q4}"  rows="40" styleClass="Wid100" readonly="true"/>
                                     </p:column>
                                     <p:column style="width: 23%">
-                                        <p:inputTextarea id="c2q4" style="font-size:24px" value="#{scorecardManagedBean.currentEntity.causeScore2.q4}"  rows="40" styleClass="Wid100" readonly="true"/>
+                                        <p:inputTextarea id="c2q4"  style="font-size: 20px;" value="#{scorecardManagedBean.currentEntity.causeScore2.q4}"  rows="40" styleClass="Wid100" readonly="true"/>
                                     </p:column>
                                     <p:column style="width: 23%">
-                                        <p:inputTextarea id="s2q4" style="font-size:24px" value="#{scorecardManagedBean.currentEntity.summaryScore2.q4}"  rows="40" styleClass="Wid100" readonly="true"/>
+                                        <p:inputTextarea id="s2q4"  style="font-size: 20px;" value="#{scorecardManagedBean.currentEntity.summaryScore2.q4}"  rows="40" styleClass="Wid100" readonly="true"/>
                                     </p:column>
                                 </p:row>
                             </c:when>

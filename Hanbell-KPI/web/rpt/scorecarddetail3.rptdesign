@@ -1765,9 +1765,9 @@ return false;]]></method>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
-                        <label id="1869">
+                        <label id="1870">
                             <property name="fontSize">7pt</property>
-                            <text-property name="text">Q3基准</text-property>
+                            <text-property name="text">全年目标</text-property>
                         </label>
                     </cell>
                     <cell id="1801">
@@ -1780,9 +1780,9 @@ return false;]]></method>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
-                        <label id="1870">
+                        <label id="1869">
                             <property name="fontSize">7pt</property>
-                            <text-property name="text">全年</text-property>
+                            <text-property name="text">Q3基准</text-property>
                         </label>
                     </cell>
                     <cell id="1802">
@@ -1960,9 +1960,9 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="1888">
+                        <data id="1889">
                             <property name="fontSize">7pt</property>
-                            <property name="resultSetColumn">bq3</property>
+                            <property name="resultSetColumn">tfy</property>
                         </data>
                     </cell>
                     <cell id="1815">
@@ -1974,9 +1974,9 @@ return false;]]></method>
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <data id="1889">
+                        <data id="1888">
                             <property name="fontSize">7pt</property>
-                            <property name="resultSetColumn">tfy</property>
+                            <property name="resultSetColumn">bq3</property>
                         </data>
                     </cell>
                     <cell id="1816">
