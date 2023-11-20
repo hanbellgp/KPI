@@ -87,6 +87,8 @@ public class AJServiceClosingSpecialMailBean extends ServiceMail {
         sb.append("<th>09月</th><th>10月</th><th>11月</th><th>12月</th></tr>");
         IndicatorDetail o1 = e.getOther1Indicator();
         IndicatorDetail o2 = e.getOther2Indicator();
+         o1.setType(e.getOther1Label());
+         o2.setType(e.getOther2Label());
         IndicatorDetail o1o2;
         IndicatorDetail o3o4;
         IndicatorDetail ljo1;
@@ -121,6 +123,8 @@ public class AJServiceClosingSpecialMailBean extends ServiceMail {
         sb.append(ss);
          o1 = e.getOther3Indicator();
          o2 = e.getOther4Indicator();
+         o1.setType(e.getOther3Label());
+         o2.setType(e.getOther4Label());
         sb.append("<tr style=\"background:").append(color).append(";\">");
         sb.append("<td style=\"text-align: left;\">").append(o1.getType()).append("</td>");
         for (int i = 1; i < 13; i++) {
@@ -211,8 +215,7 @@ public class AJServiceClosingSpecialMailBean extends ServiceMail {
                     setMethod.invoke(LJCompleteRatioIndicator, v);
                 }
             }
-//            countIndicator.setType(e.getOther1Label());
-//            completeIndicator.setType(e.getOther2Label());
+        
 
             sb.append("<tr style=\"background:").append(color).append(";\"><td style=\"text-align: left;\">").append(completeIndicator.getType()).append("</td>");
             for (int i = 1; i < 13; i++) {
