@@ -14,7 +14,7 @@ public class ShipmentAmountServiceMVN extends ShipmentAmountVN {
     public ShipmentAmountServiceMVN() {
         super();
         queryParams.put("facno", "V");
-        queryParams.put("hmark1", " ='M'");
-        queryParams.put("hmark2", " ='FW'");
+        //  queryParams.put("hmark1", " ='M'");
+        queryParams.put("hmark2", "in ('PT','REP')");
     }
 }

@@ -6,6 +6,8 @@
 package vn.hanbell.kpi.mail;
 
 import cn.hanbell.kpi.comm.MailNotification;
+import cn.hanbell.kpi.ejb.erp.BscGroupVBHSaleOrderBean;
+import cn.hanbell.kpi.ejb.erp.BscGroupVBHShipmentBean;
 import cn.hanbell.kpi.ejb.erp.BscGroupVHSaleOrderBean;
 import cn.hanbell.kpi.ejb.erp.BscGroupVHShipmentBean;
 import cn.hanbell.kpi.entity.Indicator;
@@ -27,7 +29,12 @@ public class BscGroupVNShipmentMailBean extends MailNotification {
     private BscGroupVHShipmentBean bscGroupVHShipmentBean;
     @EJB
     private BscGroupVHSaleOrderBean bscGroupVHSaleOrderBean;
-    
+
+    @EJB
+    private BscGroupVBHShipmentBean bscGroupVBHShipmentBean;
+    @EJB
+    private BscGroupVBHSaleOrderBean bscGroupVBHSaleOrderBean;
+
     public BscGroupVNShipmentMailBean() {
 
     }
@@ -51,17 +58,29 @@ public class BscGroupVNShipmentMailBean extends MailNotification {
     @Override
     protected String getMailBody() {
         try {
-            //越南出货
+            //隆安厂出货
             bscGroupVHShipmentBean.updataShpimentActualValue(y, m, d);
-             log4j.info("End Execute Job updataShpimentActualValue");
-             //越南订单
-             bscGroupVHSaleOrderBean.updataSaleOrderActualValue(y, m, d);
+            log4j.info("End Execute Job updataShpimentActualValue");
+            //隆安厂订单
+            bscGroupVHSaleOrderBean.updataSaleOrderActualValue(y, m, d);
             log4j.info("End Execute Job updataSaleOrderActualValue");
-             //越南服务
-             bscGroupVHShipmentBean.updataServerActualValue(y, m, d);
-             log4j.info("End Execute Job updataServerActualValue");
+            //隆安厂服务
+            bscGroupVHShipmentBean.updataServerActualValue(y, m, d);
+            log4j.info("End Execute Job updataServerActualValue");
+
+            //北宁厂出货
+            bscGroupVBHShipmentBean.updataShpimentActualValue(y, m, d);
+            log4j.info("End Execute Job updataShpimentActualValue");
+            //北宁厂订单
+            bscGroupVBHSaleOrderBean.updataSaleOrderActualValue(y, m, d);
+            log4j.info("End Execute Job updataSaleOrderActualValue");
+            //北宁厂服务
+            bscGroupVBHShipmentBean.updataServerActualValue(y, m, d);
+            log4j.info("End Execute Job updataServerActualValue");
+
             return "越南数据更新集团报表数据成功";
         } catch (Exception ex) {
+            ex.printStackTrace();
             return ex.toString();
         }
     }

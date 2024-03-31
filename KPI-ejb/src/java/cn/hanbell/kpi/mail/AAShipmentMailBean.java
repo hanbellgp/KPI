@@ -78,7 +78,7 @@ public class AAShipmentMailBean extends ShipmentMail {
                 indicatorBean.divideByRate(i, 2);
             }
             salesOrder = null;
-            return getHtmlTable(this.indicators, y, m, d, false);
+            return getHtmlTable(this.indicators, y, m, d, true);
         } else {
             return "A机组收费服务金额设定错误";
         }

@@ -19,8 +19,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class MailNotify {
     
-    protected String SMTP_HOST = "172.16.10.108";
-    protected int SMTP_PORT = 2525;
+    protected String SMTP_HOST = "172.16.10.106";
+    protected int SMTP_PORT = 25;
     protected HtmlEmail email;
     
     protected MailNotification notification;
@@ -32,6 +32,7 @@ public class MailNotify {
         try {
             propsConfiguration.load(this.getClass().getClassLoader().getResourceAsStream("META-INF/kpi-ejb.properties"));
             String host = propsConfiguration.getProperty("smtp.host");
+            
             if (host != null && !"".equals(host)) {
                 this.SMTP_HOST = host;
             }
@@ -80,8 +81,10 @@ public class MailNotify {
                     email.attach(f);
                 }
             }
-            email.send();
+           String xx= email.send();
+           System.out.print("XX="+xx);
         } catch (EmailException ex) {
+            ex.printStackTrace();
             log4j.error(ex);
         }
     }

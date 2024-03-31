@@ -106,6 +106,14 @@
             <property name="eclipselink.canonicalmodel.subpackage" value="cx"/>
         </properties>
     </persistence-unit>
+    <persistence-unit name="PU_yinchuanerp" transaction-type="JTA">
+        <jta-data-source>jdbc/yinchuanerp</jta-data-source>
+        <shared-cache-mode>NONE</shared-cache-mode>
+        <validation-mode>NONE</validation-mode>
+        <properties>
+            <property name="eclipselink.canonicalmodel.subpackage" value="yc"/>
+        </properties>
+    </persistence-unit>
   <persistence-unit name="PU_hansonerp" transaction-type="JTA">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <jta-data-source>jdbc/hansonerp</jta-data-source>
@@ -194,6 +202,16 @@
     <validation-mode>NONE</validation-mode>
     <properties>
       <property name="eclipselink.canonicalmodel.subpackage" value="vhb"/>
+    </properties>
+  </persistence-unit>
+    <persistence-unit name="PU_vbhberp" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>jdbc/vbhberp</jta-data-source>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <shared-cache-mode>NONE</shared-cache-mode>
+    <validation-mode>NONE</validation-mode>
+    <properties>
+      <property name="eclipselink.canonicalmodel.subpackage" value="vbhb"/>
     </properties>
   </persistence-unit>
   <persistence-unit name="PU-SHBEEP" transaction-type="JTA">

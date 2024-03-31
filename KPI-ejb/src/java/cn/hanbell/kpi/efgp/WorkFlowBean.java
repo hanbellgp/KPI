@@ -10,19 +10,13 @@ import cn.hanbell.eap.ejb.SystemUserBean;
 import cn.hanbell.eap.entity.Department;
 import cn.hanbell.eap.entity.SystemUser;
 import cn.hanbell.util.BaseLib;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.DependsOn;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -40,8 +34,8 @@ import org.apache.axis.client.Call;
 @DependsOn({"UsersBean", "FunctionsBean", "TitleBean"})
 public class WorkFlowBean implements Serializable {
 
-    //public final String HOST_ADD = "http://oa.hanbell.com.cn";
-    public final String HOST_ADD = "http://172.16.10.157";
+    public final String HOST_ADD = "http://oa.hanbell.com.cn";
+    //public final String HOST_ADD = "http://172.16.10.157";
 
     public final String HOST_PORT = "8086";
 

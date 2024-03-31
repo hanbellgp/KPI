@@ -27,7 +27,7 @@ public class FreeServiceARM1B extends FreeServiceERP{
 
     @Override
     public BigDecimal getValue(int y, int m, Date d, int type, LinkedHashMap<String, Object> map) {        
-       return super.getARM423Value(y, m, d, type, map);
+       return BigDecimal.ZERO;
     }
     
 }

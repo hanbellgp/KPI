@@ -53,13 +53,17 @@ public class ComerSalesOrderMailBean extends SalesOrderMail {
     public String getMailBody() {
         StringBuilder sb = new StringBuilder();
         sb.append("<div class=\"tableTitle\">单位：台</div>");
-        sb.append(getQuantityTable());
+        sb.append(getComerQuantityTable());
         sb.append("<div class=\"tableTitle\"  style=\"margin-top: 30px\" >单位：万元</div>");
-        sb.append(getAmountTable());
+        sb.append(getComerAmountTable());
+        sb.append("<div class=\"tableTitle\">单位：台</div>");
+        sb.append(getZJComerQuantityTable());
+        sb.append("<div class=\"tableTitle\"  style=\"margin-top: 30px\" >单位：万元</div>");
+        sb.append(getZJComerAmountTable());
         return sb.toString();
     }
 
-    protected String getQuantityTable() {
+    protected String getComerQuantityTable() {
         StringBuilder sb = new StringBuilder();
         String deptno = "5C000";
         Indicator indicator;
@@ -75,7 +79,18 @@ public class ComerSalesOrderMailBean extends SalesOrderMail {
             } else {
                 sb.append("涡轮每日订单台数-内销设定错误");
             }
+        } catch (Exception ex) {
+            return ex.toString();
+        }
+        return sb.toString();
+    }
 
+    protected String getZJComerQuantityTable() {
+        StringBuilder sb = new StringBuilder();
+        try {
+
+            Indicator indicator;
+            Indicator total;
             //再生能源部分
             this.indicators.clear();
             indicators = indicatorBean.findByCategoryAndYear("再生订单台数", y);
@@ -94,15 +109,13 @@ public class ComerSalesOrderMailBean extends SalesOrderMail {
             }
             indicators.add(total);
             sb.append(getHtmlTable_OH(indicators, y, m, d, false, ""));
-
         } catch (Exception ex) {
             return ex.toString();
         }
         return sb.toString();
-
     }
 
-    protected String getAmountTable() {
+    protected String getComerAmountTable() {
         StringBuilder sb = new StringBuilder();
         String deptno = "5C000";
         Indicator indicator;
@@ -122,6 +135,18 @@ public class ComerSalesOrderMailBean extends SalesOrderMail {
                 sb.append("涡轮每日订单金额设定错误");
             }
 
+        } catch (Exception ex) {
+            return ex.toString();
+        }
+        return sb.toString();
+    }
+
+    protected String getZJComerAmountTable() {
+        StringBuilder sb = new StringBuilder();
+        String deptno = "5C000";
+        Indicator indicator;
+        Indicator total;
+        try {
             //再生能源部分
             this.indicators.clear();
             indicators = indicatorBean.findByCategoryAndYear("再生订单金额", y);

@@ -256,7 +256,7 @@ public class BscGroupVHSaleOrderBean implements Serializable {
         if (!"".equals(hmark1)) {
             sb.append(" and h.hmark1 ").append(hmark1);
         }
-        sb.append(" and ( d.itnbr in (select itnbr from invmas where itcls in('RC2','AA','3176','3576','3579','3580','3679','3705','3707','3716','3733','3735','3738','3766','3776','3780','3801','3802','3806','3833','3835','3838','3866','3879','3880','3A76','3A79','CDU','7110')) )");
+        sb.append(" and   h.hmark2 in ('UN')");
         sb.append(" and year(h.recdate) = ${y} and month(h.recdate)= ${m} ");
         switch (type) {
             case 2:

@@ -6,10 +6,7 @@
 package cn.hanbell.kpi.mail;
 
 import cn.hanbell.kpi.comm.ShipmentMail;
-import cn.hanbell.kpi.entity.Indicator;
-import cn.hanbell.kpi.evaluation.SalesOrderAmount;
 import cn.hanbell.kpi.evaluation.SalesOrderAmountVN;
-import cn.hanbell.kpi.evaluation.SalesOrderQuantity;
 import cn.hanbell.kpi.evaluation.SalesOrderQuantityVN;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -34,24 +31,29 @@ public class VietnamShipmentMailBean extends ShipmentMail {
     @Override
     public String getMailBody() {
         StringBuilder sb = new StringBuilder();
-        sb.append("<div class=\"tableTitle\">单位：台</div>");
-        sb.append(getQuantityTable());
-        sb.append("<div class=\"tableTitle\">单位：百万 越南盾</div>");
-        sb.append(getAmountTable());
+        sb.append("<div class=\"tableTitle\">隆安厂&nbsp&nbsp&nbsp单位：台</div>");
+        sb.append(getVNQuantityTable());
+        sb.append("<div class=\"tableTitle\">隆安厂&nbsp&nbsp&nbsp单位：百万 越南盾</div>");
+        sb.append(getVNAmountTable());
+
+        sb.append("<div class=\"tableTitle\">北宁厂&nbsp&nbsp&nbsp单位：台</div>");
+        sb.append(getVBQuantityTable());
+        sb.append("<div class=\"tableTitle\">北宁厂&nbsp&nbsp&nbsp单位：百万 越南盾</div>");
+        sb.append(getVBAmountTable());
         return sb.toString();
     }
 
-    protected String getQuantityTable() {
+    protected String getVNQuantityTable() {
         try {
             indicators.clear();
-            indicators = indicatorBean.findByCategoryAndYear("越南出货台数", y);
+            indicators = indicatorBean.findByCategoryAndYear("越南隆安厂出货台数", y);
             indicatorBean.getEntityManager().clear();
             if (indicators != null && !indicators.isEmpty()) {
                 //越南明细中无归类栏位，不适用上海汉钟的分类方法。
                 salesOrder = new SalesOrderQuantityVN();
                 return getHtmlTable(this.indicators, y, m, d, true);
             } else {
-                return "越南出货台数设定错误";
+                return "越南隆安厂出货台数设定错误";
             }
         } catch (Exception ex) {
             return ex.toString();
@@ -59,12 +61,12 @@ public class VietnamShipmentMailBean extends ShipmentMail {
 
     }
 
-    protected String getAmountTable() {
+    protected String getVNAmountTable() {
         try {
             indicators.clear();
             //越南的出货金额 = 整机出货金额 + 零件收费服务金额
-            indicators = indicatorBean.findByCategoryAndYear("越南出货金额", y);
-            indicators.addAll(indicatorBean.findByCategoryAndYear("越南出货收费服务金额", y));
+            indicators = indicatorBean.findByCategoryAndYear("越南隆安厂出货金额", y);
+            indicators.addAll(indicatorBean.findByCategoryAndYear("越南隆安厂收费服务金额", y));
             indicatorBean.getEntityManager().clear();
             if (indicators != null && !indicators.isEmpty()) {
                 indicators.stream().forEach((i) -> {
@@ -74,11 +76,50 @@ public class VietnamShipmentMailBean extends ShipmentMail {
                 salesOrder = new SalesOrderAmountVN();
                 return getHtmlTable(this.indicators, y, m, d, true);
             } else {
-                return "越南出货金额设定错误";
+                return "越南隆安厂出货金额设定错误";
             }
         } catch (Exception ex) {
             return ex.toString();
         }
     }
 
+    protected String getVBQuantityTable() {
+        try {
+            indicators.clear();
+            indicators = indicatorBean.findByCategoryAndYear("越南北宁厂出货台数", y);
+            indicatorBean.getEntityManager().clear();
+            if (indicators != null && !indicators.isEmpty()) {
+                //越南明细中无归类栏位，不适用上海汉钟的分类方法。
+                salesOrder = new SalesOrderQuantityVN();
+                return getHtmlTable(this.indicators, y, m, d, true);
+            } else {
+                return "越南北宁厂出货台数设定错误";
+            }
+        } catch (Exception ex) {
+            return ex.toString();
+        }
+
+    }
+
+    protected String getVBAmountTable() {
+        try {
+            indicators.clear();
+            //越南的出货金额 = 整机出货金额 + 零件收费服务金额
+            indicators = indicatorBean.findByCategoryAndYear("越南北宁厂出货金额", y);
+            indicators.addAll(indicatorBean.findByCategoryAndYear("越南北宁厂收费服务金额", y));
+            indicatorBean.getEntityManager().clear();
+            if (indicators != null && !indicators.isEmpty()) {
+                indicators.stream().forEach((i) -> {
+                    indicatorBean.divideByRate(i, 2);
+                });
+                //越南明细中无归类栏位，不适用上海汉钟的分类方法。
+                salesOrder = new SalesOrderAmountVN();
+                return getHtmlTable(this.indicators, y, m, d, true);
+            } else {
+                return "越南北宁厂出货金额设定错误";
+            }
+        } catch (Exception ex) {
+            return ex.toString();
+        }
+    }
 }

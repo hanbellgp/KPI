@@ -22,7 +22,7 @@ public class SalesOrderAmountT9New extends SalesOrderAmount {
     public SalesOrderAmountT9New() {
         super();
         queryParams.put("facno", "C");
-        queryParams.put("n_code_DA", " <>'AH' ");
+        queryParams.put("n_code_DA", " not in ('AH','AA') ");
         queryParams.put("n_code_CD", " LIKE 'WX%' ");
         queryParams.put("n_code_DD", " in ('01','03','04','05') ");//00是整机-01是零件-02是后处理
     }

@@ -168,7 +168,7 @@ public class BscGroupVHShipmentBean implements Serializable {
         StringBuilder sb = new StringBuilder();
         sb.append(" select a.soday,sum(num) from ( ");
         sb.append(" select h.facno,h.shpdate as soday,e.hmark1,sum(d.shpqy1) as num  from  cdrhmas e,cdrdta d inner join cdrhad h on  d.facno=h.facno  and d.shpno=h.shpno ");
-        sb.append(" where h.houtsta <> 'W'  and e.cdrno=d.cdrno    and  e.hmark2='ZJ' ");
+        sb.append(" where h.houtsta <> 'W'  and e.cdrno=d.cdrno    and  e.hmark2='UN' ");
         sb.append(" and h.facno='${facno}' ");
         if (!"".equals(hmark1)) {
             sb.append(" and e.hmark1 ").append(hmark1);
@@ -177,7 +177,7 @@ public class BscGroupVHShipmentBean implements Serializable {
         sb.append(" GROUP BY h.facno,h.shpdate,e.hmark1 ");
         sb.append(" union all  ");
         sb.append(" select h.facno,h.bakdate as soday,e.hmark1, -sum(d.bshpqy1) as num from cdrhmas e,cdrbhad h right join cdrbdta d on h.bakno=d.bakno ");
-        sb.append(" where h.baksta <> 'W'  and e.cdrno=d.cdrno and  e.hmark2='ZJ' ");
+        sb.append(" where h.baksta <> 'W'  and e.cdrno=d.cdrno and  e.hmark2='UN' ");
         sb.append(" and h.facno='${facno}' ");
         if (!"".equals(hmark1)) {
             sb.append(" and e.hmark1 ").append(hmark1);
@@ -267,7 +267,7 @@ public class BscGroupVHShipmentBean implements Serializable {
 
         StringBuilder sb = new StringBuilder();
         sb.append(" select  isnull(sum((d.shpamts*h.ratio)),0) from cdrhmas e,cdrdta d  inner join cdrhad h on  d.facno=h.facno  and d.shpno=h.shpno ");
-        sb.append(" where  e.cdrno=d.cdrno and h.cusno not in ('SSD00328') and h.houtsta <> 'W' AND e.hmark2='ZJ' ");
+        sb.append(" where  e.cdrno=d.cdrno and h.cusno not in ('SSD00328') and h.houtsta <> 'W' AND e.hmark2='UN' ");
         sb.append(" and h.facno='${facno}' ");
         if (!"".equals(hmark1)) {
             sb.append(" and e.hmark1 ").append(hmark1);
@@ -290,7 +290,7 @@ public class BscGroupVHShipmentBean implements Serializable {
 
         sb.setLength(0);
         sb.append("select isnull(sum((d.bakamts*h.ratio)),0) from cdrbhad h right join cdrbdta d on h.bakno=d.bakno ");
-        sb.append(" where h.cusno not  in ('SSD00328')  and h.baksta <> 'W' AND h.hmark2='ZJ'   ");
+        sb.append(" where h.cusno not  in ('SSD00328')  and h.baksta <> 'W' AND h.hmark2='UN'   ");
         sb.append(" and h.facno='${facno}' ");
         sb.append(" and year(h.bakdate) = ${y} and month(h.bakdate)= ${m} ");
         switch (type) {
@@ -377,7 +377,7 @@ public class BscGroupVHShipmentBean implements Serializable {
         sb.append(" select soday,isnull(cast(sum(num) as decimal(16,2)),0) as num from(  ");
         sb.append(" select h.shpdate as soday,isnull(sum((d.shpamts * h.ratio)),0) as num ");
         sb.append(" from cdrhmas e,cdrdta d  inner join cdrhad h on  d.facno=h.facno  and d.shpno=h.shpno   ");
-        sb.append(" where h.facno = '${facno}' and h.houtsta <> 'W' and e.cdrno=d.cdrno and e.hmark2='FW'  ");
+        sb.append(" where h.facno = '${facno}' and h.houtsta <> 'W' and e.cdrno=d.cdrno and e.hmark2 in('PT','REP')  ");
         if (!"".equals(hmark1)) {
             sb.append(" and e.hmark1 ").append(hmark1);
         }
@@ -386,7 +386,7 @@ public class BscGroupVHShipmentBean implements Serializable {
         sb.append(" UNION  all ");
         sb.append(" select  h.bakdate as soday,isnull(sum((d.bakamts * h.ratio)*(-1)),0) as num ");
         sb.append(" from  cdrhmas e,cdrbhad h right join cdrbdta d on h.bakno=d.bakno  ");
-        sb.append(" where h.facno = '${facno}'   and h.baksta <> 'W' and e.cdrno=d.cdrno AND e.hmark2='FW' ");
+        sb.append(" where h.facno = '${facno}'   and h.baksta <> 'W' and e.cdrno=d.cdrno AND e.hmark2 in('PT','REP') ");
         if (!"".equals(hmark1)) {
             sb.append(" and e.hmark1 ").append(hmark1);
         }

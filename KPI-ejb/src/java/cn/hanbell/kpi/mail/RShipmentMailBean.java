@@ -90,6 +90,7 @@ public class RShipmentMailBean extends ShipmentMail {
             List<Indicator> indicatorsR = new ArrayList<>();
             List<Indicator> indicatorsL = new ArrayList<>();
             List<Indicator> indicatorsH = new ArrayList<>();
+            List<Indicator> indicatorsZ = new ArrayList<>();
             sum1 = BigDecimal.ZERO;
             sum2 = BigDecimal.ZERO;
             salesOrder = new SalesOrderQuantity();
@@ -105,6 +106,9 @@ public class RShipmentMailBean extends ShipmentMail {
                         break;
                     case "冷冻":
                         indicatorsL.add(i);
+                        break;
+                    case "盐水":
+                        indicatorsZ.add(i);
                         break;
                     default:
                 }
@@ -132,6 +136,15 @@ public class RShipmentMailBean extends ShipmentMail {
             indicatorBean.updatePerformance(indicator);
             indicator.setName("冷冻出货台数合计");
             getHtmlTable(indicatorsL, y, m, d, true);
+            sum1 = sum1.add(getData().get("sum1"));
+            sum2 = sum2.add(getData().get("sum2"));
+            sb.append(getHtmlTableRow(indicator, y, m, d));
+            indicators.add(indicator);
+            
+            indicator = indicatorBean.getSumValue(indicatorsZ);
+            indicatorBean.updatePerformance(indicator);
+            indicator.setName("盐水出货台数合计");
+            getHtmlTable(indicatorsZ, y, m, d, true);
             sum1 = sum1.add(getData().get("sum1"));
             sum2 = sum2.add(getData().get("sum2"));
             sb.append(getHtmlTableRow(indicator, y, m, d));
@@ -186,6 +199,7 @@ public class RShipmentMailBean extends ShipmentMail {
             List<Indicator> indicatorsR = new ArrayList<>();
             List<Indicator> indicatorsL = new ArrayList<>();
             List<Indicator> indicatorsH = new ArrayList<>();
+            List<Indicator> indicatorsZ = new ArrayList<>();
             sum1 = BigDecimal.ZERO;
             sum2 = BigDecimal.ZERO;
             this.indicators.clear();
@@ -201,6 +215,9 @@ public class RShipmentMailBean extends ShipmentMail {
                         break;
                     case "冷冻":
                         indicatorsL.add(i);
+                        break;
+                    case "盐水":
+                        indicatorsZ.add(i);
                         break;
                     default:
                 }
@@ -247,6 +264,20 @@ public class RShipmentMailBean extends ShipmentMail {
             sb.append(getHtmlTableRow(indicator, y, m, d));
             indicators.add(indicator);
 
+             indicatorBean.getEntityManager().clear();
+            for (Indicator i : indicatorsZ) {
+                indicatorBean.divideByRate(i, 2);
+            }
+            indicator = indicatorBean.getSumValue(indicatorsZ);
+            indicatorBean.updatePerformance(indicator);
+            indicatorBean.getEntityManager().clear();
+            indicator.setName("盐水出货金额合计");
+            getHtmlTable(indicatorsZ, y, m, d, true);
+            sum1 = sum1.add(getData().get("sum1"));
+            sum2 = sum2.add(getData().get("sum2"));
+            sb.append(getHtmlTableRow(indicator, y, m, d));
+            indicators.add(indicator);
+            
             indicatorBean.getEntityManager().clear();
             indicator = indicatorBean.getSumValue(indicators);
             indicatorBean.updatePerformance(indicator);

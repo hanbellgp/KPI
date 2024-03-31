@@ -93,7 +93,7 @@ public class RClientRankingFileMailBean extends MailNotification {
             cell.getStringCellValue();
             cell.setCellValue("R 压缩机客户销售统计表（制冷）" + title);
             map.put("n_code_CD", "= 'HD'");
-            map.put("n_code_DC", " in ('R','H')");
+            map.put("n_code_DC", " in ('R','H','Z')");
             list = salesTableBean.getClientList(y, m, map, false, true, this.PAGESIZE);
             this.setRHCellValue(sheet1, list);
             map.remove("n_code_DC");
@@ -108,7 +108,7 @@ public class RClientRankingFileMailBean extends MailNotification {
             map.remove("n_code_CD");
             map.remove("n_code_DC");
             map.put("n_code_CD", "= 'NJ'");
-            map.put("n_code_DC", " in ('R','H')");
+            map.put("n_code_DC", " in ('R','H','Z')");
             list = salesTableBean.getClientList(y, m, map, false, true, this.PAGESIZE);
             this.setRHCellValue(sheet2, list);
             map.remove("n_code_DC");
@@ -123,7 +123,7 @@ public class RClientRankingFileMailBean extends MailNotification {
             map.remove("n_code_CD");
             map.remove("n_code_DC");
             map.put("n_code_CD", "= 'JN'");
-            map.put("n_code_DC", " in ('R','H')");
+            map.put("n_code_DC", " in ('R','H','Z')");
             list = salesTableBean.getClientList(y, m, map, false, true, this.PAGESIZE);
             this.setRHCellValue(sheet3, list);
             map.remove("n_code_DC");
@@ -138,7 +138,7 @@ public class RClientRankingFileMailBean extends MailNotification {
             map.remove("n_code_CD");
             map.remove("n_code_DC");
             map.put("n_code_CD", "= 'GZ'");
-            map.put("n_code_DC", " in ('R','H')");
+            map.put("n_code_DC", " in ('R','H','Z')");
             list = salesTableBean.getClientList(y, m, map, false, true, this.PAGESIZE);
             this.setRHCellValue(sheet4, list);
             map.remove("n_code_DC");
@@ -153,7 +153,7 @@ public class RClientRankingFileMailBean extends MailNotification {
             map.remove("n_code_CD");
             map.remove("n_code_DC");
             map.put("n_code_CD", "= 'CQ'");
-            map.put("n_code_DC", " in ('R','H')");
+            map.put("n_code_DC", " in ('R','H','Z')");
             list = salesTableBean.getClientList(y, m, map, false, true, this.PAGESIZE);
             this.setRHCellValue(sheet5, list);
             map.remove("n_code_DC");
@@ -168,7 +168,7 @@ public class RClientRankingFileMailBean extends MailNotification {
             map.remove("n_code_CD");
             map.remove("n_code_DC");
             map.put("n_code_CD", " like  '%WX%'");
-            map.put("n_code_DC", " in ('R','H')");
+            map.put("n_code_DC", " in ('R','H','Z')");
             list = salesTableBean.getClientList(y, m, map, false, true, this.PAGESIZE);
             this.setRHCellValue(sheet6, list);
             map.remove("n_code_DC");
