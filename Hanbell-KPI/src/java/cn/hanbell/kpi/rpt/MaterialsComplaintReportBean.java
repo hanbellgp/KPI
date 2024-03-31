@@ -160,6 +160,18 @@ public class MaterialsComplaintReportBean extends BscChartManagedBean {
 
     }
 
+    public String formatValue(BigDecimal value, int i) {
+        if (value == null) {
+            return "";
+        } else if (i <= m) {
+            return "达标";
+        } else if (value.compareTo(BigDecimal.ZERO) == 0) {
+            return "";
+        } else {
+            return "";
+        }
+    }
+
     public BigDecimal getNfy(BigDecimal a, BigDecimal b) {
         try {
             return b.divide(a, 6, RoundingMode.HALF_UP).multiply(BigDecimal.valueOf(10000));

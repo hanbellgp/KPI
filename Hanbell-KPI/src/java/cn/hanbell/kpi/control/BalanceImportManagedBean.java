@@ -13,6 +13,7 @@ import cn.hanbell.kpi.lazy.BalancerecordModel;
 import cn.hanbell.kpi.web.SuperSingleBean;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -137,15 +138,16 @@ public class BalanceImportManagedBean extends SuperSingleBean<Balancerecord> {
                     newEntity.setMon(m);
                     Cell cell1 = sheet.getRow(i).getCell(1);
                     Cell cell2 = sheet.getRow(i).getCell(2);
-                    Cell cell3 = sheet.getRow(i).getCell(3);
-                    Cell cell4 = sheet.getRow(i).getCell(4);
                     //数字
-                    if (cell1.getCellType() == Cell.CELL_TYPE_NUMERIC && cell2.getCellType() == Cell.CELL_TYPE_NUMERIC
-                            && cell3.getCellType() == Cell.CELL_TYPE_NUMERIC && cell4.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                    if (cell1.getCellType() == Cell.CELL_TYPE_NUMERIC && cell2.getCellType() == Cell.CELL_TYPE_NUMERIC) {
                         newEntity.setYearmon(BigDecimal.valueOf(cell1.getNumericCellValue()));
                         newEntity.setMonthmon(BigDecimal.valueOf(cell2.getNumericCellValue()));
-                        newEntity.setDifference(BigDecimal.valueOf(cell3.getNumericCellValue()));
-                        newEntity.setScale(BigDecimal.valueOf(cell4.getNumericCellValue()).multiply(BigDecimal.TEN).multiply(BigDecimal.TEN));
+                        newEntity.setDifference(newEntity.getYearmon().subtract(newEntity.getMonthmon()));
+                        if (newEntity.getMonthmon().doubleValue() == 0.0) {
+                            newEntity.setScale(BigDecimal.ZERO);
+                        } else {
+                            newEntity.setScale(newEntity.getDifference().divide(newEntity.getMonthmon().abs(), 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.TEN).multiply(BigDecimal.TEN));
+                        }
                     } else {
                         newEntity.setYearmon(BigDecimal.ZERO);
                         newEntity.setMonthmon(BigDecimal.ZERO);

@@ -15,6 +15,6 @@ public class SalesOrderQuantityAVN extends SalesOrderQuantityVN {
         super();
         queryParams.put("facno", "V");
         queryParams.put("hmark1", " ='A'");
-        queryParams.put("hmark2", " ='ZJ'");
+        queryParams.put("hmark2", " ='UN'");
     }
 }

@@ -79,16 +79,18 @@ public class ShoppingAmountManagedBean extends SuperSingleBean<ShoppingTable> {
     public void download() {
         try {
             shoppingTableBean.deleteByYearmon(BaseLib.formatDate("yyyyMM", btnDate));
-            List<Object[]> shbList1 = shoppoingAccoumuntBean.getShbDateDetail("C", this.btnDate, "", "");
+            List<Object[]> shbList1 = shoppoingAccoumuntBean.getDateDetail("C", this.btnDate);
             persist(shbList1);
-            List hsList1 = shoppoingAccoumuntBean.getShbDateDetail("H", this.btnDate, "", "");
+            List hsList1 = shoppoingAccoumuntBean.getDateDetail("H", this.btnDate);
             persist(hsList1);
-            List scmList1 = shoppoingAccoumuntBean.getShbDateDetail("K", this.btnDate, "", "");
+            List scmList1 = shoppoingAccoumuntBean.getDateDetail("K", this.btnDate);
             persist(scmList1);
-            List zcmList1 = shoppoingAccoumuntBean.getShbDateDetail("E", this.btnDate, "", "");
+            List zcmList1 = shoppoingAccoumuntBean.getDateDetail("E", this.btnDate);
             persist(zcmList1);
-            List hyList1 = shoppoingAccoumuntBean.getShbDateDetail("Y", this.btnDate, "", "");
+            List hyList1 = shoppoingAccoumuntBean.getDateDetail("Y", this.btnDate);
             persist(hyList1);
+          //  List thbList1 = shoppoingAccoumuntBean.getThbDateDetail1(this.btnDate);
+          //  persist(hyList1);
             this.showInfoMsg("信息", "下载成功！");
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,12 +110,9 @@ public class ShoppingAmountManagedBean extends SuperSingleBean<ShoppingTable> {
             sb.setAcpamt((BigDecimal) o[5]);
             sb.setPayqty((BigDecimal) o[6]);
             sb.setUserno((String) o[7]);
-            sb.setItcls((String) o[8]);
-            if ((String) o[6] != null && !"".equals((String) o[6])) {
-                sb.setIscenter(Boolean.TRUE);
-            } else {
-                sb.setIscenter(false);
-            }
+            sb.setSponr((String) o[8]);
+            sb.setItcls((String) o[9]);
+            sb.setIscenter(false);
             shoppingTableBean.persist(sb);
         }
     }

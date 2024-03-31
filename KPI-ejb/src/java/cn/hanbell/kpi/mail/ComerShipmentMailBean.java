@@ -53,15 +53,15 @@ public class ComerShipmentMailBean extends ShipmentMail {
     @Override
     public String getMailBody() {
         StringBuilder sb = new StringBuilder();
-       //涡轮台数
+        //涡轮台数
         sb.append("<div class=\"tableTitle\">单位：台</div>");
         sb.append(getComerQuantityTable());
-       //再生能源台数
-        sb.append("<div class=\"tableTitle\">单位：台</div>");
-        sb.append(getZJComerQuantityTable());
         //涡轮金额
         sb.append("<div class=\"tableTitle\"  style=\"margin-top: 30px\" >单位：万元</div>");
         sb.append(getComerAmountTable());
+        //再生能源台数
+        sb.append("<div class=\"tableTitle\">单位：台</div>");
+        sb.append(getZJComerQuantityTable());
         //再生能源金额
         sb.append("<div class=\"tableTitle\"  style=\"margin-top: 30px\" >单位：万元</div>");
         sb.append(getZJComerAmountTable());

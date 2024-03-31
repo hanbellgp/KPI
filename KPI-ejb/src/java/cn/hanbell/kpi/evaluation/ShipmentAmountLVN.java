@@ -15,6 +15,6 @@ public class ShipmentAmountLVN extends ShipmentAmountVN {
         super();
         queryParams.put("facno", "V");
         queryParams.put("hmark1", " ='L'");
-        queryParams.put("hmark2", " ='ZJ'");
+        queryParams.put("hmark2", " ='UN'");
     }
 }

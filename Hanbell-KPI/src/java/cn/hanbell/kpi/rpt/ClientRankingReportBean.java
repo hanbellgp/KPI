@@ -126,7 +126,7 @@ public class ClientRankingReportBean extends BscQueryTableManageBean implements 
                 map.put("deptnoname", "制冷产品部");
                 map.put("daname", "空调热泵");
                 map.put("n_code_DA", "= 'R'");
-                map.put("n_code_DC", " IN ('R','H') ");
+                map.put("n_code_DC", " IN ('R','H','Z') ");
                 break;
             case "1F340":
                 map.put("deptnoname", "制冷产品部");

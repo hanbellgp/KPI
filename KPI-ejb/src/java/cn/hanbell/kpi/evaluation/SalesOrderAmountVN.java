@@ -85,7 +85,6 @@ public class SalesOrderAmountVN extends SalesOrderAmount {
                 .replace("${facno}", facno);
         superEJB.setCompany(facno);
         Query query = superEJB.getEntityManager().createNativeQuery(cdrdmas);
-        System.out.print("cdrdmas=="+cdrdmas);
         try {
             Object o1 = query.getSingleResult();
             return (BigDecimal) o1;

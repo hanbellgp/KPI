@@ -15,6 +15,6 @@ public class SalesOrderAmountServiceRVN extends SalesOrderAmountVN{
         super();
         queryParams.put("facno", "V");
         queryParams.put("hmark1", " in ('R','P','L','DR')");
-        queryParams.put("hmark2", " ='FW'");
+        queryParams.put("hmark2", "in ('PT','REP')");
     }
 }

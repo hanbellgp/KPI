@@ -15,7 +15,7 @@ public class ShipmentQuantityPVN extends ShipmentQuantityVN {
         super();
         queryParams.put("facno", "V");
         queryParams.put("hmark1", " ='P'");
-        queryParams.put("hmark2", " ='ZJ'");
+        queryParams.put("hmark2", " ='UN'");
     }
 
 }

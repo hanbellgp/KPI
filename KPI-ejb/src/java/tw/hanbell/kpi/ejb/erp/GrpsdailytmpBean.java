@@ -86,7 +86,7 @@ public class GrpsdailytmpBean implements Serializable {
                     gt.setSaleamtfs(BigDecimal.valueOf(Double.valueOf(o[6].toString())));
                     gt.setOrderqty(BigDecimal.valueOf(Double.valueOf(o[7].toString())));
                     gt.setOrderamtfs(BigDecimal.valueOf(Double.valueOf(o[8].toString())));
-                    if (hangrp.equals("V")) {
+                    if (hangrp.equals("V") || hangrp.equals("VB")) {
                         gt.setCoin("VND");
                     } else {
                         gt.setCoin("RMB");

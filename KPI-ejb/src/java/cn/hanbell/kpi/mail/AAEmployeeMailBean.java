@@ -86,6 +86,23 @@ public class AAEmployeeMailBean extends EmployeeMail {
                 sb.append("<tr><td  style=\"text-align:center;\"  colspan=\"9\">A机组营销三课个人销售台数设定错误</td></tr>");
             }
 
+            this.indicators.clear();
+            this.indicators = indicatorBean.findByCategoryAndYear("A机组外销个人销售台数", y);
+            indicatorBean.getEntityManager().clear();
+            if (indicators != null && !indicators.isEmpty()) {
+                sb.append(getHtmlTable(this.indicators, y, m, d, true, "外销"));
+            } else {
+                sb.append("<tr><td  style=\"text-align:center;\"  colspan=\"9\">A机组外销个人销售台数数设定错误</td></tr>");
+            }
+
+            this.indicators.clear();
+            this.indicators = indicatorBean.findByCategoryAndYear("A机组SDS个人销售台数", y);
+            indicatorBean.getEntityManager().clear();
+            if (indicators != null && !indicators.isEmpty()) {
+                sb.append(getHtmlTable(this.indicators, y, m, d, false, "SDS"));
+            } else {
+                sb.append("<tr><td  style=\"text-align:center;\"  colspan=\"9\">A机组SDS个人销售台数设定错误</td></tr>");
+            }
 //            this.indicators.clear();
 //            this.indicators = indicatorBean.findByCategoryAndYear("A机组营销高专个人销售台数", y);
 //            indicatorBean.getEntityManager().clear();
@@ -143,7 +160,7 @@ public class AAEmployeeMailBean extends EmployeeMail {
             } else {
                 sb.append("<tr><td  style=\"text-align:center;\"  colspan=\"10\">A机组营销二课个人销售金额设定错误</td></tr>");
             }
-            
+
             this.indicators.clear();
             this.indicators = indicatorBean.findByCategoryAndYear("A机组营销三课个人销售金额", y);
             indicatorBean.getEntityManager().clear();
@@ -151,6 +168,22 @@ public class AAEmployeeMailBean extends EmployeeMail {
                 sb.append(getHtmlTable(this.indicators, y, m, d, true, "营销三课"));
             } else {
                 sb.append("<tr><td  style=\"text-align:center;\"  colspan=\"10\">A机组营销三课个人销售台数设定错误</td></tr>");
+            }
+            this.indicators.clear();
+            this.indicators = indicatorBean.findByCategoryAndYear("A机组外销个人销售金额", y);
+            indicatorBean.getEntityManager().clear();
+            if (indicators != null && !indicators.isEmpty()) {
+                sb.append(getHtmlTable(this.indicators, y, m, d, true, "外销"));
+            } else {
+                sb.append("<tr><td  style=\"text-align:center;\"  colspan=\"10\">A机组外销个人销售金额设定错误</td></tr>");
+            }
+            this.indicators.clear();
+            this.indicators = indicatorBean.findByCategoryAndYear("A机组SDS个人销售金额", y);
+            indicatorBean.getEntityManager().clear();
+            if (indicators != null && !indicators.isEmpty()) {
+                sb.append(getHtmlTable(this.indicators, y, m, d, false, "SDS"));
+            } else {
+                sb.append("<tr><td  style=\"text-align:center;\"  colspan=\"10\">A机组SDS个人销售金额设定错误</td></tr>");
             }
 
 //            this.indicators.clear();
@@ -173,6 +206,7 @@ public class AAEmployeeMailBean extends EmployeeMail {
             }
             sb.append("</table></div>");
         } catch (Exception e) {
+            e.printStackTrace();
             return e.toString();
         }
         return sb.toString();

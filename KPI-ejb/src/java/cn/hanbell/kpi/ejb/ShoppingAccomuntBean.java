@@ -347,25 +347,19 @@ public class ShoppingAccomuntBean implements Serializable {
         }
     }
 
-    public List<Object[]> getThbDateDetail(String facno, Date date, String vdrnos, String itcls) {
+    public List<Object[]> getThbDateDetail1( Date date) {
         StringBuffer sql = new StringBuffer();
-        sql.append(" select a.*,b.itcls,''");
+        sql.append(" select a.*,b.itcls");
         sql.append(" from (");
-        sql.append(" select  'A'  as 'facno',apmpyh.vdrno , purvdr.vdrna , apmpyh.itnbr,apmpyh.itdsc, round(apmpyh.acpamt/4.4,2) as 'acpamt',apmpyh.payqty ");
-        sql.append(" from apmpyh ,purvdr ");
-        sql.append(" where purvdr.vdrno = apmpyh.vdrno ");
-        sql.append(" and purkind not in ('9999') ");
+        sql.append(" select  'A'  as 'facno',apmpyh.vdrno , purvdr.vdrna , apmpyh.itnbr,apmpyh.itdsc, sum(round(apmpyh.acpamt/4.4,2)) as 'acpamt', sum(apmpyh.payqty) as payqty,purhad.userno");
+        sql.append(" from apmpyh ,purvdr  ,purhad ");
+        sql.append(" WHERE apmpyh.vdrno = purvdr.vdrno  and  purhad.facno = apmpyh.facno  and  purhad.prono = apmpyh.prono");
+        sql.append(" and  purhad.pono = apmpyh.pono  and purkind not in ('9999') ");
         sql.append(" and apmpyh.pyhkind='1' and itnbr <> '9' ");
-        if (vdrnos != null && !"".equals(vdrnos)) {
-            sql.append(" AND apmpyh.vdrno ").append(vdrnos);
-        }
-        if (itcls != null && !"".equals(itcls)) {
-            sql.append(" AND apmpyh.itcls ").append(itcls);
-        }
         sql.append(" and year(apmpyh.trdat) =").append(String.valueOf(findYear(date)));
         sql.append(" and month(apmpyh.trdat) =").append(String.valueOf(findMonth(date)));
-        sql.append("  )a left join invmas b on a.itnbr=b.itnbr");
-        erpEJB.setCompany(facno);
+        sql.append(" group by  apmpyh.facno ,apmpyh.vdrno , purvdr.vdrna , apmpyh.itnbr,apmpyh.itdsc, purhad.userno )a left join invmas b on a.itnbr=b.itnbr");
+        erpEJB.setCompany("A");
         Query query = erpEJB.getEntityManager().createNativeQuery(sql.toString());
         List<Object[]> list = query.getResultList();
         return list;
@@ -417,24 +411,18 @@ public class ShoppingAccomuntBean implements Serializable {
         return row;
     }
 
-    public List<Object[]> getShbDateDetail(String facno, Date date, String vdrnos, String itcls) {
+    public List<Object[]> getDateDetail(String facno, Date date) {
         StringBuffer sql = new StringBuffer();
         sql.append(" select a.*,b.itcls");
         sql.append(" from (");
-        sql.append(" SELECT apmpyh.facno ,apmpyh.vdrno , purvdr.vdrna , apmpyh.itnbr,apmpyh.itdsc,  apmpyh.acpamt ,apmpyh.payqty");
+        sql.append(" SELECT apmpyh.facno ,apmpyh.vdrno , purvdr.vdrna , apmpyh.itnbr,apmpyh.itdsc,  sum(apmpyh.acpamt) as  acpamt,sum(apmpyh.payqty) as payqty,purhad.userno,left(sponr,2) as 'sponr'");
         sql.append(" FROM apmpyh ,purvdr ,purhad");
         sql.append(" WHERE apmpyh.vdrno = purvdr.vdrno  and  purhad.facno = apmpyh.facno  and  purhad.prono = apmpyh.prono");
         sql.append(" and  purhad.pono = apmpyh.pono  and  apmpyh.pyhkind = '1'");
         sql.append(" AND apmpyh.facno =  '").append(facno).append("'  and apmpyh.prono ='1'");
-        if (vdrnos != null && !"".equals(vdrnos)) {
-            sql.append(" AND apmpyh.vdrno ").append(vdrnos);
-        }
-        if (itcls != null && !"".equals(itcls)) {
-            sql.append(" AND apmpyh.itcls ").append(itcls);
-        }
         sql.append(" and year(apmpyh.trdat) =").append(String.valueOf(findYear(date)));
         sql.append(" and month(apmpyh.trdat) =").append(String.valueOf(findMonth(date)));
-        sql.append("  )a left join invmas b on a.itnbr=b.itnbr");
+        sql.append("  group by  apmpyh.facno ,apmpyh.vdrno , purvdr.vdrna , apmpyh.itnbr,apmpyh.itdsc, purhad.userno,left(sponr,2) )a left join invmas b on a.itnbr=b.itnbr");
         erpEJB.setCompany(facno);
         Query query = erpEJB.getEntityManager().createNativeQuery(sql.toString());
         List<Object[]> list = query.getResultList();

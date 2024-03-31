@@ -38,7 +38,7 @@ public class SuperEJBForERP implements Serializable {
 
     @PersistenceContext(unitName = "PU_chuxiongerp")
     private EntityManager em_chuxiongerp;
-        
+
     @PersistenceContext(unitName = "PU_hansonerp")
     private EntityManager em_hansonerp;
 
@@ -51,24 +51,30 @@ public class SuperEJBForERP implements Serializable {
     @PersistenceContext(unitName = "PU_zjcomererp")
     private EntityManager em_zjcomererp;
 
-    @PersistenceContext(unitName = "PU_qtcerp")
+    @PersistenceContext(unitName = "PU_yinchuanerp")
+    private EntityManager em_yinchuanerp;
+
+    // @PersistenceContext(unitName = "PU_qtcerp")
     private EntityManager em_qtcerp;
 
-    @PersistenceContext(unitName = "PU_sderp")
+//  @PersistenceContext(unitName = "PU_sderp")
     private EntityManager em_sderp;
 
-    @PersistenceContext(unitName = "PU_hkerp")
+    // @PersistenceContext(unitName = "PU_hkerp")
     private EntityManager em_hkerp;
 
-    @PersistenceContext(unitName = "PU_thberp")
+    // @PersistenceContext(unitName = "PU_thberp")
     private EntityManager em_thberp;
+
+    @PersistenceContext(unitName = "PU_vbhberp")
+    private EntityManager em_vbhberp;
 
     @PersistenceContext(unitName = "PU_vhberp")
     private EntityManager em_vhberp;
 
     @PersistenceContext(unitName = "SHBEXCH-ejbPU")
     private EntityManager em_shbexcherp;
-    
+
     public SuperEJBForERP() {
 
     }
@@ -89,6 +95,8 @@ public class SuperEJBForERP implements Serializable {
                 return em_njerp;
             case "C4":
                 return em_cqerp;
+            case "C5":
+                return em_yinchuanerp;
             case "F":
                 return em_chuxiongerp;
             case "H":
@@ -100,13 +108,18 @@ public class SuperEJBForERP implements Serializable {
             case "E":
                 return em_zjcomererp;
             case "Q":
-                return em_qtcerp;
+//                return em_qtcerp;
+                return null;
             case "V":
                 return em_vhberp;
+            case "VB":
+                return em_vbhberp;
             case "W":
-                return em_sderp;
+//                return em_sderp;
+                return null;
             case "X":
-                return em_hkerp;
+//                return em_hkerp;
+                return null;
             case "A":
                 return em_thberp;
             case "CEXCH"://上海ERP中间表

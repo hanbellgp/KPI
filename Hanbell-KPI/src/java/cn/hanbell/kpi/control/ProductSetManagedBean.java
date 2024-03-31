@@ -243,6 +243,7 @@ public class ProductSetManagedBean extends IndicatorSetManagedBean {
                 indicatorBean.update(currentEntity);
                 showInfoMsg("Info", "目标导入成功!");
             } catch (IOException | InvalidFormatException ex) {
+                ex.printStackTrace();
                 showInfoMsg("Error", "目标导入失败？");
             }
         }
