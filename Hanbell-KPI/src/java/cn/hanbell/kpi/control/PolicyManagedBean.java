@@ -375,7 +375,7 @@ public class PolicyManagedBean extends SuperSingleBean<PolicyContent> {
                                 } else {
                                     pc.setPhy(BaseLib.convertExcelCell(Double.class, row.getCell(10))==null?null :BigDecimal.valueOf(BaseLib.convertExcelCell(Double.class, row.getCell(10)) * 100));
                                 }
-                                pc.setHyreason1(BaseLib.convertExcelCell(String.class, row.getCell(11)));
+                                pc.setHyreason1(BaseLib.convertExcelCell(String.class, row.getCell(11)).replace("\n", "<br>"));
                                 pc.setHycountermeasure1(BaseLib.convertExcelCell(String.class, row.getCell(12)));
                                 break;
                             case 3:

@@ -88,7 +88,7 @@ public class PolicyDetail extends SuperDetailEntity {
     @JoinColumn(name = "pid", referencedColumnName = "id", updatable = false, insertable = false)
     @ManyToOne(optional = true)
     private Policy parent;
-    
+
     private static final long serialVersionUID = 1L;
 
     @Size(max = 50)
@@ -196,6 +196,9 @@ public class PolicyDetail extends SuperDetailEntity {
     @Size(max = 50)
     @Column(name = "fromplm")
     private String fromplm;
+    @Size(max = 50)
+    @Column(name = "fromplmname")
+    private String fromplmname;
     @Lob
     @Size(max = 2147483647)
     @Column(name = "q1reason1")
@@ -282,6 +285,14 @@ public class PolicyDetail extends SuperDetailEntity {
         this.seq = seq;
     }
 
+    public Policy getParent() {
+        return parent;
+    }
+
+    public void setParent(Policy parent) {
+        this.parent = parent;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -289,7 +300,7 @@ public class PolicyDetail extends SuperDetailEntity {
     public void setId(Integer id) {
         this.id = id;
     }
-    
+
     public int getSeq() {
         return seq;
     }
@@ -702,6 +713,14 @@ public class PolicyDetail extends SuperDetailEntity {
         return status;
     }
 
+    public String getFromplmname() {
+        return fromplmname;
+    }
+
+    public void setFromplmname(String fromplmname) {
+        this.fromplmname = fromplmname;
+    }
+
     public void setStatus(String status) {
         this.status = status;
     }
@@ -778,5 +797,5 @@ public class PolicyDetail extends SuperDetailEntity {
     public String toString() {
         return "cn.hanbell.kpi.entity.PolicyDetail[ id=" + id + " ]";
     }
-    
+
 }

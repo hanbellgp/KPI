@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Scorecard.findById", query = "SELECT s FROM Scorecard s WHERE s.id = :id"),
     @NamedQuery(name = "Scorecard.findByCompany", query = "SELECT s FROM Scorecard s WHERE s.company = :company"),
     @NamedQuery(name = "Scorecard.findByCompanyMenuAndYear", query = "SELECT s FROM Scorecard s WHERE s.company = :company AND s.menu = :menu AND s.seq = :seq ORDER BY s.sortid,s.deptno"),
-    @NamedQuery(name = "Scorecard.findByNameAndSeq", query = "SELECT s FROM Scorecard s WHERE s.name = :name AND s.seq = :seq"),
+    @NamedQuery(name = "Scorecard.findByNameAndSeqAndComapny", query = "SELECT s FROM Scorecard s WHERE s.name = :name AND s.seq = :seq and s.company = :company"),
     @NamedQuery(name = "Scorecard.findByPId", query = "SELECT s FROM Scorecard s WHERE s.pid = :pid"),
     @NamedQuery(name = "Scorecard.findBySeq", query = "SELECT s FROM Scorecard s WHERE s.seq = :seq"),
     @NamedQuery(name = "Scorecard.findByDeptno", query = "SELECT s FROM Scorecard s WHERE s.deptno = :deptno"),
@@ -48,7 +48,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Scorecard.findByStatusAndYear", query = "SELECT s FROM Scorecard s WHERE s.status = :status  AND s.seq = :seq"),
     @NamedQuery(name = "Scorecard.findByRowCount", query = "SELECT COUNT(s) FROM Scorecard s WHERE s.company = :company AND s.seq = :seq"),
     @NamedQuery(name = "Scorecard.findByCompanyAndSeq", query = "SELECT s FROM Scorecard s WHERE s.company = :company AND s.seq = :seq"),
-    @NamedQuery(name = "Scorecard.findByCompanyAndSeqAndIsbsc", query = "SELECT s FROM Scorecard s WHERE s.company = :company AND s.seq = :seq AND s.isbsc = :isbsc")})
+    @NamedQuery(name = "Scorecard.findByCompanyAndSeqAndIsbsc", query = "SELECT s FROM Scorecard s WHERE s.company = :company AND s.seq = :seq AND s.isbsc = :isbsc"),
+    @NamedQuery(name = "Scorecard.findByDeptnoAndYear", query = "SELECT s FROM Scorecard s WHERE s.deptno = :deptno  AND s.seq = :seq"),
+    @NamedQuery(name = "Scorecard.findByDeptnoAndLvlAndYear", query = "SELECT s FROM Scorecard s WHERE s.deptno = :deptno and s.lvl=:lvl  AND s.seq = :seq")})
 public class Scorecard extends SuperEntity implements Comparable<Scorecard> {
 
     @Basic(optional = false)
@@ -114,6 +116,14 @@ public class Scorecard extends SuperEntity implements Comparable<Scorecard> {
     private BigDecimal sh2;
     @Column(name = "sfy")
     private BigDecimal sfy;
+     @Column(name = "lq1")
+    private BigDecimal lq1;
+    @Column(name = "lq2")
+    private BigDecimal lq2;
+    @Column(name = "lq3")
+    private BigDecimal lq3;
+    @Column(name = "lq4")
+    private BigDecimal lq4;
     @Column(name = "freezeDate")
     @Temporal(TemporalType.DATE)
     private Date freezeDate;
@@ -189,6 +199,11 @@ public class Scorecard extends SuperEntity implements Comparable<Scorecard> {
         this.sh1 = BigDecimal.ZERO;
         this.sh2 = BigDecimal.ZERO;
         this.sfy = BigDecimal.ZERO;
+        
+         this.lq1 = BigDecimal.ZERO;
+        this.lq2 = BigDecimal.ZERO;
+        this.lq3 = BigDecimal.ZERO;
+        this.lq4 = BigDecimal.ZERO;
     }
 
     public String getCompany() {
@@ -397,6 +412,38 @@ public class Scorecard extends SuperEntity implements Comparable<Scorecard> {
      */
     public void setSfy(BigDecimal sfy) {
         this.sfy = sfy;
+    }
+
+    public BigDecimal getLq1() {
+        return lq1;
+    }
+
+    public void setLq1(BigDecimal lq1) {
+        this.lq1 = lq1;
+    }
+
+    public BigDecimal getLq2() {
+        return lq2;
+    }
+
+    public void setLq2(BigDecimal lq2) {
+        this.lq2 = lq2;
+    }
+
+    public BigDecimal getLq3() {
+        return lq3;
+    }
+
+    public void setLq3(BigDecimal lq3) {
+        this.lq3 = lq3;
+    }
+
+    public BigDecimal getLq4() {
+        return lq4;
+    }
+
+    public void setLq4(BigDecimal lq4) {
+        this.lq4 = lq4;
     }
 
     /**

@@ -5,25 +5,32 @@
  */
 package cn.hanbell.kpi.rpt;
 
+import cn.hanbell.kpi.ejb.IndicatorChartBean;
 import cn.hanbell.kpi.ejb.PolicyBean;
 import cn.hanbell.kpi.ejb.PolicyDetailBean;
 import cn.hanbell.kpi.entity.Category;
+import cn.hanbell.kpi.entity.IndicatorChart;
 import cn.hanbell.kpi.entity.Policy;
 import cn.hanbell.kpi.entity.PolicyDetail;
+import cn.hanbell.kpi.entity.RoleGrantModule;
 import cn.hanbell.kpi.entity.tms.Project;
 import cn.hanbell.kpi.lazy.PolicyDetailModel;
 import cn.hanbell.kpi.lazy.PolicyModel;
 import cn.hanbell.kpi.lazy.ScorecardContentModel;
 import cn.hanbell.kpi.web.SuperQueryBean;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultTreeNode;
@@ -41,109 +48,175 @@ public class PolicySheetReportBean extends SuperQueryBean<PolicyDetail> {
     private PolicyDetailBean policyDetailBean;
     @EJB
     private PolicyBean policyBean;
-    private Policy policy;
-    private TreeNode rootNode;
-    private TreeNode selectedNode;
-    private Calendar c;
-    List<GroupRow> groupRows;
-    private List<PolicyDetail> cDetail; //C成本构面
-    private List<PolicyDetail> qDetail; //Q顾客/品质构面
-    private List<PolicyDetail> dDetail; //D流程/交期构面
-    private List<PolicyDetail> pDetail; //P学习成长/人员构面
 
+    private String queryTimeInterval;
+    private String queryGenre;
+    private String displaydiv1;
+    private String displaydiv2;
+    private Policy policy;
+    private List<PolicyDetail> detaillist;
     private String summary;
     private String factor;
     private String countermeasure;
+    protected final DecimalFormat floatFormat1;
+    protected final DecimalFormat floatFormat2;
+    protected final DecimalFormat floatFormat3;
+    protected final DecimalFormat floatFormat4;
 
     public PolicySheetReportBean() {
         super(PolicyDetail.class);
+        floatFormat1 = new DecimalFormat("#,##0");
+        floatFormat2 = new DecimalFormat("#,##0.00");
+        floatFormat3 = new DecimalFormat("#,##0.00##");
+        floatFormat4 = new DecimalFormat("#,##0.####");
+    }
+
+    @Override
+    public void construct() {
+        fc = FacesContext.getCurrentInstance();
+        ec = fc.getExternalContext();
+        HttpServletRequest request = (HttpServletRequest) ec.getRequest();
+        String id = request.getParameter("id");
+        if (id == null) {
+            fc.getApplication().getNavigationHandler().handleNavigation(fc, null, "error");
+        }
+        policy = policyBean.findById(Integer.valueOf(id));
+        if (policy == null) {
+            fc.getApplication().getNavigationHandler().handleNavigation(fc, null, "error");
+        } else {
+            for (RoleGrantModule m : userManagedBean.getRoleGrantDeptList()) {
+                if (m.getDeptno().equals(policy.getDeptno())) {
+                    deny = false;
+                }
+            }
+        }
+        model = new PolicyDetailModel(policyDetailBean);
+        model.getFilterFields().put("pid", Integer.valueOf(id));
+        init();
     }
 
     @Override
     public void init() {
-        int i = 0;
-        superEJB = policyDetailBean;
-        model = new PolicyDetailModel(policyDetailBean, userManagedBean);
-        params = ec.getRequestParameterValuesMap();
-        if (params != null) {
-            if (params.containsKey("id")) {
-                i = Integer.parseInt(params.get("id")[0]);
-            }
+        this.queryGenre = "C";
+        if (this.userManagedBean.getM() == 10) {
+            //次年度全年目标
+            this.queryTimeInterval = "D";
+        } else if (this.userManagedBean.getM() == 6) {
+            //Q2;上半年报告
+            this.queryTimeInterval = "B";
+        } else if (this.userManagedBean.getM() == 12) {
+            //Q4&全年报告   
+            this.queryTimeInterval = "C";
+        } else {
+            this.queryTimeInterval = "A";
         }
-        if (i > 0) {
-            model.getFilterFields().put("pid", i);
-            policy = policyBean.findById(i);
-            groupRows = new ArrayList<>();
-            model.getFilterFields().put("genre", "C");
-            cDetail = policyDetailBean.findByFilters(model.getFilterFields());
-            groupRows.add(new GroupRow("C成本构面", cDetail));
-            model.getFilterFields().remove("genre");
-            model.getFilterFields().put("genre", "Q");
-            qDetail = policyDetailBean.findByFilters(model.getFilterFields());
-            groupRows.add(new GroupRow("Q顾客/品质构面", qDetail));
-            model.getFilterFields().remove("genre");
-            model.getFilterFields().put("genre", "D");
-            dDetail = policyDetailBean.findByFilters(model.getFilterFields());
-            groupRows.add(new GroupRow("D流程/交期构面", dDetail));
-            model.getFilterFields().remove("genre");
-            model.getFilterFields().put("genre", "P");
-            pDetail = policyDetailBean.findByFilters(model.getFilterFields());
-            groupRows.add(new GroupRow("P学习成长/人员构面", pDetail));
-            if (cDetail != null && !cDetail.isEmpty()) {
-                this.setCurrentEntity((PolicyDetail) cDetail.get(0));
-            } else {
-                this.setCurrentEntity(this.getNewEntity());
-            }
-             deny = false;
-        }
+        btnquery();
     }
 
-    public int compareTo(int a, int b) {
-        if (a > b) {
-            return 1;
-        } else if (a == b) {
-            return 0;
+    public void btnquery() {
+        if (!model.getFilterFields().containsKey("genre")) {
+            model.getFilterFields().put("genre", this.queryGenre);
         } else {
-            return -1;
+            model.getFilterFields().remove("genre");
+            model.getFilterFields().put("genre", this.queryGenre);
         }
+        boolean isAula = true;
+        if ("D".equals(this.queryTimeInterval)) {
+            Policy p = policyBean.findByCompanyNameAndYear(policy.getCompany(), policy.getName(), this.userManagedBean.getY() + 1);
+            if (p != null) {
+                model.getFilterFields().remove("pid");
+                model.getFilterFields().put("pid", p.getId());
+            } else {
+                this.showErrorMsg("Error", "没有次年数据");
+                isAula = false;
+            }
+        }
+        this.detaillist = this.policyDetailBean.findByFilters(model.getFilterFields());
+        if (isAula && detaillist.size() > 0) {
+            displaydiv1 = "none";
+            displaydiv2 = "block";
+        } else {
+            this.detaillist.clear();
+            displaydiv1 = "block";
+            displaydiv2 = "none";
+        }
+        this.summary = "";
+        this.factor = "";
+        this.countermeasure = "";
+        this.factor = "";
+        this.countermeasure = "";
+        this.currentEntity = null;
     }
 
     public void onRowSelect(SelectEvent event) {
         PolicyDetail pd = (PolicyDetail) event.getObject();
-        switch (this.userManagedBean.getM()) {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
+        switch (this.queryTimeInterval) {
+            case "A":
+                this.summary = pd.getFyaction();
+                break;
+            case "B":
                 this.factor = pd.getHyreason1();
                 this.countermeasure = pd.getHycountermeasure1();
                 break;
-            case 7:
-            case 8:
-            case 9:
-            case 11:
-            case 12:
+            case "C":
                 this.factor = pd.getFyreason1();
                 this.countermeasure = pd.getFycountermeasure1();
-                break;
-            case 10:
-                this.summary = pd.getFyaction();
                 break;
         }
     }
 
-    public boolean isRed(BigDecimal value){
-         if(value==null){
-             return false;
-         }
-        if(value.compareTo(BigDecimal.valueOf(100))==-1){
+    public boolean isRed(BigDecimal value) {
+        if (value == null) {
+            return false;
+        }
+        if (value.compareTo(BigDecimal.valueOf(100)) == -1) {
             return true;
         }
-       
         return false;
     }
+
+    /**
+     *
+     * @param type
+     * @param unit
+     * @param value
+     * @return
+     */
+    public String formatValue(String calculationtype, String unit, String value) {
+        //天,台数取整，    万元两位  %按照有效数字判断4位还是2位
+        StringBuffer sb = new StringBuffer();
+        sb.setLength(0);
+        if (value == null || "".equals(value)) {
+            return unit;
+        }
+        if ("B".equals(calculationtype)) {
+            switch (unit) {
+                case "天":
+                case "台":
+                    //整数
+                    sb.append(floatFormat1.format(Double.valueOf(value)));
+                    break;
+                case "万":
+                case "万元":
+                    //两位小数
+                    sb.append(floatFormat2.format(Double.valueOf(value)));
+                    break;
+                case "%":
+                    //两位小数
+                    sb.append(floatFormat3.format(Double.valueOf(value)));
+                    break;
+                default:
+                    //整数或者两位小数或者四位小数
+                    sb.append(floatFormat4.format(Double.valueOf(value)));
+                    break;
+            }
+            return sb.append(unit).toString();
+        } else {
+            sb.append(value);
+            return sb.toString();
+        }
+    }
+
     public void setCurrentEntity(PolicyDetail t) {
         this.currentEntity = t;
     }
@@ -154,62 +227,6 @@ public class PolicySheetReportBean extends SuperQueryBean<PolicyDetail> {
 
     public void setPolicy(Policy policy) {
         this.policy = policy;
-    }
-
-    public TreeNode getRootNode() {
-        return rootNode;
-    }
-
-    public void setRootNode(TreeNode rootNode) {
-        this.rootNode = rootNode;
-    }
-
-    public TreeNode getSelectedNode() {
-        return selectedNode;
-    }
-
-    public void setSelectedNode(TreeNode selectedNode) {
-        this.selectedNode = selectedNode;
-    }
-
-    public List<GroupRow> getGroupRows() {
-        return groupRows;
-    }
-
-    public void setGroupRows(List<GroupRow> groupRows) {
-        this.groupRows = groupRows;
-    }
-
-    public List<PolicyDetail> getcDetail() {
-        return cDetail;
-    }
-
-    public void setcDetail(List<PolicyDetail> cDetail) {
-        this.cDetail = cDetail;
-    }
-
-    public List<PolicyDetail> getqDetail() {
-        return qDetail;
-    }
-
-    public void setqDetail(List<PolicyDetail> qDetail) {
-        this.qDetail = qDetail;
-    }
-
-    public List<PolicyDetail> getdDetail() {
-        return dDetail;
-    }
-
-    public void setdDetail(List<PolicyDetail> dDetail) {
-        this.dDetail = dDetail;
-    }
-
-    public List<PolicyDetail> getpDetail() {
-        return pDetail;
-    }
-
-    public void setpDetail(List<PolicyDetail> pDetail) {
-        this.pDetail = pDetail;
     }
 
     public String getSummary() {
@@ -236,32 +253,44 @@ public class PolicySheetReportBean extends SuperQueryBean<PolicyDetail> {
         this.countermeasure = countermeasure;
     }
 
-    public class GroupRow {
+    public List<PolicyDetail> getDetaillist() {
+        return detaillist;
+    }
 
-        private String name;
-        private List<PolicyDetail> details;
+    public String getQueryTimeInterval() {
+        return queryTimeInterval;
+    }
 
-        public GroupRow(String name, List<PolicyDetail> details) {
-            this.name = name;
-            this.details = details;
-        }
+    public void setQueryTimeInterval(String queryTimeInterval) {
+        this.queryTimeInterval = queryTimeInterval;
+    }
 
-        public String getName() {
-            return name;
-        }
+    public String getQueryGenre() {
+        return queryGenre;
+    }
 
-        public void setName(String name) {
-            this.name = name;
-        }
+    public void setQueryGenre(String queryGenre) {
+        this.queryGenre = queryGenre;
+    }
 
-        public List<PolicyDetail> getDetails() {
-            return details;
-        }
+    public void setDetaillist(List<PolicyDetail> detaillist) {
+        this.detaillist = detaillist;
+    }
 
-        public void setDetails(List<PolicyDetail> details) {
-            this.details = details;
-        }
+    public String getDisplaydiv1() {
+        return displaydiv1;
+    }
 
+    public void setDisplaydiv1(String displaydiv1) {
+        this.displaydiv1 = displaydiv1;
+    }
+
+    public String getDisplaydiv2() {
+        return displaydiv2;
+    }
+
+    public void setDisplaydiv2(String displaydiv2) {
+        this.displaydiv2 = displaydiv2;
     }
 
 }

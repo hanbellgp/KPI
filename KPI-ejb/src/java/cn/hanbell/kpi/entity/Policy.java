@@ -121,7 +121,10 @@ public class Policy  extends SuperEntity implements Comparable<Policy> {
     private String po;
     @Column(name = "year")
     private Integer year;
-
+    @Column(name = "freezeDate")
+    @Temporal(TemporalType.DATE)
+    private Date freezeDate;
+    
     public Policy() {
     }
 
@@ -297,6 +300,14 @@ public class Policy  extends SuperEntity implements Comparable<Policy> {
         this.status = status;
     }
 
+    public Date getFreezeDate() {
+        return freezeDate;
+    }
+
+    public void setFreezeDate(Date freezeDate) {
+        this.freezeDate = freezeDate;
+    }
+    
     public String getCreator() {
         return creator;
     }

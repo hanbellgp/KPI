@@ -408,8 +408,7 @@ public class MenuManagedBean implements Serializable {
             Set<Policy> list1 = new TreeSet<Policy>((o1, o2) -> o2.compareTo(o1));
             for (RoleGrantModule r : grantList) {
                 submenu = null;
-                System.out.println("---"+r.getDeptno());
-                policyList = policyBean.findByDepeno(r.getDeptno());
+                policyList = policyBean.findByDeptno(r.getDeptno());
                 if (policyList != null && !policyList.isEmpty()) {
                     list1.addAll(policyList);
                 }

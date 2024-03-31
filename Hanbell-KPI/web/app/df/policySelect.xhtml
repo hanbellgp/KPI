@@ -34,9 +34,8 @@
                     <p:commandButton id="btnSelected" value="确定" actionListener="#{policyQueryBean.closeDialog()}" icon="ui-icon-plus" />
                 </f:facet>
             </p:toolbar>
-            <p:dataTable value="#{policyQueryBean.detailList}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
-                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                         rowsPerPageTemplate="15,30,45" lazy="true" selection="#{policyQueryBean.selectDetail}"   rowKey="#{item.id}" >
+            <p:dataTable value="#{policyQueryBean.detailList}" var="item" styleClass="tableList Mtop10" scrollable="true"  scrollHeight="550"
+                         selection="#{policyQueryBean.selectDetail}"   rowKey="#{item.id}"  >
                 <p:ajax event="rowSelect"  update=":formList:toolbar" />
                 <p:ajax event="rowUnselect" update=":formList:toolbar" />
                 <p:column styleClass="Wid15" selectionMode="multiple"> 

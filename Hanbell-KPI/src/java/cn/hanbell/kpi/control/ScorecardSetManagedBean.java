@@ -8,6 +8,7 @@ package cn.hanbell.kpi.control;
 import cn.hanbell.eap.entity.Department;
 import cn.hanbell.eap.entity.SystemUser;
 import cn.hanbell.kpi.ejb.IndicatorBean;
+import cn.hanbell.kpi.ejb.PolicyDetailBean;
 import cn.hanbell.kpi.ejb.RoleBean;
 import cn.hanbell.kpi.ejb.RoleDetailBean;
 import cn.hanbell.kpi.ejb.RoleGrantModuleBean;
@@ -44,6 +45,7 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.event.ActionEvent;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.jexl3.JexlException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -82,6 +84,9 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
 
     @EJB
     private ProjectBean projectBean;
+
+    @EJB
+    private PolicyDetailBean policyDetailBean;
 
     protected Calendar c;
     private boolean freezed;
@@ -186,7 +191,110 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
         }
     }
 
-    public void calcItemScore(boolean isUpdateActual) {
+    public void updateActual() {
+        String col = scorecardBean.getColumn("q", userManagedBean.getQ());
+        //优先处理方针数据
+        if (this.currentDetail.getPolicySeq() != null && !"".equals(this.currentDetail.getPolicySeq())) {
+            PolicyDetail policyDetail = policyDetailBean.findById(Integer.valueOf(this.currentDetail.getPolicySeq()));
+            if (policyDetail != null) {
+                if ("A".equals(policyDetail.getCalculationtype())) {
+                    //文字类型 
+                    switch (col) {
+                        case "q1":
+                            this.currentDetail.setAq1(policyDetail.getAq1());
+                            this.currentDetail.setPq1(policyDetail.getPq1());
+                            this.currentDetail.getDeptScore().setSq1(policyDetail.getPq1());
+                            this.currentDetail.getGeneralScore().setSq1(policyDetail.getPq1());
+                            break;
+                        case "q2":
+                            this.currentDetail.setAq2(policyDetail.getAq2());
+                            this.currentDetail.setPq2(policyDetail.getPq2());
+                            this.currentDetail.getDeptScore().setSq2(policyDetail.getPq2());
+                            this.currentDetail.getGeneralScore().setSq2(policyDetail.getPq2());
+
+                            this.currentDetail.setAh1(policyDetail.getAhy());
+                            this.currentDetail.setPh1(policyDetail.getPhy());
+                            this.currentDetail.getDeptScore().setSh1(policyDetail.getPhy());
+                            this.currentDetail.getGeneralScore().setSh1(policyDetail.getPhy());
+                            break;
+                        case "q3":
+                            this.currentDetail.setAq3(policyDetail.getAq3());
+                            this.currentDetail.setPq3(policyDetail.getPq3());
+                            this.currentDetail.getDeptScore().setSq3(policyDetail.getPq3());
+                            this.currentDetail.getGeneralScore().setSq3(policyDetail.getPq3());
+                            break;
+                        case "q4":
+                            this.currentDetail.setAq4(policyDetail.getAq4());
+                            this.currentDetail.setPq4(policyDetail.getPq4());
+                            this.currentDetail.getDeptScore().setSq4(policyDetail.getPq4());
+                            this.currentDetail.getGeneralScore().setSq4(policyDetail.getPq4());
+
+                            this.currentDetail.setAfy(policyDetail.getAfy());
+                            this.currentDetail.setPfy(policyDetail.getPfy());
+                            this.currentDetail.getDeptScore().setSfy(policyDetail.getPfy());
+                            this.currentDetail.getGeneralScore().setSfy(policyDetail.getPfy());
+                            break;
+                    }
+                } else if ("B".equals(policyDetail.getCalculationtype())) {
+                    //数字类型
+                    switch (col) {
+                        case "q1":
+                            this.currentDetail.setAq1(policyDetail.getAq1());
+                            break;
+                        case "q2":
+                            this.currentDetail.setAq2(policyDetail.getAq2());
+                            this.currentDetail.setAh1(policyDetail.getAhy());
+                            break;
+                        case "q3":
+                            this.currentDetail.setAq3(policyDetail.getAq3());
+                            break;
+                        case "q4":
+                            this.currentDetail.setAq4(policyDetail.getAq4());
+                            this.currentDetail.setAfy(policyDetail.getAfy());
+                            break;
+                    }
+                    calcItemScore();
+                }
+            }
+            return;
+        }
+        //PLM明细
+        if (currentDetail.getProjectSeq() != null && !currentDetail.getType().equals("N")) {
+            updateScoreByPLMProject();
+            return;
+        }
+        //KPI明细        
+        if (currentDetail.getIndicator() != null && currentDetail.getIndicator() != null) {
+            Indicator i = indicatorBean.findByFormidYearAndDeptno(currentDetail.getIndicator(),
+                    currentDetail.getParent().getSeq(), currentDetail.getDeptno());
+            if (i != null) {
+                switch (userManagedBean.getQ()) {
+                    case 1:
+                        currentDetail.setAq1(i.getActualIndicator().getNq1().toString());
+                        break;
+                    case 2:
+                        currentDetail.setAq2(i.getActualIndicator().getNq2().toString());
+                        currentDetail.setAh1(i.getActualIndicator().getNh1().toString());
+                        break;
+                    case 3:
+                        currentDetail.setAq3(i.getActualIndicator().getNq3().toString());
+                        break;
+                    case 4:
+                        currentDetail.setAq4(i.getActualIndicator().getNq4().toString());
+                        currentDetail.setAh2(i.getActualIndicator().getNh2().toString());
+                        currentDetail.setAfy(i.getActualIndicator().getNfy().toString());
+                        break;
+                }
+            }
+            calcItemScore();
+            return;
+        }
+        //数字格式明细
+        calcItemScore();
+        return;
+    }
+
+    public void calcItemScore() {
         if (currentDetail != null) {
             try {
                 if (currentDetail.getFreezeDate() != null
@@ -194,46 +302,71 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
                     showErrorMsg("Error", "资料已冻结,不可更新");
                     return;
                 }
-                // 如果考核指标有PLM代号的就用PLM代过来的值计算
-                if (currentDetail.getProjectSeq() != null && !currentDetail.getType().equals("N")) {
-                    updateScoreByPLMProject(isUpdateActual);
+                String col = scorecardBean.getColumn("q", userManagedBean.getQ());
+                String target, actual;
+                BigDecimal value;
+                //PLM为文本格式，计算达成做单独处理
+                if (this.currentDetail.getProjectSeq() != null && !"".equals(this.currentDetail.getProjectSeq())) {
+                    switch (col) {
+                        case "q1":
+                            target = currentDetail.getTq1();
+                            actual = currentDetail.getAq1();
+                            value = calculateScore(target, actual);
+                            currentDetail.setPq1(value);
+                            currentDetail.getDeptScore().setSq1(value);
+                            currentDetail.getGeneralScore().setSq1(value);
+                            break;
+                        case "q2":
+                            target = currentDetail.getTq2();
+                            actual = currentDetail.getAq2();
+                            value = calculateScore(target, actual);
+                            currentDetail.setPq2(value);
+                            currentDetail.getDeptScore().setSq2(value);
+                            currentDetail.getGeneralScore().setSq2(value);
+
+                            target = currentDetail.getTh1();
+                            actual = currentDetail.getAh1();
+                            value = calculateScore(target, actual);
+                            currentDetail.setPh1(value);
+                            currentDetail.getDeptScore().setSh1(value);
+                            currentDetail.getGeneralScore().setSh1(value);
+                            break;
+                        case "q3":
+                            target = currentDetail.getTq2();
+                            actual = currentDetail.getAq2();
+                            value = calculateScore(target, actual);
+                            currentDetail.setPq2(value);
+                            currentDetail.getDeptScore().setSq2(value);
+                            currentDetail.getGeneralScore().setSq2(value);
+                            break;
+                        case "q4":
+                            target = currentDetail.getTq4();
+                            actual = currentDetail.getAq4();
+                            value = calculateScore(target, actual);
+                            currentDetail.setPq4(value);
+                            currentDetail.getDeptScore().setSq4(value);
+                            currentDetail.getGeneralScore().setSq4(value);
+
+                            target = currentDetail.getTfy();
+                            actual = currentDetail.getAfy();
+                            value = calculateScore(target, actual);
+                            currentDetail.setPfy(value);
+                            currentDetail.getDeptScore().setSfy(value);
+                            currentDetail.getGeneralScore().setSfy(value);
+                            break;
+                    }
                     return;
                 }
                 if (!currentDetail.getType().equals("N")) {
                     showWarnMsg("Warn", "数值型才能更新");
                     return;
                 }
-                //判断KPI考核项是否更新实际值
-                if (currentDetail.getIndicator() != null && currentDetail.getIndicator() != null && isUpdateActual) {
-                    Indicator i = indicatorBean.findByFormidYearAndDeptno(currentDetail.getIndicator(),
-                            currentDetail.getParent().getSeq(), currentDetail.getDeptno());
-                    if (i != null) {
-                        switch (userManagedBean.getQ()) {
-                            case 1:
-                                currentDetail.setAq1(i.getActualIndicator().getNq1().toString());
-                                break;
-                            case 2:
-                                currentDetail.setAq2(i.getActualIndicator().getNq2().toString());
-                                currentDetail.setAh1(i.getActualIndicator().getNh1().toString());
-                                break;
-                            case 3:
-                                currentDetail.setAq3(i.getActualIndicator().getNq3().toString());
-                                break;
-                            case 4:
-                                currentDetail.setAq4(i.getActualIndicator().getNq4().toString());
-                                currentDetail.setAh2(i.getActualIndicator().getNh2().toString());
-                                currentDetail.setAfy(i.getActualIndicator().getNfy().toString());
-                                break;
-                        }
-                    }
-                }
-                String col = scorecardBean.getColumn("q", userManagedBean.getQ());
-
                 if (currentDetail.getScoreJexl() != null && !"".equals(currentDetail.getScoreJexl())) {
                     // 计算达成
                     scorecardBean.setPerf(currentDetail, col);
                     // 计算得分
                     scorecardBean.setDetailScore(currentDetail, col);
+
                     // 上半年
                     if (userManagedBean.getQ() == 2) {
                         col = scorecardBean.getColumn("h", 1);
@@ -291,7 +424,11 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
                         break;
                 }
                 showInfoMsg("Info", "更新部门分数成功");
+            } catch (JexlException ex) {
+                ex.printStackTrace();
+                showErrorMsg("Error", ex.getMessage());
             } catch (Exception ex) {
+                ex.printStackTrace();
                 showErrorMsg("Error", ex.getMessage());
             }
         }
@@ -416,7 +553,7 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
     }
 
     // 关联PLM的更新
-    public void updateScoreByPLMProject(boolean isUpdateActual) throws StringIndexOutOfBoundsException, NumberFormatException {
+    public void updateScoreByPLMProject() throws StringIndexOutOfBoundsException, NumberFormatException {
         try {
             String target, actual, projectSeq;
             BigDecimal value;
@@ -430,9 +567,7 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
             // 选择季度更新
             switch (col) {
                 case "q1":
-                    if (isUpdateActual) {
-                        currentDetail.setAq1("#" + projectSeq + "%#" + ";" + currentDetail.getAq1());
-                    }
+                    currentDetail.setAq1("#" + projectSeq + "%#" + ";" + currentDetail.getAq1());
                     target = currentDetail.getTq1();
                     actual = currentDetail.getAq1();
                     value = calculateScore(target, actual);
@@ -441,9 +576,7 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
                     currentDetail.getGeneralScore().setSq1(value);
                     break;
                 case "q2":
-                    if (isUpdateActual) {
-                        currentDetail.setAq2("#" + projectSeq + "%#" + ";" + currentDetail.getAq2());
-                    }
+                    currentDetail.setAq2("#" + projectSeq + "%#" + ";" + currentDetail.getAq2());
                     //Q2
                     target = currentDetail.getTq2();
                     actual = currentDetail.getAq2();
@@ -452,9 +585,7 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
                     currentDetail.getDeptScore().setSq2(value);
                     currentDetail.getGeneralScore().setSq2(value);
                     //上半年
-                    if (isUpdateActual) {
-                        currentDetail.setAh1("#" + projectSeq + "%#" + ";" + currentDetail.getAh1());
-                    }
+                    currentDetail.setAh1("#" + projectSeq + "%#" + ";" + currentDetail.getAh1());
                     target = currentDetail.getTh1();
                     actual = currentDetail.getAh1();
                     value = calculateScore(target, actual);
@@ -463,9 +594,7 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
                     currentDetail.getGeneralScore().setSh1(value);
                     break;
                 case "q3":
-                    if (isUpdateActual) {
-                        currentDetail.setAq3("#" + projectSeq + "%#" + ";" + currentDetail.getAq3());
-                    }
+                    currentDetail.setAq3("#" + projectSeq + "%#" + ";" + currentDetail.getAq3());
                     target = currentDetail.getTq3();
                     actual = currentDetail.getAq3();
                     value = calculateScore(target, actual);
@@ -475,9 +604,7 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
                     break;
                 case "q4":
                     //Q4
-                    if (isUpdateActual) {
-                        currentDetail.setAq4("#" + projectSeq + "%#" + ";" + currentDetail.getAq4());
-                    }
+                    currentDetail.setAq4("#" + projectSeq + "%#" + ";" + currentDetail.getAq4());
                     target = currentDetail.getTq4();
                     actual = currentDetail.getAq4();
                     value = calculateScore(target, actual);
@@ -485,9 +612,7 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
                     currentDetail.getDeptScore().setSq4(value);
                     currentDetail.getGeneralScore().setSq4(value);
                     //全年
-                    if (isUpdateActual) {
-                        currentDetail.setAfy("#" + projectSeq + "%#" + ";" + currentDetail.getAfy());
-                    }
+                    currentDetail.setAfy("#" + projectSeq + "%#" + ";" + currentDetail.getAfy());
                     target = currentDetail.getTfy();
                     actual = currentDetail.getAfy();
                     value = calculateScore(target, actual);
@@ -706,10 +831,15 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
 
     public void handleDialogReturnDeptWhenProjectNew(SelectEvent event) {
         if (event.getObject() != null && currentDetail != null) {
-            Object o = event.getObject();
-            Project p = (Project) o;
-            currentDetail.setProjectSeq(String.valueOf(p.getProjectSeq()));
-            currentDetail.setProjectName(p.getProjectName());
+            if ("S".equals(this.currentDetail.getType())) {
+                Object o = event.getObject();
+                Project p = (Project) o;
+                currentDetail.setProjectSeq(String.valueOf(p.getProjectSeq()));
+                currentDetail.setProjectName(p.getProjectName());
+            } else {
+                this.showErrorMsg("Error", "文本类型才能绑定PLM");
+            }
+
         }
     }
 
@@ -719,6 +849,43 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
             Project p = (Project) o;
             currentDetail.setProjectSeq(String.valueOf(p.getProjectSeq()));
             currentDetail.setProjectName(p.getProjectName());
+        }
+    }
+
+    public void handleDialogReturnDeptWhenPolicyNew(SelectEvent event) {
+        if (event.getObject() != null && currentDetail != null) {
+            Object o = event.getObject();
+            List<PolicyDetail> p = (List<PolicyDetail>) o;
+            if (p != null && p.size() != 1) {
+                this.showErrorMsg("Error", "请选择一项！");
+            } else {
+                if ("A".equals(p.get(0).getCalculationtype()) && !"S".equals(currentDetail.getType())) {
+                    this.showErrorMsg("Error", "类型不符");
+                    return;
+                } else if ("B".equals(p.get(0).getCalculationtype()) && !"N".equals(currentDetail.getType())) {
+                    this.showErrorMsg("Error", "类型不符");
+                    return;
+                }
+                //带入编号/名称
+                currentDetail.setPolicySeq(String.valueOf(p.get(0).getId()));
+                currentDetail.setPolicyName(p.get(0).getName());
+                //带入基准
+                currentDetail.setBq1(p.get(0).getBq1());
+                currentDetail.setBq2(p.get(0).getBq2());
+                currentDetail.setBh1(p.get(0).getBhy());
+                currentDetail.setBq3(p.get(0).getBq3());
+                currentDetail.setBq4(p.get(0).getBq4());
+                currentDetail.setBh2(p.get(0).getBfy());
+                currentDetail.setBfy(p.get(0).getBfy());
+                // 代入目标
+                currentDetail.setTq1(p.get(0).getTq1());
+                currentDetail.setTq2(p.get(0).getTq2());
+                currentDetail.setTh1(p.get(0).getThy());
+                currentDetail.setTq3(p.get(0).getTq3());
+                currentDetail.setTq4(p.get(0).getTq4());
+                currentDetail.setTh2(p.get(0).getTfy());
+                currentDetail.setTfy(p.get(0).getTfy());
+            }
         }
     }
 
@@ -874,6 +1041,13 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
                 break;
             case "policySelect":
                 openParams.clear();
+                if (paramDeptno == null) {
+                    paramDeptno = new ArrayList<>();
+                } else {
+                    paramDeptno.clear();
+                }
+                paramDeptno.add(currentEntity.getDeptno());
+                openParams.put("deptno", paramDeptno);
                 openOptions.remove("modal");
                 openOptions.remove("contentWidth");
                 openOptions.put("modal", true);
@@ -977,14 +1151,13 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
     public void setCurrentEntity(Scorecard currentEntity) {
         super.setCurrentEntity(currentEntity);
         if (currentEntity != null) {
-            this.freezed = currentEntity.getFreezeDate() != null
+            freezed=this.freezed = currentEntity.getFreezeDate() != null
                     && currentEntity.getFreezeDate().after(userManagedBean.getBaseDate());
         }
     }
 
     public String onItemSelectedListener(SelectEvent event) {
         String select = (String) event.getObject();
-        System.out.print("----" + select);
         switch (select) {
             case "1":// 1、销售台数、销售金额、维修台数、收费服务金额、培训学分达成率、预算控制达成率；
                 this.currentDetail.setPerformanceJexl("100B*object.a${n} / object.t${n}");

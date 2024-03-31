@@ -130,6 +130,12 @@ public class ScorecardContent extends SuperEntity {
     @Size(max = 45)
     @Column(name = "projectName")
     private String projectName;
+        @Size(max = 45)
+    @Column(name = "policySeq")
+    private String policySeq;
+    @Size(max = 45)
+    @Column(name = "policyName")
+    private String policyName;
     @Size(max = 10)
     @Column(name = "deptno")
     private String deptno;
@@ -521,6 +527,22 @@ public class ScorecardContent extends SuperEntity {
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public String getPolicySeq() {
+        return policySeq;
+    }
+
+    public void setPolicySeq(String policySeq) {
+        this.policySeq = policySeq;
+    }
+
+    public String getPolicyName() {
+        return policyName;
+    }
+
+    public void setPolicyName(String policyName) {
+        this.policyName = policyName;
     }
 
     public String getDeptno() {

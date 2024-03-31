@@ -2,123 +2,138 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 template="./../../WEB-INF/bsc.xhtml"
-                xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
-    <ui:define name="content">
-        <h:form id="formOne">
-            <div class="ui-g dashboar">
-                <div class="ui-g-12 ui-md-12" align="center">
-                    <p:dataTable    id="tableList" value="#{policySheetReportBean.groupRows}" var="grouprow"  styleClass="tableList Mtop10"  scrollable="true"  scrollHeight="550"  >
-                        <f:facet name="header">
-                            #{policySheetReportBean.policy.name}
-                        </f:facet>
-                        <p:column styleClass="Wid10">
-                            <p:rowToggler></p:rowToggler>
-                        </p:column>
-                        <p:column headerText="类别序号" styleClass="Wid50">
-                            <h:outputText value="#{grouprow.name}"/>
-                        </p:column>
-                        <p:rowExpansion>
-                            <p:dataTable  id="tableList1" value="#{grouprow.details}" var="item"  styleClass="tableList Mtop10"  scrollable="true"  scrollHeight="500" 
-                                          selectionMode="single" selection="#{policySheetReportBean.currentEntity}" rowKey="#{item.id}">
-                                <p:ajax event="rowSelect" listener="#{policySheetReportBean.onRowSelect}"  update="formOne:analysisPanel,formOne:summaryPanel" />
-                                <p:ajax event="rowUnselect" />
-                                <p:column  styleClass="Wid10" headerText="内容">
-                                    <h:outputText value="#{item.seqname.concat(item.name)}"/>
-                                </p:column>
-                                <c:choose>
-                                    <c:when test="#{policySheetReportBean.compareTo(policySheetReportBean.userManagedBean.getM(),6)lt 1}">
-                                        <p:column  styleClass="Wid10" headerText="全年目标">
-                                            <h:outputText value="#{item.tfy}"/>
-                                        </p:column>
-                                        <p:column  styleClass="Wid10" headerText="Q1达成率">
-                                            <h:outputText value="#{item.tq2==''and item.aq2==''?'':item.pq1}#{item.tq2==''and item.aq2==''?'':'%'}"/>
-                                        </p:column>
-                                        <p:column  styleClass="Wid10" headerText="Q2基准" style="#{policySheetReportBean.isRed(item.pq2)? 'color:red' : ''};white-space: pre-wrap">
-                                            <h:outputText value="#{item.bq2}"/>
-                                        </p:column>
-                                        <p:column  styleClass="Wid10" headerText="Q2目标" style="#{policySheetReportBean.isRed(item.pq2)? 'color:red' : ''};white-space: pre-wrap">
-                                            <h:outputText value="#{item.tq2}"/>
-                                        </p:column>
-                                        <p:column  styleClass="Wid10" headerText="Q2实际" style="#{policySheetReportBean.isRed(item.pq2)? 'color:red' : ''};white-space: pre-wrap">
-                                            <h:outputText value="#{item.aq2}"/>
-                                        </p:column>
-                                        <p:column styleClass="Wid10"  headerText="Q2达成率" style="#{policySheetReportBean.isRed(item.pq2)? 'color:red' : ''}">
-                                            <h:outputText value="#{item.tq2==''and item.aq2==''?'':item.pq2}#{item.tq2==''and item.aq2==''?'':'%'}"/>
-                                        </p:column>
-                                        <p:column styleClass="Wid10" headerText="上半年基准" style="#{policySheetReportBean.isRed(item.phy)? 'color:red' : ''};white-space: pre-wrap">
-                                            <h:outputText value="#{item.bhy}"/>
-                                        </p:column>
-                                        <p:column styleClass="Wid10"  headerText="上半年目标" style="#{policySheetReportBean.isRed(item.phy)? 'color:red' : ''};white-space: pre-wrap">
-                                            <h:outputText value="#{item.thy}"/>
-                                        </p:column>
-                                        <p:column styleClass="Wid10"  headerText="上半年实际" style="#{policySheetReportBean.isRed(item.phy)? 'color:red' : ''};white-space: pre-wrap">
-                                            <h:outputText value="#{item.ahy}"/>
-                                        </p:column>
-                                        <p:column styleClass="Wid10"  headerText="上半年达成率" style="#{policySheetReportBean.isRed(item.phy)? 'color:red' : ''}">
-                                            <h:outputText value="#{item.thy==''and item.ahy==''?'':item.phy}#{item.thy==''and item.ahy==''?'':'%'}"/>
-                                        </p:column>
-                                    </c:when>   
-                                    <c:when test="#{policySheetReportBean.compareTo(policySheetReportBean.userManagedBean.getM(),12)==-1 and policySheetReportBean.userManagedBean.getM()!=10}">
-                                        <p:column styleClass="Wid10"  headerText="上半年达成率">
-                                            <h:outputText value="#{item.phy}%"/>
-                                        </p:column>
-                                        <p:column  styleClass="Wid10" headerText="Q3达成率">
-                                            <h:outputText value="#{item.pq3}%"/>
-                                        </p:column>
-                                        <p:column  styleClass="Wid10" headerText="Q4基准" style="#{policySheetReportBean.isRed(item.pq4)? 'color:red' : ''};white-space: pre-wrap">
-                                            <h:outputText value="#{item.bq4}"/>
-                                        </p:column>
-                                        <p:column  styleClass="Wid10" headerText="Q4目标" style="#{policySheetReportBean.isRed(item.pq4)? 'color:red' : ''};white-space: pre-wrap">
-                                            <h:outputText value="#{item.tq4}"/>
-                                        </p:column>
-                                        <p:column  styleClass="Wid10" headerText="Q4实际" style="#{policySheetReportBean.isRed(item.pq4)? 'color:red' : ''};white-space: pre-wrap">
-                                            <h:outputText value="#{item.aq4}"/>
-                                        </p:column>
-                                        <p:column styleClass="Wid10"  headerText="Q4达成率" style="#{policySheetReportBean.isRed(item.pq4)? 'color:red' : ''}">
-                                            <h:outputText value="#{item.pq4}%"/>
-                                        </p:column>
-                                        <p:column styleClass="Wid10" headerText="全年基准" style="#{policySheetReportBean.isRed(item.pfy)? 'color:red' : ''};white-space: pre-wrap">
-                                            <h:outputText value="#{item.bfy}"/>
-                                        </p:column>
-                                        <p:column styleClass="Wid10"  headerText="全年目标" style="#{policySheetReportBean.isRed(item.pfy)? 'color:red' : ''};white-space: pre-wrap">
-                                            <h:outputText value="#{item.tfy}"/>
-                                        </p:column>
-                                        <p:column styleClass="Wid10"  headerText="全年实际" style="#{policySheetReportBean.isRed(item.pfy)? 'color:red' : ''};white-space: pre-wrap">
-                                            <h:outputText value="#{item.afy}"/>
-                                        </p:column>
-                                        <p:column styleClass="Wid10"  headerText="全年达成率" style="#{policySheetReportBean.isRed(item.pfy)? 'color:red' : ''}">
-                                            <h:outputText value="#{item.pfy}%"/>
-                                        </p:column>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <p:column styleClass="Wid10"  headerText="全年目标">
-                                            <h:outputText value="#{item.tfy}" style="white-space: pre-wrap"/>
-                                        </p:column>
-                                        <p:column styleClass="Wid10"  headerText="Q1目标">
-                                            <h:outputText value="#{item.tq1}" style="white-space: pre-wrap"/>
-                                        </p:column>
-                                        <p:column styleClass="Wid10"  headerText="Q2目标">
-                                            <h:outputText value="#{item.tq2}" style="white-space: pre-wrap"/>
-                                        </p:column>
-                                        <p:column styleClass="Wid10"  headerText="上半年目标">
-                                            <h:outputText value="#{item.thy}" style="white-space: pre-wrap"/>
-                                        </p:column>
-                                        <p:column styleClass="Wid10"  headerText="Q3目标">
-                                            <h:outputText value="#{item.tq3}" style="white-space: pre-wrap"/>
-                                        </p:column>
-                                        <p:column styleClass="Wid10"  headerText="Q4目标">
-                                            <h:outputText value="#{item.tq4}" style="white-space: pre-wrap"/>
-                                        </p:column>
-                                    </c:otherwise>
-                                </c:choose>
-                            </p:dataTable>
-                        </p:rowExpansion>
-                    </p:dataTable>
+                
+    <ui:define name="content" >
+        <h:form id="formOne"  style="height: 100%"  class='sticky-table' rendered="true">
+             <p:growl id="growl" showSummary="false" showDetail="true"/>
+            <p:panelGrid id="plgQuery" columns="7" columnClasses="Wid20,Wid30,Wid20,Wid15,Wid15,Wid0" styleClass="plgQuery Wid100">
+                <p:outputLabel value="请选择目标类别" for="queryGenre" />
+                <p:selectOneMenu id="queryGenre" value="#{policySheetReportBean.queryGenre}" style="width:100%;">
+                    <f:selectItem itemLabel="C -成本构面" itemValue="C"/>
+                    <f:selectItem itemLabel="Q -顾客构面/品质" itemValue="Q"/>
+                    <f:selectItem itemLabel="D -流程构面/交流" itemValue="D"/>
+                    <f:selectItem itemLabel="P -学习成本构面/人员" itemValue="P"/>
+                </p:selectOneMenu>
+                <p:outputLabel value="请选择方针阶段" for="queryTimeInterval" />
+                <p:selectOneMenu id="queryTimeInterval" value="#{policySheetReportBean.queryTimeInterval}" style="width:100%;">
+                     <f:selectItem itemLabel="全年目标报告" itemValue="A"/>
+                    <f:selectItem itemLabel="Q2;上半年报告" itemValue="B"/>
+                    <f:selectItem itemLabel="Q4;全年报告" itemValue="C"/>
+                    <f:selectItem itemLabel="次年度全年目标" itemValue="D"/>
+                </p:selectOneMenu>
+                  <p:commandButton id="btnquery" value="查询" actionListener="#{policySheetReportBean.btnquery()}"  icon="ui-icon-search"
+                                 update=":formOne" process="plgQuery"/>
+                <p:link  value="返回"  outcome="home" style="float: left"/>
+            </p:panelGrid>
+            <p:panelGrid id="exchangeRateValue" styleClass="plgDetail Wid100">
+                <f:facet name="header"  >
+                    <p:row >          
+                        <p:column style="font-size: 21px;letter-spacing:2px;font-weight: 600" >#{policySheetReportBean.policy.name}</p:column>
+                    </p:row>
+                </f:facet>
+            </p:panelGrid >
+                   <div style="display:#{policySheetReportBean.displaydiv1};padding-top: 10px;" align="right" >
+                    <span style="font-weight: bold;color: #2F4050;font-size: 18px;padding-right: 25px" >No records found.</span>
                 </div>
-            </div>
+            <div style="display:#{policySheetReportBean.displaydiv2};" align="right">
+            <p:dataTable  id="tableList1" value="#{policySheetReportBean.detaillist}" var="item"  styleClass="tableList Mtop10"  scrollable="true"  scrollHeight="400" 
+                          stickyHeader="true"      selectionMode="single" selection="#{policySheetReportBean.currentEntity}" rowKey="#{item.id}">
+                <p:ajax event="rowSelect" listener="#{policySheetReportBean.onRowSelect}"  update="formOne:analysisPanel,formOne:summaryPanel"  />
+                <p:ajax event="rowUnselect" />
+                <p:column  styleClass="Wid10" headerText="内容">
+                    <h:outputText value="#{item.seqname.concat(item.name)}"/>
+                </p:column>
+                <c:choose>
+                    <c:when test="#{'B'.equals(policySheetReportBean.queryTimeInterval)}">
+                        <p:column  styleClass="Wid10" headerText="全年目标">
+                            <h:outputText value="#{policySheetReportBean.formatValue(item.calculationtype,item.unit,item.tfy)}"/>
+                        </p:column>
+                        <p:column  styleClass="Wid10" headerText="Q1达成率">
+                            <h:outputText value="#{item.tq2==''and item.aq2==''?'':policySheetReportBean.formatValue('B','%',item.pq1)}"/>
+                        </p:column>
+                        <p:column  styleClass="Wid10" headerText="Q2基准" style="#{policySheetReportBean.isRed(item.pq2)? 'color:red' : ''};white-space: pre-wrap">
+                            <h:outputText value="#{policySheetReportBean.formatValue(item.calculationtype,item.unit,item.bq2)}"/>
+                        </p:column>
+                        <p:column  styleClass="Wid10" headerText="Q2目标" style="#{policySheetReportBean.isRed(item.pq2)? 'color:red' : ''};white-space: pre-wrap">
+                            <h:outputText value="#{policySheetReportBean.formatValue(item.calculationtype,item.unit,item.tq2)}"/>
+                        </p:column>
+                        <p:column  styleClass="Wid10" headerText="Q2实际" style="#{policySheetReportBean.isRed(item.pq2)? 'color:red' : ''};white-space: pre-wrap">
+                            <h:outputText value="#{policySheetReportBean.formatValue(item.calculationtype,item.unit,item.aq2)}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10"  headerText="Q2达成率" style="#{policySheetReportBean.isRed(item.pq2)? 'color:red' : ''}">
+                            <h:outputText value="#{item.tq2==''and item.aq2==''?'':policySheetReportBean.formatValue('B','%',item.pq2)}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10" headerText="上半年基准" style="#{policySheetReportBean.isRed(item.phy)? 'color:red' : ''};white-space: pre-wrap">
+                            <h:outputText value="#{policySheetReportBean.formatValue(item.calculationtype,item.unit,item.bhy)}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10"  headerText="上半年目标" style="#{policySheetReportBean.isRed(item.phy)? 'color:red' : ''};white-space: pre-wrap">
+                            <h:outputText value="#{policySheetReportBean.formatValue(item.calculationtype,item.unit,item.thy)}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10"  headerText="上半年实际" style="#{policySheetReportBean.isRed(item.phy)? 'color:red' : ''};white-space: pre-wrap">
+                            <h:outputText value="#{policySheetReportBean.formatValue(item.calculationtype,item.unit,item.ahy)}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10"  headerText="上半年达成率" style="#{policySheetReportBean.isRed(item.phy)? 'color:red' : ''}">
+                            <h:outputText value="#{item.thy==''and item.ahy==''?'':policySheetReportBean.formatValue('B','%',item.phy)}"/>
+                        </p:column>
+                    </c:when>
+                    <c:when test="#{'C'.equals(policySheetReportBean.queryTimeInterval)}">
+                        <p:column styleClass="Wid10"  headerText="上半年达成率">
+                            <h:outputText value="#{item.thy==''and item.ahy==''?'':policySheetReportBean.formatValue('B','%',item.phy)}"/>
+                        </p:column>
+                        <p:column  styleClass="Wid10" headerText="Q3达成率">
+                            <h:outputText value="#{item.tq3==''and item.aq3==''?'':policySheetReportBean.formatValue('B','%',item.pq3)}"/>
+                        </p:column>
+                        <p:column  styleClass="Wid10" headerText="Q4基准" style="#{policySheetReportBean.isRed(item.pq4)? 'color:red' : ''};white-space: pre-wrap">
+                            <h:outputText value="#{policySheetReportBean.formatValue(item.calculationtype,item.unit,item.bq4)}"/>
+                        </p:column>
+                        <p:column  styleClass="Wid10" headerText="Q4目标" style="#{policySheetReportBean.isRed(item.pq4)? 'color:red' : ''};white-space: pre-wrap">
+                            <h:outputText value="#{policySheetReportBean.formatValue(item.calculationtype,item.unit,item.tq4)}"/>
+                        </p:column>
+                        <p:column  styleClass="Wid10" headerText="Q4实际" style="#{policySheetReportBean.isRed(item.pq4)? 'color:red' : ''};white-space: pre-wrap">
+                            <h:outputText value="#{policySheetReportBean.formatValue(item.calculationtype,item.unit,item.aq4)}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10"  headerText="Q4达成率" style="#{policySheetReportBean.isRed(item.pq4)? 'color:red' : ''}">
+                            <h:outputText value="#{item.tq4==''and item.aq4==''?'':policySheetReportBean.formatValue('B','%',item.pq4)}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10" headerText="全年基准" style="#{policySheetReportBean.isRed(item.pfy)? 'color:red' : ''};white-space: pre-wrap">
+                            <h:outputText value="#{policySheetReportBean.formatValue(item.calculationtype,item.unit,item.bfy)}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10"  headerText="全年目标" style="#{policySheetReportBean.isRed(item.pfy)? 'color:red' : ''};white-space: pre-wrap">
+                            <h:outputText value="#{policySheetReportBean.formatValue(item.calculationtype,item.unit,item.tfy)}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10"  headerText="全年实际" style="#{policySheetReportBean.isRed(item.pfy)? 'color:red' : ''};white-space: pre-wrap">
+                            <h:outputText value="#{policySheetReportBean.formatValue(item.calculationtype,item.unit,item.afy)}"/>
+                        </p:column>
+                        <p:column styleClass="Wid10"  headerText="全年达成率" style="#{policySheetReportBean.isRed(item.pfy)? 'color:red' : ''}">
+                            <h:outputText value="#{item.tfy==''and item.afy==''?'':policySheetReportBean.formatValue('B','%',item.pfy)}"/>
+                        </p:column>
+                    </c:when>
+                    <c:otherwise>
+                        <p:column styleClass="Wid10"  headerText="全年目标">
+                            <h:outputText  value="#{policySheetReportBean.formatValue(item.calculationtype,item.unit,item.tfy)}" style="white-space: pre-wrap"/>
+                        </p:column>
+                        <p:column styleClass="Wid10"  headerText="Q1目标">
+                            <h:outputText value="#{policySheetReportBean.formatValue(item.calculationtype,item.unit,item.tq1)}" style="white-space: pre-wrap"/>
+                        </p:column>
+                        <p:column styleClass="Wid10"  headerText="Q2目标">
+                            <h:outputText value="#{policySheetReportBean.formatValue(item.calculationtype,item.unit,item.tq2)}" style="white-space: pre-wrap"/>
+                        </p:column>
+                        <p:column styleClass="Wid10"  headerText="上半年目标">
+                            <h:outputText value="#{policySheetReportBean.formatValue(item.calculationtype,item.unit,item.thy)}" style="white-space: pre-wrap"/>
+                        </p:column>
+                        <p:column styleClass="Wid10"  headerText="Q3目标">
+                            <h:outputText value="#{policySheetReportBean.formatValue(item.calculationtype,item.unit,item.tq3)}" style="white-space: pre-wrap"/>
+                        </p:column>
+                        <p:column styleClass="Wid10"  headerText="Q4目标">
+                            <h:outputText value="#{policySheetReportBean.formatValue(item.calculationtype,item.unit,item.tq4)}" style="white-space: pre-wrap"/>
+                        </p:column>
+                    </c:otherwise>
+                </c:choose>
+            </p:dataTable>
             <div style="width: 100%" id="remark">
                 <div id="policySummary" class="ui-g-12 ui-md-12">
                     <p:panel  id="summaryPanel" header="行动" toggleable="true" style="height:min-content;text-align: center" visible="#{policySheetReportBean.summary!=null and policySheetReportBean.summary!=''}">
@@ -129,32 +144,31 @@
                         </h:panelGrid>
                     </p:panel>
                 </div>
-                <div id="policyAnalysis" class="ui-g-12 ui-md-12">
-                    <p:panel id="analysisPanel" header="原因分析;对策说明" toggleable="true" style="height:min-content;text-align: center"
-                             visible="#{(policySheetReportBean.factor!=null and policySheetReportBean.factor!='') or  (policySheetReportBean.countermeasure!=null and policySheetReportBean.countermeasure!='')}">
-                        <script>
-                            var c = "formOne:factor";
-                            var parentNode111 = document.getElementById(c).parentNode;
-                            parentNode111.style.borderRight = "1px solid"
-                        </script>
-                        <h:outputScript name="bsc-policy-sheet1.js" library="js" />
-                        <h:panelGrid  columns="2" columnClasses="" styleClass="plgDetail Wid100" style="text-align: center">
-                            <h:outputText id="factorLabel" value="原因"/>
-                            <h:outputText id="countermeasureLabel" value="对策"/>
-                        </h:panelGrid>
-                        <h:panelGrid columns="2" columnClasses="Wid30,Wid30" styleClass="plgDetail Wid100" >
-                            <h:outputText id="factor" style="white-space: pre-wrap"/>
-                            <h:outputText id="countermeasure"  style="white-space: pre-wrap"/>
-                            <h:inputHidden id="hdnfactor" value="#{policySheetReportBean.factor}"/>
-                            <h:inputHidden id="hdncountermeasure"  value="#{policySheetReportBean.countermeasure}"/>
-                        </h:panelGrid>
-                    </p:panel>
-                </div>
+                <p:panel id="analysisPanel" header="原因分析;对策说明" toggleable="true" style="height:min-content;text-align: center"
+                    visible="#{(policySheetReportBean.factor!=null and policySheetReportBean.factor!='') or  (policySheetReportBean.countermeasure!=null and policySheetReportBean.countermeasure!='')}">
+                    <script>
+                        var c = "formOne:factor";
+                        var parentNode111 = document.getElementById(c).parentNode;
+                        parentNode111.style.borderRight = "1px solid"
+                    </script>
+                    <h:outputScript name="bsc-policy-sheet1.js" library="js" />
+                    <h:panelGrid  columns="2" columnClasses="" styleClass="plgDetail Wid100" style="text-align: center">
+                        <h:outputText id="factorLabel" value="原因"/>
+                        <h:outputText id="countermeasureLabel" value="对策"/>
+                    </h:panelGrid>
+                    <h:panelGrid columns="2" columnClasses="Wid30,Wid30" styleClass="plgDetail Wid100" >
+                        <h:outputText id="factor" style="white-space: pre-wrap"/>
+                        <h:outputText id="countermeasure"  style="white-space: pre-wrap"/>
+                        <h:inputHidden id="hdnfactor" value="#{policySheetReportBean.factor}"/>
+                        <h:inputHidden id="hdncountermeasure"  value="#{policySheetReportBean.countermeasure}"/>
+                    </h:panelGrid>
+                </p:panel>
                 <div>
                     <h:inputHidden id="sc"></h:inputHidden>
                     <h:inputHidden id="ac"></h:inputHidden>
                 </div>
             </div>
+                </div>
         </h:form>
         <h:form id="formTwo"  rendered="#{policySheetReportBean.deny}">
             <h1 style="text-align: center;margin-top: 50px;">你想干嘛</h1>

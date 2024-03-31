@@ -50,7 +50,7 @@ public class PolicyBean extends SuperEJBForKPI<Policy> {
         }
     }
 
-    public List<Policy> findByDepeno(String deptno) {
+    public List<Policy> findByDeptno(String deptno) {
         Query query = getEntityManager().createNamedQuery("Policy.findByDeptno");
         query.setParameter("deptno", deptno);
         try {
@@ -60,4 +60,9 @@ public class PolicyBean extends SuperEJBForKPI<Policy> {
             return null;
         }
     }
+
+    public String getColumn(String type, int i) {
+        return type.toLowerCase() + String.format("%01d", i);
+    }
+
 }

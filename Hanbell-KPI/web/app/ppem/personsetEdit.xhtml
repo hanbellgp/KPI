@@ -1,0 +1,183 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:define name="content">
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="personset" icon="ui-icon-restore"/>
+                </f:facet>
+                <f:facet name="right">
+                      <p:commandButton id="btnSave" value="保存" action="#{personSetManagedBean.update()}" icon="ui-icon-save"
+                                     process="@this,plgHead" update="formOne"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">人员修改</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="工号" for="userid"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="userid" value="#{personSetManagedBean.currentEntity.userid}" title="工号"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="名字" for="username"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="username" value="#{personSetManagedBean.currentEntity.username}" title="名字"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="部门" for="deptno"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="deptno" value="#{personSetManagedBean.currentEntity.deptno}" title="部门"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="部门名称" for="deptname"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="deptname" value="#{personSetManagedBean.currentEntity.deptname}" title="部门名称"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="职等" for="officialrank"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:selectOneMenu id="officialrank" value="#{personSetManagedBean.currentEntity.officialrank}" title="职等" >
+                            <f:selectItem itemLabel="A-" itemValue="A-"/>
+                            <f:selectItem itemLabel="A" itemValue="A"/>
+                            <f:selectItem itemLabel="A+" itemValue="A+"/>
+                            <f:selectItem itemLabel="B-" itemValue="B-"/>
+                            <f:selectItem itemLabel="B" itemValue="B"/>
+                            <f:selectItem itemLabel="B+" itemValue="B+"/>
+                            <f:selectItem itemLabel="C" itemValue="C"/>
+                            <f:selectItem itemLabel="D" itemValue="D"/>
+                            <f:selectItem itemLabel="E" itemValue="E"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="职等名称" for="officialrankdesc"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:selectOneMenu id="officialrankdesc" value="#{personSetManagedBean.currentEntity.officialrankdesc}" title="职等" >
+                            <f:selectItem itemLabel="员工级" itemValue="员工级"/>
+                            <f:selectItem itemLabel="職員" itemValue="職員"/>
+                            <f:selectItem itemLabel="组长级" itemValue="组长级"/>
+                            <f:selectItem itemLabel="課長/高管" itemValue="課長/高管"/>
+                            <f:selectItem itemLabel="课长级" itemValue="课长级"/>
+                            <f:selectItem itemLabel="副理/主任" itemValue="副理/主任"/>
+                            <f:selectItem itemLabel="经理级" itemValue="经理级"/>
+                            <f:selectItem itemLabel="协理级" itemValue="协理级"/>
+                            <f:selectItem itemLabel="副董级" itemValue="副董级"/>
+                            <f:selectItem itemLabel="董事长级" itemValue="董事长级"/>
+                            <f:selectItem itemLabel="副总经理级" itemValue="副总经理级"/>
+                            <f:selectItem itemLabel="总经理级" itemValue="总经理级"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="职等类型" for="jobcategory"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:selectOneMenu id="jobcategory" value="#{personSetManagedBean.currentEntity.jobcategory}" title="职等类型" >
+                            <f:selectItem itemLabel="第一类" itemValue="第一类"/>
+                            <f:selectItem itemLabel="第二类" itemValue="第二类"/>
+                            <f:selectItem itemLabel="第三类" itemValue="第三类"/>
+                            <f:selectItem itemLabel="第四类" itemValue="第四类"/>
+                            <f:selectItem itemLabel="第五类" itemValue="第五类"/>
+                            <f:selectItem itemLabel="第六类" itemValue="第六类"/>
+                            <f:selectItem itemLabel="C工类" itemValue="C工类"/>
+                            <f:selectItem itemLabel="C非工类" itemValue="C非工类"/>
+                            <f:selectItem itemLabel="D工类" itemValue="D工类"/>
+                            <f:selectItem itemLabel="D非工类" itemValue="D非工类"/>
+                            <f:selectItem itemLabel="E类" itemValue="E类"/>
+                            <f:selectItem itemLabel="其他" itemValue="其他"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="岗位" for="duties"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:inputText id="duties" value="#{personSetManagedBean.currentEntity.duties}" title="岗位"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="类型" for="type"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:selectOneMenu id="type" value="#{personSetManagedBean.currentEntity.type}" title="类型" >
+                            <f:selectItem itemLabel="幕僚" itemValue="幕僚"/>
+                            <f:selectItem itemLabel="现场" itemValue="现场"/>
+                            <f:selectItem itemLabel="营销" itemValue="营销"/>
+                            <f:selectItem itemLabel="技术" itemValue="技术"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="考核方式" for="assessmentmethod"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:selectOneMenu id="assessmentmethod" value="#{personSetManagedBean.currentEntity.assessmentmethod}" title="考核方式" >
+                             <f:selectItem itemLabel="" itemValue=""/>
+                            <f:selectItem itemLabel="AB幕僚" itemValue="I"/>
+                            <f:selectItem itemLabel="AB现场" itemValue="J"/>
+                            <f:selectItem itemLabel="非行政课级" itemValue="K"/>
+                            <f:selectItem itemLabel="行政课级" itemValue="L"/>
+                            <f:selectItem itemLabel="非行政部级" itemValue="M"/>
+                            <f:selectItem itemLabel="行政部级" itemValue="N"/>
+                            <f:selectItem itemLabel="不考核" itemValue="O"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="是否是行政职" for="isadministrative"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:selectOneMenu id="isadministrative" value="#{personSetManagedBean.currentEntity.isadministrative}" title="是否是行政职" >
+                            <f:selectItem itemLabel="是" itemValue="true"/>
+                            <f:selectItem itemLabel="否" itemValue="false"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="系数" for="coefficient"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="coefficient" value="#{personSetManagedBean.currentEntity.coefficient}" title="系数"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="课级考核表" for="classscorecard"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:inputText id="classscorecard" value="#{personSetManagedBean.currentEntity.classscorecard}" title="课级考核表"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="部级考核表" for="departmentscorecard"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:inputText id="departmentscorecard" value="#{personSetManagedBean.currentEntity.departmentscorecard}" title="部级考核表"/>
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <div style="width: 100%;color: gray; font-size: 13px;" >
+                <p style="height: 14px;color: red">
+                    I:AB职等幕僚使用。计算方式：60%客观+40%主管
+                </p>
+                <p style="height: 14px;color: red">
+                    J:AB职等现场使用。计算方式：70%客观+30%主管
+                </p>
+                <p style="height: 14px;color: red">
+                    K:非行政课级。计算方式：(50%课级考核表+50%部级考核表)60%+40%主管考评
+                </p>
+                <p style="height: 14px;color: red">
+                    L:行政课级。 计算方式：(50%课级考核表+50%部级考核表)80%+20%主管考评
+                </p>
+                <p style="height: 14px;color: red">
+                    M:非行政部级。计算方式：60%部级考核表+40%主管考评
+                </p>
+                <p style="height: 14px;color: red">
+                    N:行政部级。 计算方式：80%部级考核表+20%主管考评
+                </p>
+                <p style="height: 14px;color: red">
+                    O:不考核
+                </p>
+            </div>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formOne" trigger="">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>

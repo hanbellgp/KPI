@@ -12,6 +12,7 @@ import cn.hanbell.kpi.entity.ScorecardContent;
 import cn.hanbell.kpi.entity.ScorecardDetail;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ import javax.persistence.Query;
 import org.apache.commons.jexl3.JexlBuilder;
 import org.apache.commons.jexl3.JexlContext;
 import org.apache.commons.jexl3.JexlEngine;
+import org.apache.commons.jexl3.JexlException;
 import org.apache.commons.jexl3.JexlExpression;
 import org.apache.commons.jexl3.MapContext;
 
@@ -101,13 +103,15 @@ public class ScorecardBean extends SuperEJBForKPI<Scorecard> {
         }
     }
 
-    public Scorecard findByNameAndSeq(String name, int y) {
-        Query query = getEntityManager().createNamedQuery("Scorecard.findByNameAndSeq");
+    public Scorecard findByNameAndSeqAndCompany(String name, int y,String company) {
+        Query query = getEntityManager().createNamedQuery("Scorecard.findByNameAndSeqAndComapny");
         query.setParameter("name", name);
         query.setParameter("seq", y);
+        query.setParameter("company", company);
         try {
             return (Scorecard) query.getSingleResult();
         } catch (Exception ex) {
+
             return null;
         }
     }
@@ -118,6 +122,29 @@ public class ScorecardBean extends SuperEJBForKPI<Scorecard> {
         query.setParameter("seq", y);
         try {
             return query.getResultList();
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    public Scorecard findByDeptnoAndYear(String deptno, int y) {
+        Query query = getEntityManager().createNamedQuery("Scorecard.findByDeptnoAndYear");
+        query.setParameter("deptno", deptno);
+        query.setParameter("seq", y);
+        try {
+            return (Scorecard) query.getSingleResult();
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    public Scorecard findByDeptnoAndLvlAndYear(String deptno, String lvl, int y) {
+        Query query = getEntityManager().createNamedQuery("Scorecard.findByDeptnoAndLvlAndYear");
+        query.setParameter("deptno", deptno);
+        query.setParameter("lvl", lvl);
+        query.setParameter("seq", y);
+        try {
+            return (Scorecard) query.getSingleResult();
         } catch (Exception ex) {
             return null;
         }
@@ -252,6 +279,7 @@ public class ScorecardBean extends SuperEJBForKPI<Scorecard> {
         jc.set("object", d);
         // Evaluate the expression
         try {
+            jc.toString();
             Object value = exp.evaluate(jc);
             BigDecimal score = BigDecimal.valueOf(Double.valueOf(value.toString()));
             switch (n) {
@@ -280,6 +308,73 @@ public class ScorecardBean extends SuperEJBForKPI<Scorecard> {
             }
         } catch (NumberFormatException ex) {
             throw ex;
+        }
+    }
+
+    public void setContentScoreByCoefficient(ScorecardContent d, String n) throws Exception {
+        if (d.getScoreJexl() == null || "".equals(d.getScoreJexl())) {
+            throw new NullPointerException("表达式为空");
+        }
+        double score = 0.0;
+        double minDifference = 0.0;
+        double minCoefficient = 0.0;
+        for (double i = 0.1; i <= 0.9; i = i + 0.1) {
+            JexlEngine jexl = new JexlBuilder().create();
+            String jexlExp = d.getScoreJexl().replace("object.c${n}",String.valueOf(i)).replace("${n}", n);
+            JexlExpression exp = jexl.createExpression(jexlExp);
+            JexlContext jc = new MapContext();
+            jc.set("object", d);
+            double value = (double) exp.evaluate(jc);
+            if (Math.abs(100 - value) > minDifference) {
+                minDifference = value;
+                minCoefficient = i;
+                score = value;
+            }
+        }
+        BigDecimal bigDecimalScore = BigDecimal.valueOf(score);
+        if (d.getMinNum() != null && bigDecimalScore.compareTo(d.getMinNum()) < 0) {
+            bigDecimalScore = d.getMinNum();
+        }
+        if (d.getMaxNum() != null && bigDecimalScore.compareTo(d.getMaxNum()) > 0) {
+            bigDecimalScore = d.getMaxNum();
+        }
+        switch (n) {
+            case "q1":
+                d.getDeptScore().setSq1(bigDecimalScore);
+                d.getGeneralScore().setSq1(bigDecimalScore);
+                d.setCq1(BigDecimal.valueOf(minCoefficient));
+                break;
+            case "q2":
+                d.getDeptScore().setSq2(bigDecimalScore);
+                d.getGeneralScore().setSq2(bigDecimalScore);
+                d.setCq2(BigDecimal.valueOf(minCoefficient));
+                break;
+            case "h1":
+                d.getDeptScore().setSh1(bigDecimalScore);
+                d.getGeneralScore().setSh1(bigDecimalScore);
+                d.setCh1(BigDecimal.valueOf(minCoefficient));
+                break;
+            case "q3":
+                d.getDeptScore().setSq3(bigDecimalScore);
+                d.getGeneralScore().setSq3(bigDecimalScore);
+                d.setCq3(BigDecimal.valueOf(minCoefficient));
+                break;
+            case "q4":
+                d.getDeptScore().setSq4(bigDecimalScore);
+                d.getGeneralScore().setSq4(bigDecimalScore);
+                d.setCq4(BigDecimal.valueOf(minCoefficient));
+                break;
+            case "h2":
+                d.getDeptScore().setSh2(bigDecimalScore);
+                d.getGeneralScore().setSh2(bigDecimalScore);
+                d.setCh2(BigDecimal.valueOf(minCoefficient));
+                break;
+            case "fy":
+                d.getDeptScore().setSfy(bigDecimalScore);
+                d.getGeneralScore().setSfy(bigDecimalScore);
+                d.setCfy(BigDecimal.valueOf(minCoefficient));
+                break;
+            default:
         }
     }
 
@@ -365,119 +460,36 @@ public class ScorecardBean extends SuperEJBForKPI<Scorecard> {
             switch (n) {
                 case "q1":
                     d.getGeneralScore().setSq1(score.setScale(2, BigDecimal.ROUND_HALF_UP));
+                    d.getDeptScore().setSq1(score.setScale(2, BigDecimal.ROUND_HALF_UP));
                     break;
                 case "q2":
                     d.getGeneralScore().setSq2(score.setScale(2, BigDecimal.ROUND_HALF_UP));
+                    d.getDeptScore().setSq2(score.setScale(2, BigDecimal.ROUND_HALF_UP));
                     break;
                 case "h1":
                     d.getGeneralScore().setSh1(score.setScale(2, BigDecimal.ROUND_HALF_UP));
+                    d.getDeptScore().setSh1(score.setScale(2, BigDecimal.ROUND_HALF_UP));
                     break;
                 case "q3":
                     d.getGeneralScore().setSq3(score.setScale(2, BigDecimal.ROUND_HALF_UP));
+                    d.getDeptScore().setSq3(score.setScale(2, BigDecimal.ROUND_HALF_UP));
                     break;
                 case "q4":
                     d.getGeneralScore().setSq4(score.setScale(2, BigDecimal.ROUND_HALF_UP));
+                    d.getDeptScore().setSq4(score.setScale(2, BigDecimal.ROUND_HALF_UP));
                     break;
                 case "h2":
                     d.getGeneralScore().setSh2(score.setScale(2, BigDecimal.ROUND_HALF_UP));
+                    d.getDeptScore().setSh2(score.setScale(2, BigDecimal.ROUND_HALF_UP));
                     break;
                 case "fy":
                     d.getGeneralScore().setSfy(score.setScale(2, BigDecimal.ROUND_HALF_UP));
+                    d.getDeptScore().setSfy(score.setScale(2, BigDecimal.ROUND_HALF_UP));
                     break;
                 default:
             }
         } catch (Exception ex) {
             throw ex;
-        }
-    }
-
-    public void setContentScoreByCoefficient(ScorecardContent d, String n) throws Exception {
-        if (d.getScoreJexl() == null || "".equals(d.getScoreJexl())) {
-            throw new NullPointerException("表达式为空");
-        }
-        double score = 0.0;
-        double minDifference = 500;
-        double minCoefficient = 0.0;
-        BigDecimal target = BigDecimal.ZERO;
-        switch (n) {
-            case "q1":
-                target = d.getPq1();
-                break;
-            case "q2":
-                target = d.getPq2();
-                break;
-            case "q3":
-                target = d.getPq3();
-                break;
-            case "q4":
-                target = d.getPq4();
-                break;
-            case "h1":
-                target = d.getPh1();
-                break;
-            case "h2":
-                target = d.getPh2();
-                break;
-        }
-        for (double i = 0.1; i <= 0.9; i = i + 0.1) {
-            JexlEngine jexl = new JexlBuilder().create();
-            String jexlExp = d.getScoreJexl().replace("object.c${n}", String.valueOf(i)).replace("${n}", n);
-            JexlExpression exp = jexl.createExpression(jexlExp);
-            JexlContext jc = new MapContext();
-            jc.set("object", d);
-            BigDecimal score1 = BigDecimal.valueOf(Double.valueOf(exp.evaluate(jc).toString()));
-            double value = score1.doubleValue();
-            if (Math.abs(target.doubleValue() - value) < minDifference) {
-                minDifference = Math.abs(target.doubleValue() - value);
-                minCoefficient = i;
-                score = value;
-              
-            }
-        }
-        BigDecimal bigDecimalScore = BigDecimal.valueOf(score);
-        if (d.getMinNum() != null && bigDecimalScore.compareTo(d.getMinNum()) < 0) {
-            bigDecimalScore = d.getMinNum();
-        }
-        if (d.getMaxNum() != null && bigDecimalScore.compareTo(d.getMaxNum()) > 0) {
-            bigDecimalScore = d.getMaxNum();
-        }
-        switch (n) {
-            case "q1":
-                d.getDeptScore().setSq1(bigDecimalScore);
-                d.getGeneralScore().setSq1(bigDecimalScore);
-                d.setCq1(BigDecimal.valueOf(minCoefficient));
-                break;
-            case "q2":
-                d.getDeptScore().setSq2(bigDecimalScore);
-                d.getGeneralScore().setSq2(bigDecimalScore);
-                d.setCq2(BigDecimal.valueOf(minCoefficient));
-                break;
-            case "h1":
-                d.getDeptScore().setSh1(bigDecimalScore);
-                d.getGeneralScore().setSh1(bigDecimalScore);
-                d.setCh1(BigDecimal.valueOf(minCoefficient));
-                break;
-            case "q3":
-                d.getDeptScore().setSq3(bigDecimalScore);
-                d.getGeneralScore().setSq3(bigDecimalScore);
-                d.setCq3(BigDecimal.valueOf(minCoefficient));
-                break;
-            case "q4":
-                d.getDeptScore().setSq4(bigDecimalScore);
-                d.getGeneralScore().setSq4(bigDecimalScore);
-                d.setCq4(BigDecimal.valueOf(minCoefficient));
-                break;
-            case "h2":
-                d.getDeptScore().setSh2(bigDecimalScore);
-                d.getGeneralScore().setSh2(bigDecimalScore);
-                d.setCh2(BigDecimal.valueOf(minCoefficient));
-                break;
-            case "fy":
-                d.getDeptScore().setSfy(bigDecimalScore);
-                d.getGeneralScore().setSfy(bigDecimalScore);
-                d.setCfy(BigDecimal.valueOf(minCoefficient));
-                break;
-            default:
         }
     }
 

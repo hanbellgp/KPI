@@ -60,7 +60,7 @@ public class QRAPercentOfPassReportBean extends BscChartManagedBean {
     @Override
     public void init() {
         super.init();
-        indicatorList = indicatorBean.findByCategoryAndYear("品质水准", y);
+        indicatorList = indicatorBean.findByCategoryAndYear(indicatorChart.getRemark(), y);
         if (indicatorList.isEmpty()) {
             showInfoMsg("Info", "没有数据可展示");
         }

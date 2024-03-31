@@ -7,6 +7,7 @@ package cn.hanbell.kpi.ejb;
 
 import cn.hanbell.kpi.comm.SuperEJBForKPI;
 import cn.hanbell.kpi.entity.PolicyDetail;
+import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
@@ -17,9 +18,22 @@ import javax.ejb.Stateless;
 @Stateless
 @LocalBean
 public class PolicyDetailBean extends SuperEJBForKPI<PolicyDetail> {
-    
+
     public PolicyDetailBean() {
         super(PolicyDetail.class);
     }
-    
+
+    @Override
+    public List<PolicyDetail> findByPId(Object value) {
+        List<PolicyDetail> detail = super.findByPId(value);
+        detail.sort((PolicyDetail o1, PolicyDetail o2) -> {
+            if (o1.getSeq() > o2.getSeq()) {
+                return 1;
+            } else {
+                return -1;
+            }
+        });
+        return detail; 
+    }
+
 }

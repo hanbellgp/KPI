@@ -53,7 +53,15 @@ public class PolicyQueryBean extends SuperQueryBean<PolicyDetail> {
         sortFields.put("seq", "ASC");
         filterFields.put("parent.year", userManagedBean.getY());
         params = ec.getRequestParameterValuesMap();
+        if (params != null) {
+            if (params.containsKey("deptno")) {
+                queryDeptno = params.get("deptno")[0];
+                filterFields.put("parent.deptno", this.queryDeptno.substring(0, 2)+"%");
+            }
+        }
+        
         detailList = policyDetailBean.findByFilters(filterFields, sortFields);
+
     }
 
     @Override
@@ -69,7 +77,7 @@ public class PolicyQueryBean extends SuperQueryBean<PolicyDetail> {
             filterFields.put("seqname", this.querySeqName);
         }
         if (this.queryName != null && !"".equals(this.queryName)) {
-            filterFields.put("name.", this.queryName);
+            filterFields.put("name", this.queryName);
         }
         if (this.queryDeptno != null && !"".equals(this.queryDeptno)) {
             filterFields.put("parent.deptno", this.queryDeptno);
@@ -80,7 +88,7 @@ public class PolicyQueryBean extends SuperQueryBean<PolicyDetail> {
         filterFields.put("parent.year", userManagedBean.getY());
         detailList = policyDetailBean.findByFilters(filterFields, sortFields);
     }
-    
+
     @Override
     public void closeDialog() {
         if (this.selectDetail != null && !this.selectDetail.isEmpty()) {
@@ -89,9 +97,6 @@ public class PolicyQueryBean extends SuperQueryBean<PolicyDetail> {
             this.showWarnMsg("Warn", "没有选择数据!");
         }
     }
-
-
-    
 
     public String getQueryPerspective() {
         return queryPerspective;
