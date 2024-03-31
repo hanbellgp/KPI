@@ -26,8 +26,7 @@
                 <p:row>
                     <p:column styleClass="Wid20"><p:outputLabel value="方针名称" for="name" /></p:column>
                     <p:column styleClass="Wid30">
-                        <p:outputLabel id="name" value="#{policyManagedBean.policy.name}" title="Name"
-                                       />
+                        <p:outputLabel id="name" value="#{policyManagedBean.policy.name}" title="Name"  />
                     </p:column>
                     <p:column styleClass="Wid20"><p:outputLabel value="方针年度" for="year" /></p:column>
                     <p:column styleClass="Wid30">
@@ -87,28 +86,14 @@
                     </f:facet>
                     <h:outputText value="#{item.perspective.concat(item.objective)}"/>
                 </p:column>
-
-                <p:column styleClass="Wid20" rendered="#{empty item.fromkpi and empty item.fromplm}">
+                <p:column styleClass="Wid30" >
                     <f:facet name="header">
                         <h:outputText value="方针内容"/>
                     </f:facet>
+                    <p:graphicImage name="images/P.png" library="ultima-layout" style="height:15px;width:15px;background-color: #EEE8AA" rendered="#{item.fromplm!='' and item.fromplm!=null}"/>
+                      <p:graphicImage name="images/K.png" library="ultima-layout" style="height:15px;width:15px;background-color: #EEE8AA" rendered="#{item.fromkpi!='' and item.fromkpi!=null}"/>
                     <h:outputText value="#{item.seqname} #{item.name}"/>
                 </p:column>
-                <p:column styleClass="Wid30" rendered="#{!empty item.fromkpi and empty item.fromplm}">
-                    <f:facet name="header">
-                        <h:outputText value="方针内容"/>
-                    </f:facet>
-                    <p:graphicImage name="images/K.png" library="ultima-layout" style="height:15px;width:15px;background-color: #EEE8AA"/>
-                    <h:outputText value="#{item.seqname} #{item.name}"/>
-                </p:column>
-                <p:column styleClass="Wid30" rendered="#{empty item.fromkpi and !empty item.fromplm}">
-                    <f:facet name="header">
-                        <h:outputText value="方针内容"/>
-                    </f:facet>
-                    <p:graphicImage name="images/P.png" library="ultima-layout" style="height:15px;width:15px;background-color: #EEE8AA"/>
-                    <h:outputText value="#{item.seqname} #{item.seqname+item.name}"/>
-                </p:column>
-
                 <p:column rendered="#{policyManagedBean.userManagedBean.getQ()==1}">
                     <f:facet name="header">
                         <h:outputText value="Q1目标"/>
@@ -318,14 +303,14 @@
                             <p:inputNumber id="pq2" value="#{policyManagedBean.selectPolicyDetail.pq2}" title="pq2"
                                            symbol="%" symbolPosition="s"  emptyValue="zero" />
                         </p:column>
-                        <p:column styleClass="Wid5">
-                            <p:commandButton actionListener="#{policyManagedBean.update()}" value="Q2原因" 
-                                             process="@this,formList:dlgDetail"  update="formList:dlgPolicyFactorQ2"  oncomplete="PF('dlgPolicyFactorQ2').show();" >
+                        <p:column styleClass="Wid5"  rowspan="2">
+                            <p:commandButton actionListener="#{policyManagedBean.update()}" value="上半年原因" 
+                                             process="@this,formList:dlgDetail"  update="formList:dlgPolicyFactorHy"  oncomplete="PF('dlgPolicyFactorHy').show();" >
                             </p:commandButton>
                         </p:column>
-                        <p:column styleClass="Wid5">
-                            <p:commandButton actionListener="#{policyManagedBean.update()}"  value="Q2对策" 
-                                             process="@this,formList:dlgDetail"  update="formList:dlgPolicyCountermeasureQ2"  oncomplete="PF('dlgPolicyCountermeasureQ2').show();" >
+                        <p:column styleClass="Wid5"  rowspan="2">
+                            <p:commandButton actionListener="#{policyManagedBean.update()}"  value="上半年对策" 
+                                             process="@this,formList:dlgDetail"  update="formList:dlgPolicyCountermeasureHy"  oncomplete="PF('dlgPolicyCountermeasureHy').show();" >
                             </p:commandButton>
                         </p:column>
                     </p:row>
@@ -352,16 +337,7 @@
                             <p:inputNumber id="phy" value="#{policyManagedBean.selectPolicyDetail.phy}" title="phy"
                                            symbol="%" symbolPosition="s" emptyValue="zero"/>
                         </p:column>
-                        <p:column styleClass="Wid5">
-                            <p:commandButton actionListener="#{policyManagedBean.update()}" value="上半年原因" 
-                                             process="@this,formList:dlgDetail"  update="formList:dlgPolicyFactorHy"  oncomplete="PF('dlgPolicyFactorHy').show();" >
-                            </p:commandButton>
-                        </p:column>
-                        <p:column styleClass="Wid5">
-                            <p:commandButton actionListener="#{policyManagedBean.update()}"  value="上半年对策" 
-                                             process="@this,formList:dlgDetail"  update="formList:dlgPolicyCountermeasureHy"  oncomplete="PF('dlgPolicyCountermeasureHy').show();" >
-                            </p:commandButton>
-                        </p:column>
+
                     </p:row>
                     <p:row>
                         <p:column styleClass="Wid5"><h:outputText value="Q3"/></p:column>
@@ -418,14 +394,14 @@
                             <p:inputNumber id="pq4" value="#{policyManagedBean.selectPolicyDetail.pq4}" title="pq4"
                                            symbol="%" symbolPosition="s" emptyValue="zero"/>
                         </p:column>
-                        <p:column styleClass="Wid5">
-                            <p:commandButton actionListener="#{policyManagedBean.update()}" value="Q4原因" 
-                                             process="@this,formList:dlgDetail"  update="formList:dlgPolicyFactorQ4"  oncomplete="PF('dlgPolicyFactorQ4').show();" >
+                        <p:column styleClass="Wid5" rowspan="2">
+                            <p:commandButton actionListener="#{policyManagedBean.update()}" value="全年原因" 
+                                             process="@this,formList:dlgDetail"  update="formList:dlgPolicyFactorFy"  oncomplete="PF('dlgPolicyFactorFy').show();" >
                             </p:commandButton>
                         </p:column>
-                        <p:column styleClass="Wid5">
-                            <p:commandButton actionListener="#{policyManagedBean.update()}"  value="Q4对策" 
-                                             process="@this,formList:dlgDetail"  update="formList:dlgPolicyCountermeasureQ4"  oncomplete="PF('dlgPolicyCountermeasureQ4').show();" >
+                        <p:column styleClass="Wid5" rowspan="2">
+                            <p:commandButton actionListener="#{policyManagedBean.update()}"  value="全年对策" 
+                                             process="@this,formList:dlgDetail"  update="formList:dlgPolicyCountermeasureFy"  oncomplete="PF('dlgPolicyCountermeasureFy').show();" >
                             </p:commandButton>
                         </p:column>
                     </p:row>
@@ -451,16 +427,7 @@
                             <p:inputNumber id="pfy" value="#{policyManagedBean.selectPolicyDetail.pfy}" title="pfy"
                                            symbol="%" symbolPosition="s" emptyValue="zero"/>
                         </p:column>
-                        <p:column styleClass="Wid5">
-                            <p:commandButton actionListener="#{policyManagedBean.update()}" value="全年原因" 
-                                             process="@this,formList:dlgDetail"  update="formList:dlgPolicyFactorFy"  oncomplete="PF('dlgPolicyFactorFy').show();" >
-                            </p:commandButton>
-                        </p:column>
-                        <p:column styleClass="Wid5">
-                            <p:commandButton actionListener="#{policyManagedBean.update()}"  value="全年对策" 
-                                             process="@this,formList:dlgDetail"  update="formList:dlgPolicyCountermeasureFy"  oncomplete="PF('dlgPolicyCountermeasureFy').show();" >
-                            </p:commandButton>
-                        </p:column>
+
                     </p:row>
                     <f:facet name="footer">
                         <p:row>

@@ -1,0 +1,230 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="content">
+        <h:form id="formList">
+            <p:growl id="growl" showSummary="false" showDetail="true"/>
+            <p:panelGrid id="plgQuery" columns="4" columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgQuery Wid100">
+                <f:facet name="header">
+                    查询条件
+                </f:facet>
+                <h:outputLabel value="公司别" for="facno" />
+                <h:outputLabel id="facno" value="#{personSetManagedBean.facno}" title="公司别" />
+
+                <h:outputLabel value="是否在职" for="queryStatus" />
+                <p:selectOneMenu id="queryStatus" value="#{personSetManagedBean.queryStatus}" title="是否在职" >
+                    <f:selectItem itemLabel="全部" itemValue="ALL"/>
+                    <f:selectItem itemLabel="在职" itemValue="N"/>
+                    <f:selectItem itemLabel="离职" itemValue="V"/>
+                </p:selectOneMenu>
+
+                <h:outputLabel value="绩效人工号" for="queryUserId" />
+                <p:inputText id="queryUserId" value="#{personSetManagedBean.queryUserId}" title="工号" />
+
+                <h:outputLabel value="绩效人姓名" for="queryUserName" />
+                <p:inputText id="queryUserName" value="#{personSetManagedBean.queryUserName}" title="姓名" />
+
+                <h:outputLabel value="绩效部门编号" for="queryDeptNo" />
+                <p:inputText id="queryDeptNo" value="#{personSetManagedBean.queryDeptNo}" title="部门编号" />
+
+                <h:outputLabel value="绩效部门名称" for="queryDeptName" />
+                <p:inputText id="queryDeptName" value="#{personSetManagedBean.queryDeptName}" title="部门名称" />
+
+                <h:outputLabel value="职等" for="queryOfficialRank" />
+                <p:inputText id="queryOfficialRank" value="#{personSetManagedBean.queryOfficialRank}" title="职等" />
+
+                <h:outputLabel value="岗位类别" for="queryJobCategory" />
+                <p:inputText id="queryJobCategory" value="#{personSetManagedBean.queryJobCategory}" title="岗位类别" />
+
+                <h:outputLabel value="职务" for="queryDuties" />
+                <p:inputText id="queryDuties" value="#{personSetManagedBean.queryDuties}" title="职务" />
+
+                <h:outputLabel value="是否性政职" for="queryAdministrative" />
+                <p:selectOneMenu id="queryAdministrative" value="#{personSetManagedBean.queryAdministrative}" title="是否性政职" >
+                    <f:selectItem itemLabel="全部" itemValue="ALL"/>
+                    <f:selectItem itemLabel="是" itemValue="true"/>
+                    <f:selectItem itemLabel="否" itemValue="false"/>
+                </p:selectOneMenu>
+
+            </p:panelGrid>
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{personSetManagedBean.init()}"  icon="ui-icon-sync"  update="formList"/>
+                    <p:commandButton id="btnView" value="查看" action="#{personSetManagedBean.view('personsetView')}"  icon="ui-icon-document" update="growl"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:commandButton id="btnAddSubScorecard" value="生成主观考核" actionListener="#{personSetManagedBean.createSubjectiveAssessment()}" icon="ui-icon-save"
+                                     update=":formList"/>
+                    <p:commandButton id="btnExportMoney" value="奖金计算" actionListener="#{personSetManagedBean.test()}" icon="ui-icon-print"
+                                     update=":formList"/>
+                    <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
+                        <p:menuitem id="btnEdit" value="编辑" icon="ui-icon-pencil" action="#{personSetManagedBean.edit('personsetEdit')}"
+                                    rendered="#{personSetManagedBean.doEdit}" update="growl"/>
+                        <p:menuitem id="btnDelete" value="删除" icon="ui-icon-trash" actionListener="#{personSetManagedBean.delete()}"
+                                    rendered="#{personSetManagedBean.doDel}" update=":formList">
+                            <p:confirm header="系统提示" message="删除吗?" icon="ui-icon-alert" />
+                        </p:menuitem>
+                        <p:menuitem id="btnExport" value="导出" icon="ui-icon-print" actionListener="#{personSetManagedBean.print()}"
+                                    update=":formList"/>
+                        <p:menuitem id="btnImport" value="导入" icon="ui-icon-plus"   update=":formList" oncomplete="PF('dataRecordAdd').show();"
+                                    />
+                    </p:splitButton>
+                    <p:commandButton id="btnReset" value="重置" actionListener="#{personSetManagedBean.reset()}" icon="ui-icon-refresh"
+                                     update=":formList"/>
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{personSetManagedBean.query()}" icon="ui-icon-search"
+                                     update=":formList"/>
+                </f:facet>
+            </p:toolbar>
+            <p:dataTable value="#{personSetManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="15,30,45,90,250"  lazy="true"
+                         selection="#{personSetManagedBean.entityList}" rowKey="#{item.id}"  >
+                <f:facet name="header">
+                    人员设置
+                </f:facet>
+                <p:column selectionMode="multiple" styleClass="Wid5" style="text-align:center"/>
+                <p:ajax event="rowSelect"  update=":formList:toolbar" />
+                <p:ajax event="rowUnselect" update=":formList:toolbar" />
+                <p:column styleClass="Wid5">
+                    <f:facet name="header">
+                        <h:outputText value="工号"/>
+                    </f:facet>
+                    <h:outputText value="#{item.userid}"/>
+                </p:column>
+                <p:column styleClass="Wid5">
+                    <f:facet name="header">
+                        <h:outputText value="姓名"/>
+                    </f:facet>
+                    <h:outputText value="#{item.username}"/>
+                </p:column>
+                <p:column styleClass="Wid5">
+                    <f:facet name="header">
+                        <h:outputText value="部门编号"/>
+                    </f:facet>
+                    <h:outputText value="#{item.deptno}"/>
+                </p:column>
+                <p:column styleClass="Wid5">
+                    <f:facet name="header">
+                        <h:outputText value="部门名称"/>
+                    </f:facet>
+                    <h:outputText value="#{item.deptname}"/>
+                </p:column>
+                <p:column styleClass="Wid5">
+                    <f:facet name="header">
+                        <h:outputText value="职等"/>
+                    </f:facet>
+                    <h:outputText value="#{item.officialrank}"/>
+                </p:column>
+                <p:column styleClass="Wid5">
+                    <f:facet name="header">
+                        <h:outputText value="职等名称"/>
+                    </f:facet>
+                    <h:outputText value="#{item.officialrankdesc}"/>
+                </p:column>
+                <p:column styleClass="Wid5">
+                    <f:facet name="header">
+                        <h:outputText value="岗位类别"/>
+                    </f:facet>
+                    <h:outputText value="#{item.jobcategory}"/>
+                </p:column>
+                <p:column styleClass="Wid5">
+                    <f:facet name="header">
+                        <h:outputText value="职务"/>
+                    </f:facet>
+                    <h:outputText value="#{item.duties}"/>
+                </p:column>
+                <p:column styleClass="Wid5">
+                    <f:facet name="header">
+                        <h:outputText value="属性"/>
+                    </f:facet>
+                    <h:outputText value="#{item.type}"/>
+                </p:column>
+                <p:column styleClass="Wid5">
+                    <f:facet name="header">
+                        <h:outputText value="考核方式"/>
+                    </f:facet>
+                    <h:outputText value="#{item.assessmentmethod}"/>
+                </p:column>
+                <p:column styleClass="Wid5">
+                    <f:facet name="header">
+                        <h:outputText value="是否行政职"/>
+                    </f:facet>
+                    <h:outputText value="#{item.isadministrative}"/>
+                </p:column>
+                <p:column styleClass="Wid5">
+                    <f:facet name="header">
+                        <h:outputText value="部级考核表"/>
+                    </f:facet>
+                    <h:outputText value="#{item.departmentscorecard}"/>
+                </p:column>
+                <p:column styleClass="Wid5">
+                    <f:facet name="header">
+                        <h:outputText value="课级考核表"/>
+                    </f:facet>
+                    <h:outputText value="#{item.classscorecard}"/>
+                </p:column>
+                <p:column styleClass="Wid5">
+                    <f:facet name="header">
+                        <h:outputText value="单位发放比率"/>
+                    </f:facet>
+                    <h:outputText value="#{item.percentage}%"/>
+                </p:column>
+                <p:column styleClass="Wid5">
+                    <f:facet name="header">
+                        <h:outputText value="在职状态"/>
+                    </f:facet>
+                    <h:outputText value="#{item.status}"/>
+                </p:column>
+            </p:dataTable>
+            <div style="width: 100%;color: gray; font-size: 13px;" >
+                <p style="height: 14px;color: red">
+                    I:AB职等幕僚使用。计算方式：60%客观+40%主管
+                </p>
+                <p style="height: 14px;color: red">
+                    J:AB职等现场使用。计算方式：70%客观+30%主管
+                </p>
+                <p style="height: 14px;color: red">
+                    K:非行政课级。计算方式：(50%课级考核表+50%部级考核表)60%+40%主管考评
+                </p>
+                <p style="height: 14px;color: red">
+                    L:行政课级。 计算方式：(50%课级考核表+50%部级考核表)80%+20%主管考评
+                </p>
+                <p style="height: 14px;color: red">
+                    M:非行政部级。计算方式：60%部级考核表+40%主管考评
+                </p>
+                <p style="height: 14px;color: red">
+                    N:行政部级。 计算方式：80%部级考核表+20%主管考评
+                </p>
+                <p style="height: 14px;color: red">
+                    O:不考核
+                </p>
+            </div>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:dialog id="dataRecordAdd" widgetVar="dataRecordAdd" width="40%" style="border-color: #666666">
+                <p:panelGrid id="dataRecordValue" styleClass="plgDetail Wid100">
+                    <f:facet name="header" >
+                        <p:row >
+                            <p:column colspan="4">资料导入</p:column>
+                        </p:row>
+                    </f:facet>
+                </p:panelGrid>
+                <p:panelGrid id="dataRecordsValue" styleClass="plgDetail Wid100">
+                    <p:row>
+                        <p:fileUpload id="fileUpload" fileUploadListener="#{personSetManagedBean.handleFileUploadWhenNew}"  styleClass="fileUpload"
+                                      allowTypes="/(\.|\/)(xls)$/" sizeLimit="5000000" label="选择" uploadLabel="上传" cancelLabel="还原" update=":formList"/>
+                    </p:row>
+                </p:panelGrid>
+            </p:dialog>
+            <p:blockUI id="blockUI" block="formList" trigger="">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>

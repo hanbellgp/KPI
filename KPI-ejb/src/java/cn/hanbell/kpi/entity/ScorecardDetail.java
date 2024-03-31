@@ -75,7 +75,7 @@ public class ScorecardDetail extends SuperDetailEntity {
     @OneToOne
     private ScorecardExplanation summaryScore2;
 
-    @Size(max = 45)
+    @Size(max = 70)
     @Column(name = "content")
     private String content;
     @Size(max = 10)
@@ -283,6 +283,12 @@ public class ScorecardDetail extends SuperDetailEntity {
     @Size(max = 45)
     @Column(name = "projectName")
     private String projectName;
+    @Size(max = 45)
+    @Column(name = "policySeq")
+    private String policySeq;
+    @Size(max = 45)
+    @Column(name = "policyName")
+    private String policyName;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 2)
@@ -1145,6 +1151,22 @@ public class ScorecardDetail extends SuperDetailEntity {
         this.projectName = projectName;
     }
 
+    public String getPolicySeq() {
+        return policySeq;
+    }
+
+    public void setPolicySeq(String policySeq) {
+        this.policySeq = policySeq;
+    }
+
+    public String getPolicyName() {
+        return policyName;
+    }
+
+    public void setPolicyName(String policyName) {
+        this.policyName = policyName;
+    }
+
     public String getJexlName() {
         return jexlName;
     }
@@ -1153,7 +1175,6 @@ public class ScorecardDetail extends SuperDetailEntity {
         this.jexlName = jexlName;
     }
 
-    
     @Override
     public int hashCode() {
         int hash = 0;

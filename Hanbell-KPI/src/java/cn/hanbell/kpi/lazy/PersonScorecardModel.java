@@ -5,23 +5,17 @@
  */
 package cn.hanbell.kpi.lazy;
 
-import cn.hanbell.kpi.control.UserManagedBean;
-import cn.hanbell.kpi.entity.Indicator;
-import cn.hanbell.kpi.entity.PolicyDetail;
+import cn.hanbell.kpi.entity.PersonScorecard;
 import com.lightshell.comm.BaseLazyModel;
 import com.lightshell.comm.SuperEJB;
-import java.util.List;
-import java.util.Map;
-import org.primefaces.model.SortOrder;
 
 /**
  *
  * @author C2082
  */
-public class PolicyDetailModel extends BaseLazyModel<PolicyDetail> {
+public class PersonScorecardModel extends BaseLazyModel<PersonScorecard> {
 
-
-    public PolicyDetailModel(SuperEJB superEJB) {
+    public PersonScorecardModel(SuperEJB superEJB) {
         this.superEJB = superEJB;
     }
 }

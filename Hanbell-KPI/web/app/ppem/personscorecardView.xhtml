@@ -1,0 +1,675 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:define name="content">
+        <style>
+            .scoreInputNumber{
+                text-align:left !important;
+            }
+        </style>
+        <h:form id="formOne">
+            <p:growl id="growl"  showSummary="false" showDetail="true" />
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:button id="btnReturn" value="返回" outcome="personscorecard" icon="ui-icon-restore"/>
+                </f:facet>
+            </p:toolbar>
+            <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
+                <f:facet name="header">
+                    <p:row>
+                        <p:column colspan="4">人员考核评分--查看</p:column>
+                    </p:row>
+                </f:facet>
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="工号" for="userid"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="userid" value="#{personScorecardManagedBean.currentEntity.userid}" title="工号"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="名字" for="username"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="username" value="#{personScorecardManagedBean.currentEntity.username}" title="名字"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="年份" for="year"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="year" value="#{personScorecardManagedBean.currentEntity.year}" title="工号"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="类型" for="type"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="type" value="#{personScorecardManagedBean.currentEntity.personset.type}" title="类型"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="部门" for="deptno"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="deptno" value="#{personScorecardManagedBean.currentEntity.personset.deptno}" title="部门"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="部门名称" for="deptname"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="deptname" value="#{personScorecardManagedBean.currentEntity.personset.deptname}" title="部门名称"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="职等" for="officialrank"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="officialrank" value="#{personScorecardManagedBean.currentEntity.personset.officialrank}" title="职等"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="岗位" for="duties"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="duties" value="#{personScorecardManagedBean.currentEntity.personset.duties}" title="部门名称"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="Q1主观" for="subquarter1"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="subquarter1" value="#{personScorecardManagedBean.currentEntity.subquarter1}" title="Q1主观"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="Q1客观" for="objquarter1"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="objquarter1" value="#{personScorecardManagedBean.currentEntity.objquarter1}" title="Q1客观"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="Q1主观小计" for="porsubquarter1"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="porsubquarter1" value="#{personScorecardManagedBean.currentEntity.porsubquarter1}" title="Q1主观小计"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="Q1客观小计" for="porobjquarter1"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="porobjquarter1" value="#{personScorecardManagedBean.currentEntity.porobjquarter1}" title="Q1客观小计"/>
+                    </p:column>
+                </p:row>
+                
+                                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="Q2主观" for="subquarter2"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="subquarter2" value="#{personScorecardManagedBean.currentEntity.subquarter2}" title="Q2主观"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="Q1客观" for="objquarter2"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="objquarter2" value="#{personScorecardManagedBean.currentEntity.objquarter2}" title="Q2客观"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="Q2主观小计" for="porsubquarter2"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="porsubquarter2" value="#{personScorecardManagedBean.currentEntity.porsubquarter2}" title="Q2主观小计"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="Q2客观小计" for="porobjquarter2"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="porobjquarter2" value="#{personScorecardManagedBean.currentEntity.porobjquarter2}" title="Q2客观小计"/>
+                    </p:column>
+                </p:row>
+                
+                                
+                                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="Q3主观" for="subquarter3"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="subquarter3" value="#{personScorecardManagedBean.currentEntity.subquarter3}" title="Q3主观"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="Q3客观" for="objquarter3"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="objquarter3" value="#{personScorecardManagedBean.currentEntity.objquarter3}" title="Q3客观"/>
+                    </p:column>
+                </p:row>
+                
+                
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="Q3主观小计" for="porsubquarter3"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="porsubquarter3" value="#{personScorecardManagedBean.currentEntity.porsubquarter3}" title="Q3主观小计"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="Q3客观小计" for="porobjquarter3"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="porobjquarter3" value="#{personScorecardManagedBean.currentEntity.porobjquarter3}" title="Q3客观小计"/>
+                    </p:column>
+                </p:row>
+
+                
+                               <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="Q4主观" for="subquarter4"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="subquarter4" value="#{personScorecardManagedBean.currentEntity.subquarter4}" title="Q4主观"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="Q4客观" for="objquarter4"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="objquarter4" value="#{personScorecardManagedBean.currentEntity.objquarter4}" title="Q4客观"/>
+                    </p:column>
+                </p:row>
+                
+                
+                <p:row>
+                    <p:column styleClass="Wid20"><p:outputLabel value="Q4主观小计" for="porsubquarter4"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="porsubquarter4" value="#{personScorecardManagedBean.currentEntity.porsubquarter4}" title="43主观小计"/>
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="Q4客观小计" for="porobjquarter4"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="porobjquarter4" value="#{personScorecardManagedBean.currentEntity.porobjquarter4}" title="Q4客观小计"/>
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <p:tabView id="tabView" styleClass="tabView">
+                <p:ajax event="tabChange" listener="#{personScorecardManagedBean.tabchange}"  update="formOne"></p:ajax>
+                <p:tab title="Q1主观" id="sq1">
+                    <p:dataTable id="tableList1" value="#{personScorecardManagedBean.detailList}" var="item" styleClass="tableList Mtop10"  >
+                        <p:column styleClass="Wid5">
+                            <f:facet name="header">
+                                <h:outputText value="项目"/>
+                            </f:facet>
+                            <h:outputText value="#{item.name}"/>
+                        </p:column>
+                        <p:column styleClass="Wid5">
+                            <f:facet name="header">
+                                <h:outputText value="比重"/>
+                            </f:facet>
+                            <h:outputText value="#{item.ratio*100}%"/>
+                        </p:column>
+                        <p:column styleClass="Wid5" headerText="分数">
+                            <p:outputLabel value="#{item.score}"   >
+                            </p:outputLabel>
+                        </p:column>
+                        <p:column styleClass="Wid5" headerText="权重" groupRow="true" style="text-align:center">
+                            <h:outputText value="#{personScorecardManagedBean.scoreRatio*100}%" />
+                        </p:column> 
+                        <p:columnGroup type="footer">
+                            <p:row>
+                                <p:column style="text-align:left" footerText="Totals:" colspan="2"/>
+                                <p:column style="text-align:left">
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{personScorecardManagedBean.currentEntity.subquarter1}">
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+                                <p:column style="text-align:left">
+                                    <f:facet name="footer">
+                                        <h:outputText id="porsubquarter1" value="#{personScorecardManagedBean.currentEntity.porsubquarter1}">
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+                            </p:row>
+                        </p:columnGroup>
+                    </p:dataTable>
+                </p:tab>
+                <c:if test="#{'I'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod()) or 'J'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod())}">
+                    <p:tab title="Q1客观" id="aq1">
+                        <p:dataTable id="tableList2" value="#{personScorecardManagedBean.detailList}" var="item" styleClass="tableList Mtop10" >
+                            <p:column styleClass="Wid10">
+                                <f:facet name="header">
+                                    <h:outputText value="考核项目"/>
+                                </f:facet>
+                                <h:outputText value="#{item.name}"/>
+                            </p:column>
+                            <p:column styleClass="Wid10">
+                                <f:facet name="header">
+                                    <h:outputText value="目标"/>
+                                </f:facet>
+                                <h:outputText value="#{item.target}"/>
+                            </p:column>
+                            <p:column styleClass="Wid10">
+                                <f:facet name="header">
+                                    <h:outputText value="实际"/>
+                                </f:facet>
+                                <h:outputText value="#{item.actuality}"/>
+                            </p:column>
+                            <p:column styleClass="Wid5">
+                                <f:facet name="header">
+                                    <h:outputText value="比重"/>
+                                </f:facet>
+                                <h:outputText value="#{item.ratio*100}%"/>
+                            </p:column>
+                            <p:column styleClass="Wid5">
+                                <f:facet name="header">
+                                    <h:outputText value="分数"/>
+                                </f:facet>
+                                <h:outputText  value="#{item.score}" >
+                                </h:outputText >
+                            </p:column>
+                            <p:column styleClass="Wid5" headerText="权重" groupRow="true" style="text-align:center">
+                                <h:outputText value="#{personScorecardManagedBean.scoreRatio*100}%" />
+                            </p:column> 
+                            <p:columnGroup type="footer">
+                                <p:row>
+                                    <p:column style="text-align:left" footerText="Totals:" colspan="4"/>
+                                    <p:column style="text-align:left">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{personScorecardManagedBean.currentEntity.objquarter1}">
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                    <p:column style="text-align:left">
+                                        <f:facet name="footer">
+                                            <h:outputText id="porsubquarter1" value="#{personScorecardManagedBean.currentEntity.porobjquarter1}">
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                </p:row>
+                            </p:columnGroup>
+                        </p:dataTable>
+                    </p:tab>
+                </c:if>
+                <c:if test="#{'K'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod()) or 'L'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod()) or 
+                              'M'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod()) or 'N'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod())}">
+                    <p:tab title="Q1客观" id="aq1">
+                        <p:panelGrid  styleClass="plgDetail Wid100"> 
+                            <f:facet name="header">
+                                <p:row>
+                                    <p:column colspan="4">考核表分数</p:column>
+                                </p:row>
+                            </f:facet>
+                            <p:row>
+                                <p:column styleClass="Wid20"><p:outputLabel value="总分" for="objquarter1"/></p:column>
+                                <p:column styleClass="Wid30" colspan="3" style="text-align:right">
+                                    <p:outputLabel id="objquarter1" value="#{personScorecardManagedBean.currentEntity.objquarter1}" title="总分"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column styleClass="Wid20"><p:outputLabel value="权重" /></p:column>
+                                <p:column styleClass="Wid30">
+                                    <p:outputLabel  value="#{personScorecardManagedBean.scoreRatio*100}%" title="权重"/>
+                                </p:column>
+                                <p:column styleClass="Wid20"><p:outputLabel value="小计" for="porobjquarter1"/></p:column>
+                                <p:column styleClass="Wid30" style="text-align:right">
+                                    <p:outputLabel id="porobjquarter1" value="#{personScorecardManagedBean.currentEntity.porobjquarter1}" title="小计" />
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:tab>
+                </c:if>
+                <!--Q2-->
+                <p:tab title="Q2主观" id="sq2">
+                    <p:dataTable id="tableList3" value="#{personScorecardManagedBean.detailList}" var="item" styleClass="tableList Mtop10"  >
+                        <p:column styleClass="Wid5">
+                            <f:facet name="header">
+                                <h:outputText value="项目"/>
+                            </f:facet>
+                            <h:outputText value="#{item.name}"/>
+                        </p:column>
+                        <p:column styleClass="Wid5">
+                            <f:facet name="header">
+                                <h:outputText value="比重"/>
+                            </f:facet>
+                            <h:outputText value="#{item.ratio*100}%"/>
+                        </p:column>
+                        <p:column styleClass="Wid5" headerText="分数">
+                            <h:outputText value="#{item.score}"  >
+                            </h:outputText>
+                        </p:column>
+                        <p:column styleClass="Wid5" headerText="权重" groupRow="true" style="text-align:center">
+                            <h:outputText value="#{personScorecardManagedBean.scoreRatio*100}%" />
+                        </p:column> 
+                        <p:columnGroup type="footer">
+                            <p:row>
+                                <p:column style="text-align:left" footerText="Totals:" colspan="2"/>
+                                <p:column style="text-align:left">
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{personScorecardManagedBean.currentEntity.subquarter2}">
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+                                <p:column style="text-align:left">
+                                    <f:facet name="footer">
+                                        <h:outputText id="porsubquarter1" value="#{personScorecardManagedBean.currentEntity.porsubquarter2}">
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+                            </p:row>
+                        </p:columnGroup>
+                    </p:dataTable>
+                </p:tab>
+                <c:if test="#{'I'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod()) or 'J'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod())}">
+                    <p:tab title="Q2客观" id="aq2">
+                        <p:dataTable id="tableList4" value="#{personScorecardManagedBean.detailList}" var="item" styleClass="tableList Mtop10" >
+                            <p:column styleClass="Wid10">
+                                <f:facet name="header">
+                                    <h:outputText value="考核项目"/>
+                                </f:facet>
+                                <h:outputText value="#{item.name}"/>
+                            </p:column>
+                            <p:column styleClass="Wid10">
+                                <f:facet name="header">
+                                    <h:outputText value="目标"/>
+                                </f:facet>
+                                <h:outputText value="#{item.target}"/>
+                            </p:column>
+                            <p:column styleClass="Wid10">
+                                <f:facet name="header">
+                                    <h:outputText value="实际"/>
+                                </f:facet>
+                                <h:outputText value="#{item.actuality}" />
+                            </p:column>
+                            <p:column styleClass="Wid5">
+                                <f:facet name="header">
+                                    <h:outputText value="比重"/>
+                                </f:facet>
+                                <h:outputText value="#{item.ratio*100}%"/>
+                            </p:column>
+                            <p:column styleClass="Wid5">
+                                <f:facet name="header">
+                                    <h:outputText value="分数"/>
+                                </f:facet>
+                                <h:outputText  value="#{item.score}"  >
+                                </h:outputText >
+                            </p:column>
+                            <p:column styleClass="Wid5" headerText="权重" groupRow="true" style="text-align:center">
+                                <h:outputText value="#{personScorecardManagedBean.scoreRatio*100}%" />
+                            </p:column> 
+                            <p:columnGroup type="footer">
+                                <p:row>
+                                    <p:column style="text-align:left" footerText="Totals:" colspan="4"/>
+                                    <p:column style="text-align:left">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{personScorecardManagedBean.currentEntity.objquarter2}">
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                    <p:column style="text-align:left">
+                                        <f:facet name="footer">
+                                            <h:outputText id="porsubquarter1" value="#{personScorecardManagedBean.currentEntity.porobjquarter2}">
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                </p:row>
+                            </p:columnGroup>
+                        </p:dataTable>
+                    </p:tab>
+                </c:if>
+                <c:if test="#{'K'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod()) or 'L'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod()) or 
+                              'M'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod()) or 'N'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod())}">
+                    <p:tab title="Q2客观" id="aq2">
+                        <p:panelGrid  styleClass="plgDetail Wid100"> 
+                            <f:facet name="header">
+                                <p:row>
+                                    <p:column colspan="4">考核表分数</p:column>
+                                </p:row>
+                            </f:facet>
+                            <p:row>
+                                <p:column styleClass="Wid20"><p:outputLabel value="总分" for="objquarter2"/></p:column>
+                                <p:column styleClass="Wid30" colspan="3" style="text-align:right">
+                                    <p:outputLabel id="objquarter2" value="#{personScorecardManagedBean.currentEntity.objquarter2}" title="总分"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column styleClass="Wid20"><p:outputLabel value="权重" /></p:column>
+                                <p:column styleClass="Wid30">
+                                    <p:outputLabel value="#{personScorecardManagedBean.scoreRatio*100}%" title="权重"/>
+                                </p:column>
+                                <p:column styleClass="Wid20"><p:outputLabel value="小计" for="porobjquarter2"/></p:column>
+                                <p:column styleClass="Wid30" style="text-align:right">
+                                    <p:outputLabel id="porobjquarter2" value="#{personScorecardManagedBean.currentEntity.porobjquarter2}" title="小计" />
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:tab>
+                </c:if>
+                <!--Q3-->
+                <p:tab title="Q3主观" id="sq3">
+                    <p:dataTable id="tableList5" value="#{personScorecardManagedBean.detailList}" var="item" styleClass="tableList Mtop10"  >
+                        <p:column styleClass="Wid5">
+                            <f:facet name="header">
+                                <h:outputText value="项目"/>
+                            </f:facet>
+                            <h:outputText value="#{item.name}"/>
+                        </p:column>
+                        <p:column styleClass="Wid5">
+                            <f:facet name="header">
+                                <h:outputText value="比重"/>
+                            </f:facet>
+                            <h:outputText value="#{item.ratio*100}%"/>
+                        </p:column>
+                        <p:column styleClass="Wid5" headerText="分数">
+                            <p:outputLabel value="#{item.score}"  >
+                            </p:outputLabel>
+                        </p:column>
+                        <p:column styleClass="Wid5" headerText="权重" groupRow="true" style="text-align:center">
+                            <h:outputText value="#{personScorecardManagedBean.scoreRatio*100}%" />
+                        </p:column> 
+                        <p:columnGroup type="footer">
+                            <p:row>
+                                <p:column style="text-align:left" footerText="Totals:" colspan="2"/>
+                                <p:column style="text-align:left">
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{personScorecardManagedBean.currentEntity.subquarter3}">
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+                                <p:column style="text-align:left">
+                                    <f:facet name="footer">
+                                        <h:outputText id="porsubquarter1" value="#{personScorecardManagedBean.currentEntity.porsubquarter3}">
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+                            </p:row>
+                        </p:columnGroup>
+                    </p:dataTable>
+                </p:tab>
+                <c:if test="#{'I'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod()) or 'J'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod())}">
+                    <p:tab title="Q3客观" id="aq3">
+                        <p:dataTable id="tableList6" value="#{personScorecardManagedBean.detailList}" var="item" styleClass="tableList Mtop10" >
+                            <p:column styleClass="Wid10">
+                                <f:facet name="header">
+                                    <h:outputText value="考核项目"/>
+                                </f:facet>
+                                <h:outputText value="#{item.name}"/>
+                            </p:column>
+                            <p:column styleClass="Wid10">
+                                <f:facet name="header">
+                                    <h:outputText value="目标"/>
+                                </f:facet>
+                                <h:outputText value="#{item.target}"/>
+                            </p:column>
+                            <p:column styleClass="Wid10">
+                                <f:facet name="header">
+                                    <h:outputText value="实际"  />
+                                </f:facet>
+                                <p:outputLabel value="#{item.actuality}" />
+                            </p:column>
+                            <p:column styleClass="Wid5">
+                                <f:facet name="header">
+                                    <h:outputText value="比重"/>
+                                </f:facet>
+                                <h:outputText value="#{item.ratio*100}%"/>
+                            </p:column>
+                            <p:column styleClass="Wid5">
+                                <f:facet name="header">
+                                    <h:outputText value="分数"/>
+                                </f:facet>
+                                <p:outputLabel  value="#{item.score}">
+                                </p:outputLabel >
+                            </p:column>
+                            <p:column styleClass="Wid5" headerText="权重" groupRow="true" style="text-align:center">
+                                <h:outputText value="#{personScorecardManagedBean.scoreRatio*100}%" />
+                            </p:column> 
+                            <p:columnGroup type="footer">
+                                <p:row>
+                                    <p:column style="text-align:left" footerText="Totals:" colspan="4"/>
+                                    <p:column style="text-align:left">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{personScorecardManagedBean.currentEntity.objquarter3}">
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                    <p:column style="text-align:left">
+                                        <f:facet name="footer">
+                                            <h:outputText id="porsubquarter1" value="#{personScorecardManagedBean.currentEntity.porobjquarter3}">
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                </p:row>
+                            </p:columnGroup>
+                        </p:dataTable>
+                    </p:tab>
+                </c:if>
+                <c:if test="#{'K'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod()) or 'L'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod()) or 
+                              'M'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod()) or 'N'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod())}">
+                    <p:tab title="Q3客观" id="aq3">
+                        <p:panelGrid  styleClass="plgDetail Wid100"> 
+                            <f:facet name="header">
+                                <p:row>
+                                    <p:column colspan="4">考核表分数</p:column>
+                                </p:row>
+                            </f:facet>
+                            <p:row>
+                                <p:column styleClass="Wid20"><p:outputLabel value="总分" for="objquarter3"/></p:column>
+                                <p:column styleClass="Wid30" colspan="3" style="text-align:right">
+                                    <p:outputLabel id="objquarter3" value="#{personScorecardManagedBean.currentEntity.objquarter3}" title="总分"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column styleClass="Wid20"><p:outputLabel value="权重" /></p:column>
+                                <p:column styleClass="Wid30">
+                                    <p:outputLabel value="#{personScorecardManagedBean.scoreRatio*100}%" title="权重"/>
+                                </p:column>
+                                <p:column styleClass="Wid20"><p:outputLabel value="小计" for="porobjquarter3"/></p:column>
+                                <p:column styleClass="Wid30" style="text-align:right">
+                                    <p:outputLabel id="porobjquarter3" value="#{personScorecardManagedBean.currentEntity.porobjquarter3}" title="小计" />
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:tab>
+                </c:if>
+
+                <!--Q4-->
+                <p:tab title="Q4主观" id="sq4">
+                    <p:dataTable id="tableList7" value="#{personScorecardManagedBean.detailList}" var="item" styleClass="tableList Mtop10"  >
+                        <p:column styleClass="Wid5">
+                            <f:facet name="header">
+                                <h:outputText value="项目"/>
+                            </f:facet>
+                            <h:outputText value="#{item.name}"/>
+                        </p:column>
+                        <p:column styleClass="Wid5">
+                            <f:facet name="header">
+                                <h:outputText value="比重"/>
+                            </f:facet>
+                            <h:outputText value="#{item.ratio*100}%"/>
+                        </p:column>
+                        <p:column styleClass="Wid5" headerText="分数">
+                            <h:outputText value="#{item.score}">
+                            </h:outputText>
+                        </p:column>
+                        <p:column styleClass="Wid5" headerText="权重" groupRow="true" style="text-align:center">
+                            <h:outputText value="#{personScorecardManagedBean.scoreRatio*100}%" />
+                        </p:column> 
+                        <p:columnGroup type="footer">
+                            <p:row>
+                                <p:column style="text-align:left" footerText="Totals:" colspan="2"/>
+                                <p:column style="text-align:left">
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{personScorecardManagedBean.currentEntity.subquarter4}">
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+                                <p:column style="text-align:left">
+                                    <f:facet name="footer">
+                                        <h:outputText id="porsubquarter1" value="#{personScorecardManagedBean.currentEntity.porsubquarter4}">
+                                        </h:outputText>
+                                    </f:facet>
+                                </p:column>
+                            </p:row>
+                        </p:columnGroup>
+                    </p:dataTable>
+                </p:tab>
+                <c:if test="#{'I'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod()) or 'J'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod())}">
+                    <p:tab title="Q4客观" id="aq4">
+                        <p:dataTable id="tableList8" value="#{personScorecardManagedBean.detailList}" var="item" styleClass="tableList Mtop10" >
+                            <p:column styleClass="Wid10">
+                                <f:facet name="header">
+                                    <h:outputText value="考核项目"/>
+                                </f:facet>
+                                <h:outputText value="#{item.name}"/>
+                            </p:column>
+                            <p:column styleClass="Wid10">
+                                <f:facet name="header">
+                                    <h:outputText value="目标"/>
+                                </f:facet>
+                                <h:outputText value="#{item.target}"/>
+                            </p:column>
+                            <p:column styleClass="Wid10">
+                                <f:facet name="header">
+                                    <h:outputText value="实际"/>
+                                </f:facet>
+                                <h:outputText value="#{item.actuality}"/>
+                            </p:column>
+                            <p:column styleClass="Wid5">
+                                <f:facet name="header">
+                                    <h:outputText value="比重"/>
+                                </f:facet>
+                                <h:outputText value="#{item.ratio*100}%"/>
+                            </p:column>
+                            <p:column styleClass="Wid5">
+                                <f:facet name="header">
+                                    <h:outputText value="分数"/>
+                                </f:facet>
+                                <h:outputText  value="#{item.score}" >
+                                </h:outputText >
+                            </p:column>
+                            <p:column styleClass="Wid5" headerText="权重" groupRow="true" style="text-align:center">
+                                <h:outputText value="#{personScorecardManagedBean.scoreRatio*100}%" />
+                            </p:column> 
+                            <p:columnGroup type="footer">
+                                <p:row>
+                                    <p:column style="text-align:left" footerText="Totals:" colspan="4"/>
+                                    <p:column style="text-align:left">
+                                        <f:facet name="footer">
+                                            <h:outputText value="#{personScorecardManagedBean.currentEntity.objquarter4}">
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                    <p:column style="text-align:left">
+                                        <f:facet name="footer">
+                                            <h:outputText id="porsubquarter1" value="#{personScorecardManagedBean.currentEntity.porobjquarter4}">
+                                            </h:outputText>
+                                        </f:facet>
+                                    </p:column>
+                                </p:row>
+                            </p:columnGroup>
+                        </p:dataTable>
+                    </p:tab>
+                </c:if>
+
+                <c:if test="#{'K'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod()) or 'L'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod()) or 
+                              'M'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod()) or 'N'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod())}">
+                    <p:tab title="Q4客观" id="aq4">
+                        <p:panelGrid  styleClass="plgDetail Wid100"> 
+                            <f:facet name="header">
+                                <p:row>
+                                    <p:column colspan="4">考核表分数</p:column>
+                                </p:row>
+                            </f:facet>
+                            <p:row>
+                                <p:column styleClass="Wid20"><p:outputLabel value="总分" for="objquarter4"/></p:column>
+                                <p:column styleClass="Wid30" colspan="3" style="text-align:right">
+                                    <p:outputLabel id="objquarter4" value="#{personScorecardManagedBean.currentEntity.objquarter4}" title="总分"/>
+                                </p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column styleClass="Wid20"><p:outputLabel value="权重"/></p:column>
+                                <p:column styleClass="Wid30">
+                                    <p:outputLabel  value="#{personScorecardManagedBean.scoreRatio*100}%" title="权重"/>
+                                </p:column>
+                                <p:column styleClass="Wid20"><p:outputLabel value="小计" for="porobjquarter4"/></p:column>
+                                <p:column styleClass="Wid30" style="text-align:right">
+                                    <p:outputLabel id="porobjquarter4" value="#{personScorecardManagedBean.currentEntity.porobjquarter4}" title="小计" />
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
+                    </p:tab>
+                </c:if>
+            </p:tabView>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:blockUI id="blockUI" block="formOne" trigger="">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>

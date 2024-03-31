@@ -47,7 +47,7 @@ import org.json.JSONObject;
 @LocalBean
 public class ProjectBean implements Serializable {
 
-    final String URL = "http://172.16.10.95:9092/api/TMS_CostRegion";
+    final String URL = "http://172.16.10.94:54320/api/TMS_CostRegion";
 
     public ProjectBean() {
 

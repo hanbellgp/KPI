@@ -8,11 +8,13 @@ package cn.hanbell.kpi.control;
 import cn.hanbell.eap.ejb.SystemUserBean;
 import cn.hanbell.eap.entity.Department;
 import cn.hanbell.eap.entity.SystemUser;
+import cn.hanbell.kpi.ejb.IndicatorBean;
 import cn.hanbell.kpi.ejb.PolicyBean;
 import cn.hanbell.kpi.ejb.PolicyDetailBean;
 import cn.hanbell.kpi.ejb.RoleBean;
 import cn.hanbell.kpi.ejb.RoleDetailBean;
 import cn.hanbell.kpi.ejb.RoleGrantModuleBean;
+import cn.hanbell.kpi.ejb.tms.ProjectBean;
 import cn.hanbell.kpi.entity.ExchangeRate;
 import cn.hanbell.kpi.entity.Indicator;
 import cn.hanbell.kpi.entity.Policy;
@@ -20,6 +22,7 @@ import cn.hanbell.kpi.entity.PolicyDetail;
 import cn.hanbell.kpi.entity.Role;
 import cn.hanbell.kpi.entity.RoleDetail;
 import cn.hanbell.kpi.entity.RoleGrantModule;
+import cn.hanbell.kpi.entity.ScorecardDetail;
 import cn.hanbell.kpi.entity.tms.Project;
 import cn.hanbell.kpi.lazy.PolicyModel;
 import cn.hanbell.kpi.lazy.ScorecardModel;
@@ -34,11 +37,17 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.jexl3.JexlException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -70,6 +79,11 @@ public class PolicySetManagedBean extends SuperMultiBean<Policy, PolicyDetail> {
     private RoleDetailBean systemRoleDetailBean;
     @EJB
     private SystemUserBean systemUserBean;
+    @EJB
+    private ProjectBean projectBean;
+    @EJB
+    private IndicatorBean indicatorBean;
+    private PolicyDetail beforeDetailEntity;
     //主页面查询参数
     protected int queryYear;
     protected String queryName;
@@ -88,7 +102,6 @@ public class PolicySetManagedBean extends SuperMultiBean<Policy, PolicyDetail> {
         //this.newEntity.set(userManagedBean.getCompany());
         this.newEntity.setYear(queryYear);
         this.newEntity.setApi("policy");
-
     }
 
     @Override
@@ -148,7 +161,6 @@ public class PolicySetManagedBean extends SuperMultiBean<Policy, PolicyDetail> {
             HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
             response.setCharacterEncoding("UTF-8");
             if (this.fileName != null) {
-
                 InputStream is = new FileInputStream(getAppResPath() + "/" + fileName);
                 Workbook excel = WorkbookFactory.create(is);
                 Sheet sheet = excel.getSheetAt(0);
@@ -163,7 +175,7 @@ public class PolicySetManagedBean extends SuperMultiBean<Policy, PolicyDetail> {
                 List<String> faects = new ArrayList<String>();
                 addedDetailList.clear();
                 int seq = 0;
-                for (int i = 6; i <=rowNumbers; i++) {
+                for (int i = 6; i <= rowNumbers; i++) {
                     row = sheet.getRow(i);
                     String perspective = row.getCell(0).getStringCellValue();
                     if (perspective.startsWith("C") && !faects.contains("C")) {
@@ -213,24 +225,27 @@ public class PolicySetManagedBean extends SuperMultiBean<Policy, PolicyDetail> {
     @Override
     public void handleDialogReturnWhenDetailEdit(SelectEvent event) {
         //只有数字类型才能绑定KPI
-
         if (event.getObject() != null && currentDetail != null) {
-            Indicator e = (Indicator) event.getObject();
-            currentDetail.setFromkpi(String.valueOf(e.getId()));
-            currentDetail.setFromkpiname(e.getName());
-            currentDetail.setBq1(e.getBenchmarkIndicator().getNq1().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
-            currentDetail.setBq2(e.getBenchmarkIndicator().getNq2().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
-            currentDetail.setBhy(e.getBenchmarkIndicator().getNh1().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
-            currentDetail.setBq3(e.getBenchmarkIndicator().getNq3().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
-            currentDetail.setBq4(e.getBenchmarkIndicator().getNq4().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
-            currentDetail.setBfy(e.getBenchmarkIndicator().getNfy().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
-            // 从指标代入目标
-            currentDetail.setTq1(e.getTargetIndicator().getNq1().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
-            currentDetail.setTq2(e.getTargetIndicator().getNq2().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
-            currentDetail.setThy(e.getTargetIndicator().getNh1().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
-            currentDetail.setTq3(e.getTargetIndicator().getNq3().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
-            currentDetail.setTq4(e.getTargetIndicator().getNq4().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
-            currentDetail.setTfy(e.getTargetIndicator().getNfy().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
+            if ("B".equals(this.currentDetail.getCalculationtype())) {
+                Indicator e = (Indicator) event.getObject();
+                currentDetail.setFromkpi(String.valueOf(e.getId()));
+                currentDetail.setFromkpiname(e.getName());
+                currentDetail.setBq1(e.getBenchmarkIndicator().getNq1().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
+                currentDetail.setBq2(e.getBenchmarkIndicator().getNq2().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
+                currentDetail.setBhy(e.getBenchmarkIndicator().getNh1().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
+                currentDetail.setBq3(e.getBenchmarkIndicator().getNq3().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
+                currentDetail.setBq4(e.getBenchmarkIndicator().getNq4().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
+                currentDetail.setBfy(e.getBenchmarkIndicator().getNfy().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
+                // 从指标代入目标
+                currentDetail.setTq1(e.getTargetIndicator().getNq1().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
+                currentDetail.setTq2(e.getTargetIndicator().getNq2().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
+                currentDetail.setThy(e.getTargetIndicator().getNh1().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
+                currentDetail.setTq3(e.getTargetIndicator().getNq3().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
+                currentDetail.setTq4(e.getTargetIndicator().getNq4().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
+                currentDetail.setTfy(e.getTargetIndicator().getNfy().divide(currentDetail.getIndicatorrate(), 2, BigDecimal.ROUND_HALF_UP).toString());
+            } else {
+                this.showErrorMsg("Errpe", "数字类型才能绑定KPI");
+            }
         }
     }
 
@@ -239,7 +254,13 @@ public class PolicySetManagedBean extends SuperMultiBean<Policy, PolicyDetail> {
         if (event.getObject() != null && currentDetail != null) {
             Object o = event.getObject();
             Project p = (Project) o;
-            currentDetail.setFromplm(String.valueOf(p.getProjectSeq()));
+            //PLM必须是文本类型
+            if ("A".equals(this.currentDetail.getCalculationtype())) {
+                currentDetail.setFromplm(String.valueOf(p.getProjectSeq()));
+                currentDetail.setFromplmname(String.valueOf(p.getProjectName()));
+            } else {
+                this.showErrorMsg("Errpe", "文本类型才能绑定PLM");
+            }
         }
     }
 
@@ -303,8 +324,8 @@ public class PolicySetManagedBean extends SuperMultiBean<Policy, PolicyDetail> {
                 case "A"://文字
                     d.setBq1(cellToVlaue(row.getCell(8)));
                     d.setTq1(cellToVlaue(row.getCell(9)));
-                    d.setAq1(cellToVlaue(row.getCell(10)));
-                    d.setPq1(new BigDecimal(cellToVlaue(row.getCell(11))).multiply(BigDecimal.valueOf(100)));
+//                    d.setAq1(cellToVlaue(row.getCell(10)));
+//                    d.setPq1(new BigDecimal(cellToVlaue(row.getCell(11))).multiply(BigDecimal.valueOf(100)));
                     d.setBq2(cellToVlaue(row.getCell(12)));
                     d.setTq2(cellToVlaue(row.getCell(13)));
                     d.setBhy(cellToVlaue(row.getCell(16)));
@@ -325,10 +346,10 @@ public class PolicySetManagedBean extends SuperMultiBean<Policy, PolicyDetail> {
                     b = new BigDecimal(cellToVlaue(row.getCell(9)) != "" ? cellToVlaue(row.getCell(9)) : "0");
                     d.setTq1(b.setScale(3, BigDecimal.ROUND_HALF_UP).toString());
 
-                    b = new BigDecimal(cellToVlaue(row.getCell(10)) != "" ? cellToVlaue(row.getCell(10)) : "0");
-                    d.setAq1(b.setScale(3, BigDecimal.ROUND_HALF_UP).toString());
-
-                    d.setPq1(new BigDecimal(cellToVlaue(row.getCell(11))).multiply(BigDecimal.valueOf(100)));
+//                    b = new BigDecimal(cellToVlaue(row.getCell(10)) != "" ? cellToVlaue(row.getCell(10)) : "0");
+//                    d.setAq1(b.setScale(3, BigDecimal.ROUND_HALF_UP).toString());
+//
+//                    d.setPq1(new BigDecimal(cellToVlaue(row.getCell(11))).multiply(BigDecimal.valueOf(100)));
 
                     b = new BigDecimal(cellToVlaue(row.getCell(12)) != "" ? cellToVlaue(row.getCell(12)) : "0");
                     d.setBq2(b.setScale(3, BigDecimal.ROUND_HALF_UP).toString());
@@ -427,6 +448,329 @@ public class PolicySetManagedBean extends SuperMultiBean<Policy, PolicyDetail> {
         return queryYear;
     }
 
+    public void setSeq() {
+        if (this.currentDetail != null) {
+            PolicyDetail p = this.currentDetail;
+            detailList.sort((PolicyDetail o1, PolicyDetail o2) -> {
+                if (o1.getSeq() > o2.getSeq()) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            });
+            for (int i = 0; i < detailList.size(); i++) {
+                this.currentDetail = detailList.get(i);
+                this.currentDetail.setSeq(i + 1);
+                this.doConfirmDetail();
+            }
+            this.setCurrentDetail(detailList.get(detailList.indexOf(p)));
+        }
+    }
+
+    @Override
+    public void doConfirmDetail() {
+        if (this.newDetail != null && this.newDetail.equals(this.currentDetail)) {
+            if (!this.addedDetailList.contains(this.newDetail)) {
+                this.addedDetailList.add(this.newDetail);
+                this.setNewDetail((PolicyDetail) null);
+                this.setCurrentDetail((PolicyDetail) null);
+            }
+        } else if (this.currentDetail != null && !this.addedDetailList.contains(this.currentDetail)) {
+            if (this.editedDetailList.contains(this.currentDetail)) {
+                this.editedDetailList.set(this.editedDetailList.indexOf(this.currentDetail), this.currentDetail);
+            } else {
+                this.editedDetailList.add(this.currentDetail);
+            }
+            this.setCurrentDetail((PolicyDetail) null);
+        }
+    }
+
+    public boolean verifyCalculationtype() {
+        if ("B".equals(this.currentDetail.getCalculationtype())) {
+            try {
+                Double.parseDouble(this.currentDetail.getAq1());
+                Double.parseDouble(this.currentDetail.getAq2());
+                Double.parseDouble(this.currentDetail.getAq3());
+                Double.parseDouble(this.currentDetail.getAq4());
+                Double.parseDouble(this.currentDetail.getAhy());
+                Double.parseDouble(this.currentDetail.getAfy());
+
+                Double.parseDouble(this.currentDetail.getBq1());
+                Double.parseDouble(this.currentDetail.getBq2());
+                Double.parseDouble(this.currentDetail.getBq3());
+                Double.parseDouble(this.currentDetail.getBq4());
+                Double.parseDouble(this.currentDetail.getBhy());
+                Double.parseDouble(this.currentDetail.getBfy());
+
+                Double.parseDouble(this.currentDetail.getTq1());
+                Double.parseDouble(this.currentDetail.getTq2());
+                Double.parseDouble(this.currentDetail.getTq3());
+                Double.parseDouble(this.currentDetail.getTq4());
+                Double.parseDouble(this.currentDetail.getThy());
+                Double.parseDouble(this.currentDetail.getTfy());
+            } catch (Exception e) {
+                this.currentDetail.setCalculationtype("A");
+                this.showErrorMsg("Error", "修改失败，基准，目标或实际存在文本类型。");
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void createDetail() {
+        if (this.getNewDetail() == null) {
+            try {
+                this.newDetail = (PolicyDetail) this.detailClass.newInstance();
+                if (this.currentDetail != null) {
+                    this.newDetail.setSeq(this.currentDetail.getSeq() + 1);
+                } else {
+                    this.newDetail.setSeq(this.getMaxSeq(this.detailList));
+                }
+                //先调整添加后受影响的数据序号，再把新的数据放入集合中
+                int i = this.newDetail.getSeq();
+                for (PolicyDetail pc : this.detailList) {
+                    if (pc.getSeq() >= this.newDetail.getSeq()) {
+                        i++;
+                        this.currentDetail = pc;
+                        this.currentDetail.setSeq(i);
+                        this.doConfirmDetail();
+                    }
+                }
+                this.detailList.add(this.newDetail);
+                detailList.sort((PolicyDetail o1, PolicyDetail o2) -> {
+                    if (o1.getSeq() > o2.getSeq()) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                });
+            } catch (IllegalAccessException | InstantiationException var2) {
+                Logger.getLogger(PolicyDetail.class.getName()).log(Level.SEVERE, (String) null, var2);
+                this.showErrorMsg("Error", var2.getMessage());
+            }
+        }
+        this.setCurrentDetail(this.newDetail);
+    }
+
+    public String edit(String path) {
+        //防止未按保存，或者刷新以后直接进入编辑。。。清除调整的数组，currentDetail和newDateil
+        if ("policysetEdit".equals(path)) {
+            if (this.addedDetailList != null && !this.addedDetailList.isEmpty()) {
+                this.addedDetailList.clear();
+            }
+
+            if (this.editedDetailList != null && !this.editedDetailList.isEmpty()) {
+                this.editedDetailList.clear();
+            }
+
+            if (this.deletedDetailList != null && !this.deletedDetailList.isEmpty()) {
+                this.deletedDetailList.clear();
+            }
+            this.setCurrentDetail(null);
+            this.setNewDetail(null);
+        }
+        if (this.currentEntity != null) {
+            return path;
+        } else {
+            this.showWarnMsg("Warn", "没有选择编辑数据!");
+            return "";
+        }
+    }
+
+    public void updateActual() {
+        String col = policyBean.getColumn("q", userManagedBean.getQ());
+        //PLM明细
+        if (currentDetail.getFromplm() != null && !currentDetail.getFromplm().equals("")) {
+            updateScoreByPLMProject();
+            return;
+        }
+        //KPI明细        
+        if (currentDetail.getFromkpi() != null && currentDetail.getFromkpi() != null) {
+            Indicator i = indicatorBean.findById(currentDetail.getParent().getYear());
+            if (i != null) {
+                switch (userManagedBean.getQ()) {
+                    case 1:
+                        currentDetail.setAq1(i.getActualIndicator().getNq1().toString());
+                        break;
+                    case 2:
+                        currentDetail.setAq2(i.getActualIndicator().getNq2().toString());
+                        currentDetail.setAhy(i.getActualIndicator().getNh1().toString());
+                        break;
+                    case 3:
+                        currentDetail.setAq3(i.getActualIndicator().getNq3().toString());
+                        break;
+                    case 4:
+                        currentDetail.setAq4(i.getActualIndicator().getNq4().toString());
+                        currentDetail.setAfy(i.getActualIndicator().getNfy().toString());
+                        break;
+                }
+            }
+            calcItemScore();
+            return;
+        }
+        //数字格式明细
+        calcItemScore();
+        return;
+    }
+
+    public void calcItemScore() {
+        if (currentDetail != null) {
+            try {
+                if (currentDetail.getParent().getFreezeDate() != null
+                        && currentDetail.getParent().getFreezeDate().after(userManagedBean.getBaseDate())) {
+                    showErrorMsg("Error", "资料已冻结,不可更新");
+                    return;
+                }
+                String col = policyBean.getColumn("q", userManagedBean.getQ());
+                String target, actual;
+                BigDecimal value;
+                //PLM为文本格式，计算达成做单独处理
+                if (this.currentDetail.getFromplm() != null && !"".equals(this.currentDetail.getFromplm())) {
+                    switch (col) {
+                        case "q1":
+                            target = currentDetail.getTq1();
+                            actual = currentDetail.getAq1();
+                            value = calculateScore(target, actual);
+                            currentDetail.setPq1(value);
+                            break;
+                        case "q2":
+                            target = currentDetail.getTq2();
+                            actual = currentDetail.getAq2();
+                            value = calculateScore(target, actual);
+                            currentDetail.setPq2(value);
+
+                            target = currentDetail.getThy();
+                            actual = currentDetail.getAhy();
+                            value = calculateScore(target, actual);
+                            currentDetail.setPhy(value);
+                            break;
+                        case "q3":
+                            target = currentDetail.getTq2();
+                            actual = currentDetail.getAq2();
+                            value = calculateScore(target, actual);
+                            currentDetail.setPq2(value);
+                            break;
+                        case "q4":
+                            target = currentDetail.getTq4();
+                            actual = currentDetail.getAq4();
+                            value = calculateScore(target, actual);
+                            currentDetail.setPq4(value);
+
+                            target = currentDetail.getTfy();
+                            actual = currentDetail.getAfy();
+                            value = calculateScore(target, actual);
+                            currentDetail.setPfy(value);
+                            break;
+                    }
+                    return;
+                }
+                if (!currentDetail.getCalculationtype().equals("B")) {
+                    showWarnMsg("Warn", "数值型才能更新");
+                    return;
+                }
+
+                showInfoMsg("Info", "更新部门分数成功");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                showErrorMsg("Error", ex.getMessage());
+            }
+        }
+    }
+
+    // 关联PLM的更新
+    public void updateScoreByPLMProject() throws StringIndexOutOfBoundsException, NumberFormatException {
+        try {
+            String target, actual, projectSeq;
+            BigDecimal value;
+            String col = policyBean.getColumn("q", userManagedBean.getQ());
+            // 找到PLM的数据
+            projectSeq = projectBean.findByProjectSeq(currentDetail.getFromplm());
+            if (projectSeq == null || "".equals(projectSeq)) {
+                showErrorMsg("Error", "请确认PLM是否有进度");
+                return;
+            }
+            // 选择季度更新
+            switch (col) {
+                case "q1":
+                    currentDetail.setAq1("#" + projectSeq + "%#" + ";" + currentDetail.getAq1());
+                    target = currentDetail.getTq1();
+                    actual = currentDetail.getAq1();
+                    value = calculateScore(target, actual);
+                    currentDetail.setPq1(value);
+                    break;
+                case "q2":
+                    currentDetail.setAq2("#" + projectSeq + "%#" + ";" + currentDetail.getAq2());
+                    //Q2
+                    target = currentDetail.getTq2();
+                    actual = currentDetail.getAq2();
+                    value = calculateScore(target, actual);
+                    currentDetail.setPq2(value);
+                    //上半年
+                    currentDetail.setAhy("#" + projectSeq + "%#" + ";" + currentDetail.getAhy());
+                    target = currentDetail.getThy();
+                    actual = currentDetail.getAhy();
+                    value = calculateScore(target, actual);
+                    currentDetail.setPhy(value);
+                    break;
+                case "q3":
+                    currentDetail.setAq3("#" + projectSeq + "%#" + ";" + currentDetail.getAq3());
+                    target = currentDetail.getTq3();
+                    actual = currentDetail.getAq3();
+                    value = calculateScore(target, actual);
+                    currentDetail.setPq3(value);
+                    break;
+                case "q4":
+                    //Q4
+                    currentDetail.setAq4("#" + projectSeq + "%#" + ";" + currentDetail.getAq4());
+                    target = currentDetail.getTq4();
+                    actual = currentDetail.getAq4();
+                    value = calculateScore(target, actual);
+                    currentDetail.setPq4(value);
+                    //全年
+                    currentDetail.setAfy("#" + projectSeq + "%#" + ";" + currentDetail.getAfy());
+                    target = currentDetail.getTfy();
+                    actual = currentDetail.getAfy();
+                    value = calculateScore(target, actual);
+                    currentDetail.setPfy(value);
+                    break;
+            }
+            policyDetailBean.update(currentDetail);
+            showInfoMsg("Info", "更新成功！");
+        } catch (StringIndexOutOfBoundsException | NumberFormatException ex) {
+            throw new NumberFormatException("无法解析时间，请检查！");
+        }
+    }
+
+    /**
+     * @desc 截取字符的数字计算得分、达成率
+     * @param target
+     * @param acutal
+     * @return value
+     */
+    public BigDecimal calculateScore(String target, String acutal) throws StringIndexOutOfBoundsException {
+        BigDecimal value = BigDecimal.ZERO;
+        String str1, str2;
+        // 先判断有值
+        if ((!"".equals(target) || target != null) && (!"".equals(acutal) || acutal != null)) {
+            str1 = target.substring(target.indexOf("#") + 1, target.indexOf("%"));
+            str2 = acutal.substring(acutal.indexOf("#") + 1, acutal.indexOf("%"));
+            //判断截取出来的数据是否为数字
+            if (str1.matches("[0-9]*") && str2.matches("[0-9]*")) {
+                Double t = Double.valueOf(str1);
+                Double a = Double.valueOf(str2);
+                // 分母不为零
+                if (t > 0.00001) {
+                    // 达成率、得分
+                    value = BigDecimal.valueOf(a / t * 100);
+                }
+            } else {
+                showErrorMsg("Error", "基准目标值格式不正确！！");
+                return BigDecimal.ZERO;
+            }
+        }
+        return value.setScale(2, BigDecimal.ROUND_HALF_UP);
+    }
+
     public void setQueryYear(int queryYear) {
         this.queryYear = queryYear;
     }
@@ -463,4 +807,7 @@ public class PolicySetManagedBean extends SuperMultiBean<Policy, PolicyDetail> {
         this.isRateRequired = isRateRequired;
     }
 
+    public void setBeforeDetailEntity() {
+        this.beforeDetailEntity = this.currentDetail;
+    }
 }

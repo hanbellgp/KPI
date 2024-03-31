@@ -1,0 +1,207 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:define name="content">
+        <h:form id="formList">
+            <p:growl id="growl" showSummary="false" showDetail="true"/>
+            <p:panelGrid id="plgQuery" columns="4" columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgQuery Wid100">
+                <f:facet name="header">
+                    查询条件
+                </f:facet>
+                <h:outputLabel value="年" for="queryYear" />
+                <h:outputLabel id="queryYear" value="#{personScorecardManagedBean.queryYear}" title="公司别" />
+
+                <h:outputLabel value="是/否显示全部" for="isShowAll" />
+                <p:selectOneMenu id="isShowAll" value="#{personScorecardManagedBean.isShowAll}" title="显示全部" >
+                    <f:selectItem itemLabel="是" itemValue="T"/>
+                    <f:selectItem itemLabel="否" itemValue="F"/>
+                </p:selectOneMenu>
+
+                <h:outputLabel value="绩效人工号" for="queryUserId" />
+                <p:inputText id="queryUserId" value="#{personScorecardManagedBean.queryUserId}" title="工号" />
+
+                <h:outputLabel value="绩效人姓名" for="queryUserName" />
+                <p:inputText id="queryUserName" value="#{personScorecardManagedBean.queryUserName}" title="姓名" />
+
+                <h:outputLabel value="绩效部门编号" for="queryDeptNo" />
+                <p:inputText id="queryDeptNo" value="#{personScorecardManagedBean.queryDeptNo}" title="部门编号" />
+
+                <h:outputLabel value="绩效部门名称" for="queryDeptName" />
+                <p:inputText id="queryDeptName" value="#{personScorecardManagedBean.queryDeptName}" title="部门名称" />
+
+
+            </p:panelGrid>
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{personScorecardManagedBean.init()}"  icon="ui-icon-sync"  update="formList"/>
+                    <p:commandButton id="btnView" value="查看" action="#{personScorecardManagedBean.view('personscorecardView')}"  icon="ui-icon-document"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
+                        <p:menuitem id="btnEdit" value="编辑" icon="ui-icon-pencil" action="#{personScorecardManagedBean.edit('personscorecardEdit')}"
+                                    rendered="#{personScorecardManagedBean.doEdit}" update="growl"/>
+                        <p:menuitem id="btnDelete" value="删除" icon="ui-icon-trash" actionListener="#{personScorecardManagedBean.delete()}"
+                                    rendered="#{personScorecardManagedBean.doDel}" update=":formList">
+                            <p:confirm header="系统提示" message="删除吗?" icon="ui-icon-alert" />
+                        </p:menuitem>
+                        <p:menuitem id="btnImport" value="导入" icon="ui-icon-plus"   update=":formList" oncomplete="PF('dataSAdd').show();"/>
+                        <p:menuitem id="btnExport" value="导出模板" icon="ui-icon-print" actionListener="#{personScorecardManagedBean.print()}" process="@this"/>
+                    </p:splitButton>
+                    <p:commandButton id="btnReset" value="重置" actionListener="#{personScorecardManagedBean.reset()}" icon="ui-icon-refresh"
+                                     update=":formList"/>
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{personScorecardManagedBean.query()}" icon="ui-icon-search"
+                                     update=":formList"/>
+                </f:facet>
+            </p:toolbar>
+            <p:dataTable value="#{personScorecardManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="15,30,45"  lazy="true"
+                        selection="#{personScorecardManagedBean.entityList}" rowKey="#{item.id}"  >
+                <f:facet name="header">
+                    人员设置
+                </f:facet>
+                  <p:column selectionMode="multiple" styleClass="Wid5" style="text-align:center"/>
+                <p:ajax event="rowSelect"  update=":formList:toolbar" />
+                <p:ajax event="rowUnselect" update=":formList:toolbar" />
+                <p:column styleClass="Wid15">
+                    <f:facet name="header">
+                        <h:outputText value="年"/>
+                    </f:facet>
+                    <h:outputText value="#{item.year}"/>
+                </p:column>
+                <p:column styleClass="Wid15">
+                    <f:facet name="header">
+                        <h:outputText value="工号"/>
+                    </f:facet>
+                    <h:outputText value="#{item.userid}"/>
+                </p:column>
+                <p:column styleClass="Wid15">
+                    <f:facet name="header">
+                        <h:outputText value="姓名"/>
+                    </f:facet>
+                    <h:outputText value="#{item.username}"/>
+                </p:column>
+                <c:if test="#{personScorecardManagedBean.queryQuarter == 1}">
+                    <p:column styleClass="Wid15">
+                        <f:facet name="header">
+                            <h:outputText value="主观Q1"/>
+                        </f:facet>
+                        <h:outputText value="#{item.porsubquarter1}"/>
+                    </p:column> 
+                    <p:column styleClass="Wid15">
+                        <f:facet name="header">
+                            <h:outputText value="客观Q1"/>
+                        </f:facet>
+                        <h:outputText value="#{item.porobjquarter1}"/>
+                    </p:column>
+                    <p:column styleClass="Wid15">
+                        <f:facet name="header">
+                            <h:outputText value="Q1合计"/>
+                        </f:facet>
+                        <h:outputText value="#{item.porsubquarter1+item.porobjquarter1}"/>
+                    </p:column>
+                </c:if>
+                <c:if test="#{personScorecardManagedBean.queryQuarter == 2}">
+                    <p:column styleClass="Wid15">
+                        <f:facet name="header">
+                            <h:outputText value="主观Q2"/>
+                        </f:facet>
+                        <h:outputText value="#{item.porsubquarter2}"/>
+                    </p:column> 
+                    <p:column styleClass="Wid15">
+                        <f:facet name="header">
+                            <h:outputText value="客观Q2"/>
+                        </f:facet>
+                        <h:outputText value="#{item.porobjquarter2}"/>
+                    </p:column>
+                    <p:column styleClass="Wid15">
+                        <f:facet name="header">
+                            <h:outputText value="Q2合计"/>
+                        </f:facet>
+                        <h:outputText value="#{item.porsubquarter2+item.porobjquarter2}"/>
+                    </p:column>
+                </c:if>
+                <c:if test="#{personScorecardManagedBean.queryQuarter == 3}">
+                    <p:column styleClass="Wid15">
+                        <f:facet name="header">
+                            <h:outputText value="主观Q3"/>
+                        </f:facet>
+                        <h:outputText value="#{item.porsubquarter3}"/>
+                    </p:column> 
+                    <p:column styleClass="Wid15">
+                        <f:facet name="header">
+                            <h:outputText value="客观Q3"/>
+                        </f:facet>
+                        <h:outputText value="#{item.porobjquarter3}"/>
+                    </p:column>
+                    <p:column styleClass="Wid15">
+                        <f:facet name="header">
+                            <h:outputText value="Q3合计"/>
+                        </f:facet>
+                        <h:outputText value="#{item.porsubquarter3+item.porobjquarter3}"/>
+                    </p:column>
+                </c:if>
+                <c:if test="#{personScorecardManagedBean.queryQuarter == 4}">
+                    <p:column styleClass="Wid15">
+                        <f:facet name="header">
+                            <h:outputText value="主观Q4"/>
+                        </f:facet>
+                        <h:outputText value="#{item.porsubquarter4}"/>
+                    </p:column> 
+                    <p:column styleClass="Wid15">
+                        <f:facet name="header">
+                            <h:outputText value="客观Q4"/>
+                        </f:facet>
+                        <h:outputText value="#{item.porobjquarter4}"/>
+                    </p:column>
+                    <p:column styleClass="Wid15">
+                        <f:facet name="header">
+                            <h:outputText value="合计Q4"/>
+                        </f:facet>
+                        <h:outputText value="#{item.porsubquarter4+item.porobjquarter4}"/>
+                    </p:column>
+                </c:if>
+            </p:dataTable>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:dialog id="dataSAdd" widgetVar="dataSAdd" width="40%" style="border-color: #666666">
+                <p:panelGrid id="dataRecordValue" styleClass="plgDetail Wid100">
+                    <f:facet name="header" >
+                        <p:row >
+                            <p:column colspan="4">资料导入</p:column>
+                        </p:row>
+                        <p:row >
+
+                        </p:row>
+                    </f:facet>
+
+                </p:panelGrid>
+                <p:panelGrid id="dataRecordsValue" styleClass="plgDetail Wid100">
+                    <p:row>
+                        <p:fileUpload id="fileUpload" fileUploadListener="#{personScorecardManagedBean.handleFileUploadWhenNew}"  styleClass="fileUpload"
+                                      allowTypes="/(\.|\/)(xlsx|xls)$/" sizeLimit="5000000" label="选择" uploadLabel="上传" cancelLabel="还原" update=":formList"/>
+                    </p:row>
+                </p:panelGrid>
+                <div style="width: 100%;color: gray; font-size: 13px;" >
+                    <p style="height: 14px;color: red">
+                        页签中内容从第六行开始读取，请严格按照模板调整数据。
+                    </p>
+                    <p style="height: 14px;color: red">
+                        sheet页签请使用Q1,Q2,Q3,Q4的方式命名。一次可以导入多个季度。
+                    </p>
+
+                </div>
+            </p:dialog>
+            <p:blockUI id="blockUI" block="formList" trigger="">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -46,14 +46,14 @@ public class PolicyContentBean extends SuperEJBForKPI<PolicyContent> {
         //实际/目标
         if ("A".equals(calculationmethod)) {
             //目标为0，则达成率为100%
-            if (target.setScale(2,BigDecimal.ROUND_HALF_UP).compareTo(BigDecimal.ZERO) == 0) {
+            if (target.setScale(3,BigDecimal.ROUND_HALF_UP).compareTo(BigDecimal.ZERO) == 0) {
                 return BigDecimal.TEN.multiply(BigDecimal.TEN);
             } else {
                 return actual.divide(target, 4, BigDecimal.ROUND_HALF_UP).multiply( BigDecimal.TEN).multiply(BigDecimal.TEN);
             }
         } else if ("B".equals(calculationmethod)) {
             //目标/实际
-            if (actual.setScale(2,BigDecimal.ROUND_HALF_UP).compareTo(BigDecimal.ZERO) == 0) {
+            if (actual.setScale(3,BigDecimal.ROUND_HALF_UP).compareTo(BigDecimal.ZERO) == 0) {
                 return BigDecimal.TEN.multiply(BigDecimal.TEN);
             } else {
                 return target.divide(actual, 4, BigDecimal.ROUND_HALF_UP).multiply( BigDecimal.TEN).multiply(BigDecimal.TEN);

@@ -97,25 +97,13 @@
                             </f:facet>
                             <h:outputText value="#{item.seqname}"/>
                         </p:column>
-                        <p:column styleClass="Wid20" rendered="#{empty item.fromkpi and empty item.fromplm}">
+                        <p:column styleClass="Wid30">
                             <f:facet name="header">
                                 <h:outputText value="方针内容"/>
                             </f:facet>
-                            <h:outputText value="#{item.name}"/>
-                        </p:column>
-                        <p:column styleClass="Wid30" rendered="#{!empty item.fromkpi and empty item.fromplm}">
-                            <f:facet name="header">
-                                <h:outputText value="方针内容"/>
-                            </f:facet>
-                            <p:graphicImage name="images/K.png" library="ultima-layout" style="height:15px;width:15px;background-color: #EEE8AA"/>
-                            <h:outputText value="#{item.name}"/>
-                        </p:column>
-                        <p:column styleClass="Wid30" rendered="#{empty item.fromkpi and !empty item.fromplm}">
-                            <f:facet name="header">
-                                <h:outputText value="方针内容"/>
-                            </f:facet>
-                            <p:graphicImage name="images/P.png" library="ultima-layout" style="height:15px;width:15px;background-color: #EEE8AA"/>
-                            <h:outputText value="#{item.name}"/>
+                            <p:graphicImage name="images/K.png" library="ultima-layout" style="height:20px;width:20px;background-color: #EEE8AA" rendered="#{item.fromkpi!='' and item.fromkpi!=null}"/>
+                            <p:graphicImage name="images/P.png" library="ultima-layout" style="height:20px;width:20px;background-color: #EEE8AA" rendered="#{item.fromplm!='' and item.fromplm!=null}"/>
+                            <h:outputText value="#{item.name}"></h:outputText>
                         </p:column>
                         <p:column>
                             <f:facet name="header">
