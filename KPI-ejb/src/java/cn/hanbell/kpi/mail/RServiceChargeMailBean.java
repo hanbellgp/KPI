@@ -54,12 +54,8 @@ public class RServiceChargeMailBean extends BscSheetMail {
 
     @Override
     protected String getMailBody() {
-        indicator = indicatorBean.findByFormidYearAndDeptno("A-R收费服务", y, "1F000");
-        if (indicator == null) {
-            throw new NullPointerException(String.format("指标编号%s:考核部门%s:不存在", "A-R收费服务", "1F000"));
-        }
         indicators.clear();
-        indicators = indicatorBean.findByPIdAndYear(indicator.getId(), y);
+        indicators = indicatorBean.findByCategoryAndYear("R收费服务金额", y);
         indicatorBean.getEntityManager().clear();
         //指标排序
         indicators.sort((Indicator o1, Indicator o2) -> {
@@ -74,7 +70,7 @@ public class RServiceChargeMailBean extends BscSheetMail {
             indicatorBean.divideByRate(e, 2);
         }
         StringBuilder sb = new StringBuilder();
-        sb.append("<div class=\"tableTitle\">单位：").append(indicator.getUnit()).append("</div>");
+        sb.append("<div class=\"tableTitle\">单位：万元").append("</div>");
         sb.append(getHtmlTable(indicators, y, m, d, true));
         return sb.toString();
     }

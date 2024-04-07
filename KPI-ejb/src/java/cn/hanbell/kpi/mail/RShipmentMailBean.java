@@ -140,7 +140,7 @@ public class RShipmentMailBean extends ShipmentMail {
             sum2 = sum2.add(getData().get("sum2"));
             sb.append(getHtmlTableRow(indicator, y, m, d));
             indicators.add(indicator);
-            
+
             indicator = indicatorBean.getSumValue(indicatorsZ);
             indicatorBean.updatePerformance(indicator);
             indicator.setName("盐水出货台数合计");
@@ -264,7 +264,7 @@ public class RShipmentMailBean extends ShipmentMail {
             sb.append(getHtmlTableRow(indicator, y, m, d));
             indicators.add(indicator);
 
-             indicatorBean.getEntityManager().clear();
+            indicatorBean.getEntityManager().clear();
             for (Indicator i : indicatorsZ) {
                 indicatorBean.divideByRate(i, 2);
             }
@@ -277,7 +277,7 @@ public class RShipmentMailBean extends ShipmentMail {
             sum2 = sum2.add(getData().get("sum2"));
             sb.append(getHtmlTableRow(indicator, y, m, d));
             indicators.add(indicator);
-            
+
             indicatorBean.getEntityManager().clear();
             indicator = indicatorBean.getSumValue(indicators);
             indicatorBean.updatePerformance(indicator);
@@ -299,17 +299,134 @@ public class RShipmentMailBean extends ShipmentMail {
     }
 
     protected String getServiceTable() throws Exception {
-        this.indicators.clear();
-        indicators = indicatorBean.findByCategoryAndYear("R收费服务金额", y);
-        indicatorBean.getEntityManager().clear();
-        if (indicators != null && !indicators.isEmpty()) {
+        StringBuilder sb = new StringBuilder();
+        Indicator indicator;
+        getData().clear();
+        sb.append("<div class=\"tbl\"><table width=\"100%\">");
+        sb.append("<tr><th rowspan=\"2\" colspan=\"1\">产品别</th><th rowspan=\"2\" colspan=\"1\">本日</th>");
+        sb.append("<th rowspan=\"1\" colspan=\"5\">本月</th><th rowspan=\"1\" colspan=\"5\">年累计</th>");
+        sb.append("<th rowspan=\"2\" colspan=\"1\">年度目标</th><th rowspan=\"2\" colspan=\"1\">年度达成率</th><th rowspan=\"2\" colspan=\"1\">订单未交</th></tr>");
+        sb.append("<tr><th colspan=\"1\">实际</th><th colspan=\"1\">目标</th><th colspan=\"1\">达成率</th><th colspan=\"1\">去年同期</th><th colspan=\"1\">成长率</th>");
+        sb.append("<th colspan=\"1\">实际</th><th colspan=\"1\">目标</th><th colspan=\"1\">达成率</th><th colspan=\"1\">去年同期</th><th colspan=\"1\">成长率</th>");
+        sb.append("</tr>");
+        try {
+            List<Indicator> indicatorsHD = new ArrayList<>();
+            List<Indicator> indicatorsJN = new ArrayList<>();
+            List<Indicator> indicatorsGZ = new ArrayList<>();
+            List<Indicator> indicatorsNJ = new ArrayList<>();
+            List<Indicator> indicatorsCQ = new ArrayList<>();
+
+            sum1 = BigDecimal.ZERO;
+            sum2 = BigDecimal.ZERO;
+            this.indicators.clear();
+            salesOrder = new SalesOrderAmount();
+            indicators = indicatorBean.findByCategoryAndYear("R收费服务金额", y);
             for (Indicator i : indicators) {
+                switch (i.getProduct().trim()) {
+                      case "华东R收费服务":
+                        indicatorsHD.add(i);
+                        break;
+                    case "济南R收费服务":
+                        indicatorsJN.add(i);
+                        break;
+                    case "广州R收费服务":
+                        indicatorsGZ.add(i);
+                        break;
+                    case "南京R收费服务":
+                        indicatorsNJ.add(i);
+                        break;
+                    case "重庆R收费服务":
+                        indicatorsCQ.add(i);
+                        break;
+                    default:
+                }
+            }
+            indicators.clear();
+            indicatorBean.getEntityManager().clear();
+            for (Indicator i : indicatorsHD) {
                 indicatorBean.divideByRate(i, 2);
             }
-            salesOrder = null;
-            return getHtmlTable(this.indicators, y, m, d, true);
-        } else {
-            return "R收费服务金额设定错误";
+            indicator = indicatorBean.getSumValue(indicatorsHD);
+            indicatorBean.updatePerformance(indicator);
+            indicator.setName("制冷服务课服务收费");
+
+            getHtmlTable(indicatorsHD, y, m, d, true);
+            sum1 = sum1.add(getData().get("sum1"));
+            sum2 = sum2.add(getData().get("sum2"));
+            sb.append(getHtmlTableRow(indicator, y, m, d));
+            indicators.add(indicator);
+
+            indicatorBean.getEntityManager().clear();
+            for (Indicator i : indicatorsJN) {
+                indicatorBean.divideByRate(i, 2);
+            }
+            indicator = indicatorBean.getSumValue(indicatorsJN);
+            indicatorBean.updatePerformance(indicator);
+            indicator.setName("济南服务收费");
+            getHtmlTable(indicatorsJN, y, m, d, true);
+            sum1 = sum1.add(getData().get("sum1"));
+            sum2 = sum2.add(getData().get("sum2"));
+            sb.append(getHtmlTableRow(indicator, y, m, d));
+            indicators.add(indicator);
+
+            indicatorBean.getEntityManager().clear();
+            for (Indicator i : indicatorsGZ) {
+                indicatorBean.divideByRate(i, 2);
+            }
+            indicator = indicatorBean.getSumValue(indicatorsGZ);
+            indicatorBean.updatePerformance(indicator);
+            indicatorBean.getEntityManager().clear();
+            indicator.setName("广州服务收费");
+            getHtmlTable(indicatorsGZ, y, m, d, true);
+            sum1 = sum1.add(getData().get("sum1"));
+            sum2 = sum2.add(getData().get("sum2"));
+            sb.append(getHtmlTableRow(indicator, y, m, d));
+            indicators.add(indicator);
+
+            indicatorBean.getEntityManager().clear();
+            for (Indicator i : indicatorsNJ) {
+                indicatorBean.divideByRate(i, 2);
+            }
+            indicator = indicatorBean.getSumValue(indicatorsNJ);
+            indicatorBean.updatePerformance(indicator);
+            indicatorBean.getEntityManager().clear();
+            indicator.setName("南京R收费服务");
+            getHtmlTable(indicatorsNJ, y, m, d, true);
+            sum1 = sum1.add(getData().get("sum1"));
+            sum2 = sum2.add(getData().get("sum2"));
+            sb.append(getHtmlTableRow(indicator, y, m, d));
+            indicators.add(indicator);
+            
+           indicatorBean.getEntityManager().clear();
+            for (Indicator i : indicatorsCQ) {
+                indicatorBean.divideByRate(i, 2);
+            }
+            indicator = indicatorBean.getSumValue(indicatorsCQ);
+            indicatorBean.updatePerformance(indicator);
+            indicatorBean.getEntityManager().clear();
+            indicator.setName("重庆R收费服务");
+            getHtmlTable(indicatorsCQ, y, m, d, true);
+            sum1 = sum1.add(getData().get("sum1"));
+            sum2 = sum2.add(getData().get("sum2"));
+            sb.append(getHtmlTableRow(indicator, y, m, d));
+            indicators.add(indicator);
+
+            indicatorBean.getEntityManager().clear();
+            indicator = indicatorBean.getSumValue(indicators);
+            indicatorBean.updatePerformance(indicator);
+            indicator.setName("合计");
+            getData().put("sum1", sum1);
+            getData().put("sum2", sum2);
+            sb.append(getHtmlTableRow(indicator, y, m, d));
+            sb.append("</table></div>");
+            indicatorBean.getEntityManager().clear();
+            if (indicators != null && !indicators.isEmpty()) {
+                return sb.toString();
+            } else {
+                return "R冷媒出货金额设定错误";
+            }
+        } catch (Exception ex) {
+            return "R冷媒出货金额设定错误";
         }
     }
 
