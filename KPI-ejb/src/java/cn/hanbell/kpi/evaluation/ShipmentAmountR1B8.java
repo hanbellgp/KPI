@@ -9,9 +9,9 @@ package cn.hanbell.kpi.evaluation;
  *
  * @author C0160
  */
-public class ShipmentAmountR1B9 extends ShipmentAmountR {
+public class ShipmentAmountR1B8 extends ShipmentAmountR {
 
-    public ShipmentAmountR1B9() {
+    public ShipmentAmountR1B8() {
         super();
         queryParams.put("facno", "C");
         //queryParams.put("decode", "1");
@@ -19,7 +19,7 @@ public class ShipmentAmountR1B9 extends ShipmentAmountR {
         queryParams.put("n_code_DA", " ='R' ");
         queryParams.put("n_code_CD", " ='HD' ");
         queryParams.put("n_code_DD", " not in ('00','ZZ') ");
-        queryParams.put("n_code_3C", " in ('01') ");//服务支持
+        queryParams.put("n_code_3C", " not in ('01') ");//服务后市场
     }
 
 }

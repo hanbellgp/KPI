@@ -30,7 +30,7 @@
     </context-param>
     <context-param>
         <param-name>unicorn.sso.url</param-name>
-        <param-value>http://work.zj-hanson.com:8480/eap-application/api/eap/system-user/session/</param-value>
+        <param-value>http://work.zj-hanson.com:8108/eap-application/api/eap/system-user/session/</param-value>
     </context-param>
     <context-param>
         <param-name>javax.faces.STATE_SAVING_METHOD</param-name>

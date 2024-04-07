@@ -13,17 +13,17 @@ import java.util.LinkedHashMap;
  *
  * @author C0160
  */
-public class ShipmentAmountR1D9 extends ShipmentAmountR {
+public class ShipmentAmountR1V8 extends ShipmentAmountR {
 
-    public ShipmentAmountR1D9() {
+    public ShipmentAmountR1V8() {
         super();
         queryParams.put("facno", "C");
         //queryParams.put("decode", "1");
         queryParams.put("ogdkid", "RL01");
         queryParams.put("n_code_DA", " ='R' ");
-        queryParams.put("n_code_CD", " ='GZ' ");
+        queryParams.put("n_code_CD", " ='CQ' ");
         queryParams.put("n_code_DD", " not in ('00','ZZ') ");
-        queryParams.put("n_code_3C", " in ('01') ");//服务支持
+        queryParams.put("n_code_3C", " not in ('01') ");//服务后市场
     }
 
     @Override
@@ -33,10 +33,10 @@ public class ShipmentAmountR1D9 extends ShipmentAmountR {
         temp1 = super.getValue(y, m, d, type, map);
         queryParams.remove("facno");
         queryParams.remove("n_code_CD");
-        queryParams.put("facno", "G");
-        //GZ ERP
+        queryParams.put("facno", "C4");
+        //CQ ERP
         temp2 = super.getValue(y, m, d, type, queryParams);
-        //SHB + GZ
+        //SHB + CQ
         return temp1.add(temp2);
     }
 

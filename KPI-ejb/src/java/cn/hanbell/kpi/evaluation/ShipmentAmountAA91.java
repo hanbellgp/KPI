@@ -18,7 +18,6 @@ public class ShipmentAmountAA91 extends ShipmentAmount9 {
     public ShipmentAmountAA91() {
         super();
         queryParams.put("facno", "C");
-        queryParams.put("decode", "1");
         queryParams.put("ogdkid", "RL01");
         queryParams.put("n_code_DA", "='AA' ");
         queryParams.put("n_code_DC", " <> 'SDS' ");

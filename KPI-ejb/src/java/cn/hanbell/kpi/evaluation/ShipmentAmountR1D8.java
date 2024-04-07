@@ -13,9 +13,9 @@ import java.util.LinkedHashMap;
  *
  * @author C0160
  */
-public class ShipmentAmountR1D9 extends ShipmentAmountR {
+public class ShipmentAmountR1D8 extends ShipmentAmountR {
 
-    public ShipmentAmountR1D9() {
+    public ShipmentAmountR1D8() {
         super();
         queryParams.put("facno", "C");
         //queryParams.put("decode", "1");
@@ -23,7 +23,7 @@ public class ShipmentAmountR1D9 extends ShipmentAmountR {
         queryParams.put("n_code_DA", " ='R' ");
         queryParams.put("n_code_CD", " ='GZ' ");
         queryParams.put("n_code_DD", " not in ('00','ZZ') ");
-        queryParams.put("n_code_3C", " in ('01') ");//服务支持
+        queryParams.put("n_code_3C", " not in ('01') ");//服务后市场
     }
 
     @Override

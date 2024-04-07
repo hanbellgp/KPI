@@ -156,7 +156,7 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
                 Workbook excel = WorkbookFactory.create(is);
                 List<PersonScorecardDetail> list = new ArrayList<PersonScorecardDetail>();
                 for (PersonScorecard p : this.entityList) {
-                    if(!p.getPersonset().getAssessmentmethod().equals("I") || !p.getPersonset().getAssessmentmethod().equals("J")){
+                    if(!p.getPersonset().getAssessmentmethod().equals("I") && !p.getPersonset().getAssessmentmethod().equals("J")){
                         throw new Exception("C，D，E职等不使用客观考核内容!");
                     }
                     Sheet sheet = excel.getSheet("Q1");
