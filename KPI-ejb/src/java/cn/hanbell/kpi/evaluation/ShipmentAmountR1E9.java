@@ -13,7 +13,7 @@ import java.util.LinkedHashMap;
  *
  * @author C0160
  */
-public class ShipmentAmountR1E9 extends ShipmentAmount9 {
+public class ShipmentAmountR1E9 extends ShipmentAmountR {
 
     public ShipmentAmountR1E9() {
         super();
@@ -23,6 +23,7 @@ public class ShipmentAmountR1E9 extends ShipmentAmount9 {
         queryParams.put("n_code_DA", " ='R' ");
         queryParams.put("n_code_CD", " ='NJ' ");
         queryParams.put("n_code_DD", " not in ('00','ZZ') ");
+        queryParams.put("n_code_3C", " in ('01') ");//服务支持
     }
 
     @Override
