@@ -96,12 +96,21 @@ public class AAEmployeeMailBean extends EmployeeMail {
             }
 
             this.indicators.clear();
-            this.indicators = indicatorBean.findByCategoryAndYear("A机组SDS个人销售台数", y);
+            this.indicators = indicatorBean.findByCategoryAndYear("A机组张文君SDS个人销售台数", y);
             indicatorBean.getEntityManager().clear();
             if (indicators != null && !indicators.isEmpty()) {
                 sb.append(getHtmlTable(this.indicators, y, m, d, false, "SDS"));
             } else {
-                sb.append("<tr><td  style=\"text-align:center;\"  colspan=\"9\">A机组SDS个人销售台数设定错误</td></tr>");
+                sb.append("<tr><td  style=\"text-align:center;\"  colspan=\"9\">A机组张文君SDS个人销售台数设定错误</td></tr>");
+            }
+
+            this.indicators.clear();
+            this.indicators = indicatorBean.findByCategoryAndYear("A机组张文君AA个人销售台数", y);
+            indicatorBean.getEntityManager().clear();
+            if (indicators != null && !indicators.isEmpty()) {
+                sb.append(getHtmlTable(this.indicators, y, m, d, false, "AA"));
+            } else {
+                sb.append("<tr><td  style=\"text-align:center;\"  colspan=\"9\">A机组张文君AA个人销售台数设定错误</td></tr>");
             }
 //            this.indicators.clear();
 //            this.indicators = indicatorBean.findByCategoryAndYear("A机组营销高专个人销售台数", y);
@@ -177,13 +186,23 @@ public class AAEmployeeMailBean extends EmployeeMail {
             } else {
                 sb.append("<tr><td  style=\"text-align:center;\"  colspan=\"10\">A机组外销个人销售金额设定错误</td></tr>");
             }
+
             this.indicators.clear();
-            this.indicators = indicatorBean.findByCategoryAndYear("A机组SDS个人销售金额", y);
+            this.indicators = indicatorBean.findByCategoryAndYear("A机组张文君SDS个人销售金额", y);
             indicatorBean.getEntityManager().clear();
             if (indicators != null && !indicators.isEmpty()) {
                 sb.append(getHtmlTable(this.indicators, y, m, d, false, "SDS"));
             } else {
-                sb.append("<tr><td  style=\"text-align:center;\"  colspan=\"10\">A机组SDS个人销售金额设定错误</td></tr>");
+                sb.append("<tr><td  style=\"text-align:center;\"  colspan=\"10\">A机组张文君SDS个人销售金额设定错误</td></tr>");
+            }
+
+            this.indicators.clear();
+            this.indicators = indicatorBean.findByCategoryAndYear("A机组张文君AA个人销售金额", y);
+            indicatorBean.getEntityManager().clear();
+            if (indicators != null && !indicators.isEmpty()) {
+                sb.append(getHtmlTable(this.indicators, y, m, d, false, "AA"));
+            } else {
+                sb.append("<tr><td  style=\"text-align:center;\"  colspan=\"10\">A机组张文君AA个人销售金额设定错误</td></tr>");
             }
 
 //            this.indicators.clear();

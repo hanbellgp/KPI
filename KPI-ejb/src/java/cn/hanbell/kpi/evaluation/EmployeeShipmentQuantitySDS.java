@@ -17,13 +17,13 @@ import javax.persistence.Query;
  *
  * @author C1879
  */
-public class EmployeeShipmentQuantityAA extends EmployeeShipmentQuantity {
+public class EmployeeShipmentQuantitySDS extends EmployeeShipmentQuantity {
 
-    public EmployeeShipmentQuantityAA() {
+    public EmployeeShipmentQuantitySDS() {
         super();
         queryParams.put("facno", "C");
         queryParams.put("n_code_DA", " ='AA' ");
-        queryParams.put("n_code_DC", " <>'SDS' ");
+        queryParams.put("n_code_DC", " ='SDS' ");
         queryParams.put("n_code_DD", " IN ('00','02') ");
     }
 
