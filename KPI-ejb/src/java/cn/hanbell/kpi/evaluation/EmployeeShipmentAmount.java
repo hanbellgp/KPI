@@ -83,6 +83,9 @@ public class EmployeeShipmentAmount extends Shipment {
         if (!"".equals(n_code_DA)) {
             sb.append(" and d.n_code_DA ").append(n_code_DA);
         }
+        if (!"".equals(n_code_DC)) {
+            sb.append(" and d.n_code_DC ").append(n_code_DC);
+        }
         if (!"".equals(n_code_DD)) {
             sb.append(" and d.n_code_DD ").append(n_code_DD);
         }

@@ -9,14 +9,16 @@ package cn.hanbell.kpi.evaluation;
  *
  * @author C1879
  */
-public class EmployeeSalesOrderAmountAA extends EmployeeSalesOrderAmount {
+public class EmployeeShipmentAmountSDS extends EmployeeShipmentAmount {
 
-    public EmployeeSalesOrderAmountAA() {
+    public EmployeeShipmentAmountSDS() {
         super();
         queryParams.put("facno", "C");
+        queryParams.put("deptno", "('1Q000','1Q100')");
         queryParams.put("n_code_DA", " ='AA' ");
-        queryParams.put("n_code_DC", " <>'SDS' ");
-        queryParams.put("n_code_DD", " in ('00','02') ");
+        queryParams.put("n_code_DC", "='SDS' ");
+        queryParams.put("n_code_DD", " IN ('00','02') ");
+        queryParams.put("ogdkid", "IN ('RL01','RL03')");
     }
 
 }
