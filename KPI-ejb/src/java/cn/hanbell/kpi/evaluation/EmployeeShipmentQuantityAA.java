@@ -24,7 +24,7 @@ public class EmployeeShipmentQuantityAA extends EmployeeShipmentQuantity {
         queryParams.put("facno", "C");
         queryParams.put("n_code_DA", " ='AA' ");
         queryParams.put("n_code_DC", " <>'SDS' ");
-        queryParams.put("n_code_DD", " IN ('00','02') ");
+        queryParams.put("n_code_DD", " IN ('00') ");
     }
 
     @Override
@@ -34,7 +34,7 @@ public class EmployeeShipmentQuantityAA extends EmployeeShipmentQuantity {
         String userid = map.get("userid") != null ? map.get("userid").toString() : "";
         String n_code_DA = map.get("n_code_DA") != null ? map.get("n_code_DA").toString() : "";
         String n_code_DD = map.get("n_code_DD") != null ? map.get("n_code_DD").toString() : "";
-
+        String n_code_DC = map.get("n_code_DC") != null ? map.get("n_code_DC").toString() : "";
         BigDecimal shpqy1 = BigDecimal.ZERO;
         BigDecimal bshpqy1 = BigDecimal.ZERO;
 
@@ -48,9 +48,13 @@ public class EmployeeShipmentQuantityAA extends EmployeeShipmentQuantity {
         if (!"".equals(n_code_DA)) {
             sb.append(" and d.n_code_DA ").append(n_code_DA);
         }
+        if (!"".equals(n_code_DC)) {
+            sb.append(" and d.n_code_DC ").append(n_code_DC);
+        }
         if (!"".equals(n_code_DD)) {
             sb.append(" and d.n_code_DD ").append(n_code_DD);
         }
+     
         sb.append(" and year(h.shpdate) = ${y} and month(h.shpdate)= ${m} ");
         switch (type) {
             case 2:
@@ -76,6 +80,9 @@ public class EmployeeShipmentQuantityAA extends EmployeeShipmentQuantity {
         }
         if (!"".equals(n_code_DA)) {
             sb.append(" and d.n_code_DA ").append(n_code_DA);
+        }
+        if (!"".equals(n_code_DC)) {
+            sb.append(" and d.n_code_DC ").append(n_code_DC);
         }
         if (!"".equals(n_code_DD)) {
             sb.append(" and d.n_code_DD ").append(n_code_DD);
