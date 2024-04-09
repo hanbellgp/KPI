@@ -13,15 +13,15 @@ import java.util.LinkedHashMap;
  *
  * @author C0160
  */
-public class ShipmentAmountAA91 extends ShipmentAmount9 {
+public class ShipmentAmountAA92 extends ShipmentAmount9 {
 
-    public ShipmentAmountAA91() {
+    public ShipmentAmountAA92() {
         super();
         queryParams.put("facno", "C");
         queryParams.put("ogdkid", "RL01");
         queryParams.put("n_code_DA", "='AA' ");
         queryParams.put("n_code_DC", " <> 'SDS' ");
-        queryParams.put("n_code_CD", "  not in('WXTW','WXVN') ");
+        queryParams.put("n_code_CD", "  in('WXTW','WXVN')");
     }
 
     @Override
