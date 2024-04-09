@@ -318,14 +318,14 @@ public class ScorecardBean extends SuperEJBForKPI<Scorecard> {
         double score = 0.0;
         double minDifference = 0.0;
         double minCoefficient = 0.0;
+        JexlEngine jexl = new JexlBuilder().create();
         for (double i = 0.1; i <= 0.9; i = i + 0.1) {
-            JexlEngine jexl = new JexlBuilder().create();
             String jexlExp = d.getScoreJexl().replace("object.c${n}",String.valueOf(i)).replace("${n}", n);
             JexlExpression exp = jexl.createExpression(jexlExp);
             JexlContext jc = new MapContext();
             jc.set("object", d);
             double value = (double) exp.evaluate(jc);
-            if (Math.abs(100 - value) > minDifference) {
+            if (Math.abs(100 - value) >= minDifference) {
                 minDifference = value;
                 minCoefficient = i;
                 score = value;
