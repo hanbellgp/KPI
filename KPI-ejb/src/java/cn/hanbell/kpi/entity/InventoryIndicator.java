@@ -34,7 +34,9 @@ public class InventoryIndicator implements Serializable {
     private BigDecimal upactualThan;
     //与同期比
     private BigDecimal benchmarkThan;
-    
+
+    //备注
+    private String remark;
 
     public String getId() {
         return id;
@@ -115,4 +117,13 @@ public class InventoryIndicator implements Serializable {
     public void setBenchmarkThan(BigDecimal benchmarkThan) {
         this.benchmarkThan = benchmarkThan;
     }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
 }

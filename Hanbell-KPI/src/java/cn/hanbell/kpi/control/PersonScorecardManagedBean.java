@@ -95,14 +95,14 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
             if ("F".equals(isShowAll)) {
                 List<SystemUser> users = systemUserBean.findByManagerIdAndOnJob(this.userManagedBean.getCurrentUser().getUserid());
                 list = users.stream().map(e -> new String(e.getUserid())).collect(Collectors.toList());
-               
+
             } else {
                 list = this.getAllChildrenIds(this.userManagedBean.getCurrentUser().getUserid(), systemUserBean.findByStatus("N"));
                 model.getFilterFields().put("userid IN ", list);
             }
-             list.add(this.userManagedBean.getUserid());
-            if(!list.isEmpty()){
-                 model.getFilterFields().put("userid IN ", list);
+            list.add(this.userManagedBean.getUserid());
+            if (!list.isEmpty()) {
+                model.getFilterFields().put("userid IN ", list);
             }
             if (queryUserId != null && !"".equals(queryUserId)) {
                 model.getFilterFields().put("userid", queryUserId);
@@ -156,7 +156,7 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
                 Workbook excel = WorkbookFactory.create(is);
                 List<PersonScorecardDetail> list = new ArrayList<PersonScorecardDetail>();
                 for (PersonScorecard p : this.entityList) {
-                    if(!p.getPersonset().getAssessmentmethod().equals("I") && !p.getPersonset().getAssessmentmethod().equals("J")){
+                    if (!p.getPersonset().getAssessmentmethod().equals("I") && !p.getPersonset().getAssessmentmethod().equals("J")) {
                         throw new Exception("C，D，E职等不使用客观考核内容!");
                     }
                     Sheet sheet = excel.getSheet("Q1");
@@ -189,8 +189,11 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
                         list.addAll(getDataBySheet(sheet, p));
                     }
                 }
-                for (PersonScorecardDetail p : list) {
-                    personScorecardDetailBean.persist(p);
+                for (int i = 0; i < list.size(); i++) {
+                    if (i > 0 && (list.get(i).getName() == null || "".equals(list.get(i).getName()))) {
+                        list.get(i).setName(list.get(i - 1).getName());
+                    }
+                    personScorecardDetailBean.persist(list.get(i));
                 }
                 showInfoMsg("Info", "导入成功");
             } catch (Exception ex) {
@@ -253,10 +256,11 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
             try {
                 row = sheet.getRow(i);
                 String name = BaseLib.convertExcelCell(String.class, row.getCell(1));
-                BigDecimal ratio = BigDecimal.valueOf(BaseLib.convertExcelCell(Double.class, row.getCell(3)));
+                BigDecimal ratio = BigDecimal.valueOf(BaseLib.convertExcelCell(Double.class, row.getCell(4)));
                 r = r.add(ratio);
                 PersonScorecardDetail sc = new PersonScorecardDetail(p.getId(), i - 4, "O", quarter, name, BigDecimal.ZERO, ratio);
                 sc.setTarget(BaseLib.convertExcelCell(String.class, row.getCell(2)));
+                sc.setStandard(BaseLib.convertExcelCell(String.class, row.getCell(3)));
                 list.add(sc);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -336,7 +340,7 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
         BigDecimal b = BigDecimal.ZERO;
         ScorecardDetailEntity entity = this.scoreMap.get(this.tabid);
         for (PersonScorecardDetail bean : entity.getDetail()) {
-           b= b.add(bean.getScore());
+            b = b.add(bean.getScore());
         }
         switch (this.tabid) {
             case "sq1":
@@ -429,7 +433,6 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
     public void setScoreMap(Map<String, ScorecardDetailEntity> scoreMap) {
         this.scoreMap = scoreMap;
     }
-    
 
     public void tabchange(TabChangeEvent event) {
         this.tabid = event.getTab().getId();

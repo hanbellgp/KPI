@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "PersonScorecardDetail.findByType", query = "SELECT p FROM PersonScorecardDetail p WHERE p.type = :type"),
     @NamedQuery(name = "PersonScorecardDetail.findByTarget", query = "SELECT p FROM PersonScorecardDetail p WHERE p.target = :target"),
     @NamedQuery(name = "PersonScorecardDetail.findByActuality", query = "SELECT p FROM PersonScorecardDetail p WHERE p.actuality = :actuality"),
-     @NamedQuery(name = "PersonScorecardDetail.findByPIdAndQuarteAndType", query = "SELECT p FROM PersonScorecardDetail p WHERE p.pid = :pid and p.quarter = :quarter and p.type = :type"),
+    @NamedQuery(name = "PersonScorecardDetail.findByPIdAndQuarteAndType", query = "SELECT p FROM PersonScorecardDetail p WHERE p.pid = :pid and p.quarter = :quarter and p.type = :type"),
     @NamedQuery(name = "PersonScorecardDetail.findByRatio", query = "SELECT p FROM PersonScorecardDetail p WHERE p.ratio = :ratio")})
 public class PersonScorecardDetail extends SuperDetailEntity {
 
@@ -42,15 +42,18 @@ public class PersonScorecardDetail extends SuperDetailEntity {
     @Size(max = 5)
     @Column(name = "type")
     private String type;
-    @Size(max = 50)
+    @Size(max = 500)
     @Column(name = "name")
     private String name;
-    @Size(max = 50)
+    @Size(max = 500)
     @Column(name = "target")
     private String target;
-    @Size(max = 50)
+    @Size(max = 500)
     @Column(name = "actuality")
     private String actuality;
+    @Size(max = 500)
+    @Column(name = "standard")
+    private String standard;
     @Column(name = "score")
     private BigDecimal score;
     @Column(name = "ratio")
@@ -59,20 +62,20 @@ public class PersonScorecardDetail extends SuperDetailEntity {
     public PersonScorecardDetail() {
     }
 
-    public PersonScorecardDetail(int pid,int seq,String type, Integer quarter, String name,BigDecimal score, BigDecimal ratio) {
-        this.pid=pid;
-        this.seq=seq;
+    public PersonScorecardDetail(int pid, int seq, String type, Integer quarter, String name, BigDecimal score, BigDecimal ratio) {
+        this.pid = pid;
+        this.seq = seq;
         this.type = type;
         this.quarter = quarter;
         this.name = name;
-        this.score=score;
+        this.score = score;
         this.ratio = ratio;
     }
 
     public PersonScorecardDetail(Integer id) {
         this.id = id;
     }
-    
+
     public Integer getQuarter() {
         return quarter;
     }
@@ -113,6 +116,14 @@ public class PersonScorecardDetail extends SuperDetailEntity {
         this.actuality = actuality;
     }
 
+    public String getStandard() {
+        return standard;
+    }
+
+    public void setStandard(String standard) {
+        this.standard = standard;
+    }
+
     public BigDecimal getScore() {
         return score;
     }
@@ -120,7 +131,6 @@ public class PersonScorecardDetail extends SuperDetailEntity {
     public void setScore(BigDecimal score) {
         this.score = score;
     }
-
 
     public BigDecimal getRatio() {
         return ratio;
