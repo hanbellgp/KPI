@@ -36,7 +36,7 @@
                 });
             </script>
             <p:dataTable id="tblList" value="#{inventoryReportBean.inventoryIndicatorList}" var="item" tableStyleClass="plgSheetData" stickyHeader="true"
-                         rowStyleClass="#{(item.category.substring(item.category.length()-2,item.category.length()) == '合计')?'bgred':''}">
+                         rowStyleClass="#{(item.category.endsWith('合计'))?'bgred':''}">
                 <p:columnGroup type="header">
                     <p:row>
                         <p:column rowspan="2" headerText="目标类型" />
@@ -62,8 +62,9 @@
                 <p:column style="text-align: left;">
                     <h:outputText value="#{(item.deptName == '财务部')?'无':item.deptName}"/>
                 </p:column>
-                <p:column style="text-align: left;">
+                <p:column style="text-align: left;white-space: pre">
                     <h:outputText  value="#{item.category}"/>
+                    <h:outputText  value="#{item.remark}" style="color:red"/>
                 </p:column>
                 <p:column>
                     <h:outputText value="#{inventoryReportBean.format(item.target)}"/>

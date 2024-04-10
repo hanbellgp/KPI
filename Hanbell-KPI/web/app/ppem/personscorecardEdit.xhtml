@@ -79,7 +79,7 @@
                         </p:toolbar>
                     </c:if>
                     <p:dataTable id="tableList1" value="#{personScorecardManagedBean.scoreMap.get('sq1').detail}" var="item" styleClass="tableList Mtop10">
-                        <p:column styleClass="Wid5">
+                        <p:column styleClass="Wid5"   >
                             <f:facet name="header">
                                 <h:outputText value="项目"/>
                             </f:facet>
@@ -129,7 +129,7 @@
                             </p:toolbar>
                         </c:if>
                         <p:dataTable id="tableList2" value="#{personScorecardManagedBean.scoreMap.get('aq1').detail}" var="item" styleClass="tableList Mtop10" >
-                            <p:column styleClass="Wid10">
+                            <p:column styleClass="Wid10" groupRow="true" style="text-align:center;background: white !important">
                                 <f:facet name="header">
                                     <h:outputText value="考核项目"/>
                                 </f:facet>
@@ -140,6 +140,12 @@
                                     <h:outputText value="目标"/>
                                 </f:facet>
                                   <p:inputTextarea  value="#{item.target}" styleClass="Wid100"  rows="3" readonly="true"/>
+                            </p:column>
+                              <p:column styleClass="Wid10">
+                                <f:facet name="header">
+                                    <h:outputText value="标准"/>
+                                </f:facet>
+                                  <p:inputTextarea  value="#{item.standard}" styleClass="Wid100"  rows="3" readonly="true"/>
                             </p:column>
                             <p:column styleClass="Wid10">
                                 <f:facet name="header">
@@ -166,7 +172,7 @@
                             </p:column> 
                             <p:columnGroup type="footer">
                                 <p:row>
-                                    <p:column style="text-align:left" footerText="Totals:" colspan="4"/>
+                                    <p:column style="text-align:left" footerText="Totals:" colspan="5"/>
                                     <p:column style="text-align:left">
                                         <f:facet name="footer">
                                             <h:outputText value="#{personScorecardManagedBean.currentEntity.objquarter1}">
@@ -245,7 +251,7 @@
                             </p:toolbar>
                         </c:if>
                         <p:dataTable id="tableList4"  value="#{personScorecardManagedBean.scoreMap.get('aq2').detail}"  var="item" styleClass="tableList Mtop10" >
-                            <p:column styleClass="Wid10">
+                            <p:column styleClass="Wid10" groupRow="true" style="text-align:center;background: white !important">
                                 <f:facet name="header">
                                     <h:outputText value="考核项目"/>
                                 </f:facet>
@@ -256,6 +262,13 @@
                                     <h:outputText value="目标"/>
                                 </f:facet>
                                <p:inputTextarea  value="#{item.target}" styleClass="Wid100"  rows="3" readonly="true"/>
+                            </p:column>
+                            
+                              <p:column styleClass="Wid10">
+                                <f:facet name="header">
+                                    <h:outputText value="标准"/>
+                                </f:facet>
+                                  <p:inputTextarea  value="#{item.standard}" styleClass="Wid100"  rows="3" readonly="true"/>
                             </p:column>
                             <p:column styleClass="Wid10">
                                 <f:facet name="header">
@@ -282,7 +295,7 @@
                             </p:column> 
                             <p:columnGroup type="footer">
                                 <p:row>
-                                    <p:column style="text-align:left" footerText="Totals:" colspan="4"/>
+                                    <p:column style="text-align:left" footerText="Totals:" colspan="5"/>
                                     <p:column style="text-align:left">
                                         <f:facet name="footer">
                                             <h:outputText value="#{personScorecardManagedBean.currentEntity.objquarter2}">
@@ -361,7 +374,7 @@
                             </p:toolbar>
                         </c:if>
                         <p:dataTable id="tableList6" value="#{personScorecardManagedBean.scoreMap.get('aq3').detail}" var="item" styleClass="tableList Mtop10" >
-                            <p:column styleClass="Wid10">
+                            <p:column styleClass="Wid10" groupRow="true" style="text-align:center;background: white !important">
                                 <f:facet name="header">
                                     <h:outputText value="考核项目"/>
                                 </f:facet>
@@ -372,6 +385,13 @@
                                     <h:outputText value="目标"/>
                                 </f:facet>
                                 <p:inputTextarea  value="#{item.target}" styleClass="Wid100"  rows="3" readonly="true"/>
+                            </p:column>
+                            
+                              <p:column styleClass="Wid10">
+                                <f:facet name="header">
+                                    <h:outputText value="标准"/>
+                                </f:facet>
+                                  <p:inputTextarea  value="#{item.standard}" styleClass="Wid100"  rows="3" readonly="true"/>
                             </p:column>
                             <p:column styleClass="Wid10">
                                 <f:facet name="header">
@@ -398,7 +418,7 @@
                             </p:column> 
                             <p:columnGroup type="footer">
                                 <p:row>
-                                    <p:column style="text-align:left" footerText="Totals:" colspan="4"/>
+                                    <p:column style="text-align:left" footerText="Totals:" colspan="5"/>
                                     <p:column style="text-align:left">
                                         <f:facet name="footer">
                                             <h:outputText value="#{personScorecardManagedBean.currentEntity.objquarter3}">
@@ -478,7 +498,7 @@
                             </p:toolbar>
                         </c:if>
                         <p:dataTable id="tableList8"  value="#{personScorecardManagedBean.scoreMap.get('aq4').detail}" var="item" styleClass="tableList Mtop10" >
-                            <p:column styleClass="Wid10">
+                            <p:column styleClass="Wid10" groupRow="true" style="text-align:center;background: white !important">
                                 <f:facet name="header">
                                     <h:outputText value="考核项目"/>
                                 </f:facet>
@@ -489,6 +509,13 @@
                                     <h:outputText value="目标"/>
                                 </f:facet>
                                 <p:inputTextarea  value="#{item.target}" styleClass="Wid100"  rows="3" readonly="true"/>
+                            </p:column>
+                            
+                              <p:column styleClass="Wid10">
+                                <f:facet name="header">
+                                    <h:outputText value="标准"/>
+                                </f:facet>
+                                  <p:inputTextarea  value="#{item.standard}" styleClass="Wid100"  rows="3" readonly="true"/>
                             </p:column>
                             <p:column styleClass="Wid10">
                                 <f:facet name="header">
@@ -515,7 +542,7 @@
                             </p:column> 
                             <p:columnGroup type="footer">
                                 <p:row>
-                                    <p:column style="text-align:left" footerText="Totals:" colspan="4"/>
+                                    <p:column style="text-align:left" footerText="Totals:" colspan="5"/>
                                     <p:column style="text-align:left">
                                         <f:facet name="footer">
                                             <h:outputText value="#{personScorecardManagedBean.currentEntity.objquarter4}">

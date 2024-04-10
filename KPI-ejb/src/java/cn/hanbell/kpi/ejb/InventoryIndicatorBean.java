@@ -82,6 +82,7 @@ public class InventoryIndicatorBean implements Serializable {
         List<InventoryIndicator> inventoryList = new ArrayList<>();
         // 实例化对象
         InventoryIndicator ita = new InventoryIndicator();
+        ita.setRemark(indicator.getRemark());
         IndicatorDetail a = indicator.getActualIndicator();// 实际
         IndicatorDetail b = indicator.getBenchmarkIndicator();// 去年同期
         IndicatorDetail t = indicator.getTargetIndicator();// 目标
