@@ -25,9 +25,9 @@ import javax.ejb.Stateless;
  */
 @Stateless
 @LocalBean
-public class RServiceChargeMailBean extends BscSheetMail {
+public class RServiceCharge1MailBean extends BscSheetMail {
 
-    public RServiceChargeMailBean() {
+    public RServiceCharge1MailBean() {
 
     }
 
@@ -66,33 +66,55 @@ public class RServiceChargeMailBean extends BscSheetMail {
                 return -1;
             }
         });
-        List<Indicator> hscindicators = new ArrayList<>();
-        List<Indicator> fwzcindicators = new ArrayList<>();
-        List<Indicator> allindicators = new ArrayList<>();
-        for (Indicator e : indicators) {
-            if (e.getName().contains("后市场")) {
-                hscindicators.add(e);
-            } else if (e.getName().contains("服务支持")) {
-                fwzcindicators.add(e);
+        List<Indicator> indicatorsHD = new ArrayList<>();
+        List<Indicator> indicatorsJN = new ArrayList<>();
+        List<Indicator> indicatorsGZ = new ArrayList<>();
+        List<Indicator> indicatorsNJ = new ArrayList<>();
+        List<Indicator> indicatorsCQ = new ArrayList<>();
+        for (Indicator i : indicators) {
+            indicatorBean.divideByRate(i, 2);
+            switch (i.getProduct().trim()) {
+                case "华东R收费服务":
+                    indicatorsHD.add(i);
+                    break;
+                case "济南R收费服务":
+                    indicatorsJN.add(i);
+                    break;
+                case "广州R收费服务":
+                    indicatorsGZ.add(i);
+                    break;
+                case "南京R收费服务":
+                    indicatorsNJ.add(i);
+                    break;
+                case "重庆R收费服务":
+                    indicatorsCQ.add(i);
+                    break;
+                default:
             }
-            //按换算率计算结果
-            indicatorBean.divideByRate(e, 2);
         }
+        indicators.clear();
         StringBuilder sb = new StringBuilder();
-        sb.append("<div class=\"tableTitle\"><h4 style=\"color:red\">后市场收费服务  单位：万元</h4>").append("</div>");
-        sb.append(getHtmlTable(hscindicators, y, m, d, true));
+        sumIndicator = indicatorBean.getSumValue(indicatorsHD);
+        sumIndicator.setName("华东R收费服务");
+        indicators.add(sumIndicator);
 
-       sb.append("<div class=\"tableTitle\"><h4 style=\"color:red\">服务支持  单位：万元</h4>").append("</div>");
-        sb.append(getHtmlTable(fwzcindicators, y, m, d, true));
+        sumIndicator = indicatorBean.getSumValue(indicatorsJN);
+        sumIndicator.setName("济南R收费服务");
+        indicators.add(sumIndicator);
 
-        sumIndicator = indicatorBean.getSumValue(hscindicators);
-        sumIndicator.setName("后市场合计");
-        allindicators.add(sumIndicator);
-        sumIndicator = indicatorBean.getSumValue(fwzcindicators);
-        sumIndicator.setName("服务支持合计");
-        allindicators.add(sumIndicator);
-        sb.append("<div class=\"tableTitle\"><h4 style=\"color:red\">合计  单位：万元</h4>").append("</div>");
-        sb.append(getHtmlTable(allindicators, y, m, d, true));
+        sumIndicator = indicatorBean.getSumValue(indicatorsNJ);
+        sumIndicator.setName("南京R收费服务");
+        indicators.add(sumIndicator);
+
+        sumIndicator = indicatorBean.getSumValue(indicatorsCQ);
+        sumIndicator.setName("重庆R收费服务");
+        indicators.add(sumIndicator);
+
+        sumIndicator = indicatorBean.getSumValue(indicatorsGZ);
+        sumIndicator.setName("广州R收费服务");
+        indicators.add(sumIndicator);
+        sb.append("<div class=\"tableTitle\"><h4 style=\"color:red\">单位：万元</h4>").append("</div>");
+        sb.append(getHtmlTable(indicators, y, m, d, true));
         return sb.toString();
     }
 

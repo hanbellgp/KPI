@@ -7,8 +7,6 @@ package cn.hanbell.kpi.ejb;
 
 import cn.hanbell.kpi.comm.SuperEJBForKPI;
 import cn.hanbell.kpi.entity.PersonScorecard;
-import cn.hanbell.kpi.entity.PersonScorecardDetail;
-import com.lightshell.comm.SuperEntity;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -109,53 +107,81 @@ public class PersonScorecardBean extends SuperEJBForKPI<PersonScorecard> {
         }
     }
 
-    public BigDecimal getPorScore(PersonScorecard sc, int q) {
+      public Object getScore(PersonScorecard sc, String column,int q) {
         try {
             Field f;
             Method method = null;
-            f = sc.getClass().getDeclaredField(getColumn("porobjquarter", q));
+            f = sc.getClass().getDeclaredField(getColumn(column, q));
             f.setAccessible(true);
-            BigDecimal a = ((BigDecimal) f.get(sc));
-            f = sc.getClass().getDeclaredField(getColumn("porsubquarter", q));
-            f.setAccessible(true);
-            BigDecimal b = ((BigDecimal) f.get(sc));
-            return a.add(b);
+            return  f.get(sc);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public Double getStandardScore(Double score) {
-        if (100 < score && score <= 120) {
-            return score;
-        } else if (90 < score && score <= 100) {
-            return 100.00;
-        } else if (85 < score && score <= 90) {
-            return 90.00;
-        } else if (75 < score && score <= 85) {
-            return 70.00;
-        } else if (60 < score && score <= 75) {
-            return 50.00;
-        } else {
-            return 00.00;
+    public Double getStandardScore(String officialrank, Double score) {
+        if (officialrank.contains("A") || officialrank.contains("B")) {
+            if (score > 120) {
+                return 120.00;
+            } else if (120 >= score && score > 100) {
+                return score;
+            } else if (100 >= score && score >= 94) {
+                return 100.00;
+            } else if (94 > score && score >= 90) {
+                return 90.00;
+            } else if (90 > score && score >= 87) {
+                return 80.00;
+            } else if (87 > score && score >= 82) {
+                return 70.00;
+            } else if (82 > score && score >= 80) {
+                return 50.00;
+            } else if (score < 80) {
+                return 0.00;
+            }
+        } else if (officialrank.contains("C") || officialrank.contains("D") || officialrank.contains("E")) {
+            if (score > 120) {
+                return 120.00;
+            } else if (120 >= score && score > 105) {
+                return score;
+            } else if (105 >= score && score >= 99) {
+                return 100.00;
+            } else if (99 > score && score >= 95) {
+                return 90.00;
+            } else if (95 > score && score >= 87) {
+                return 80.00;
+            } else if (87 > score && score >= 82) {
+                return 70.00;
+            } else if (82 > score && score >= 80) {
+                return 50.00;
+            } else if (score < 80) {
+                return 0.00;
+            }
         }
+        return 0.00;
     }
 
-    public Double getAmountOfScore(String level) {
-        if ("A".equals(level)) {
+    public Double getAmountOfScore(String level, boolean isadmin) {
+        if("A".equals(level)){
             return 5.40;
-        } else if ("B".equals(level)) {
-            return 7.20;
-        } else if ("C".equals(level)) {
-            return 100.00;
-        } else if ("D".equals(level)) {
-            return 200.00;
-        } else if ("E".equals(level)) {
-            return 300.00;
-        } else {
-            return 00.00;
+        }else if("B".equals(level)){
+          return 7.20;
+        }else if ("C".equals(level)) {
+            if (isadmin) {
+                return 20.00;
+            } else {
+                return 19.5;
+            }
+        }else if ("D".equals(level)) {
+            if (isadmin) {
+                return 39.0;
+            } else {
+                return 38.5;
+            }
+        }else if ("E".equals(level)) {
+            return 41.0;
         }
+        return 0.0;
     }
 
     public String getColumn(String type, int i) {

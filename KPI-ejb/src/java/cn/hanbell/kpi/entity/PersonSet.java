@@ -283,16 +283,6 @@ public class PersonSet extends SuperEntity {
             officialrank = this.officialrank;
         }
         switch (this.duties) {
-            case "代班长":
-            case "副班长":
-            case "班长":
-                duties = "A";
-                break;
-            case "代组长":
-            case "副组长":
-            case "组长":
-                duties = "B";
-                break;
             case "代课长":
             case "副课长":
             case "课长":

@@ -5,7 +5,6 @@
  */
 package cn.hanbell.kpi.ejb.tms;
 
-import cn.hanbell.kpi.comm.SuperEJBForTMS;
 import cn.hanbell.kpi.entity.tms.Project;
 import java.io.IOException;
 import java.io.Serializable;
