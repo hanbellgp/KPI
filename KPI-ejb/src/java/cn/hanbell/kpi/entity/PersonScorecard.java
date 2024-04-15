@@ -89,6 +89,19 @@ public class PersonScorecard extends SuperEntity {
     @Transient
     private String deptClass;
 
+    @Size(max = 5)
+    @Column(name = "msgstatus1")
+    private String msgstatus1;
+    @Size(max = 5)
+    @Column(name = "msgstatus2")
+    private String msgstatus2;
+    @Size(max = 5)
+    @Column(name = "msgstatus3")
+    private String msgstatus3;
+    @Size(max = 5)
+    @Column(name = "msgstatus4")
+    private String msgstatus4;
+
     public PersonScorecard() {
     }
 
@@ -295,6 +308,50 @@ public class PersonScorecard extends SuperEntity {
 
     public void setDeptClass(String deptClass) {
         this.deptClass = deptClass;
+    }
+
+    public String getMsgstatus1() {
+        return msgstatus1;
+    }
+
+    public void setMsgstatus1(String msgstatus1) {
+        this.msgstatus1 = msgstatus1;
+    }
+
+    public String getMsgstatus2() {
+        return msgstatus2;
+    }
+
+    public void setMsgstatus2(String msgstatus2) {
+        this.msgstatus2 = msgstatus2;
+    }
+
+    public String getMsgstatus3() {
+        return msgstatus3;
+    }
+
+    public void setMsgstatus3(String msgstatus3) {
+        this.msgstatus3 = msgstatus3;
+    }
+
+    public String getMsgstatus4() {
+        return msgstatus4;
+    }
+
+    public void setMsgstatus4(String msgstatus4) {
+        this.msgstatus4 = msgstatus4;
+    }
+
+    public void setMsgstatus(String msgstatus, int q) {
+        if (q == 1) {
+            this.msgstatus1 = msgstatus;
+        } else if (q == 2) {
+            this.msgstatus2 = msgstatus;
+        } else if (q == 3) {
+            this.msgstatus3 = msgstatus;
+        } else if (q == 4) {
+            this.msgstatus4 = msgstatus;
+        }
     }
 
     @Override

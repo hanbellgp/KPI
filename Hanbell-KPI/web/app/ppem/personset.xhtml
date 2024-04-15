@@ -61,6 +61,10 @@
                                      update=":formList"/>
                     <p:commandButton id="btnExportMoney" value="奖金计算" actionListener="#{personSetManagedBean.test()}" icon="ui-icon-print"
                                      update=":formList"/>
+                    <p:commandButton id="btnSendMsg" value="消息推送" actionListener="#{personSetManagedBean.sendMsg()}" icon="ui-icon-reply"
+                                     update=":formList">
+                        <p:confirm header="系统提示" message="是否消息推送?" icon="ui-icon-alert" />
+                    </p:commandButton>
                     <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
                         <p:menuitem id="btnEdit" value="编辑" icon="ui-icon-pencil" action="#{personSetManagedBean.edit('personsetEdit')}"
                                     rendered="#{personSetManagedBean.doEdit}" update="growl"/>

@@ -14,6 +14,7 @@ import cn.hanbell.kpi.entity.PersonScorecard;
 import cn.hanbell.kpi.entity.PersonScorecardDetail;
 import cn.hanbell.kpi.lazy.PersonScorecardModel;
 import cn.hanbell.kpi.web.SuperMultiBean;
+import cn.hanbell.wco.ejb.Agent1000002Bean;
 import com.lightshell.comm.BaseLib;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,11 +32,14 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
+import javax.faces.component.UIComponent;
+import javax.faces.event.AjaxBehaviorEvent;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.UploadedFile;
@@ -65,6 +70,8 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
     private SystemUserBean systemUserBean;
     @EJB
     private ScorecardBean scorecardBean;
+    @EJB
+    private Agent1000002Bean agent1000002Bean;
 
     public PersonScorecardManagedBean() {
         super(PersonScorecard.class, PersonScorecardDetail.class);
@@ -280,7 +287,13 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
                 this.showErrorMsg("Error", "请选择一项");
                 return "";
             }
+
+            tabid = "sq1";
             currentEntity = this.entityList.get(0);
+            if (this.currentEntity.getUserid().equals(this.userManagedBean.getUserid())) {
+                this.showErrorMsg("Error", "您无编辑权限！");
+                return "";
+            }
             scoreMap.put("sq1", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 1, "S"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "S")));
             scoreMap.put("aq1", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 1, "O"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "O")));
 
@@ -309,31 +322,132 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
                 return "";
             }
         }
+        tabid = "sq1";
         this.currentEntity = this.entityList.get(0);
-        detailList = personScorecardDetailBean.findByPidAndQuarterAndType(this.currentEntity.getId(), 1, "S");
-        // this.tabid = "sq1";
-        //setScoreRatio(this.currentEntity.getPersonset().getAssessmentmethod());
         return super.view(path);
     }
 
     @Override
     public void update() {
         try {
-            for (PersonScorecardDetail detail : this.detailList) {
-                if (detail.getScore().compareTo(detail.getRatio().multiply(BigDecimal.valueOf(100))) == 1) {
+            ScorecardDetailEntity entity = this.scoreMap.get(this.tabid);
+            for (PersonScorecardDetail detail : entity.getDetail()) {
+                if (detail.getScore().compareTo(detail.getRatio().multiply(BigDecimal.valueOf(100))) == 1
+                        && !"采购员".equals(this.currentEntity.getPersonset().getDuties())
+                        && !"客服员".equals(this.currentEntity.getPersonset().getDuties())
+                        && !"销售跟单员".equals(this.currentEntity.getPersonset().getDuties())
+                        && !"生管员".equals(this.currentEntity.getPersonset().getDuties())) {
                     throw new Exception("分数必须小于或等于比重，请调整！");
                 }
             };
+
             if (detailEdited != null && !detailEdited.values().isEmpty()) {
                 detailEdited.remove(personScorecardDetailBean);
-                detailEdited.put(personScorecardDetailBean, detailList);
+                detailEdited.put(personScorecardDetailBean, entity.getDetail());
+            }
+
+            agent1000002Bean.initConfiguration();
+            StringBuilder msg = new StringBuilder();
+            msg.append("### 个人绩效考核:").append(BaseLib.formatDate("yyyy/MM/dd hh:mm", new Date()));
+            BigDecimal porobjquarter = (BigDecimal) personScorecardBean.getScore(this.currentEntity, "porobjquarter", this.userManagedBean.getQ());
+            BigDecimal porsubquarter = (BigDecimal) personScorecardBean.getScore(this.currentEntity, "porsubquarter", this.userManagedBean.getQ());
+            BigDecimal subquarter = (BigDecimal) personScorecardBean.getScore(this.currentEntity, "subquarter", this.userManagedBean.getQ());
+            String msgstatus = (String) personScorecardBean.getScore(this.currentEntity, "msgstatus", this.userManagedBean.getQ());
+
+            msg.append("\\n").append("");
+            msg.append("\\n").append(">**考核详情**");
+            msg.append("\\n").append(">考核人：").append(this.currentEntity.getUsername()).append("(").append(this.currentEntity.getUserid()).append(")");
+            msg.append("\\n").append(">部门名称：<font color=\"warning\">").append(this.currentEntity.getPersonset().getDeptname()).append("</font>");
+            msg.append("\\n").append(">岗位：<font color=\"info\">").append(this.currentEntity.getPersonset().getDuties()).append("</font>");
+            msg.append("\\n").append(">职等：<font color=\"info\">").append(this.currentEntity.getPersonset().getOfficialrank()).append("</font>");
+            if (currentEntity.getPersonset().getAssessmentmethod().equals("I") || currentEntity.getPersonset().getAssessmentmethod().equals("J")) {
+                if (porobjquarter.compareTo(BigDecimal.ZERO) != 0 && porsubquarter.compareTo(BigDecimal.ZERO) != 0 && !"V".equals(msgstatus)) {
+                    msg.append("\\n").append(">主观分数：<font color=\"comment\">").append(porsubquarter).append("</font>");
+                    msg.append("\\n").append(">客观分数：<font color=\"comment\">").append(porobjquarter).append("</font>");
+                    msg.append("\\n").append(">合计分数：<font color=\"comment\">").append(porsubquarter.add(porobjquarter)).append("</font>");
+                    msg.append("\\n").append("");
+                    msg.append("\\n").append("><font color=\"warning\">若您对考核结果存在任何异议或疑问，请及时前往系统进行调整与反馈:</font>");
+                    //发送消息
+                    SystemUser u1 = this.systemUserBean.findByUserId(this.currentEntity.getUserid());
+                    SystemUser u2 = this.systemUserBean.findByUserId(u1.getManagerId());
+                    System.out.println(u2.getManagerId());
+                    if (!"C0002".equals(u2.getManagerId())) {
+                        agent1000002Bean.sendMsgToUser(u2.getManagerId(), "markdown", msg.toString());
+                    }
+                    currentEntity.setMsgstatus("V", this.userManagedBean.getQ());
+                }
+            } else if (!currentEntity.getPersonset().getOfficialrank().equals("E")) {
+                if (subquarter.compareTo(BigDecimal.ZERO) != 0 && !"V".equals(msgstatus)) {
+                    msg.append("\\n").append(">主观分数：<font color=\"comment\">").append(subquarter).append("</font>");
+                    msg.append("\\n").append("");
+                    msg.append("\\n").append("><font color=\"warning\">若您对考核结果存在任何异议或疑问，请及时前往系统进行调整与反馈:</font>");
+                    //发送消息
+                    SystemUser u1 = this.systemUserBean.findByUserId(this.currentEntity.getUserid());
+                    SystemUser u2 = this.systemUserBean.findByUserId(u1.getManagerId());
+                    System.out.println(u2.getManagerId());
+                    if (!"C0002".equals(u2.getManagerId())) {
+                        agent1000002Bean.sendMsgToUser(u2.getManagerId(), "markdown", msg.toString());
+                    }
+                    currentEntity.setMsgstatus("V", this.userManagedBean.getQ());
+                }
+
             }
             super.update();
             this.showInfoMsg("Info", "保存成功");
+
         } catch (Exception e) {
             e.printStackTrace();
             this.showInfoMsg("Info", String.format("更新失败，%s", e.getMessage()));
         }
+    }
+
+    public void setScore(AjaxBehaviorEvent value) {
+        UIComponent component = value.getComponent();
+        DataTable table = (DataTable) component.getParent().getParent();
+        this.currentDetail = (PersonScorecardDetail) table.getRowData(); // 这里就是当前行的数据
+        BigDecimal b = BigDecimal.ZERO;
+        ScorecardDetailEntity entity = this.scoreMap.get(this.tabid);
+        for (PersonScorecardDetail bean : entity.getDetail()) {
+            if (this.currentDetail.getId() == bean.getId()) {
+                bean.setScore(this.currentDetail.getHunscore().multiply(this.currentDetail.getRatio()));
+            }
+            b = b.add(bean.getScore());
+        }
+        switch (this.tabid) {
+            case "sq1":
+                this.currentEntity.setSubquarter1(b);
+                this.currentEntity.setPorsubquarter1(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
+                break;
+            case "aq1":
+                this.currentEntity.setObjquarter1(b);
+                this.currentEntity.setPorobjquarter1(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
+                break;
+            case "sq2":
+                this.currentEntity.setSubquarter2(b);
+                this.currentEntity.setPorsubquarter2(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
+                break;
+            case "aq2":
+                this.currentEntity.setObjquarter2(b);
+                this.currentEntity.setPorobjquarter2(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
+                break;
+            case "sq3":
+                this.currentEntity.setSubquarter3(b);
+                this.currentEntity.setPorsubquarter3(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
+                break;
+            case "aq3":
+                this.currentEntity.setObjquarter3(b);
+                this.currentEntity.setPorobjquarter3(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
+                break;
+            case "sq4":
+                this.currentEntity.setSubquarter4(b);
+                this.currentEntity.setPorsubquarter4(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
+                break;
+            case "aq4":
+                this.currentEntity.setObjquarter4(b);
+                this.currentEntity.setPorobjquarter4(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
+                break;
+        }
+
     }
 
     public void setQuarter() {

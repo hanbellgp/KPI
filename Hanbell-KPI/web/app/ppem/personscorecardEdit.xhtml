@@ -67,7 +67,7 @@
                 </p:row>
             </p:panelGrid>
             <!--Q1-->
-                        <p:tabView id="tabView" styleClass="tabView">
+            <p:tabView id="tabView" styleClass="tabView">
                 <p:ajax event="tabChange" listener="#{personScorecardManagedBean.tabchange}"  update="formOne"></p:ajax>
                 <p:tab title="Q1主观" id="sq1">
                     <c:if test="#{personScorecardManagedBean.queryQuarter==1}">
@@ -87,13 +87,20 @@
                         </p:column>
                         <p:column styleClass="Wid5">
                             <f:facet name="header">
+                                <h:outputText value="单项分数"/>
+                            </f:facet>
+                            <p:inputNumber  value="#{item.hunscore}"    readonly="#{personScorecardManagedBean.queryQuarter>1}" style="float:right!important">
+                                <p:ajax listener="#{personScorecardManagedBean.setScore}"   update="formOne:tabView:tableList1" process="@this,formOne:tabView:tableList1"></p:ajax>
+                            </p:inputNumber >
+                        </p:column>
+                        <p:column styleClass="Wid5">
+                            <f:facet name="header">
                                 <h:outputText value="比重"/>
                             </f:facet>
                             <h:outputText value="#{item.ratio*100}%"/>
                         </p:column>
-                        <p:column styleClass="Wid5" headerText="分数">
-                            <p:inputNumber value="#{item.score}"  readonly="#{personScorecardManagedBean.queryQuarter>1}" inputStyleClass="scoreInputNumber"  >
-                                <p:ajax listener="#{personScorecardManagedBean.setQuarter}"  update="formOne:tabView:tableList1"  process="@this,formOne:tabView:tableList1"></p:ajax>
+                        <p:column styleClass="Wid5" headerText="权重分数">
+                            <p:inputNumber value="#{item.score}"  readonly="true" inputStyleClass="scoreInputNumber"  >
                             </p:inputNumber>
                         </p:column>
                         <p:column styleClass="Wid5" headerText="权重" groupRow="true" style="text-align:center">
@@ -101,7 +108,7 @@
                         </p:column> 
                         <p:columnGroup type="footer">
                             <p:row>
-                                <p:column style="text-align:left" footerText="Totals:" colspan="2"/>
+                                <p:column style="text-align:left" footerText="Totals:" colspan="3"/>
                                 <p:column style="text-align:left">
                                     <f:facet name="footer">
                                         <h:outputText value="#{personScorecardManagedBean.currentEntity.subquarter1}" >
@@ -128,8 +135,8 @@
                                 </f:facet>
                             </p:toolbar>
                         </c:if>
-                        <p:dataTable id="tableList2" value="#{personScorecardManagedBean.scoreMap.get('aq1').detail}" var="item" styleClass="tableList Mtop10" >
-                            <p:column styleClass="Wid10" groupRow="true" style="text-align:center;background: white !important">
+                        <p:dataTable id="tableList2" value="#{personScorecardManagedBean.scoreMap.get('aq1').detail}" var="item" styleClass="tableList Mtop10">
+                            <p:column styleClass="Wid5" groupRow="true" style="text-align:center;background: white !important">
                                 <f:facet name="header">
                                     <h:outputText value="考核项目"/>
                                 </f:facet>
@@ -139,19 +146,21 @@
                                 <f:facet name="header">
                                     <h:outputText value="目标"/>
                                 </f:facet>
-                                  <p:inputTextarea  value="#{item.target}" styleClass="Wid100"  rows="3" readonly="true"/>
-                            </p:column>
-                              <p:column styleClass="Wid10">
-                                <f:facet name="header">
-                                    <h:outputText value="标准"/>
-                                </f:facet>
-                                  <p:inputTextarea  value="#{item.standard}" styleClass="Wid100"  rows="3" readonly="true"/>
+                                <p:inputTextarea  value="#{item.target}" styleClass="Wid100"  rows="3" readonly="true"/>
                             </p:column>
                             <p:column styleClass="Wid10">
                                 <f:facet name="header">
-                                    <h:outputText value="实际"/>
+                                    <h:outputText value="考核标准"/>
                                 </f:facet>
-                                <p:inputTextarea value="#{item.actuality}" readonly="#{personScorecardManagedBean.queryQuarter>1}" styleClass="Wid100"  rows="3" />
+                                <p:inputTextarea  value="#{item.standard}" styleClass="Wid100"  rows="3" readonly="true"/>
+                            </p:column>
+                            <p:column styleClass="Wid5">
+                                <f:facet name="header">
+                                    <h:outputText value="单项分数"/>
+                                </f:facet>
+                                <p:inputNumber  value="#{item.hunscore}"  inputStyleClass="scoreInputNumber"   readonly="#{personScorecardManagedBean.queryQuarter>1}">
+                                    <p:ajax listener="#{personScorecardManagedBean.setScore}"  update="formOne:tabView:tableList2" process="@this,formOne:tabView:tableList2"></p:ajax>
+                                </p:inputNumber >
                             </p:column>
                             <p:column styleClass="Wid5">
                                 <f:facet name="header">
@@ -161,10 +170,9 @@
                             </p:column>
                             <p:column styleClass="Wid5">
                                 <f:facet name="header">
-                                    <h:outputText value="分数"/>
+                                    <h:outputText value="权重分数"/>
                                 </f:facet>
-                                <p:inputNumber  value="#{item.score}"  inputStyleClass="scoreInputNumber"   readonly="#{personScorecardManagedBean.queryQuarter>1}">
-                                    <p:ajax listener="#{personScorecardManagedBean.setQuarter}"  update="formOne:tabView:tableList2" process="@this,formOne:tabView:tableList2"></p:ajax>
+                                <p:inputNumber  value="#{item.score}"  inputStyleClass="scoreInputNumber"   readonly="true">
                                 </p:inputNumber >
                             </p:column>
                             <p:column styleClass="Wid5" headerText="权重" groupRow="true" style="text-align:center">
@@ -209,13 +217,20 @@
                         </p:column>
                         <p:column styleClass="Wid5">
                             <f:facet name="header">
+                                <h:outputText value="单项分数"/>
+                            </f:facet>
+                            <p:inputNumber  value="#{item.hunscore}"  inputStyleClass="scoreInputNumber"   readonly="#{personScorecardManagedBean.queryQuarter>2}">
+                                <p:ajax listener="#{personScorecardManagedBean.setScore}"  update="formOne:tabView:tableList3" process="@this,formOne:tabView:tableList3"></p:ajax>
+                            </p:inputNumber >
+                        </p:column>
+                        <p:column styleClass="Wid5">
+                            <f:facet name="header">
                                 <h:outputText value="比重"/>
                             </f:facet>
                             <h:outputText value="#{item.ratio*100}%"/>
                         </p:column>
-                        <p:column styleClass="Wid5" headerText="分数">
-                            <p:inputNumber value="#{item.score}"  readonly="#{personScorecardManagedBean.queryQuarter>2}" inputStyleClass="scoreInputNumber"  >
-                                <p:ajax listener="#{personScorecardManagedBean.setQuarter}"  update="formOne:tabView:tableList3"></p:ajax>
+                        <p:column styleClass="Wid5" headerText="权重分数">
+                            <p:inputNumber value="#{item.score}"  readonly="true" inputStyleClass="scoreInputNumber"  >
                             </p:inputNumber>
                         </p:column>
                         <p:column styleClass="Wid5" headerText="权重" groupRow="true" style="text-align:center">
@@ -223,7 +238,7 @@
                         </p:column> 
                         <p:columnGroup type="footer">
                             <p:row>
-                                <p:column style="text-align:left" footerText="Totals:" colspan="2"/>
+                                <p:column style="text-align:left" footerText="Totals:" colspan="3"/>
                                 <p:column style="text-align:left">
                                     <f:facet name="footer">
                                         <h:outputText value="#{personScorecardManagedBean.currentEntity.subquarter2}">
@@ -261,20 +276,21 @@
                                 <f:facet name="header">
                                     <h:outputText value="目标"/>
                                 </f:facet>
-                               <p:inputTextarea  value="#{item.target}" styleClass="Wid100"  rows="3" readonly="true"/>
-                            </p:column>
-                            
-                              <p:column styleClass="Wid10">
-                                <f:facet name="header">
-                                    <h:outputText value="标准"/>
-                                </f:facet>
-                                  <p:inputTextarea  value="#{item.standard}" styleClass="Wid100"  rows="3" readonly="true"/>
+                                <p:inputTextarea  value="#{item.target}" styleClass="Wid100"  rows="3" readonly="true"/>
                             </p:column>
                             <p:column styleClass="Wid10">
                                 <f:facet name="header">
-                                    <h:outputText value="实际"/>
+                                    <h:outputText value="考核标准"/>
                                 </f:facet>
-                                <p:inputTextarea value="#{item.actuality}"  readonly="#{personScorecardManagedBean.queryQuarter>2}"  styleClass="Wid100"  rows="3" />
+                                <p:inputTextarea  value="#{item.standard}" styleClass="Wid100"  rows="3" readonly="true"/>
+                            </p:column>
+                            <p:column styleClass="Wid5">
+                                <f:facet name="header">
+                                    <h:outputText value="单项分数"/>
+                                </f:facet>
+                                <p:inputNumber  value="#{item.hunscore}"  inputStyleClass="scoreInputNumber"   readonly="#{personScorecardManagedBean.queryQuarter>2}">
+                                    <p:ajax listener="#{personScorecardManagedBean.setScore}"  update="formOne:tabView:tableList4" process="@this,formOne:tabView:tableList4"></p:ajax>
+                                </p:inputNumber >
                             </p:column>
                             <p:column styleClass="Wid5">
                                 <f:facet name="header">
@@ -284,10 +300,9 @@
                             </p:column>
                             <p:column styleClass="Wid5">
                                 <f:facet name="header">
-                                    <h:outputText value="分数"/>
+                                    <h:outputText value="权重分数"/>
                                 </f:facet>
-                                <p:inputNumber  value="#{item.score}"  inputStyleClass="scoreInputNumber"   readonly="#{personScorecardManagedBean.queryQuarter>2}">
-                                    <p:ajax listener="#{personScorecardManagedBean.setQuarter}"  update="formOne:tabView:tableList4" process="@this,formOne:tabView:tableList4"></p:ajax>
+                                <p:inputNumber  value="#{item.score}"  inputStyleClass="scoreInputNumber"   readonly="true">
                                 </p:inputNumber>
                             </p:column>
                             <p:column styleClass="Wid5" headerText="权重" groupRow="true" style="text-align:center">
@@ -330,15 +345,19 @@
                             </f:facet>
                             <h:outputText value="#{item.name}"/>
                         </p:column>
+                         <p:column styleClass="Wid5" headerText="单项分数">
+                            <p:inputNumber value="#{item.hunscore}"  readonly="#{personScorecardManagedBean.queryQuarter>3}" inputStyleClass="scoreInputNumber"  >
+                                <p:ajax listener="#{personScorecardManagedBean.setQuarter}"  update="formOne:tabView:tableList5"></p:ajax>
+                            </p:inputNumber>
+                        </p:column>
                         <p:column styleClass="Wid5">
                             <f:facet name="header">
                                 <h:outputText value="比重"/>
                             </f:facet>
                             <h:outputText value="#{item.ratio*100}%"/>
                         </p:column>
-                        <p:column styleClass="Wid5" headerText="分数">
-                            <p:inputNumber value="#{item.score}"  readonly="#{personScorecardManagedBean.queryQuarter>3}" inputStyleClass="scoreInputNumber"  >
-                                <p:ajax listener="#{personScorecardManagedBean.setQuarter}"  update="formOne:tabView:tableList5"></p:ajax>
+                        <p:column styleClass="Wid5" headerText="权重分数">
+                            <p:inputNumber value="#{item.score}"  readonly="true" inputStyleClass="scoreInputNumber"  >
                             </p:inputNumber>
                         </p:column>
                         <p:column styleClass="Wid5" headerText="权重" groupRow="true" style="text-align:center">
@@ -346,7 +365,7 @@
                         </p:column> 
                         <p:columnGroup type="footer">
                             <p:row>
-                                <p:column style="text-align:left" footerText="Totals:" colspan="2"/>
+                                <p:column style="text-align:left" footerText="Totals:" colspan="3"/>
                                 <p:column style="text-align:left">
                                     <f:facet name="footer">
                                         <h:outputText value="#{personScorecardManagedBean.currentEntity.subquarter3}">
@@ -386,18 +405,20 @@
                                 </f:facet>
                                 <p:inputTextarea  value="#{item.target}" styleClass="Wid100"  rows="3" readonly="true"/>
                             </p:column>
-                            
-                              <p:column styleClass="Wid10">
-                                <f:facet name="header">
-                                    <h:outputText value="标准"/>
-                                </f:facet>
-                                  <p:inputTextarea  value="#{item.standard}" styleClass="Wid100"  rows="3" readonly="true"/>
-                            </p:column>
+
                             <p:column styleClass="Wid10">
                                 <f:facet name="header">
-                                    <h:outputText value="实际"  />
+                                    <h:outputText value="考核标准"/>
                                 </f:facet>
-                                <p:inputTextarea value="#{item.actuality}" readonly="#{personScorecardManagedBean.queryQuarter>3}"  styleClass="Wid100"  rows="3" />
+                                <p:inputTextarea  value="#{item.standard}" styleClass="Wid100"  rows="3" readonly="true"/>
+                            </p:column>
+                          <p:column styleClass="Wid5">
+                                <f:facet name="header">
+                                    <h:outputText value="单项分数"/>
+                                </f:facet>
+                                <p:inputNumber  value="#{item.hunscore}"  inputStyleClass="scoreInputNumber"  readonly="#{personScorecardManagedBean.queryQuarter>3}" >
+                                    <p:ajax listener="#{personScorecardManagedBean.setQuarter}"  update="formOne:tabView:tableList6"   process="@this,formOne:tabView:tableList6"></p:ajax>
+                                </p:inputNumber >
                             </p:column>
                             <p:column styleClass="Wid5">
                                 <f:facet name="header">
@@ -407,10 +428,9 @@
                             </p:column>
                             <p:column styleClass="Wid5">
                                 <f:facet name="header">
-                                    <h:outputText value="分数"/>
+                                    <h:outputText value="权重分数"/>
                                 </f:facet>
-                                <p:inputNumber  value="#{item.score}"  inputStyleClass="scoreInputNumber"  readonly="#{personScorecardManagedBean.queryQuarter>3}" >
-                                    <p:ajax listener="#{personScorecardManagedBean.setQuarter}"  update="formOne:tabView:tableList6"   process="@this,formOne:tabView:tableList6"></p:ajax>
+                                <p:inputNumber  value="#{item.score}"  inputStyleClass="scoreInputNumber"  readonly="true" >
                                 </p:inputNumber >
                             </p:column>
                             <p:column styleClass="Wid5" headerText="权重" groupRow="true" style="text-align:center">
@@ -436,7 +456,7 @@
                         </p:dataTable>
                     </p:tab>
                 </c:if>
-               
+
                 Q4
                 <p:tab title="Q4主观" id="sq4">
                     <c:if test="#{personScorecardManagedBean.queryQuarter==3}">
@@ -454,15 +474,19 @@
                             </f:facet>
                             <h:outputText value="#{item.name}"/>
                         </p:column>
+                               <p:column styleClass="Wid5" headerText="单项分数">
+                            <p:inputNumber value="#{item.score}"  readonly="#{personScorecardManagedBean.queryQuarter>4}" inputStyleClass="scoreInputNumber"  >
+                                <p:ajax listener="#{personScorecardManagedBean.setQuarter}"  update="formOne:tabView:tableList7"></p:ajax>
+                            </p:inputNumber>
+                        </p:column>
                         <p:column styleClass="Wid5">
                             <f:facet name="header">
                                 <h:outputText value="比重"/>
                             </f:facet>
                             <h:outputText value="#{item.ratio*100}%"/>
                         </p:column>
-                        <p:column styleClass="Wid5" headerText="分数">
-                            <p:inputNumber value="#{item.score}"  readonly="#{personScorecardManagedBean.queryQuarter>4}" inputStyleClass="scoreInputNumber"  >
-                                <p:ajax listener="#{personScorecardManagedBean.setQuarter}"  update="formOne:tabView:tableList7"></p:ajax>
+                        <p:column styleClass="Wid5" headerText="权重分数">
+                            <p:inputNumber value="#{item.score}"  readonly="true" inputStyleClass="scoreInputNumber"  >
                             </p:inputNumber>
                         </p:column>
                         <p:column styleClass="Wid5" headerText="权重" groupRow="true" style="text-align:center">
@@ -470,7 +494,7 @@
                         </p:column> 
                         <p:columnGroup type="footer">
                             <p:row>
-                                <p:column style="text-align:left" footerText="Totals:" colspan="2"/>
+                                <p:column style="text-align:left" footerText="Totals:" colspan="3"/>
                                 <p:column style="text-align:left">
                                     <f:facet name="footer">
                                         <h:outputText value="#{personScorecardManagedBean.currentEntity.subquarter4}">
@@ -510,18 +534,20 @@
                                 </f:facet>
                                 <p:inputTextarea  value="#{item.target}" styleClass="Wid100"  rows="3" readonly="true"/>
                             </p:column>
-                            
-                              <p:column styleClass="Wid10">
-                                <f:facet name="header">
-                                    <h:outputText value="标准"/>
-                                </f:facet>
-                                  <p:inputTextarea  value="#{item.standard}" styleClass="Wid100"  rows="3" readonly="true"/>
-                            </p:column>
+
                             <p:column styleClass="Wid10">
                                 <f:facet name="header">
-                                    <h:outputText value="实际"/>
+                                    <h:outputText value="考核标准"/>
                                 </f:facet>
-                                <p:inputTextarea value="#{item.actuality}" readonly="#{personScorecardManagedBean.queryQuarter>4}" styleClass="Wid100"  rows="3" />
+                                <p:inputTextarea  value="#{item.standard}" styleClass="Wid100"  rows="3" readonly="true"/>
+                            </p:column>
+                           <p:column styleClass="Wid5">
+                                <f:facet name="header">
+                                    <h:outputText value="单项分数"/>
+                                </f:facet>
+                                <p:inputNumber  value="#{item.hunscore}"  inputStyleClass="scoreInputNumber"  readonly="#{personScorecardManagedBean.queryQuarter>4}" >
+                                    <p:ajax listener="#{personScorecardManagedBean.setQuarter}"  update="formOne:tabView:tableList8"  process="@this,formOne:tabView:tableList8"></p:ajax>
+                                </p:inputNumber >
                             </p:column>
                             <p:column styleClass="Wid5">
                                 <f:facet name="header">
@@ -531,10 +557,9 @@
                             </p:column>
                             <p:column styleClass="Wid5">
                                 <f:facet name="header">
-                                    <h:outputText value="分数"/>
+                                    <h:outputText value="权重分数"/>
                                 </f:facet>
-                                <p:inputNumber  value="#{item.score}"  inputStyleClass="scoreInputNumber"  readonly="#{personScorecardManagedBean.queryQuarter>4}" >
-                                    <p:ajax listener="#{personScorecardManagedBean.setQuarter}"  update="formOne:tabView:tableList8"  process="@this,formOne:tabView:tableList8"></p:ajax>
+                                <p:inputNumber  value="#{item.score}"  inputStyleClass="scoreInputNumber"  readonly="true" >
                                 </p:inputNumber >
                             </p:column>
                             <p:column styleClass="Wid5" headerText="权重" groupRow="true" style="text-align:center">

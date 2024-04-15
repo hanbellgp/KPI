@@ -56,6 +56,8 @@ public class PersonScorecardDetail extends SuperDetailEntity {
     private String standard;
     @Column(name = "score")
     private BigDecimal score;
+    @Column(name = "hunscore")
+    private BigDecimal hunscore;
     @Column(name = "ratio")
     private BigDecimal ratio;
 
@@ -130,6 +132,14 @@ public class PersonScorecardDetail extends SuperDetailEntity {
 
     public void setScore(BigDecimal score) {
         this.score = score;
+    }
+
+    public BigDecimal getHunscore() {
+        return hunscore;
+    }
+
+    public void setHunscore(BigDecimal hunscore) {
+        this.hunscore = hunscore;
     }
 
     public BigDecimal getRatio() {

@@ -22,6 +22,7 @@ import cn.hanbell.kpi.entity.PersonSet;
 import cn.hanbell.kpi.entity.Scorecard;
 import cn.hanbell.kpi.lazy.PersonSetModel;
 import cn.hanbell.kpi.web.SuperSingleBean;
+import cn.hanbell.wco.ejb.Agent1000002Bean;
 import com.lightshell.comm.BaseLib;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -37,6 +38,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -80,6 +82,9 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
     public PersonScorecardDetailBean personScorecardDetailBean;
     @EJB
     public PersonDeptPercentageBean personDeptPercentageBean;
+
+    @EJB
+    private Agent1000002Bean agent1000002Bean;
     private String facno;
     public List<String> facnos;
     public List<String> parentDeptnos;
@@ -101,7 +106,6 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
     @Override
     public void init() {
         facnos = new ArrayList<String>();
-         System.out.print(this.entityList);
         updateUsers = new ArrayList<SystemUser>();
         facno = userManagedBean.getCompany();
         importYear = userManagedBean.getY();
@@ -124,7 +128,6 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
         model.getSortFields().put("userid", "ASC");
         this.query();
         super.init();
-         System.out.print(this.entityList);
     }
 
     @Override
@@ -191,6 +194,61 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
             this.currentEntity = this.entityList.get(0);
         }
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void sendMsg() {
+        List<PersonScorecard> scorecards = personScorecardBean.findByYear(this.userManagedBean.getY());
+        Map<String, List<String>> users = new HashMap<String, List<String>>();
+        SystemUser user = null;
+        for (PersonScorecard entity : scorecards) {
+            BigDecimal porobjquarter = (BigDecimal) personScorecardBean.getScore(entity, "porobjquarter", this.userManagedBean.getQ());
+            BigDecimal porsubquarter = (BigDecimal) personScorecardBean.getScore(entity, "porsubquarter", this.userManagedBean.getQ());
+            BigDecimal subquarter = (BigDecimal) personScorecardBean.getScore(entity, "subquarter", this.userManagedBean.getQ());
+            if ("I".equals(entity.getPersonset().getAssessmentmethod()) || "J".equals(entity.getPersonset().getAssessmentmethod())) {
+                if (porobjquarter.compareTo(BigDecimal.ZERO) == 0 || porsubquarter.compareTo(BigDecimal.ZERO) == 0) {
+                    user = this.systemUserBean.findByUserId(entity.getUserid());
+                    if (users.containsKey(user.getManagerId())) {
+                        users.get(user.getManagerId()).add(entity.getPersonset().getUsername());
+                    } else {
+                        List<String> list = new ArrayList<String>();
+                        list.add(entity.getPersonset().getUsername());
+                        users.put(user.getManagerId(), list);
+                    }
+                }
+            } else if ("K".equals(entity.getPersonset().getAssessmentmethod()) || "L".equals(entity.getPersonset().getAssessmentmethod())
+                    || "M".equals(entity.getPersonset().getAssessmentmethod()) || "N".equals(entity.getPersonset().getAssessmentmethod())) {
+                if (porsubquarter.compareTo(BigDecimal.ZERO) == 0) {
+                    user = this.systemUserBean.findByUserId(entity.getUserid());
+                    if (users.containsKey(user.getManagerId())) {
+                        users.get(user.getManagerId()).add(entity.getPersonset().getUsername());
+                    } else {
+                        List<String> list = new ArrayList<String>();
+                        list.add(entity.getPersonset().getUsername());
+                        users.put(user.getManagerId(), list);
+                    }
+                }
+            }
+        }
+        Set<String> manageds = users.keySet();
+        StringBuilder msg = new StringBuilder();
+        agent1000002Bean.initConfiguration();
+        for (String employeeid : manageds) {
+            msg.setLength(0);
+            msg.append("### 个人绩效考核:").append(BaseLib.formatDate("yyyy/MM/dd hh:mm", new Date()));
+            msg.append("\\n").append("");
+            msg.append("\\n").append(">**未考核人员通知**");
+            msg.append("\\n").append(">未考核人员：<font color=\"info\">");
+            for (String username : users.get(employeeid)) {
+                msg.append(username).append(";");
+            }
+            msg.append("</font>");
+            msg.append("\\n").append("");
+            msg.append("\\n").append("><font color=\"warning\">尊敬的主管～贵单位以上人员尚未完成考核，烦请尽快处理，谢谢配合！</font>");
+            if(!"C0002".equals(employeeid)){
+                  agent1000002Bean.sendMsgToUser(employeeid, "markdown", msg.toString());
+            }
+          
+        }
     }
 
     @Override
@@ -482,6 +540,7 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
                     p.setClassscorecard(cellToVlaue(row.getCell(13)));
                     p.setDepartmentscorecard(cellToVlaue(row.getCell(14)));
                     p.setPercentage(new BigDecimal(cellToVlaue(row.getCell(15))).multiply(BigDecimal.TEN).multiply(BigDecimal.TEN));
+                    p.setCoefficient(Double.valueOf(cellToVlaue(row.getCell(11))));
                     addlist.add(p);
                     if (!doBeforeMerge(p)) {
                         return;
@@ -650,7 +709,7 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
                 continue;
             }
             //CA临时工，劳务工，门卫，兴塔门卫等不考核
-            if (person.getUserid() == null || person.getUserid().startsWith("CA")|| person.getUserid().startsWith("CL")|| person.getUserid().startsWith("CM")|| person.getUserid().startsWith("M")) {
+            if (person.getUserid() == null || person.getUserid().startsWith("CA") || person.getUserid().startsWith("CL") || person.getUserid().startsWith("CM") || person.getUserid().startsWith("M")) {
                 person.setAssessmentmethod("O");
                 continue;
             }
@@ -879,7 +938,9 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
                 cell.setCellValue(sc.getPersonset().getJobcategory());
 
                 //获取个人主管考评分数，BSC分数。并按照计算类型获取百分比计算
-                proScore = this.personScorecardBean.getPorScore(sc, this.userManagedBean.getQ());
+                BigDecimal porobjquarter = (BigDecimal) personScorecardBean.getScore(sc, "porobjquarter", this.userManagedBean.getQ());
+                BigDecimal porsubquarter = (BigDecimal) personScorecardBean.getScore(sc, "porsubquarter", this.userManagedBean.getQ());
+                proScore = porobjquarter.add(porsubquarter);
                 bscScore = getScoreCardScore(sc, "I".equals(sc.getPersonset().getAssessmentmethod()) || "J".equals(sc.getPersonset().getAssessmentmethod()));
                 Cell cell8 = row.createCell(8);
                 cell8.setCellStyle(cellStyle);
@@ -905,25 +966,24 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
 
                 cell = row.createCell(11);
                 cell.setCellStyle(cellStyle);
-                cell.setCellValue(personScorecardBean.getStandardScore(BaseLib.convertExcelCell(Double.class, cell8) + BaseLib.convertExcelCell(Double.class, cell9)));
+                cell.setCellValue(personScorecardBean.getStandardScore(sc.getPersonset().getAssessmentlevel(),
+                        BaseLib.convertExcelCell(Double.class, cell8) + BaseLib.convertExcelCell(Double.class, cell9)));
 
                 cell = row.createCell(12);
                 cell.setCellStyle(cellStyle);
-                cell.setCellValue(personScorecardBean.getAmountOfScore(sc.getPersonset().getAssessmentlevel()));
+                cell.setCellValue(personScorecardBean.getAmountOfScore(sc.getPersonset().getAssessmentlevel(),
+                        sc.getPersonset().getCoefficient() > 0));
 
-                
                 cell = row.createCell(13);
                 cell.setCellStyle(cellStyle);
                 cell.setCellValue(sc.getPersonset().getPercentage().divide(BigDecimal.TEN).divide(BigDecimal.TEN).doubleValue());
-                    
-                
+
                 cell = row.createCell(14);
                 cell.setCellStyle(cellStyle);
-                double a1 = BaseLib.convertExcelCell(Double.class, row.getCell(11)) == null ? 0.00 : BaseLib.convertExcelCell(Double.class, row.getCell(11));
-                double a2 = BaseLib.convertExcelCell(Double.class, row.getCell(12)) == null ? 0.00 : BaseLib.convertExcelCell(Double.class, row.getCell(12));
-                double a3 = BaseLib.convertExcelCell(Double.class, row.getCell(13)) == null ? 0.00 : BaseLib.convertExcelCell(Double.class, row.getCell(13));
+                double a1 = new BigDecimal(BaseLib.convertExcelCell(Double.class, row.getCell(6))).compareTo(BigDecimal.ZERO) > 0 ? BaseLib.convertExcelCell(Double.class, row.getCell(6)) : 1.00;
+                double a2 = BaseLib.convertExcelCell(Double.class, row.getCell(11)) == null ? 0.00 : BaseLib.convertExcelCell(Double.class, row.getCell(11));
+                double a3 = BaseLib.convertExcelCell(Double.class, row.getCell(12)) == null ? 0.00 : BaseLib.convertExcelCell(Double.class, row.getCell(12));
                 cell.setCellValue(a1 * a2 * a3);
-
                 cell = row.createCell(15);
                 cell.setCellStyle(cellStyle);
                 i++;
