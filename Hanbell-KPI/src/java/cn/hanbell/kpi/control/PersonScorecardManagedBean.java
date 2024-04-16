@@ -336,7 +336,13 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
                         && !"采购员".equals(this.currentEntity.getPersonset().getDuties())
                         && !"客服员".equals(this.currentEntity.getPersonset().getDuties())
                         && !"销售跟单员".equals(this.currentEntity.getPersonset().getDuties())
-                        && !"生管员".equals(this.currentEntity.getPersonset().getDuties())) {
+                        && !"C0445".equals(this.currentEntity.getPersonset().getDuties())
+                        && !"C0555".equals(this.currentEntity.getUserid())
+                        && !"C0746".equals(this.currentEntity.getUserid())
+                        && !"C0804".equals(this.currentEntity.getUserid())
+                        && !"C1947".equals(this.currentEntity.getUserid())
+                        && !"C0818".equals(this.currentEntity.getUserid())
+                        ) {
                     throw new Exception("分数必须小于或等于比重，请调整！");
                 }
             };

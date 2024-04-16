@@ -16,7 +16,6 @@ import cn.hanbell.kpi.ejb.ScorecardBean;
 import cn.hanbell.kpi.ejb.ScorecardDetailBean;
 import cn.hanbell.kpi.ejb.tms.ProjectBean;
 import cn.hanbell.kpi.entity.Indicator;
-import cn.hanbell.kpi.entity.Policy;
 import cn.hanbell.kpi.entity.PolicyDetail;
 import cn.hanbell.kpi.entity.Role;
 import cn.hanbell.kpi.entity.RoleDetail;
@@ -32,18 +31,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
-import javax.faces.event.ActionEvent;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.jexl3.JexlException;
 import org.apache.logging.log4j.LogManager;
@@ -655,6 +651,12 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
                 return BigDecimal.ZERO;
             }
         }
+        BigDecimal a = value.setScale(2, BigDecimal.ROUND_HALF_UP);
+        if (a.compareTo(new BigDecimal(120)) >= 0) {
+            return currentDetail.getMaxNum();
+        } else if (a.compareTo(new BigDecimal(60)) <= 0) {
+            return currentDetail.getMinNum();
+        }
         return value.setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
@@ -1151,7 +1153,7 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
     public void setCurrentEntity(Scorecard currentEntity) {
         super.setCurrentEntity(currentEntity);
         if (currentEntity != null) {
-            freezed=this.freezed = currentEntity.getFreezeDate() != null
+            freezed = this.freezed = currentEntity.getFreezeDate() != null
                     && currentEntity.getFreezeDate().after(userManagedBean.getBaseDate());
         }
     }
