@@ -34,11 +34,13 @@ import com.lightshell.comm.BaseLib;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -83,10 +85,9 @@ public class ScorecardManagedBean extends SuperSingleBean<ScorecardContent> {
     protected LinkedHashMap<String, String> auditorMap;
     protected List<ScorecardAuditor> scorecardAuditorList;
 
-    
-        @EJB
+    @EJB
     SuperEJBForERP SuperEJBForERP;
-        
+
     public ScorecardManagedBean() {
         super(ScorecardContent.class);
         c = Calendar.getInstance();
@@ -494,6 +495,12 @@ public class ScorecardManagedBean extends SuperSingleBean<ScorecardContent> {
                 return BigDecimal.ZERO;
             }
         }
+        BigDecimal a = value.setScale(2, BigDecimal.ROUND_HALF_UP);
+        if (a.compareTo(new BigDecimal(120)) >= 0) {
+            return currentEntity.getMaxNum();
+        } else if (a.compareTo(new BigDecimal(60)) <= 0) {
+            return currentEntity.getMinNum();
+        }
         return value.setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
@@ -880,54 +887,53 @@ public class ScorecardManagedBean extends SuperSingleBean<ScorecardContent> {
 
     @Override
     public void print() throws Exception {
-        System.out.print("绩效考核中的SuperEJBForERP=="+SuperEJBForERP.hashCode());
-//        if (scorecard == null) {
-//            showMsg(FacesMessage.SEVERITY_WARN, "Warn", "没有可打印数据");
-//            return;
-//        }
-//        HashMap<String, Object> reportParams = new HashMap<>();
-//        reportParams.put("company", userManagedBean.getCurrentCompany().getName());
-//        reportParams.put("companyFullName", userManagedBean.getCurrentCompany().getFullname());
-//        reportParams.put("JNDIName", "java:global/KPI/KPI-ejb/ScorecardBean!cn.hanbell.kpi.ejb.ScorecardBean");
-//        reportParams.put("seq", scorecard.getSeq());
-//        reportParams.put("deptname", scorecard.getDeptname());
-//        reportParams.put("id", scorecard.getId());
-//        reportParams.put("season", userManagedBean.getQ());
-//        if (!this.model.getFilterFields().isEmpty()) {
-//            reportParams.put("filterFields", BaseLib.convertMapToStringWithClass(this.model.getFilterFields()));
-//        } else {
-//            reportParams.put("filterFields", "");
-//        }
-//        if (!this.model.getSortFields().isEmpty()) {
-//            reportParams.put("sortFields", BaseLib.convertMapToString(this.model.getSortFields()));
-//        } else {
-//            reportParams.put("sortFields", "");
-//        }
-//        this.fileName = "scorecard" + BaseLib.formatDate("yyyyMMddHHss", this.getDate()) + "." + "xls";
-//
-//        String reportName = "";
-//        if (userManagedBean.getQ() == 1) {
-//            reportName = reportPath + "scorecarddetail1.rptdesign";
-//        } else if (userManagedBean.getQ() == 2) {
-//            reportName = reportPath + "scorecarddetail2.rptdesign";
-//        } else if (userManagedBean.getQ() == 3) {
-//            reportName = reportPath + "scorecarddetail3.rptdesign";
-//        } else if (userManagedBean.getQ() == 4) {
-//            reportName = reportPath + "scorecarddetail4.rptdesign";
-//        }
-//        String outputName = reportOutputPath + this.fileName;
-//        this.reportViewPath = reportViewContext + this.fileName;
-//        try {
-//            reportClassLoader = Class.forName("cn.hanbell.kpi.rpt.ScorecardReport").getClassLoader();
-//            // 初始配置
-//            this.reportInitAndConfig();
-//            // 生成报表
-//            this.reportRunAndOutput(reportName, reportParams, outputName, "xls", null);
-//            // 预览报表
-//            this.preview();
-//        } catch (Exception ex) {
-//            throw ex;
-//        }
+        if (scorecard == null) {
+            showMsg(FacesMessage.SEVERITY_WARN, "Warn", "没有可打印数据");
+            return;
+        }
+        HashMap<String, Object> reportParams = new HashMap<>();
+        reportParams.put("company", userManagedBean.getCurrentCompany().getName());
+        reportParams.put("companyFullName", userManagedBean.getCurrentCompany().getFullname());
+        reportParams.put("JNDIName", "java:global/KPI/KPI-ejb/ScorecardBean!cn.hanbell.kpi.ejb.ScorecardBean");
+        reportParams.put("seq", scorecard.getSeq());
+        reportParams.put("deptname", scorecard.getDeptname());
+        reportParams.put("id", scorecard.getId());
+        reportParams.put("season", userManagedBean.getQ());
+        if (!this.model.getFilterFields().isEmpty()) {
+            reportParams.put("filterFields", BaseLib.convertMapToStringWithClass(this.model.getFilterFields()));
+        } else {
+            reportParams.put("filterFields", "");
+        }
+        if (!this.model.getSortFields().isEmpty()) {
+            reportParams.put("sortFields", BaseLib.convertMapToString(this.model.getSortFields()));
+        } else {
+            reportParams.put("sortFields", "");
+        }
+        this.fileName = "scorecard" + BaseLib.formatDate("yyyyMMddHHss", this.getDate()) + "." + "xls";
+
+        String reportName = "";
+        if (userManagedBean.getQ() == 1) {
+            reportName = reportPath + "scorecarddetail1.rptdesign";
+        } else if (userManagedBean.getQ() == 2) {
+            reportName = reportPath + "scorecarddetail2.rptdesign";
+        } else if (userManagedBean.getQ() == 3) {
+            reportName = reportPath + "scorecarddetail3.rptdesign";
+        } else if (userManagedBean.getQ() == 4) {
+            reportName = reportPath + "scorecarddetail4.rptdesign";
+        }
+        String outputName = reportOutputPath + this.fileName;
+        this.reportViewPath = reportViewContext + this.fileName;
+        try {
+            reportClassLoader = Class.forName("cn.hanbell.kpi.rpt.ScorecardReport").getClassLoader();
+            // 初始配置
+            this.reportInitAndConfig();
+            // 生成报表
+            this.reportRunAndOutput(reportName, reportParams, outputName, "xls", null);
+            // 预览报表
+            this.preview();
+        } catch (Exception ex) {
+            throw ex;
+        }
     }
 
     public boolean isReadonly(int q) {

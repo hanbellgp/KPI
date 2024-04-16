@@ -103,7 +103,7 @@ public class ScorecardBean extends SuperEJBForKPI<Scorecard> {
         }
     }
 
-    public Scorecard findByNameAndSeqAndCompany(String name, int y,String company) {
+    public Scorecard findByNameAndSeqAndCompany(String name, int y, String company) {
         Query query = getEntityManager().createNamedQuery("Scorecard.findByNameAndSeqAndComapny");
         query.setParameter("name", name);
         query.setParameter("seq", y);
@@ -319,14 +319,38 @@ public class ScorecardBean extends SuperEJBForKPI<Scorecard> {
         double minDifference = 0.0;
         double minCoefficient = 0.0;
         JexlEngine jexl = new JexlBuilder().create();
+        BigDecimal perf = null;
+        switch (n) {
+            case "q1":
+                perf = d.getPq1();
+                break;
+            case "q2":
+                perf = d.getPq2();
+                 break;
+            case "h1":
+                perf = d.getPh1();
+                 break;
+            case "q3":
+                perf = d.getPq3();
+                 break;
+            case "q4":
+                perf = d.getPq4();
+                 break;
+            case "h2":
+                perf = d.getPh2();
+                 break;
+            case "fy":
+                perf = d.getPfy();
+                 break;
+        }
         for (double i = 0.1; i <= 0.9; i = i + 0.1) {
-            String jexlExp = d.getScoreJexl().replace("object.c${n}",String.valueOf(i)).replace("${n}", n);
+            String jexlExp = d.getScoreJexl().replace("object.c${n}", String.valueOf(i)).replace("${n}", n);
             JexlExpression exp = jexl.createExpression(jexlExp);
             JexlContext jc = new MapContext();
             jc.set("object", d);
             double value = (double) exp.evaluate(jc);
-            if (Math.abs(100 - value) >= minDifference) {
-                minDifference = value;
+            if (Math.abs(perf.doubleValue() - value) <= minDifference || minDifference==0.0) {
+                minDifference = Math.abs(perf.doubleValue() - value);
                 minCoefficient = i;
                 score = value;
             }
