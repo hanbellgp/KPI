@@ -96,22 +96,27 @@ public class RServiceCharge1MailBean extends BscSheetMail {
         StringBuilder sb = new StringBuilder();
         sumIndicator = indicatorBean.getSumValue(indicatorsHD);
         sumIndicator.setName("华东R收费服务");
+        indicatorBean.updatePerformance(sumIndicator);
         indicators.add(sumIndicator);
 
         sumIndicator = indicatorBean.getSumValue(indicatorsJN);
         sumIndicator.setName("济南R收费服务");
+        indicatorBean.updatePerformance(sumIndicator);
         indicators.add(sumIndicator);
 
         sumIndicator = indicatorBean.getSumValue(indicatorsNJ);
         sumIndicator.setName("南京R收费服务");
+        indicatorBean.updatePerformance(sumIndicator);
         indicators.add(sumIndicator);
 
         sumIndicator = indicatorBean.getSumValue(indicatorsCQ);
         sumIndicator.setName("重庆R收费服务");
+        indicatorBean.updatePerformance(sumIndicator);
         indicators.add(sumIndicator);
 
         sumIndicator = indicatorBean.getSumValue(indicatorsGZ);
         sumIndicator.setName("广州R收费服务");
+        indicatorBean.updatePerformance(sumIndicator);
         indicators.add(sumIndicator);
         sb.append("<div class=\"tableTitle\"><h4 style=\"color:red\">单位：万元</h4>").append("</div>");
         sb.append(getHtmlTable(indicators, y, m, d, true));
