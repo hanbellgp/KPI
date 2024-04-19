@@ -324,6 +324,18 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
         }
         tabid = "sq1";
         this.currentEntity = this.entityList.get(0);
+        scoreMap.put("sq1", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 1, "S"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "S")));
+        scoreMap.put("aq1", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 1, "O"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "O")));
+
+        scoreMap.put("sq2", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 2, "S"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "S")));
+        scoreMap.put("aq2", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 2, "O"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "O")));
+
+        scoreMap.put("sq3", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 3, "S"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "S")));
+        scoreMap.put("aq3", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 3, "O"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "O")));
+
+        scoreMap.put("sq4", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 4, "S"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "S")));
+        scoreMap.put("aq4", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 4, "O"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "O")));
+
         return super.view(path);
     }
 
@@ -341,8 +353,7 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
                         && !"C0746".equals(this.currentEntity.getUserid())
                         && !"C0804".equals(this.currentEntity.getUserid())
                         && !"C1947".equals(this.currentEntity.getUserid())
-                        && !"C0818".equals(this.currentEntity.getUserid())
-                        ) {
+                        && !"C0818".equals(this.currentEntity.getUserid())) {
                     throw new Exception("分数必须小于或等于比重，请调整！");
                 }
             };

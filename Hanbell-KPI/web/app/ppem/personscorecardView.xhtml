@@ -158,14 +158,6 @@
            <p:tabView id="tabView" styleClass="tabView">
                 <p:ajax event="tabChange" listener="#{personScorecardManagedBean.tabchange}"  update="formOne"></p:ajax>
                 <p:tab title="Q1主观" id="sq1">
-                    <c:if test="#{personScorecardManagedBean.queryQuarter==1}">
-                        <p:toolbar  styleClass="detailToolbar">
-                            <f:facet name="right">
-                                <p:commandButton  value="保存" actionListener="#{personScorecardManagedBean.update()}" icon="ui-icon-check"
-                                                  process="@this,formOne:tabView:tableList1" update="formOne:growl"/>
-                            </f:facet>
-                        </p:toolbar>
-                    </c:if>
                     <p:dataTable id="tableList1" value="#{personScorecardManagedBean.scoreMap.get('sq1').detail}" var="item" styleClass="tableList Mtop10">
                         <p:column styleClass="Wid5"   >
                             <f:facet name="header">
@@ -214,14 +206,6 @@
                 </p:tab>
                 <c:if test="#{'I'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod()) or 'J'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod())}">
                     <p:tab title="Q1客观" id="aq1">
-                        <c:if test="#{personScorecardManagedBean.queryQuarter==1}">
-                            <p:toolbar  styleClass="detailToolbar">
-                                <f:facet name="right">
-                                    <p:commandButton  value="保存" actionListener="#{personScorecardManagedBean.update()}" icon="ui-icon-check"
-                                                      process="@this,formOne:tabView:tableList2" update="formOne:growl"/>
-                                </f:facet>
-                            </p:toolbar>
-                        </c:if>
                         <p:dataTable id="tableList2" value="#{personScorecardManagedBean.scoreMap.get('aq1').detail}" var="item" styleClass="tableList Mtop10">
                             <p:column styleClass="Wid5" groupRow="true" style="text-align:center;background: white !important">
                                 <f:facet name="header">
@@ -286,14 +270,6 @@
                 </c:if>
                 Q2
                 <p:tab title="Q2主观" id="sq2">
-                    <c:if test="#{personScorecardManagedBean.queryQuarter==2}">
-                        <p:toolbar  styleClass="detailToolbar">
-                            <f:facet name="right">
-                                <p:commandButton  value="保存" actionListener="#{personScorecardManagedBean.update()}" icon="ui-icon-check"
-                                                  process="@this,formOne:tabView:tableList3" update="formOne:growl"/>
-                            </f:facet>
-                        </p:toolbar>
-                    </c:if>
                     <p:dataTable id="tableList3" value="#{personScorecardManagedBean.scoreMap.get('sq2').detail}" var="item" styleClass="tableList Mtop10"  >
                         <p:column styleClass="Wid5">
                             <f:facet name="header">
@@ -342,14 +318,6 @@
                 </p:tab>
                 <c:if test="#{'I'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod()) or 'J'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod())}">
                     <p:tab title="Q2客观" id="aq2">
-                        <c:if test="#{personScorecardManagedBean.queryQuarter==2}">
-                            <p:toolbar  styleClass="detailToolbar">
-                                <f:facet name="right">
-                                    <p:commandButton  value="保存" actionListener="#{personScorecardManagedBean.update()}" icon="ui-icon-check"
-                                                      process="@this,formOne:tabView:tableList4" update="formOne:growl"/>
-                                </f:facet>
-                            </p:toolbar>
-                        </c:if>
                         <p:dataTable id="tableList4"  value="#{personScorecardManagedBean.scoreMap.get('aq2').detail}"  var="item" styleClass="tableList Mtop10" >
                             <p:column styleClass="Wid10" groupRow="true" style="text-align:center;background: white !important">
                                 <f:facet name="header">
@@ -414,14 +382,6 @@
                 </c:if>
                 Q3
                 <p:tab title="Q3主观" id="sq3">
-                    <c:if test="#{personScorecardManagedBean.queryQuarter==3}">
-                        <p:toolbar  styleClass="detailToolbar">
-                            <f:facet name="right">
-                                <p:commandButton  value="保存" actionListener="#{personScorecardManagedBean.update()}" icon="ui-icon-check"
-                                                  process="@this,formOne:tabView:tableList5" update="formOne:growl"/>
-                            </f:facet>
-                        </p:toolbar>
-                    </c:if>
                     <p:dataTable id="tableList5" value="#{personScorecardManagedBean.scoreMap.get('sq3').detail}" var="item" styleClass="tableList Mtop10"  >
                         <p:column styleClass="Wid5">
                             <f:facet name="header">
@@ -467,14 +427,6 @@
                 </p:tab>
                 <c:if test="#{'I'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod()) or 'J'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod())}">
                     <p:tab title="Q3客观" id="aq3">
-                        <c:if test="#{personScorecardManagedBean.queryQuarter==3}">
-                            <p:toolbar  styleClass="detailToolbar">
-                                <f:facet name="right">
-                                    <p:commandButton  value="保存" actionListener="#{personScorecardManagedBean.update()}" icon="ui-icon-check"
-                                                      process="@this,formOne:tabView:tableList6" update="formOne:growl"/>
-                                </f:facet>
-                            </p:toolbar>
-                        </c:if>
                         <p:dataTable id="tableList6" value="#{personScorecardManagedBean.scoreMap.get('aq3').detail}" var="item" styleClass="tableList Mtop10" >
                             <p:column styleClass="Wid10" groupRow="true" style="text-align:center;background: white !important">
                                 <f:facet name="header">
@@ -540,14 +492,6 @@
                 </c:if>
                 Q4
                 <p:tab title="Q4主观" id="sq4">
-                    <c:if test="#{personScorecardManagedBean.queryQuarter==3}">
-                        <p:toolbar  styleClass="detailToolbar">
-                            <f:facet name="right">
-                                <p:commandButton  value="保存" actionListener="#{personScorecardManagedBean.update()}" icon="ui-icon-check"
-                                                  process="@this,formOne:tabView:tableList7" update="formOne:growl"/>
-                            </f:facet>
-                        </p:toolbar>
-                    </c:if>
                     <p:dataTable id="tableList7"  value="#{personScorecardManagedBean.scoreMap.get('sq4').detail}" var="item" styleClass="tableList Mtop10"  >
                         <p:column styleClass="Wid5">
                             <f:facet name="header">
@@ -593,14 +537,6 @@
                 </p:tab>
                 <c:if test="#{'I'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod()) or 'J'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod())}">
                     <p:tab title="Q4客观" id="aq4">
-                        <c:if test="#{personScorecardManagedBean.queryQuarter==3}">
-                            <p:toolbar  styleClass="detailToolbar">
-                                <f:facet name="right">
-                                    <p:commandButton  value="保存" actionListener="#{personScorecardManagedBean.update()}" icon="ui-icon-check"
-                                                      process="@this,formOne:tabView:tableList8" update="formOne:growl"/>
-                                </f:facet>
-                            </p:toolbar>
-                        </c:if>
                         <p:dataTable id="tableList8"  value="#{personScorecardManagedBean.scoreMap.get('aq4').detail}" var="item" styleClass="tableList Mtop10" >
                             <p:column styleClass="Wid10" groupRow="true" style="text-align:center;background: white !important">
                                 <f:facet name="header">
