@@ -36,7 +36,7 @@ public abstract class ShipmentQuantityAA extends ShipmentQuantity {
 
         StringBuilder sb = new StringBuilder();
         sb.append("select isnull(sum(d.shpqy1),0) from cdrhad h,cdrdta d,cdrdmas cd left join  cdritncusmap p on cd.itnbrcus = p.itnbrcus ");
-        sb.append(" where h.facno=d.facno and h.shpno=d.shpno and d.facno = cd.facno and d.cdrno = cd.cdrno and d.ctrseq = cd.trseq and h.houtsta<>'W' and left(d.itnbr,1)='3' ");
+        sb.append(" where h.facno=d.facno and h.shpno=d.shpno and d.facno = cd.facno and d.cdrno = cd.cdrno and d.ctrseq = cd.trseq and h.houtsta<>'W' ");
         sb.append(" and h.cusno NOT IN ('SSD00107','SGD00088','SJS00254','SCQ00146') ");
         sb.append("  and d.issevdta='N' and h.facno='${facno}' ");
         if (!"".equals(decode)) {
@@ -82,7 +82,7 @@ public abstract class ShipmentQuantityAA extends ShipmentQuantity {
 
         sb.setLength(0);
         sb.append("select isnull(sum(d.bshpqy1),0) from cdrbhad h,cdrbdta d,cdrdmas cd left join  cdritncusmap p on cd.itnbrcus = p.itnbrcus  ");
-        sb.append(" where h.facno=d.facno and h.bakno=d.bakno and d.cdrno = cd.cdrno and d.ctrseq = cd.trseq and h.baksta<>'W' and left(d.itnbr,1)='3' ");
+        sb.append(" where h.facno=d.facno and h.bakno=d.bakno and d.cdrno = cd.cdrno and d.ctrseq = cd.trseq and h.baksta<>'W' ");
         sb.append(" and h.cusno NOT IN ('SSD00107','SGD00088','SJS00254','SCQ00146') ");
         sb.append("  and d.issevdta='N' and h.facno='${facno}' ");
         if (!"".equals(decode)) {

@@ -43,9 +43,6 @@ public class SalesOrderQuantity extends SalesOrder {
         if (!"".equals(decode)) {
             sb.append(" and h.decode ='").append(decode).append("' ");
         }
-        if (n_code_DA.contains("AA") && !" ='SDS' ".equals(n_code_DC)) {
-            sb.append(" and left(d.itnbr,1)='3' ");
-        }
         if (!"".equals(n_code_DA)) {
             sb.append(" and d.n_code_DA ").append(n_code_DA);
         }
@@ -104,12 +101,6 @@ public class SalesOrderQuantity extends SalesOrder {
         sb.append(" and ((d.cdrqy1-d.shpqy1)>0) and d.drecsta<'95' and h.facno='${facno}' ");
         if (!"".equals(decode)) {
             sb.append(" and h.decode ='").append(decode).append("' ");
-        }
-        //if (!"".equals(deptno)) {
-        //    sb.append(" and h.depno IN (").append(deptno).append(")");
-        //}
-        if (n_code_DA.contains("AA")) {
-            sb.append(" and left(d.itnbr,1)='3' ");
         }
         if (!"".equals(n_code_DA)) {
             sb.append(" and d.n_code_DA ").append(n_code_DA);
