@@ -129,12 +129,12 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
                 o[14] = ((BigDecimal) o[13]).multiply(BigDecimal.valueOf(100)).divide((BigDecimal) list.get(list.size() - 1)[13], 2).toString().concat("%");
             }
             //铸件重量;
-            Object[] shbweigth = shoppingAccomuntBean.getGroupWeightDate("总重", "SHB", "C", btnDate, getWhereVdrnos("C", "'铸件'").toString(), ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA + "/" + ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI);
-            Object[] shbgornhsweigth = shoppingAccomuntBean.getGroupWeightDate("汉声", "SHB", "C", btnDate, shbFhszj, ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA + "/" + ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI);
+            Object[] shbweigth = shoppingAccomuntBean.getGroupWeightDate("总重", "SHB", "C", btnDate, getWhereVdrnos("C", "'铸件'").toString(),  this.getWhereItlcs(ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA + "/" + ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI).toString());
+            Object[] shbgornhsweigth = shoppingAccomuntBean.getGroupWeightDate("汉声", "SHB", "C", btnDate, shbFhszj,  this.getWhereItlcs(ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA + "/" + ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI).toString());
             //上海汉钟已作为进口列入。需手动加入上海汉钟厂商
             StringBuffer sb = getWhereVdrnos("A", "'鑄件'");
-            Object[] thbweigth = shoppingAccomuntBean.getGroupWeightDate("总重", "THB", "A", btnDate, sb.substring(0, sb.length() - 1).concat(",'86005')"), "");
-            Object[] thbgornhsweigth = shoppingAccomuntBean.getGroupWeightDate("汉声", "THB", "A", btnDate, twFhszj, "");
+            Object[] thbweigth = shoppingAccomuntBean.getGroupWeightDate("总重", "THB", "A", btnDate, sb.substring(0, sb.length() - 1).concat(",'86005')"), " not in ('3A12','3391')");
+            Object[] thbgornhsweigth = shoppingAccomuntBean.getGroupWeightDate("汉声", "THB", "A", btnDate, twFhszj, " not in ('3A12','3391')");
             weightList.clear();
             weightList.add(shbweigth);
             weightList.add(shbgornhsweigth);
@@ -185,13 +185,13 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
             weightList.add(zhanbi3);
             
             //铸件金额
-            Object[] shbsalary = shoppingAccomuntBean.getGroupSalaryDate("总金额", "SHB", "C", btnDate, getWhereVdrnos("C", "'铸件'").toString(), ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA + "/" + ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI);
-            Object[] shbgornhsalary = shoppingAccomuntBean.getGroupSalaryDate("汉声金额", "SHB", "C", btnDate, shbFhszj, ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA + "/" + ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI);
+            Object[] shbsalary = shoppingAccomuntBean.getGroupSalaryDate("总金额", "SHB", "C", btnDate, getWhereVdrnos("C", "'铸件'").toString(), this.getWhereItlcs(ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA + "/" + ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI).toString());
+            Object[] shbgornhsalary = shoppingAccomuntBean.getGroupSalaryDate("汉声金额", "SHB", "C", btnDate, shbFhszj, this.getWhereItlcs(ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA + "/" + ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI).toString());
             //上海汉钟已作为进口列入。需手动加入上海汉钟厂商
             sb.setLength(0);
             sb = getWhereVdrnos("A", "'鑄件'");
-            Object[] thbsalary = shoppingAccomuntBean.getGroupSalaryDate("总金额", "THB", "A", btnDate, sb.substring(0, sb.length() - 1).concat(",'86005')"), "");
-            Object[] thbgroupsalary = shoppingAccomuntBean.getGroupSalaryDate("汉声金额", "THB", "A", btnDate, twFhszj, "");
+            Object[] thbsalary = shoppingAccomuntBean.getGroupSalaryDate("总金额", "THB", "A", btnDate, sb.substring(0, sb.length() - 1).concat(",'86005')"),  " not in ('3A12','3391')");
+            Object[] thbgroupsalary = shoppingAccomuntBean.getGroupSalaryDate("汉声金额", "THB", "A", btnDate, twFhszj, " not in ('3A12','3391')");
             salaryList.clear();
             salaryList.add(shbsalary);
             salaryList.add(shbgornhsalary);
@@ -240,12 +240,8 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
             }
             zhanbi3[14] = ((BigDecimal) sumall2[14]).multiply(new BigDecimal(100)).divide((BigDecimal) sumall1[14], 0, BigDecimal.ROUND_HALF_UP).toString().concat("%");
             salaryList.add(zhanbi3);
-            
-            
-            
             statusMap.put("displaydiv1", "none");
             statusMap.put("displaydiv2", "block");
-
             //根据指标ID加载指标说明、指标分析
             analysisList = indicatorAnalysisBean.findByPIdAndMonth(indicator.getId(), this.m);//指标分析
             if (analysisList != null) {
@@ -285,6 +281,20 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
             throw e;
         }
     }
+    
+        public StringBuffer getWhereItlcs(String itcls) {
+        StringBuffer sql = new StringBuffer("");
+        try {
+            StringTokenizer stzj = new StringTokenizer(itcls, "/");
+            sql.append(" in (");
+            while (stzj.hasMoreTokens()) {
+                sql.append("'").append(stzj.nextToken()).append("',");
+            }
+            return sql.delete(sql.length() - 1, sql.length()).append(")");
+        } catch (Exception e) {
+            throw e;
+        }
+        }
 
     public String percentFormat(BigDecimal value1, BigDecimal value2, int i) {
         if (value1 == null || value1 == BigDecimal.ZERO) {
