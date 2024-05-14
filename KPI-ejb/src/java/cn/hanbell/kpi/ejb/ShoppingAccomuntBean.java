@@ -244,7 +244,7 @@ public class ShoppingAccomuntBean implements Serializable {
             sql.append(" and vdrno").append(vdrnos);
         }
         if (itcls != null && !"".equals(itcls)) {
-            sql.append(" and itcls").append(getWhereItlcs(itcls).toString());
+            sql.append(" and itcls").append(itcls);
         }
         sql.append(" ) head left join shoppingmenuweight detail on  head.itnbr=detail.itnbr where detail.id is not null");
         sql.append(" group by yearmon order by yearmon asc");
@@ -283,7 +283,7 @@ public class ShoppingAccomuntBean implements Serializable {
             sql.append(" and vdrno").append(vdrnos);
         }
         if (itcls != null && !"".equals(itcls)) {
-            sql.append(" and itcls").append(getWhereItlcs(itcls).toString());
+            sql.append(" and itcls").append(itcls);
         }
         sql.append(" group by yearmon;");
         Query query = shoppingManufacturerBean.getEntityManager().createNativeQuery(sql.toString());
@@ -333,7 +333,7 @@ public class ShoppingAccomuntBean implements Serializable {
             sql.append(" and vdrno ").append(vdrnos);
         }
         if (itcls != null && !"".equals(itcls)) {
-            sql.append(" and itcls").append(getWhereItlcs(itcls).toString());
+            sql.append(" and itcls").append(itcls);
         }
         sql.append(" group by itnbr,facno)b where a.id=b.id)) head left join shoppingmenuweight detail on  head.itnbr=detail.itnbr where detail.id is  null");
         Query query = shoppingManufacturerBean.getEntityManager().createNativeQuery(sql.toString());
