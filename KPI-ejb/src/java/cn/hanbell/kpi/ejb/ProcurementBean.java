@@ -57,7 +57,7 @@ public class ProcurementBean implements Serializable {
      * @return
      */
     private Double getSaleValue(Date date, String status) {
-        StringBuilder sb = new StringBuilder();
+        try {  StringBuilder sb = new StringBuilder();
 
         sb.append(" select isnull(sum(p.q),0)  from( ");
         sb.append(" select year(cdrhad.shpdate) year,month(cdrhad.shpdate) month,isnull(sum((cdrdta.shpamts * cdrhad.ratio)/(cdrhad.taxrate + 1)),0) as q  FROM cdrdta,cdrhad ");
@@ -80,10 +80,11 @@ public class ProcurementBean implements Serializable {
 
         erpEJB.setCompany("C");
         Query query = erpEJB.getEntityManager().createNativeQuery(sql);
-        try {
+      
             Object o = query.getSingleResult();
             return Double.parseDouble(o.toString());
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -200,6 +201,7 @@ public class ProcurementBean implements Serializable {
             aaList.add(row[3]);
             return aaList;
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("cn.hanbell.kpi.ejb.ProcurementBean.getPurchaseList()" + e.toString());
         }
         return null;
@@ -296,6 +298,7 @@ public class ProcurementBean implements Serializable {
             aaList.add(row[3]);
             return aaList;
         } catch (Exception e) {
+             e.printStackTrace();
             System.out.println("cn.hanbell.kpi.ejb.ProcurementBean.getEnterWarehouseList()" + e.toString());
         }
         return null;
@@ -361,6 +364,7 @@ public class ProcurementBean implements Serializable {
             aaList.add(row[3]);
             return aaList;
         } catch (Exception e) {
+             e.printStackTrace();
             System.out.println("cn.hanbell.kpi.ejb.ProcurementBean.getEnterWarehouseList()" + e.toString());
         }
         return null;

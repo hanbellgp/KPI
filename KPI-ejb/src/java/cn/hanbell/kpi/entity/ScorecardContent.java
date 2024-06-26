@@ -166,7 +166,7 @@ public class ScorecardContent extends SuperEntity {
     @Size(max = 200)
     @Column(name = "th2")
     private String th2;
-    @Size(max = 200)
+    @Size(max = 300)
     @Column(name = "tfy")
     private String tfy;
     @Size(max = 200)

@@ -25,50 +25,7 @@ public class PersonSetBean extends SuperEJBForKPI<PersonSet> {
         super(PersonSet.class);
     }
 
-    public boolean isadministrative(String officialrank, String duties) {
-        if (officialrank.contains("A")) {
-            officialrank = "A";
-        } else if (officialrank.contains("B")) {
-            officialrank = "B";
-        }
-        switch (duties) {
-            case "代班长":
-            case "副班长":
-            case "班长":
-                duties = "A";
-                break;
-            case "代组长":
-            case "副组长":
-            case "组长":
-                duties = "B";
-                break;
-            case "代课长":
-            case "副课长":
-            case "课长":
-                duties = "C";
-                break;
-            case "代副理":
-            case "副理":
-            case "副经理":
-            case "经理":
-                duties = "D";
-                break;
-            case "协理":
-            case "副总经理":
-            case "副董事长":
-            case "执行副总经理":
-            case "董事长":
-                duties = "E";
-                break;
-            default:
-                duties = "A";
-        }
-        if (officialrank.compareTo(duties) == 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    
 
     public PersonSet findByUserid(String userid) {
         Query query = getEntityManager().createNamedQuery("PersonSet.findByUserid");

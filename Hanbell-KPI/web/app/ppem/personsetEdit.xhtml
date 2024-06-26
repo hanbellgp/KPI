@@ -25,13 +25,18 @@
                     </p:row>
                 </f:facet>
                 <p:row>
-                    <p:column styleClass="Wid20"><p:outputLabel value="工号" for="userid"/></p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="工号/姓名" for="userid"/></p:column>
                     <p:column styleClass="Wid30">
-                        <p:outputLabel id="userid" value="#{personSetManagedBean.currentEntity.userid}" title="工号"/>
+                        <p:outputLabel id="userid" value="#{personSetManagedBean.currentEntity.userid}#{personSetManagedBean.currentEntity.username}" title="工号"/>
                     </p:column>
-                    <p:column styleClass="Wid20"><p:outputLabel value="名字" for="username"/></p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="类型" for="type"/></p:column>
                     <p:column styleClass="Wid30">
-                        <p:outputLabel id="username" value="#{personSetManagedBean.currentEntity.username}" title="名字"/>
+                        <p:selectOneMenu id="type" value="#{personSetManagedBean.currentEntity.type}" title="类型" >
+                            <f:selectItem itemLabel="幕僚" itemValue="幕僚"/>
+                            <f:selectItem itemLabel="现场" itemValue="现场"/>
+                            <f:selectItem itemLabel="营销" itemValue="营销"/>
+                            <f:selectItem itemLabel="技术" itemValue="技术"/>
+                        </p:selectOneMenu>
                     </p:column>
                 </p:row>
                 <p:row>
@@ -63,17 +68,14 @@
                     <p:column styleClass="Wid30">
                         <p:selectOneMenu id="officialrankdesc" value="#{personSetManagedBean.currentEntity.officialrankdesc}" title="职等" >
                             <f:selectItem itemLabel="员工级" itemValue="员工级"/>
-                            <f:selectItem itemLabel="職員" itemValue="職員"/>
                             <f:selectItem itemLabel="组长级" itemValue="组长级"/>
-                            <f:selectItem itemLabel="課長/高管" itemValue="課長/高管"/>
                             <f:selectItem itemLabel="课长级" itemValue="课长级"/>
-                            <f:selectItem itemLabel="副理/主任" itemValue="副理/主任"/>
+                            <f:selectItem itemLabel="副理级\主任" itemValue="副理级\主任"/>
                             <f:selectItem itemLabel="经理级" itemValue="经理级"/>
                             <f:selectItem itemLabel="协理级" itemValue="协理级"/>
-                            <f:selectItem itemLabel="副董级" itemValue="副董级"/>
-                            <f:selectItem itemLabel="董事长级" itemValue="董事长级"/>
                             <f:selectItem itemLabel="副总经理级" itemValue="副总经理级"/>
                             <f:selectItem itemLabel="总经理级" itemValue="总经理级"/>
+                            <f:selectItem itemLabel="副董级" itemValue="副董级"/>
                         </p:selectOneMenu>
                     </p:column>
                 </p:row>
@@ -101,15 +103,6 @@
                     </p:column>
                 </p:row>
                 <p:row>
-                    <p:column styleClass="Wid20"><p:outputLabel value="类型" for="type"/></p:column>
-                    <p:column styleClass="Wid30">
-                        <p:selectOneMenu id="type" value="#{personSetManagedBean.currentEntity.type}" title="类型" >
-                            <f:selectItem itemLabel="幕僚" itemValue="幕僚"/>
-                            <f:selectItem itemLabel="现场" itemValue="现场"/>
-                            <f:selectItem itemLabel="营销" itemValue="营销"/>
-                            <f:selectItem itemLabel="技术" itemValue="技术"/>
-                        </p:selectOneMenu>
-                    </p:column>
                     <p:column styleClass="Wid20"><p:outputLabel value="考核方式" for="assessmentmethod"/></p:column>
                     <p:column styleClass="Wid30">
                         <p:selectOneMenu id="assessmentmethod" value="#{personSetManagedBean.currentEntity.assessmentmethod}" title="考核方式" >
@@ -123,6 +116,10 @@
                             <f:selectItem itemLabel="不考核" itemValue="O"/>
                         </p:selectOneMenu>
                     </p:column>
+                      <p:column styleClass="Wid20"><p:outputLabel value="奖金发放比率" for="percentage"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:outputLabel id="percentage" value="#{personSetManagedBean.currentEntity.percentage}" title="奖金发放比率"/>
+                    </p:column>
                 </p:row>
                 <p:row>
                     <p:column styleClass="Wid20"><p:outputLabel value="是否是行政职" for="isadministrative"/></p:column>
@@ -132,9 +129,13 @@
                             <f:selectItem itemLabel="否" itemValue="false"/>
                         </p:selectOneMenu>
                     </p:column>
-                    <p:column styleClass="Wid20"><p:outputLabel value="系数" for="coefficient"/></p:column>
+                  
+                      <p:column styleClass="Wid20"><p:outputLabel value="能否超过100分" for="ishundred"/></p:column>
                     <p:column styleClass="Wid30">
-                        <p:outputLabel id="coefficient" value="#{personSetManagedBean.currentEntity.coefficient}" title="系数"/>
+                        <p:selectOneMenu id="ishundred" value="#{personSetManagedBean.currentEntity.ishundred}" title="是否100分制" >
+                            <f:selectItem itemLabel="是" itemValue="true"/>
+                            <f:selectItem itemLabel="否" itemValue="false"/>
+                        </p:selectOneMenu>
                     </p:column>
                 </p:row>
                 <p:row>

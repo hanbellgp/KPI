@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +32,7 @@ import java.util.stream.Collectors;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Row;
@@ -287,24 +287,23 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
                 this.showErrorMsg("Error", "请选择一项");
                 return "";
             }
-
             tabid = "sq1";
             currentEntity = this.entityList.get(0);
             if (this.currentEntity.getUserid().equals(this.userManagedBean.getUserid())) {
                 this.showErrorMsg("Error", "您无编辑权限！");
                 return "";
             }
-            scoreMap.put("sq1", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 1, "S"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "S")));
-            scoreMap.put("aq1", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 1, "O"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "O")));
+            scoreMap.put("sq1", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 1, "S"), currentEntity.getPersonset().getPersonscorecardway().getScoresubjectivityratio().doubleValue()));
+            scoreMap.put("aq1", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 1, "O"), currentEntity.getPersonset().getPersonscorecardway().getScoreobjectiveratio().doubleValue()));
 
-            scoreMap.put("sq2", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 2, "S"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "S")));
-            scoreMap.put("aq2", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 2, "O"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "O")));
+            scoreMap.put("sq2", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 2, "S"), currentEntity.getPersonset().getPersonscorecardway().getScoresubjectivityratio().doubleValue()));
+            scoreMap.put("aq2", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 2, "O"), currentEntity.getPersonset().getPersonscorecardway().getScoreobjectiveratio().doubleValue()));
 
-            scoreMap.put("sq3", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 3, "S"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "S")));
-            scoreMap.put("aq3", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 3, "O"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "O")));
+            scoreMap.put("sq3", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 3, "S"), currentEntity.getPersonset().getPersonscorecardway().getScoresubjectivityratio().doubleValue()));
+            scoreMap.put("aq3", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 3, "O"), currentEntity.getPersonset().getPersonscorecardway().getScoreobjectiveratio().doubleValue()));
 
-            scoreMap.put("sq4", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 4, "S"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "S")));
-            scoreMap.put("aq4", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 4, "O"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "O")));
+            scoreMap.put("sq4", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 4, "S"), currentEntity.getPersonset().getPersonscorecardway().getScoresubjectivityratio().doubleValue()));
+            scoreMap.put("aq4", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 4, "O"), currentEntity.getPersonset().getPersonscorecardway().getScoreobjectiveratio().doubleValue()));
 
             this.currentEntity = this.entityList.get(0);
             this.editedDetailList.clear();
@@ -312,6 +311,46 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
             this.deletedDetailList.clear();
         }
         return super.edit(path);
+    }
+
+    public String returnPage(String path) {
+        this.entityList.clear();
+        return super.edit(path);
+    }
+
+    public void navigate(AjaxBehaviorEvent event) {
+        try {
+            if (this.entityList.size() != 1) {
+                this.showErrorMsg("Error", "请选择一项");
+                return;
+            }
+            tabid = "sq1";
+            currentEntity = this.entityList.get(0);
+            if (this.currentEntity.getUserid().equals(this.userManagedBean.getUserid())) {
+                this.showErrorMsg("Error", "您无编辑权限！");
+                return;
+            }
+
+            scoreMap.put("sq1", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 1, "S"), currentEntity.getPersonset().getPersonscorecardway().getScoresubjectivityratio().doubleValue()));
+            scoreMap.put("aq1", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 1, "O"), currentEntity.getPersonset().getPersonscorecardway().getScoreobjectiveratio().doubleValue()));
+
+            scoreMap.put("sq2", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 2, "S"), currentEntity.getPersonset().getPersonscorecardway().getScoresubjectivityratio().doubleValue()));
+            scoreMap.put("aq2", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 2, "O"), currentEntity.getPersonset().getPersonscorecardway().getScoreobjectiveratio().doubleValue()));
+
+            scoreMap.put("sq3", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 3, "S"), currentEntity.getPersonset().getPersonscorecardway().getScoresubjectivityratio().doubleValue()));
+            scoreMap.put("aq3", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 3, "O"), currentEntity.getPersonset().getPersonscorecardway().getScoreobjectiveratio().doubleValue()));
+
+            scoreMap.put("sq4", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 4, "S"), currentEntity.getPersonset().getPersonscorecardway().getScoresubjectivityratio().doubleValue()));
+            scoreMap.put("aq4", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 4, "O"), currentEntity.getPersonset().getPersonscorecardway().getScoreobjectiveratio().doubleValue()));
+
+            this.currentEntity = this.entityList.get(0);
+            this.editedDetailList.clear();
+            this.addedDetailList.clear();
+            this.deletedDetailList.clear();
+            FacesContext.getCurrentInstance().getExternalContext().redirect("personscorecardEdit.xhtml");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -324,17 +363,17 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
         }
         tabid = "sq1";
         this.currentEntity = this.entityList.get(0);
-        scoreMap.put("sq1", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 1, "S"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "S")));
-        scoreMap.put("aq1", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 1, "O"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "O")));
+        scoreMap.put("sq1", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 1, "S"), currentEntity.getPersonset().getPersonscorecardway().getScoresubjectivityratio().doubleValue()));
+        scoreMap.put("aq1", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 1, "O"), currentEntity.getPersonset().getPersonscorecardway().getScoreobjectiveratio().doubleValue()));
 
-        scoreMap.put("sq2", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 2, "S"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "S")));
-        scoreMap.put("aq2", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 2, "O"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "O")));
+        scoreMap.put("sq2", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 2, "S"), currentEntity.getPersonset().getPersonscorecardway().getScoresubjectivityratio().doubleValue()));
+        scoreMap.put("aq2", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 2, "O"), currentEntity.getPersonset().getPersonscorecardway().getScoreobjectiveratio().doubleValue()));
 
-        scoreMap.put("sq3", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 3, "S"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "S")));
-        scoreMap.put("aq3", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 3, "O"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "O")));
+        scoreMap.put("sq3", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 3, "S"), currentEntity.getPersonset().getPersonscorecardway().getScoresubjectivityratio().doubleValue()));
+        scoreMap.put("aq3", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 3, "O"), currentEntity.getPersonset().getPersonscorecardway().getScoreobjectiveratio().doubleValue()));
 
-        scoreMap.put("sq4", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 4, "S"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "S")));
-        scoreMap.put("aq4", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 4, "O"), getScoreRatio(currentEntity.getPersonset().getAssessmentmethod(), "O")));
+        scoreMap.put("sq4", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 4, "S"), currentEntity.getPersonset().getPersonscorecardway().getScoresubjectivityratio().doubleValue()));
+        scoreMap.put("aq4", new ScorecardDetailEntity(personScorecardDetailBean.findByPidAndQuarterAndType(currentEntity.getId(), 4, "O"), currentEntity.getPersonset().getPersonscorecardway().getScoreobjectiveratio().doubleValue()));
 
         return super.view(path);
     }
@@ -345,71 +384,84 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
             ScorecardDetailEntity entity = this.scoreMap.get(this.tabid);
             for (PersonScorecardDetail detail : entity.getDetail()) {
                 if (detail.getScore().compareTo(detail.getRatio().multiply(BigDecimal.valueOf(100))) == 1
-                        && !"采购员".equals(this.currentEntity.getPersonset().getDuties())
-                        && !"客服员".equals(this.currentEntity.getPersonset().getDuties())
-                        && !"销售跟单员".equals(this.currentEntity.getPersonset().getDuties())
-                        && !"C0445".equals(this.currentEntity.getPersonset().getDuties())
-                        && !"C0555".equals(this.currentEntity.getUserid())
-                        && !"C0746".equals(this.currentEntity.getUserid())
-                        && !"C0804".equals(this.currentEntity.getUserid())
-                        && !"C1947".equals(this.currentEntity.getUserid())
-                        && !"C0818".equals(this.currentEntity.getUserid())) {
+                        && !this.currentEntity.getPersonset().getIshundred()) {
                     throw new Exception("分数必须小于或等于比重，请调整！");
                 }
+                if (detail.getHunscore().compareTo(new BigDecimal(20)) < 1) {
+                    throw new Exception("单项分数满分100分,请调整!");
+                }
             };
+            switch (this.tabid) {
+                case "sq1":
+                case "aq1":
+                    this.currentEntity.setPerformance1(this.currentEntity.getSubjectivitypro1().add(this.currentEntity.getObjectivepro1()));
+                    this.currentEntity.setPerformanceratio1(this.currentEntity.getPersonset().getPersonscorecardway().getPerformanceratio());
+                    this.currentEntity.setPerformancepro1(currentEntity.getPerformance1().multiply(currentEntity.getPerformanceratio1()));
+                    System.out.print(this.currentEntity.getPerformancepro1());
+                    if (this.currentEntity.getPersonset().getAssessmentmethod().equals("I") || this.currentEntity.getPersonset().getAssessmentmethod().equals("J")) {
+                        if (BigDecimal.ZERO.compareTo(this.currentEntity.getSubjectivitypro1()) == -1 && BigDecimal.ZERO.compareTo(this.currentEntity.getObjectivepro1()) == -1) {
+                            this.currentEntity.setStatus1("Y");
+                        }
+                    } else if (!this.currentEntity.getPersonset().getAssessmentmethod().equals("O")) {
+                        if (BigDecimal.ZERO.compareTo(this.currentEntity.getSubjectivitypro1()) == -1) {
+                            this.currentEntity.setStatus1("Y");
+                        }
+                    }
+                    break;
+                case "sq2":
+                case "aq2":
+                    this.currentEntity.setPerformance2(this.currentEntity.getSubjectivitypro2().add(this.currentEntity.getObjectivepro2()));
+                    this.currentEntity.setPerformanceratio2(this.currentEntity.getPersonset().getPersonscorecardway().getPerformanceratio());
+                    this.currentEntity.setPerformancepro2(currentEntity.getPerformance2().multiply(currentEntity.getPerformanceratio2()));
+                    if (this.currentEntity.getPersonset().getAssessmentmethod().equals("I") || this.currentEntity.getPersonset().getAssessmentmethod().equals("J")) {
+                        if (BigDecimal.ZERO.compareTo(this.currentEntity.getSubjectivitypro2()) == -1 && BigDecimal.ZERO.compareTo(this.currentEntity.getObjectivepro2()) == -1) {
+                            this.currentEntity.setStatus2("Y");
+                        }
+                    } else if (!this.currentEntity.getPersonset().getAssessmentmethod().equals("O")) {
+                        if (BigDecimal.ZERO.compareTo(this.currentEntity.getSubjectivitypro2()) == -1) {
+                            this.currentEntity.setStatus2("Y");
+                        }
+                    }
+                    break;
+                case "sq3":
+                case "aq3":
+                    this.currentEntity.setPerformance3(this.currentEntity.getSubjectivitypro3().add(this.currentEntity.getObjectivepro3()));
+                    this.currentEntity.setPerformanceratio3(this.currentEntity.getPersonset().getPersonscorecardway().getPerformanceratio());
+                    this.currentEntity.setPerformancepro3(currentEntity.getPerformance3().multiply(currentEntity.getPerformanceratio3()));
+                    if (this.currentEntity.getPersonset().getAssessmentmethod().equals("I") || this.currentEntity.getPersonset().getAssessmentmethod().equals("J")) {
+                        if (BigDecimal.ZERO.compareTo(this.currentEntity.getSubjectivitypro3()) == -1 && BigDecimal.ZERO.compareTo(this.currentEntity.getObjectivepro3()) == -1) {
+                            this.currentEntity.setStatus3("Y");
+                        }
+                    } else if (!this.currentEntity.getPersonset().getAssessmentmethod().equals("O")) {
+                        if (BigDecimal.ZERO.compareTo(this.currentEntity.getSubjectivitypro3()) == -1) {
+                            this.currentEntity.setStatus3("Y");
+                        }
+                    }
+                    break;
+                case "sq4":
+                case "aq4":
+                    this.currentEntity.setPerformance4(this.currentEntity.getSubjectivitypro4().add(this.currentEntity.getObjectivepro4()));
+                    this.currentEntity.setPerformanceratio4(this.currentEntity.getPersonset().getPersonscorecardway().getPerformanceratio());
+                    this.currentEntity.setPerformancepro4(currentEntity.getPerformance4().multiply(currentEntity.getPerformanceratio4()));
+                    if (this.currentEntity.getPersonset().getAssessmentmethod().equals("I") || this.currentEntity.getPersonset().getAssessmentmethod().equals("J")) {
+                        if (BigDecimal.ZERO.compareTo(this.currentEntity.getSubjectivitypro4()) == -1 && BigDecimal.ZERO.compareTo(this.currentEntity.getObjectivepro4()) == -1) {
+                            this.currentEntity.setStatus4("Y");
+                        }
+                    } else if (!this.currentEntity.getPersonset().getAssessmentmethod().equals("O")) {
+                        if (BigDecimal.ZERO.compareTo(this.currentEntity.getSubjectivitypro4()) == -1) {
+                            this.currentEntity.setStatus4("Y");
+                        }
+                    }
+                    break;
+            }
 
             if (detailEdited != null && !detailEdited.values().isEmpty()) {
                 detailEdited.remove(personScorecardDetailBean);
                 detailEdited.put(personScorecardDetailBean, entity.getDetail());
             }
 
-            agent1000002Bean.initConfiguration();
-            StringBuilder msg = new StringBuilder();
-            msg.append("### 个人绩效考核:").append(BaseLib.formatDate("yyyy/MM/dd hh:mm", new Date()));
-            BigDecimal porobjquarter = (BigDecimal) personScorecardBean.getScore(this.currentEntity, "porobjquarter", this.userManagedBean.getQ());
-            BigDecimal porsubquarter = (BigDecimal) personScorecardBean.getScore(this.currentEntity, "porsubquarter", this.userManagedBean.getQ());
-            BigDecimal subquarter = (BigDecimal) personScorecardBean.getScore(this.currentEntity, "subquarter", this.userManagedBean.getQ());
-            String msgstatus = (String) personScorecardBean.getScore(this.currentEntity, "msgstatus", this.userManagedBean.getQ());
-
-            msg.append("\\n").append("");
-            msg.append("\\n").append(">**考核详情**");
-            msg.append("\\n").append(">考核人：").append(this.currentEntity.getUsername()).append("(").append(this.currentEntity.getUserid()).append(")");
-            msg.append("\\n").append(">部门名称：<font color=\"warning\">").append(this.currentEntity.getPersonset().getDeptname()).append("</font>");
-            msg.append("\\n").append(">岗位：<font color=\"info\">").append(this.currentEntity.getPersonset().getDuties()).append("</font>");
-            msg.append("\\n").append(">职等：<font color=\"info\">").append(this.currentEntity.getPersonset().getOfficialrank()).append("</font>");
-            if (currentEntity.getPersonset().getAssessmentmethod().equals("I") || currentEntity.getPersonset().getAssessmentmethod().equals("J")) {
-                if (porobjquarter.compareTo(BigDecimal.ZERO) != 0 && porsubquarter.compareTo(BigDecimal.ZERO) != 0 && !"V".equals(msgstatus)) {
-                    msg.append("\\n").append(">主观分数：<font color=\"comment\">").append(porsubquarter).append("</font>");
-                    msg.append("\\n").append(">客观分数：<font color=\"comment\">").append(porobjquarter).append("</font>");
-                    msg.append("\\n").append(">合计分数：<font color=\"comment\">").append(porsubquarter.add(porobjquarter)).append("</font>");
-                    msg.append("\\n").append("");
-                    msg.append("\\n").append("><font color=\"warning\">若您对考核结果存在任何异议或疑问，请及时前往系统进行调整与反馈:</font>");
-                    //发送消息
-                    SystemUser u1 = this.systemUserBean.findByUserId(this.currentEntity.getUserid());
-                    SystemUser u2 = this.systemUserBean.findByUserId(u1.getManagerId());
-                    System.out.println(u2.getManagerId());
-                    if (!"C0002".equals(u2.getManagerId())) {
-                        agent1000002Bean.sendMsgToUser(u2.getManagerId(), "markdown", msg.toString());
-                    }
-                    currentEntity.setMsgstatus("V", this.userManagedBean.getQ());
-                }
-            } else if (!currentEntity.getPersonset().getOfficialrank().equals("E")) {
-                if (subquarter.compareTo(BigDecimal.ZERO) != 0 && !"V".equals(msgstatus)) {
-                    msg.append("\\n").append(">主观分数：<font color=\"comment\">").append(subquarter).append("</font>");
-                    msg.append("\\n").append("");
-                    msg.append("\\n").append("><font color=\"warning\">若您对考核结果存在任何异议或疑问，请及时前往系统进行调整与反馈:</font>");
-                    //发送消息
-                    SystemUser u1 = this.systemUserBean.findByUserId(this.currentEntity.getUserid());
-                    SystemUser u2 = this.systemUserBean.findByUserId(u1.getManagerId());
-                    System.out.println(u2.getManagerId());
-                    if (!"C0002".equals(u2.getManagerId())) {
-                        agent1000002Bean.sendMsgToUser(u2.getManagerId(), "markdown", msg.toString());
-                    }
-                    currentEntity.setMsgstatus("V", this.userManagedBean.getQ());
-                }
-
-            }
             super.update();
+            this.personScorecardBean.sendmsg(this.currentEntity, this.queryQuarter);
             this.showInfoMsg("Info", "保存成功");
 
         } catch (Exception e) {
@@ -432,129 +484,51 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
         }
         switch (this.tabid) {
             case "sq1":
-                this.currentEntity.setSubquarter1(b);
-                this.currentEntity.setPorsubquarter1(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
+                this.currentEntity.setSubjectivity1(b);
+                this.currentEntity.setSubjectivityratio1(new BigDecimal(this.scoreMap.get(tabid).getQuarter()));
+                this.currentEntity.setSubjectivitypro1(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
                 break;
             case "aq1":
-                this.currentEntity.setObjquarter1(b);
-                this.currentEntity.setPorobjquarter1(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
+                this.currentEntity.setObjective1(b);
+                this.currentEntity.setObjectiveratio1(new BigDecimal(this.scoreMap.get(tabid).getQuarter()));
+                this.currentEntity.setObjectivepro1(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
                 break;
             case "sq2":
-                this.currentEntity.setSubquarter2(b);
-                this.currentEntity.setPorsubquarter2(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
+                this.currentEntity.setSubjectivity2(b);
+                this.currentEntity.setSubjectivityratio2(new BigDecimal(this.scoreMap.get(tabid).getQuarter()));
+                this.currentEntity.setSubjectivitypro2(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
                 break;
             case "aq2":
-                this.currentEntity.setObjquarter2(b);
-                this.currentEntity.setPorobjquarter2(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
+                this.currentEntity.setObjective2(b);
+                this.currentEntity.setObjectiveratio2(new BigDecimal(this.scoreMap.get(tabid).getQuarter()));
+                this.currentEntity.setObjectivepro2(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
                 break;
             case "sq3":
-                this.currentEntity.setSubquarter3(b);
-                this.currentEntity.setPorsubquarter3(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
+                this.currentEntity.setSubjectivity3(b);
+                this.currentEntity.setSubjectivityratio3(new BigDecimal(this.scoreMap.get(tabid).getQuarter()));
+                this.currentEntity.setSubjectivitypro3(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
                 break;
             case "aq3":
-                this.currentEntity.setObjquarter3(b);
-                this.currentEntity.setPorobjquarter3(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
+                this.currentEntity.setObjective3(b);
+                this.currentEntity.setObjectiveratio3(new BigDecimal(this.scoreMap.get(tabid).getQuarter()));
+                this.currentEntity.setObjectivepro3(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
                 break;
             case "sq4":
-                this.currentEntity.setSubquarter4(b);
-                this.currentEntity.setPorsubquarter4(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
+                this.currentEntity.setSubjectivity4(b);
+                this.currentEntity.setSubjectivityratio4(new BigDecimal(this.scoreMap.get(tabid).getQuarter()));
+                this.currentEntity.setSubjectivitypro4(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
                 break;
             case "aq4":
-                this.currentEntity.setObjquarter4(b);
-                this.currentEntity.setPorobjquarter4(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
+                this.currentEntity.setObjective4(b);
+                this.currentEntity.setObjectiveratio4(new BigDecimal(this.scoreMap.get(tabid).getQuarter()));
+                this.currentEntity.setObjectivepro4(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
                 break;
         }
 
     }
 
-    public void setQuarter() {
-        BigDecimal b = BigDecimal.ZERO;
-        ScorecardDetailEntity entity = this.scoreMap.get(this.tabid);
-        for (PersonScorecardDetail bean : entity.getDetail()) {
-            b = b.add(bean.getScore());
-        }
-        switch (this.tabid) {
-            case "sq1":
-                this.currentEntity.setSubquarter1(b);
-                this.currentEntity.setPorsubquarter1(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
-                break;
-            case "aq1":
-                this.currentEntity.setObjquarter1(b);
-                this.currentEntity.setPorobjquarter1(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
-                break;
-            case "sq2":
-                this.currentEntity.setSubquarter2(b);
-                this.currentEntity.setPorsubquarter2(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
-                break;
-            case "aq2":
-                this.currentEntity.setObjquarter2(b);
-                this.currentEntity.setPorobjquarter2(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
-                break;
-            case "sq3":
-                this.currentEntity.setSubquarter3(b);
-                this.currentEntity.setPorsubquarter3(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
-                break;
-            case "aq3":
-                this.currentEntity.setObjquarter3(b);
-                this.currentEntity.setPorobjquarter3(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
-                break;
-            case "sq4":
-                this.currentEntity.setSubquarter4(b);
-                this.currentEntity.setPorsubquarter4(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
-                break;
-            case "aq4":
-                this.currentEntity.setObjquarter4(b);
-                this.currentEntity.setPorobjquarter4(b.multiply(BigDecimal.valueOf(entity.getQuarter())));
-                break;
-        }
-    }
-
-    public double getScoreRatio(String assessmentmethod, String type) {
-        switch (assessmentmethod) {
-            case "I":
-                if (type.equals("S")) {
-                    return 0.4;
-                } else if (type.equals("O")) {
-                    return 0.6;
-                }
-                break;
-            case "J":
-                if (type.startsWith("S")) {
-                    return 0.3;
-                } else if (type.startsWith("O")) {
-                    return 0.7;
-                }
-                break;
-            case "K":
-                if (type.startsWith("S")) {
-                    return 0.4;
-                } else if (type.startsWith("O")) {
-                    return 0.6;
-                }
-                break;
-            case "L":
-                if (type.startsWith("S")) {
-                    return 0.2;
-                } else if (type.startsWith("O")) {
-                    return 0.8;
-                }
-                break;
-            case "M":
-                if (type.startsWith("S")) {
-                    return 0.4;
-                } else if (type.startsWith("O")) {
-                    return 0.6;
-                }
-                break;
-            case "N":
-                if (type.startsWith("S")) {
-                    return 0.2;
-                } else if (type.startsWith("O")) {
-                    return 0.8;
-                }
-                break;
-        }
-        return 0.0;
+    public void clearlist() {
+        this.entityList.clear();
     }
 
     public Map<String, ScorecardDetailEntity> getScoreMap() {

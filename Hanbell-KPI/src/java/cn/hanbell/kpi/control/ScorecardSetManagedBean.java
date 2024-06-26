@@ -502,6 +502,8 @@ public class ScorecardSetManagedBean extends SuperMultiBean<Scorecard, Scorecard
                             currentDetail.setSq1(currentDetail.getGeneralScore().getSq1());
                         } else if (currentDetail.getWeight().compareTo(BigDecimal.ZERO) == 0) {
                             currentDetail.setSq1(currentDetail.getGeneralScore().getSq1());
+                        }else{
+                         currentDetail.setSq1(currentDetail.getGeneralScore().getSq1());
                         }
                         break;
                     case 2:

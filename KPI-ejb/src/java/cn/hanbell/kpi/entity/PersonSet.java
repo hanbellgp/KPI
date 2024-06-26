@@ -11,6 +11,8 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -84,6 +86,8 @@ public class PersonSet extends SuperEntity {
     private String assessmentmethod;
     @Column(name = "isadministrative")
     private Boolean isadministrative;
+        @Column(name = "ishundred")
+    private Boolean ishundred;
     @Column(name = "coefficient")
     private Double coefficient;
     @Size(max = 50)
@@ -94,6 +98,10 @@ public class PersonSet extends SuperEntity {
     private String classscorecard;
     @Column(name = "percentage")
     private BigDecimal percentage;
+    
+    @JoinColumn(name = "assessmentmethod", referencedColumnName = "formid", updatable = false, insertable = false)
+    @ManyToOne(optional = true)
+    private PersonScorecardWay personscorecardway;
 
     public PersonSet() {
     }
@@ -221,6 +229,14 @@ public class PersonSet extends SuperEntity {
         this.isadministrative = isadministrative;
     }
 
+    public Boolean getIshundred() {
+        return ishundred;
+    }
+
+    public void setIshundred(Boolean ishundred) {
+        this.ishundred = ishundred;
+    }
+
     public Double getCoefficient() {
         return coefficient;
     }
@@ -253,6 +269,16 @@ public class PersonSet extends SuperEntity {
         this.percentage = percentage;
     }
 
+    public PersonScorecardWay getPersonscorecardway() {
+        return personscorecardway;
+    }
+
+    public void setPersonscorecardway(PersonScorecardWay personscorecardway) {
+        this.personscorecardway = personscorecardway;
+    }
+    
+    
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -274,7 +300,7 @@ public class PersonSet extends SuperEntity {
     }
 
     public String getAssessmentlevel() {
-        String officialrank, duties;
+        String officialrank, officialrankdesc;
         if (this.officialrank.contains("A")) {
             officialrank = "A";
         } else if (this.officialrank.contains("B")) {
@@ -282,36 +308,65 @@ public class PersonSet extends SuperEntity {
         }else{
             officialrank = this.officialrank;
         }
-        switch (this.duties) {
-            case "代课长":
-            case "副课长":
-            case "课长":
-                duties = "C";
+        switch (this.officialrankdesc) {
+            case "课长级":
+                officialrankdesc = "C";
                 break;
-            case "主任":
-            case "代副理":
-            case "副理":
-            case "副经理":
-            case "经理":
-                duties = "D";
+            case "经理级":
+                officialrankdesc = "D";
                 break;
-            case "协理":
-            case "副总经理":
-            case "副董事长":
-            case "执行副总经理":
-            case "董事长":
-                duties = "E";
+            case "协理级":
+            case "副总经理级":
+            case "总经理级":
+            case "副董级":
+            case "董事长级":
+                officialrankdesc = "E";
                 break;
             default:
-                duties = "A";
+                officialrankdesc = "A";
         }
-        if (officialrank.compareTo(duties) > 0) {
+        //处理B职等课长级等问题
+        if (officialrank.compareTo(officialrankdesc) > 0) {
             return officialrank;
         } else {
-            return duties;
+            return officialrankdesc;
         }
     }
 
+    public void setIsadministrative(String officialrank, String officialrankdesc) {
+        if (officialrank.contains("A")) {
+            officialrank = "A";
+        } else if (officialrank.contains("B")) {
+            officialrank = "B";
+        }
+        switch (officialrankdesc) {
+            case "组长级":
+                officialrankdesc = "B";
+                break;
+            case "课长级":
+                officialrankdesc = "C";
+                break;
+            case "经理级":
+                officialrankdesc = "D";
+                break;
+            case "协理级":
+            case "副总经理级":
+            case "总经理级":
+            case "副董级":
+            case "董事长级":
+                officialrankdesc = "E";
+                break;
+            default:
+                this.setIsadministrative(false);
+        }
+        if (officialrank.compareTo(officialrankdesc) == 0) {
+            this.setIsadministrative(true);
+        } else if (officialrank.compareTo(officialrankdesc) == -1) {
+            this.setIsadministrative(true);
+        } else {
+            this.setIsadministrative(false);
+        }
+    }
 
     @Override
     public String toString() {
