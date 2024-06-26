@@ -5,14 +5,20 @@
  */
 package cn.hanbell.kpi.ejb;
 
+import cn.hanbell.eap.ejb.SystemUserBean;
+import cn.hanbell.eap.entity.SystemUser;
 import cn.hanbell.kpi.comm.SuperEJBForKPI;
 import cn.hanbell.kpi.entity.PersonScorecard;
+import cn.hanbell.wco.ejb.Agent1000002Bean;
+import com.lightshell.comm.BaseLib;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -26,6 +32,11 @@ import javax.persistence.Query;
 @Stateless
 @LocalBean
 public class PersonScorecardBean extends SuperEJBForKPI<PersonScorecard> {
+
+    @EJB
+    private Agent1000002Bean agent1000002Bean;
+    @EJB
+    private SystemUserBean systemUserBean;
 
     public PersonScorecardBean() {
         super(PersonScorecard.class);
@@ -107,13 +118,13 @@ public class PersonScorecardBean extends SuperEJBForKPI<PersonScorecard> {
         }
     }
 
-      public Object getScore(PersonScorecard sc, String column,int q) {
+    public Object getScore(PersonScorecard sc, String column, int q) {
         try {
             Field f;
             Method method = null;
             f = sc.getClass().getDeclaredField(getColumn(column, q));
             f.setAccessible(true);
-            return  f.get(sc);
+            return f.get(sc);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -162,23 +173,23 @@ public class PersonScorecardBean extends SuperEJBForKPI<PersonScorecard> {
     }
 
     public Double getAmountOfScore(String level, boolean isadmin) {
-        if("A".equals(level)){
+        if ("A".equals(level)) {
             return 5.40;
-        }else if("B".equals(level)){
-          return 7.20;
-        }else if ("C".equals(level)) {
+        } else if ("B".equals(level)) {
+            return 7.20;
+        } else if ("C".equals(level)) {
             if (isadmin) {
                 return 20.00;
             } else {
                 return 19.5;
             }
-        }else if ("D".equals(level)) {
+        } else if ("D".equals(level)) {
             if (isadmin) {
                 return 39.0;
             } else {
                 return 38.5;
             }
-        }else if ("E".equals(level)) {
+        } else if ("E".equals(level)) {
             return 41.0;
         }
         return 0.0;
@@ -186,5 +197,49 @@ public class PersonScorecardBean extends SuperEJBForKPI<PersonScorecard> {
 
     public String getColumn(String type, int i) {
         return type.toLowerCase() + String.format("%01d", i);
+    }
+
+    public boolean sendmsg(PersonScorecard psd, int quarter) {
+        agent1000002Bean.initConfiguration();
+        StringBuilder msg = new StringBuilder();
+        msg.append("### 个人绩效考核:").append(BaseLib.formatDate("yyyy/MM/dd hh:mm", new Date()));
+        BigDecimal porobjquarter = (BigDecimal) getScore(psd, "objectivepro", quarter);
+        BigDecimal porsubquarter = (BigDecimal) getScore(psd, "subjectivitypro", quarter);
+        BigDecimal subquarter = (BigDecimal) getScore(psd, "subjectivity", quarter);
+        msg.append("\\n").append("");
+        msg.append("\\n").append(">**考核详情**");
+        msg.append("\\n").append(">考核人：").append(psd.getUsername()).append("(").append(psd.getUserid()).append(")");
+        msg.append("\\n").append(">部门名称：<font color=\"warning\">").append(psd.getPersonset().getDeptname()).append("</font>");
+        msg.append("\\n").append(">岗位：<font color=\"info\">").append(psd.getPersonset().getDuties()).append("</font>");
+        msg.append("\\n").append(">职等：<font color=\"info\">").append(psd.getPersonset().getOfficialrank()).append("</font>");
+        if (psd.getPersonset().getAssessmentmethod().equals("I") || psd.getPersonset().getAssessmentmethod().equals("J")) {
+                if (porobjquarter.compareTo(BigDecimal.ZERO) != 0 && porsubquarter.compareTo(BigDecimal.ZERO) != 0 ) {
+                    msg.append("\\n").append(">主观分数：<font color=\"comment\">").append(porsubquarter).append("</font>");
+                    msg.append("\\n").append(">客观分数：<font color=\"comment\">").append(porobjquarter).append("</font>");
+                    msg.append("\\n").append(">合计分数：<font color=\"comment\">").append(porsubquarter.add(porobjquarter)).append("</font>");
+                    msg.append("\\n").append("");
+                    msg.append("\\n").append("><font color=\"warning\">若您对考核结果存在任何异议或疑问，请及时前往系统进行调整与反馈:</font>");
+                    //发送消息
+                    SystemUser u1 = this.systemUserBean.findByUserId(psd.getUserid());
+                    SystemUser u2 = this.systemUserBean.findByUserId(u1.getManagerId());
+                    if (!"C0002".equals(u2.getManagerId())) {
+                        agent1000002Bean.sendMsgToUser("C2082", "markdown", msg.toString());
+                    }
+                }
+            } else if (!psd.getPersonset().getOfficialrank().equals("E")) {
+                if (subquarter.compareTo(BigDecimal.ZERO) != 0 ) {
+                    msg.append("\\n").append(">主观分数：<font color=\"comment\">").append(subquarter).append("</font>");
+                    msg.append("\\n").append("");
+                    msg.append("\\n").append("><font color=\"warning\">若您对考核结果存在任何异议或疑问，请及时前往系统进行调整与反馈:</font>");
+                    //发送消息
+                    SystemUser u1 = this.systemUserBean.findByUserId(psd.getUserid());
+                    SystemUser u2 = this.systemUserBean.findByUserId(u1.getManagerId());
+                    if (!"C0002".equals(u2.getManagerId())) {
+                      agent1000002Bean.sendMsgToUser("C2082", "markdown", msg.toString());
+                    }
+                }
+
+            }
+        return true;
     }
 }

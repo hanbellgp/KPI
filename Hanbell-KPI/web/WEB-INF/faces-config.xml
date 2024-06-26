@@ -604,7 +604,7 @@
     </navigation-rule>
     
     <navigation-rule>
-        <description>方针展开导航栏</description>
+        <description>个人绩效</description>
         <from-view-id>/*</from-view-id>
         <navigation-case>
             <from-outcome>personset</from-outcome>
@@ -614,6 +614,11 @@
         <navigation-case>
             <from-outcome>personscorecard</from-outcome>
             <to-view-id>/app/ppem/personscorecard.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+             <navigation-case>
+            <from-outcome>noAssessed</from-outcome>
+            <to-view-id>/app/ppem/other/noAssessed.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
     </navigation-rule>

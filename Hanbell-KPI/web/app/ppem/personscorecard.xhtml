@@ -45,12 +45,12 @@
                     <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
                         <p:menuitem id="btnEdit" value="编辑" icon="ui-icon-pencil" action="#{personScorecardManagedBean.edit('personscorecardEdit')}"
                                     rendered="#{personScorecardManagedBean.doEdit}" update="growl"/>
+                        <p:menuitem id="btnImport" value="导入" icon="ui-icon-plus"   update=":formList" oncomplete="PF('dataSAdd').show();"/>
+                        <p:menuitem id="btnExport" value="导出模板" icon="ui-icon-print" actionListener="#{personScorecardManagedBean.print()}" process="@this"/>
                         <p:menuitem id="btnDelete" value="删除" icon="ui-icon-trash" actionListener="#{personScorecardManagedBean.delete()}"
                                     rendered="#{personScorecardManagedBean.doDel}" update=":formList">
                             <p:confirm header="系统提示" message="删除吗?" icon="ui-icon-alert" />
                         </p:menuitem>
-                        <p:menuitem id="btnImport" value="导入" icon="ui-icon-plus"   update=":formList" oncomplete="PF('dataSAdd').show();"/>
-                        <p:menuitem id="btnExport" value="导出模板" icon="ui-icon-print" actionListener="#{personScorecardManagedBean.print()}" process="@this"/>
                     </p:splitButton>
                     <p:commandButton id="btnReset" value="重置" actionListener="#{personScorecardManagedBean.reset()}" icon="ui-icon-refresh"
                                      update=":formList"/>
@@ -61,109 +61,216 @@
             <p:dataTable value="#{personScorecardManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                          rowsPerPageTemplate="15,30,45"  lazy="true"
-                        selection="#{personScorecardManagedBean.entityList}" rowKey="#{item.id}"  >
+                         selection="#{personScorecardManagedBean.entityList}" rowKey="#{item.id}"  >
                 <f:facet name="header">
-                    人员设置
+                    人员考核
                 </f:facet>
-                  <p:column selectionMode="multiple" styleClass="Wid5" style="text-align:center"/>
+                <p:column selectionMode="multiple" styleClass="Wid5" style="text-align:center"/>
                 <p:ajax event="rowSelect"  update=":formList:toolbar" />
                 <p:ajax event="rowUnselect" update=":formList:toolbar" />
-                <p:column styleClass="Wid15">
-                    <f:facet name="header">
-                        <h:outputText value="年"/>
-                    </f:facet>
-                    <h:outputText value="#{item.year}"/>
-                </p:column>
-                <p:column styleClass="Wid15">
-                    <f:facet name="header">
-                        <h:outputText value="工号"/>
-                    </f:facet>
-                    <h:outputText value="#{item.userid}"/>
-                </p:column>
-                <p:column styleClass="Wid15">
-                    <f:facet name="header">
-                        <h:outputText value="姓名"/>
-                    </f:facet>
-                    <h:outputText value="#{item.username}"/>
-                </p:column>
+                <f:ajax event="rowDblselect" listener="#{personScorecardManagedBean.navigate}" />
                 <c:if test="#{personScorecardManagedBean.queryQuarter == 1}">
-                    <p:column styleClass="Wid15">
-                        <f:facet name="header">
-                            <h:outputText value="主观Q1"/>
-                        </f:facet>
-                        <h:outputText value="#{item.porsubquarter1}"/>
-                    </p:column> 
-                    <p:column styleClass="Wid15">
-                        <f:facet name="header">
-                            <h:outputText value="客观Q1"/>
-                        </f:facet>
-                        <h:outputText value="#{item.porobjquarter1}"/>
+                    <p:columnGroup type="header">
+                        <p:row>
+                             <p:column rowspan="2"  headerText="请选择"/>
+                            <p:column rowspan="2" headerText="年"/>
+                            <p:column rowspan="2" headerText="工号"/>
+                            <p:column rowspan="2" headerText="名字"/>
+                            <p:column colspan="3"  headerText="主观"/>
+                            <p:column colspan="3" headerText="客观"/>
+                            <p:column rowspan="2" headerText="合计"/>
+                        </p:row>
+                         <p:row>
+                            <p:column headerText="Q1分数"/>
+                            <p:column  headerText="Q1比率"/>
+                            <p:column  headerText="Q1比率分数"/>
+                            <p:column headerText="Q1分数"/>
+                            <p:column  headerText="Q1比率"/>
+                            <p:column  headerText="Q1比率分数"/>
+                        </p:row>
+                    </p:columnGroup>
+                    <p:column>
+                        <h:outputText value="#{item.year}"/>
                     </p:column>
-                    <p:column styleClass="Wid15">
-                        <f:facet name="header">
-                            <h:outputText value="Q1合计"/>
-                        </f:facet>
-                        <h:outputText value="#{item.porsubquarter1+item.porobjquarter1}"/>
+                    <p:column>
+                        <h:outputText value="#{item.userid}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.username}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.subjectivity1}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.subjectivityratio1*100}%"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.subjectivitypro1}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.objective1}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.objectiveratio1*100}%"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.objectivepro1}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.performance1}"/>
                     </p:column>
                 </c:if>
-                <c:if test="#{personScorecardManagedBean.queryQuarter == 2}">
-                    <p:column styleClass="Wid15">
-                        <f:facet name="header">
-                            <h:outputText value="主观Q2"/>
-                        </f:facet>
-                        <h:outputText value="#{item.porsubquarter2}"/>
-                    </p:column> 
-                    <p:column styleClass="Wid15">
-                        <f:facet name="header">
-                            <h:outputText value="客观Q2"/>
-                        </f:facet>
-                        <h:outputText value="#{item.porobjquarter2}"/>
+                 <c:if test="#{personScorecardManagedBean.queryQuarter == 2}">
+                    <p:columnGroup type="header">
+                        <p:row>
+                             <p:column rowspan="2"  headerText="请选择"/>
+                            <p:column rowspan="2" headerText="年"/>
+                            <p:column rowspan="2" headerText="工号"/>
+                            <p:column rowspan="2" headerText="名字"/>
+                            <p:column colspan="3"  headerText="主观"/>
+                            <p:column colspan="3" headerText="客观"/>
+                            <p:column rowspan="2" headerText="合计"/>
+                        </p:row>
+                         <p:row>
+                            <p:column headerText="Q2分数"/>
+                            <p:column  headerText="Q2比率"/>
+                            <p:column  headerText="Q2比率分数"/>
+                            <p:column headerText="Q2分数"/>
+                            <p:column  headerText="Q2比率"/>
+                            <p:column  headerText="Q2比率分数"/>
+                        </p:row>
+                    </p:columnGroup>
+                    <p:column>
+                        <h:outputText value="#{item.year}"/>
                     </p:column>
-                    <p:column styleClass="Wid15">
-                        <f:facet name="header">
-                            <h:outputText value="Q2合计"/>
-                        </f:facet>
-                        <h:outputText value="#{item.porsubquarter2+item.porobjquarter2}"/>
+                    <p:column>
+                        <h:outputText value="#{item.userid}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.username}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.subjectivity2}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.subjectivityratio2*100}%"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.subjectivitypro2}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.objective2}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.objectiveratio2*100}%"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.objectivepro2}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.performance2}"/>
                     </p:column>
                 </c:if>
                 <c:if test="#{personScorecardManagedBean.queryQuarter == 3}">
-                    <p:column styleClass="Wid15">
-                        <f:facet name="header">
-                            <h:outputText value="主观Q3"/>
-                        </f:facet>
-                        <h:outputText value="#{item.porsubquarter3}"/>
-                    </p:column> 
-                    <p:column styleClass="Wid15">
-                        <f:facet name="header">
-                            <h:outputText value="客观Q3"/>
-                        </f:facet>
-                        <h:outputText value="#{item.porobjquarter3}"/>
+                    <p:columnGroup type="header">
+                        <p:row>
+                             <p:column rowspan="2"  headerText="请选择"/>
+                            <p:column rowspan="2" headerText="年"/>
+                            <p:column rowspan="2" headerText="工号"/>
+                            <p:column rowspan="2" headerText="名字"/>
+                            <p:column colspan="3"  headerText="主观"/>
+                            <p:column colspan="3" headerText="客观"/>
+                            <p:column rowspan="2" headerText="合计"/>
+                        </p:row>
+                         <p:row>
+                            <p:column headerText="Q3分数"/>
+                            <p:column  headerText="Q3比率"/>
+                            <p:column  headerText="Q3比率分数"/>
+                            <p:column headerText="Q3分数"/>
+                            <p:column  headerText="Q3比率"/>
+                            <p:column  headerText="Q3比率分数"/>
+                        </p:row>
+                    </p:columnGroup>
+                    <p:column>
+                        <h:outputText value="#{item.year}"/>
                     </p:column>
-                    <p:column styleClass="Wid15">
-                        <f:facet name="header">
-                            <h:outputText value="Q3合计"/>
-                        </f:facet>
-                        <h:outputText value="#{item.porsubquarter3+item.porobjquarter3}"/>
+                    <p:column>
+                        <h:outputText value="#{item.userid}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.username}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.subjectivity3}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.subjectivityratio3*100}%"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.subjectivitypro3}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.objective3}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.objectiveratio3*100}%"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.objectivepro3}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.performance3}"/>
                     </p:column>
                 </c:if>
                 <c:if test="#{personScorecardManagedBean.queryQuarter == 4}">
-                    <p:column styleClass="Wid15">
-                        <f:facet name="header">
-                            <h:outputText value="主观Q4"/>
-                        </f:facet>
-                        <h:outputText value="#{item.porsubquarter4}"/>
-                    </p:column> 
-                    <p:column styleClass="Wid15">
-                        <f:facet name="header">
-                            <h:outputText value="客观Q4"/>
-                        </f:facet>
-                        <h:outputText value="#{item.porobjquarter4}"/>
+                    <p:columnGroup type="header">
+                        <p:row>
+                             <p:column rowspan="2"  headerText="请选择"/>
+                            <p:column rowspan="2" headerText="年"/>
+                            <p:column rowspan="2" headerText="工号"/>
+                            <p:column rowspan="2" headerText="名字"/>
+                            <p:column colspan="3"  headerText="主观"/>
+                            <p:column colspan="3" headerText="客观"/>
+                            <p:column rowspan="2" headerText="合计"/>
+                        </p:row>
+                         <p:row>
+                            <p:column headerText="Q4分数"/>
+                            <p:column  headerText="Q4比率"/>
+                            <p:column  headerText="Q4比率分数"/>
+                            <p:column headerText="Q4分数"/>
+                            <p:column  headerText="Q4比率"/>
+                            <p:column  headerText="Q4比率分数"/>
+                        </p:row>
+                    </p:columnGroup>
+                    <p:column>
+                        <h:outputText value="#{item.year}"/>
                     </p:column>
-                    <p:column styleClass="Wid15">
-                        <f:facet name="header">
-                            <h:outputText value="合计Q4"/>
-                        </f:facet>
-                        <h:outputText value="#{item.porsubquarter4+item.porobjquarter4}"/>
+                    <p:column>
+                        <h:outputText value="#{item.userid}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.username}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.subjectivity4}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.subjectivityratio4*100}%"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.subjectivitypro4}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.objective4}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.objectiveratio4*100}%"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.objectivepro4}"/>
+                    </p:column>
+                    <p:column>
+                        <h:outputText value="#{item.performance4}"/>
                     </p:column>
                 </c:if>
             </p:dataTable>
@@ -178,7 +285,6 @@
                             <p:column colspan="4">资料导入</p:column>
                         </p:row>
                         <p:row >
-
                         </p:row>
                     </f:facet>
 
@@ -193,7 +299,6 @@
                     <p style="height: 14px;color: red">
                         sheet页签请使用Q1,Q2,Q3,Q4的方式命名。一次可以导入多个季度。
                     </p>
-
                 </div>
             </p:dialog>
             <p:blockUI id="blockUI" block="formList" trigger="">

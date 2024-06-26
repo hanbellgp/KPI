@@ -1,0 +1,228 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../../WEB-INF/template.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:define name="content">
+        <h:form id="formList">
+            <p:growl id="growl" showSummary="false" showDetail="true"/>
+            <p:panelGrid id="plgQuery" columns="4" columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgQuery Wid100">
+                <f:facet name="header">
+                    查询条件
+                </f:facet>
+
+                <h:outputLabel value="绩效人工号" for="queryUserId" />
+                <p:inputText id="queryUserId" value="#{noAssessedManagedBean.queryUserId}" title="工号" />
+
+                <h:outputLabel value="绩效人姓名" for="queryUserName" />
+                <p:inputText id="queryUserName" value="#{noAssessedManagedBean.queryUserName}" title="姓名" />
+
+                <h:outputLabel value="绩效部门编号" for="queryDeptNo" />
+                <p:inputText id="queryDeptNo" value="#{noAssessedManagedBean.queryDeptNo}" title="部门编号" />
+
+                <h:outputLabel value="绩效部门名称" for="queryDeptName" />
+                <p:inputText id="queryDeptName" value="#{noAssessedManagedBean.queryDeptName}" title="部门名称" />
+
+                <h:outputLabel value="Q1状态" for="queryQ1status" />
+                <p:selectOneMenu id="queryQ1status" value="#{noAssessedManagedBean.queryQ1status}" title="显示全部" required="true">
+                    <f:selectItem itemLabel="全部" itemValue="All"/>
+                    <f:selectItem itemLabel="已完成" itemValue="Y"/>
+                    <f:selectItem itemLabel="未完成" itemValue="N"/>
+                </p:selectOneMenu>
+
+                <h:outputLabel value="Q2状态" for="queryQ2status" />
+                <p:selectOneMenu id="queryQ2status" value="#{noAssessedManagedBean.queryQ2status}" title="显示全部" required="true">
+                    <f:selectItem itemLabel="全部" itemValue="All"/>
+                    <f:selectItem itemLabel="已完成" itemValue="Y"/>
+                    <f:selectItem itemLabel="未完成" itemValue="N"/>
+                </p:selectOneMenu>
+
+                <h:outputLabel value="Q3状态" for="queryQ3status" />
+                <p:selectOneMenu id="queryQ3status" value="#{noAssessedManagedBean.queryQ3status}" title="显示全部" required="true">
+                    <f:selectItem itemLabel="全部" itemValue="All"/>
+                    <f:selectItem itemLabel="已完成" itemValue="Y"/>
+                    <f:selectItem itemLabel="未完成" itemValue="N"/>
+                </p:selectOneMenu>
+
+                <h:outputLabel value="Q4状态" for="queryQ4status" />
+                <p:selectOneMenu id="queryQ4status" value="#{noAssessedManagedBean.queryQ4status}" title="显示全部" required="true">
+                    <f:selectItem itemLabel="全部" itemValue="All"/>
+                    <f:selectItem itemLabel="已完成" itemValue="Y"/>
+                    <f:selectItem itemLabel="未完成" itemValue="N"/>
+                </p:selectOneMenu>
+
+            </p:panelGrid>
+            <p:toolbar id="toolbar" styleClass="topToolbar">
+                <f:facet name="left">
+                    <p:commandButton id="btnLoad" value="刷新" actionListener="#{noAssessedManagedBean.init()}"  icon="ui-icon-sync"  update="formList"/>
+                </f:facet>
+                <f:facet name="right">
+                    <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
+                        <p:menuitem id="btnExport" value="导出"  icon="ui-icon-print" actionListener="#{noAssessedManagedBean.print()}"   />
+                        <p:menuitem id="btnExportMoney" value="计算" oncomplete="PF('dialogCalculate').show();"  icon="ui-icon-print"
+                                   update="formList:dialogCalculate" />
+                        <p:menuitem id="btnEndMsg" value="企微通知" oncomplete="PF('dialogSendMsg').show();" icon="ui-icon-print"
+                                  update=":formList"  />
+                         <p:menuitem id="btnSalary" value="导出奖金"  actionListener="#{noAssessedManagedBean.printSalary()}"  icon="ui-icon-print"
+                                  update=":formList"  />
+                    </p:splitButton>
+                    <p:commandButton id="btnReset" value="重置" actionListener="#{noAssessedManagedBean.reset()}" icon="ui-icon-refresh"
+                                     update=":formList"/>
+                    <p:commandButton id="btnQuery" value="查询" actionListener="#{noAssessedManagedBean.query()}" icon="ui-icon-search"
+                                     update=":formList"/>
+                </f:facet>
+            </p:toolbar>
+            <p:dataTable value="#{noAssessedManagedBean.model}" var="item"  tableStyleClass="tableList" paginator="true" paginatorPosition="bottom" rows="15"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="15,30,45"  lazy="true"  >
+                <f:facet name="header">
+                    未考核人员数据
+                </f:facet>
+                <p:columnGroup type="header">
+                    <p:row>
+                        <p:column rowspan="2" headerText="年"/>
+                        <p:column rowspan="2" headerText="工号"/>
+                        <p:column rowspan="2" headerText="名字"/>
+                        <p:column colspan="4"  headerText="Q1"/>
+                        <p:column colspan="4" headerText="Q2"/>
+                        <p:column colspan="4"  headerText="Q3"/>
+                        <p:column colspan="4" headerText="Q4"/>
+                        <p:column rowspan="2" headerText="当季度是否考核"/>
+                    </p:row>
+                    <p:row>
+                        <p:column headerText="主观分数"/>
+                        <p:column headerText="客观分数"/>
+                        <p:column  headerText="考核表分数"/>
+                        <p:column  headerText="是否完成"/>
+                        <p:column headerText="主观分数"/>
+                        <p:column headerText="客观分数"/>
+                        <p:column  headerText="考核表分数"/>
+                        <p:column  headerText="是否完成"/>
+                        <p:column headerText="主观分数"/>
+                        <p:column headerText="客观分数"/>
+                        <p:column  headerText="考核表分数"/>
+                        <p:column  headerText="是否完成"/>
+                        <p:column headerText="主观分数"/>
+                        <p:column headerText="客观分数"/>
+                        <p:column  headerText="考核表分数"/>
+                        <p:column  headerText="是否完成"/>
+                    </p:row>
+                </p:columnGroup>
+                <p:column>
+                    <h:outputText value="#{item.year}"/>
+                </p:column>
+                <p:column>
+                    <h:outputText value="#{item.userid}"/>
+                </p:column>
+                <p:column>
+                    <h:outputText value="#{item.username}"/>
+                </p:column>
+                <p:column>
+                    <h:outputText value="#{item.subjectivitypro1}"/>
+                </p:column>
+                <p:column>
+                    <h:outputText value="#{item.objectivepro1}"/>
+                </p:column>
+                <p:column>
+                    <h:outputText value="#{item.scorecardpro1}"/>
+                </p:column>
+                <p:column style="text-align: center">
+                    <h:outputText value="#{item.status1=='Y'?'✔':'X'}" style="#{item.status1=='Y' ? 'color:green' : 'color:red'}"/>
+                </p:column>
+                <p:column>
+                    <h:outputText value="#{item.subjectivitypro2}"/>
+                </p:column>
+                <p:column>
+                    <h:outputText value="#{item.objectivepro2}"/>
+                </p:column>
+                <p:column>
+                    <h:outputText value="#{item.scorecardpro2}"/>
+                </p:column>
+                <p:column style="text-align: center">
+                    <h:outputText value="#{item.status2=='Y'?'✔':'X'}" style="#{item.status2=='Y' ? 'color:green' : 'color:red'}"/>
+                </p:column>
+                <p:column>
+                    <h:outputText value="#{item.subjectivitypro3}"/>
+                </p:column>
+                <p:column>
+                    <h:outputText value="#{item.objectivepro3}"/>
+                </p:column>
+                <p:column>
+                    <h:outputText value="#{item.scorecardpro3}"/>
+                </p:column>
+                <p:column style="text-align: center">
+                    <h:outputText value="#{item.status3=='Y'?'✔':'X'}" style="#{item.status3=='Y' ? 'color:green' : 'color:red'}"/>
+                </p:column>
+                <p:column>
+                    <h:outputText value="#{item.subjectivitypro4}"/>
+                </p:column>
+                <p:column>
+                    <h:outputText value="#{item.objectivepro4}"/>
+                </p:column>
+                <p:column>
+                    <h:outputText value="#{item.scorecardpro4}"/>
+                </p:column>
+                <p:column style="text-align: center">
+                    <h:outputText value="#{item.status4=='Y'?'✔':'X'}" style="#{item.status4=='Y' ? 'color:green' : 'color:red'}"/>
+                </p:column>
+                 <p:column style="text-align: center"> 
+                        <h:outputText value="#{ item.status == noAssessedManagedBean.userManagedBean.q ?'✔':'X'}" 
+                                      style="#{item.status == noAssessedManagedBean.userManagedBean.q ? 'color:green' : 'color:red'}"/>
+                </p:column>
+            </p:dataTable>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+            <p:dialog id="dialogCalculate" widgetVar="dialogCalculate" width="40%" style="border-color: #666666">
+                <p:panelGrid id="plgCalculate" columns="2" columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgQuery Wid100">
+                    <f:facet name="header">
+                        考核表计算
+                    </f:facet>
+                     <h:outputLabel value="计算年度"  />
+                     <h:outputLabel  value="#{noAssessedManagedBean.year}" />
+                    <h:outputLabel value="请选择计算季度" for="quater" />
+                    <p:selectOneMenu id="quater" value="#{noAssessedManagedBean.quater}" title="显示全部" required="true">
+                        <f:selectItem itemLabel="第一季度" itemValue="1"/>
+                        <f:selectItem itemLabel="第二季度" itemValue="2"/>
+                        <f:selectItem itemLabel="第三季度" itemValue="3"/>
+                        <f:selectItem itemLabel="第三季度" itemValue="4"/>
+                    </p:selectOneMenu>
+                </p:panelGrid>
+                <p:toolbar  styleClass="topToolbar">
+                    <f:facet name="right">
+                        <p:commandButton id="btnCalculate" value="确定" process="formList:dialogCalculate" actionListener="#{noAssessedManagedBean.calculate()}" update="formList"  oncomplete="PF('dialogCalculate').hide()"/>
+                      </f:facet>
+                 </p:toolbar>
+            </p:dialog>
+
+            <p:dialog id="dialogSendMsg" widgetVar="dialogSendMsg" width="40%" style="border-color: #666666">
+                <p:panelGrid id="plgSendMsg" columns="2" columnClasses="Wid20,Wid30,Wid20,Wid30" styleClass="plgQuery Wid100">
+                    <f:facet name="header">
+                        未考核人员通知
+                    </f:facet>
+                    <h:outputLabel value="通知年度"  />
+                     <h:outputLabel  value="#{noAssessedManagedBean.year}" />
+                    <h:outputLabel value="请选择通知季度" for="quaterMsg" />
+                    <p:selectOneMenu id="quaterSendMs" value="#{noAssessedManagedBean.quater}" title="显示全部" required="true">
+                        <f:selectItem itemLabel="第一季度" itemValue="1"/>
+                        <f:selectItem itemLabel="第二季度" itemValue="2"/>
+                        <f:selectItem itemLabel="第三季度" itemValue="3"/>
+                        <f:selectItem itemLabel="第三季度" itemValue="4"/>
+                    </p:selectOneMenu>
+                </p:panelGrid>
+                 <p:toolbar  styleClass="topToolbar">
+                    <f:facet name="right">
+                        <p:commandButton id="btnSendMsg" value="确定" actionListener="#{noAssessedManagedBean.sendmsg()}" process="formList:dialogSendMsg" update="formList" oncomplete="PF('dialogSendMsg').hide()"/>
+                      </f:facet>
+                 </p:toolbar>
+            </p:dialog>
+             <p:blockUI id="blockUI" block="formList" trigger="btnLoad,btnReset,btnQuery,btnExport,btnSendMsg,btnCalculate,btnSalary">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
+            </p:blockUI>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -9,15 +9,15 @@ import cn.hanbell.eap.ejb.DepartmentBean;
 import cn.hanbell.eap.ejb.SystemUserBean;
 import cn.hanbell.eap.entity.Department;
 import cn.hanbell.eap.entity.SystemUser;
-import cn.hanbell.kpi.comm.SuperEJBForKPI;
 import cn.hanbell.kpi.ejb.PersonDeptPercentageBean;
 import cn.hanbell.kpi.ejb.PersonScorecardBean;
 import cn.hanbell.kpi.ejb.PersonScorecardDetailBean;
+import cn.hanbell.kpi.ejb.PersonScorecardWayBean;
 import cn.hanbell.kpi.ejb.PersonSetBean;
 import cn.hanbell.kpi.ejb.ScorecardBean;
-import cn.hanbell.kpi.entity.PersonDeptPercentage;
 import cn.hanbell.kpi.entity.PersonScorecard;
 import cn.hanbell.kpi.entity.PersonScorecardDetail;
+import cn.hanbell.kpi.entity.PersonScorecardWay;
 import cn.hanbell.kpi.entity.PersonSet;
 import cn.hanbell.kpi.entity.Scorecard;
 import cn.hanbell.kpi.lazy.PersonSetModel;
@@ -31,19 +31,16 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -82,7 +79,10 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
     public PersonScorecardDetailBean personScorecardDetailBean;
     @EJB
     public PersonDeptPercentageBean personDeptPercentageBean;
-
+    @EJB
+    public PersonScorecardWayBean personScorecardWayBean;
+    
+    
     @EJB
     private Agent1000002Bean agent1000002Bean;
     private String facno;
@@ -90,6 +90,7 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
     public List<String> parentDeptnos;
     public List<SystemUser> updateUsers;
     private List<Department> childDepts;
+    private List<PersonScorecardWay> methods;
 
     private Date loginDate;
     private String queryUserId;
@@ -125,7 +126,10 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
         loginDate = userManagedBean.getBaseDate();
         this.superEJB = personSetBean;
         this.model = new PersonSetModel(superEJB);
-        model.getSortFields().put("userid", "ASC");
+
+
+        methods=personScorecardWayBean.findAll();
+       
         this.query();
         super.init();
     }
@@ -196,142 +200,139 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
         return super.view(path); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public void sendMsg() {
-        List<PersonScorecard> scorecards = personScorecardBean.findByYear(this.userManagedBean.getY());
-        Map<String, List<String>> users = new HashMap<String, List<String>>();
-        SystemUser user = null;
-        for (PersonScorecard entity : scorecards) {
-            BigDecimal porobjquarter = (BigDecimal) personScorecardBean.getScore(entity, "porobjquarter", this.userManagedBean.getQ());
-            BigDecimal porsubquarter = (BigDecimal) personScorecardBean.getScore(entity, "porsubquarter", this.userManagedBean.getQ());
-            BigDecimal subquarter = (BigDecimal) personScorecardBean.getScore(entity, "subquarter", this.userManagedBean.getQ());
-            if ("I".equals(entity.getPersonset().getAssessmentmethod()) || "J".equals(entity.getPersonset().getAssessmentmethod())) {
-                if (porobjquarter.compareTo(BigDecimal.ZERO) == 0 || porsubquarter.compareTo(BigDecimal.ZERO) == 0) {
-                    user = this.systemUserBean.findByUserId(entity.getUserid());
-                    if (users.containsKey(user.getManagerId())) {
-                        users.get(user.getManagerId()).add(entity.getPersonset().getUsername());
-                    } else {
-                        List<String> list = new ArrayList<String>();
-                        list.add(entity.getPersonset().getUsername());
-                        users.put(user.getManagerId(), list);
-                    }
-                }
-            } else if ("K".equals(entity.getPersonset().getAssessmentmethod()) || "L".equals(entity.getPersonset().getAssessmentmethod())
-                    || "M".equals(entity.getPersonset().getAssessmentmethod()) || "N".equals(entity.getPersonset().getAssessmentmethod())) {
-                if (porsubquarter.compareTo(BigDecimal.ZERO) == 0) {
-                    user = this.systemUserBean.findByUserId(entity.getUserid());
-                    if (users.containsKey(user.getManagerId())) {
-                        users.get(user.getManagerId()).add(entity.getPersonset().getUsername());
-                    } else {
-                        List<String> list = new ArrayList<String>();
-                        list.add(entity.getPersonset().getUsername());
-                        users.put(user.getManagerId(), list);
-                    }
-                }
-            }
-        }
-        Set<String> manageds = users.keySet();
-        StringBuilder msg = new StringBuilder();
-        agent1000002Bean.initConfiguration();
-        for (String employeeid : manageds) {
-            msg.setLength(0);
-            msg.append("### 个人绩效考核:").append(BaseLib.formatDate("yyyy/MM/dd hh:mm", new Date()));
-            msg.append("\\n").append("");
-            msg.append("\\n").append(">**未考核人员通知**");
-            msg.append("\\n").append(">未考核人员：<font color=\"info\">");
-            for (String username : users.get(employeeid)) {
-                msg.append(username).append(";");
-            }
-            msg.append("</font>");
-            msg.append("\\n").append("");
-            msg.append("\\n").append("><font color=\"warning\">尊敬的主管～贵单位以上人员尚未完成考核，烦请尽快处理，谢谢配合！</font>");
-            if(!"C0002".equals(employeeid)){
-                  agent1000002Bean.sendMsgToUser(employeeid, "markdown", msg.toString());
-            }
-          
-        }
-    }
-
-    @Override
-    public void print() throws Exception {
+    public void hrPrint() throws Exception {
         List<PersonSet> personList = getPerson();
         if (personList == null || personList.isEmpty()) {
             return;
         }
         OutputStream os = null;
         try {
-            fileName = "个人绩效" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
+            HSSFWorkbook wb=this.personToWorkbook(personList);
+            fileName = "HR考核人员" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
             String fileFullName = reportOutputPath + fileName;
-            HSSFWorkbook wb = new HSSFWorkbook();
-            CreationHelper createHelper = wb.getCreationHelper();
-            CellStyle cellStyle = wb.createCellStyle();
-            cellStyle.setBorderRight(CellStyle.BORDER_THIN);
-            cellStyle.setRightBorderColor(IndexedColors.BLACK.getIndex());
-            cellStyle.setBorderLeft(CellStyle.BORDER_THIN);
-            cellStyle.setLeftBorderColor(IndexedColors.BLACK.getIndex());
-            cellStyle.setBorderTop(CellStyle.BORDER_THIN);
-            cellStyle.setTopBorderColor(IndexedColors.BLACK.getIndex());
-            cellStyle.setBorderBottom(CellStyle.BORDER_THIN);
-            cellStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
-            //创建内容
-            Sheet sheet = wb.createSheet("个人绩效");
-            Cell cell;
-            Row row;
-            row = sheet.createRow(0);
-            cell = row.createCell(0);
-            cell.setCellValue("公司别");
-            cell.setCellStyle(cellStyle);
-            cell = row.createCell(1);
-            cell.setCellValue("工号");
-            cell.setCellStyle(cellStyle);
-            cell = row.createCell(2);
-            cell.setCellValue("姓名");
-            cell.setCellStyle(cellStyle);
-            cell = row.createCell(3);
-            cell.setCellValue("部门");
-            cell.setCellStyle(cellStyle);
-            cell = row.createCell(4);
-            cell.setCellValue("部门名称");
-            cell.setCellStyle(cellStyle);
-            cell = row.createCell(5);
-            cell.setCellValue("员工性质");
-            cell.setCellStyle(cellStyle);
-            cell = row.createCell(6);
-            cell.setCellValue("职等");
-            cell.setCellStyle(cellStyle);
-            cell = row.createCell(7);
-            cell.setCellValue("职等名称");
-            cell.setCellStyle(cellStyle);
-            cell = row.createCell(8);
-            cell.setCellValue("岗位类别");
-            cell.setCellStyle(cellStyle);
-            cell = row.createCell(9);
-            cell.setCellValue("职务");
-            cell.setCellStyle(cellStyle);
-            cell = row.createCell(10);
-            cell.setCellValue("是否行政职");
-            cell.setCellStyle(cellStyle);
-            cell = row.createCell(11);
-            cell.setCellValue("系数");
-            cell.setCellStyle(cellStyle);
-            cell = row.createCell(12);
-            cell.setCellValue("计算方式");
-            cell.setCellStyle(cellStyle);
-            cell = row.createCell(13);
-            cell.setCellValue("课级考核表");
-            cell.setCellStyle(cellStyle);
-            cell = row.createCell(14);
-            cell.setCellValue("部级考核表");
-            cell.setCellStyle(cellStyle);
+            os = new FileOutputStream(fileFullName);
+            wb.write(os);
+            this.reportViewPath = reportViewContext + fileName;
+            this.preview();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showErrorMsg("Error", ex.getMessage());
+        } finally {
+            try {
+                if (null != os) {
+                    os.flush();
+                    os.close();
+                }
+            } catch (IOException ex) {
+                showErrorMsg("Error", ex.getMessage());
+            }
+        }
+    }
 
-            cell = row.createCell(15);
-            cell.setCellValue("奖金发放比率");
-            cell.setCellStyle(cellStyle);
+    @Override
+    public void print() throws Exception {
+         List<PersonSet> personList = personSetBean.findAll();
+        if (personList == null || personList.isEmpty()) {
+            return;
+        }
+        OutputStream os = null;
+        try {
+            HSSFWorkbook wb=this.personToWorkbook(personList);
+            fileName = "考核人员" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
+            String fileFullName = reportOutputPath + fileName;
+            os = new FileOutputStream(fileFullName);
+            wb.write(os);
+            this.reportViewPath = reportViewContext + fileName;
+            this.preview();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showErrorMsg("Error", ex.getMessage());
+        } finally {
+            try {
+                if (null != os) {
+                    os.flush();
+                    os.close();
+                }
+            } catch (IOException ex) {
+                showErrorMsg("Error", ex.getMessage());
+            }
+        }
+    }
+    
+    
 
-            cell = row.createCell(16);
-            cell.setCellValue("在职状态");
-            cell.setCellStyle(cellStyle);
+    public HSSFWorkbook personToWorkbook(List<PersonSet> personList) {
+        HSSFWorkbook wb = new HSSFWorkbook();
+        CreationHelper createHelper = wb.getCreationHelper();
+        CellStyle cellStyle = wb.createCellStyle();
+        cellStyle.setBorderRight(CellStyle.BORDER_THIN);
+        cellStyle.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        cellStyle.setBorderLeft(CellStyle.BORDER_THIN);
+        cellStyle.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        cellStyle.setBorderTop(CellStyle.BORDER_THIN);
+        cellStyle.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        cellStyle.setBorderBottom(CellStyle.BORDER_THIN);
+        cellStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        //创建内容
+        Sheet sheet = wb.createSheet("sheet1");
+        Cell cell;
+        Row row;
+        row = sheet.createRow(0);
+        cell = row.createCell(0);
+        cell.setCellValue("公司别");
+        cell.setCellStyle(cellStyle);
+        cell = row.createCell(1);
+        cell.setCellValue("工号");
+        cell.setCellStyle(cellStyle);
+        cell = row.createCell(2);
+        cell.setCellValue("姓名");
+        cell.setCellStyle(cellStyle);
+        cell = row.createCell(3);
+        cell.setCellValue("部门");
+        cell.setCellStyle(cellStyle);
+        cell = row.createCell(4);
+        cell.setCellValue("部门名称");
+        cell.setCellStyle(cellStyle);
+        cell = row.createCell(5);
+        cell.setCellValue("员工性质");
+        cell.setCellStyle(cellStyle);
+        cell = row.createCell(6);
+        cell.setCellValue("职等");
+        cell.setCellStyle(cellStyle);
+        cell = row.createCell(7);
+        cell.setCellValue("职等名称");
+        cell.setCellStyle(cellStyle);
+        cell = row.createCell(8);
+        cell.setCellValue("岗位类别");
+        cell.setCellStyle(cellStyle);
+        cell = row.createCell(9);
+        cell.setCellValue("职务");
+        cell.setCellStyle(cellStyle);
+        cell = row.createCell(10);
+        cell.setCellValue("是否行政职");
+        cell.setCellStyle(cellStyle);
+        cell = row.createCell(11);
+        cell.setCellValue("是否超过100分");
+        cell.setCellStyle(cellStyle);
+        cell = row.createCell(12);
+        cell.setCellValue("计算方式");
+        cell.setCellStyle(cellStyle);
+        cell = row.createCell(13);
+        cell.setCellValue("课级考核表");
+        cell.setCellStyle(cellStyle);
+        cell = row.createCell(14);
+        cell.setCellValue("部级考核表");
+        cell.setCellStyle(cellStyle);
 
-            int i = 1;
+        cell = row.createCell(15);
+        cell.setCellValue("奖金发放比率");
+        cell.setCellStyle(cellStyle);
+
+        cell = row.createCell(16);
+        cell.setCellValue("在职状态");
+        cell.setCellStyle(cellStyle);
+        
+          int i = 1;
             for (PersonSet p : personList) {
                 row = sheet.createRow(i);
 
@@ -381,7 +382,7 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
 
                 cell = row.createCell(11);
                 cell.setCellStyle(cellStyle);
-                cell.setCellValue(p.getCoefficient() != null ? p.getCoefficient() : 0.0);
+                cell.setCellValue(p.getIshundred()!= null && p.getIshundred() ? "T" : "F");
 
                 cell = row.createCell(12);
                 cell.setCellStyle(cellStyle);
@@ -405,23 +406,7 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
 
                 i++;
             }
-            os = new FileOutputStream(fileFullName);
-            wb.write(os);
-            this.reportViewPath = reportViewContext + fileName;
-            this.preview();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            showErrorMsg("Error", ex.getMessage());
-        } finally {
-            try {
-                if (null != os) {
-                    os.flush();
-                    os.close();
-                }
-            } catch (IOException ex) {
-                showErrorMsg("Error", ex.getMessage());
-            }
-        }
+        return wb;
     }
 
     @Override
@@ -430,53 +415,67 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
     }
 
     public boolean doBeforeMerge(PersonSet personset) {
+        if(personset.getAssessmentmethod()==null || "".equals(personset.getAssessmentmethod()==null)){
+              this.showErrorMsg("Error", String.format("%s考核方式不能为空!!", personset.getUsername()));
+              return false;
+        }
+        List<String> list= methods.stream().map(e -> e.getFormid()).collect(Collectors.toList());
+        if(!list.contains(personset.getAssessmentmethod())){
+              this.showErrorMsg("Error", String.format("%s考核方式代号不合理!!",personset.getUsername()));
+              return false;
+        }
         if ("I".equals(personset.getAssessmentmethod())) {
-            if ("现场".equals(personset.getType())) {
-                this.showErrorMsg("Error", "类型错误，I考核方式计算用于幕僚人员");
+            if (!"幕僚".equals(personset.getType()) && !"营销".equals(personset.getType())&& !"技术".equals(personset.getType())) {
+                this.showErrorMsg("Error", String.format("%s的考核类型错误，I只能用于幕僚员工!!", personset.getUsername()));
                 return false;
             }
         }
         if ("J".equals(personset.getAssessmentmethod())) {
             if (!"现场".equals(personset.getType())) {
-                this.showErrorMsg("Error", "类型错误，J考核方式计算用于现场人员");
+                this.showErrorMsg("Error", String.format("%s的考核类型错误，J只能用于现场员工!!", personset.getUsername()));
                 return false;
             }
         }
         if ("K".equals(personset.getAssessmentmethod())) {
             if (personset.getClassscorecard() == null || "".equals(personset.getClassscorecard())
                     || personset.getDepartmentscorecard() == null || "".equals(personset.getDepartmentscorecard())) {
-                this.showErrorMsg("Error", "K计算方式部级，课级考核表不能为空");
+                this.showErrorMsg("Error", String.format("%s的课级考核表和部级考核表不能为空",personset.getUsername()));
                 return false;
             }
             if (personset.getIsadministrative()) {
-                this.showErrorMsg("Error", "K计算方式，行政职应该为否");
+                this.showErrorMsg("Error",String.format("%的是否行政值错误！",personset.getUsername()));
                 return false;
             }
         }
         if ("L".equals(personset.getAssessmentmethod())) {
+             if (personset.getClassscorecard() == null || "".equals(personset.getClassscorecard())
+                    || personset.getDepartmentscorecard() == null || "".equals(personset.getDepartmentscorecard())) {
+                this.showErrorMsg("Error", String.format("%s的课级考核表和部级考核表不能为空",personset.getUsername()));
+                return false;
+            }
             if (!personset.getIsadministrative()) {
-                this.showErrorMsg("Error", "L计算方式，行政职应该为是");
+                this.showErrorMsg("Error",String.format("%的是否行政值错误！",personset.getUsername()));
                 return false;
             }
         }
         if ("M".equals(personset.getAssessmentmethod())) {
             if (personset.getDepartmentscorecard() == null || "".equals(personset.getDepartmentscorecard())) {
-                this.showErrorMsg("Error", "M计算方式部级考核表不能为空");
+                this.showErrorMsg("Error", String.format("%s的部级考核表不能为空",personset.getUsername()));
                 return false;
             }
             if (personset.getIsadministrative()) {
-                this.showErrorMsg("Error", "M计算方式，行政职应该为否");
+                this.showErrorMsg("Error", String.format("%的是否行政值错误！",personset.getUsername()));
                 return false;
             }
         }
 
         if ("N".equals(personset.getAssessmentmethod())) {
             if (personset.getDepartmentscorecard() == null || "".equals(personset.getDepartmentscorecard())) {
-                this.showErrorMsg("Error", "M计算方式部级考核表不能为空");
+                this.showErrorMsg("Error",String.format("%s的部级考核表不能为空",personset.getUsername()));
                 return false;
             }
             if (!personset.getIsadministrative()) {
-                this.showErrorMsg("Error", "M计算方式，行政职应该为是");
+                this.showErrorMsg("Error", String.format("%的是否行政值错误！",personset.getUsername()));
                 return false;
             }
         }
@@ -496,10 +495,12 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
             PersonScorecard sc = personScorecardBean.findByUseridAndYear(p.getUserid(), this.userManagedBean.getY());
             if (sc == null) {
                 sc = new PersonScorecard(p.getUserid(), p.getUsername(), this.userManagedBean.getY());
-                sc.setStatus("N");
+                sc.setStatus(String.valueOf(this.userManagedBean.getQ()));
                 personScorecardBean.persist(sc);
                 sc = personScorecardBean.findByUseridAndYear(p.getUserid(), this.userManagedBean.getY());
             } else {
+                sc.setStatus(String.valueOf(this.userManagedBean.getQ()));
+                personScorecardBean.update(sc);
                 List<PersonScorecardDetail> detailList = personScorecardDetailBean.findByPidAndQuarterAndType(sc.getId(), this.userManagedBean.getQ(), "S");
                 if (detailList != null) {
                     personScorecardDetailBean.delete(detailList);
@@ -535,12 +536,11 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
                             cellToVlaue(row.getCell(7)), cellToVlaue(row.getCell(8)), cellToVlaue(row.getCell(5)),
                             cellToVlaue(row.getCell(9)), cellToVlaue(row.getCell(16)), userManagedBean.getCurrentUser().getUsername());
                     p.setIsadministrative("T".equals(cellToVlaue(row.getCell(10))) ? true : false);
-                    p.setCoefficient(Double.valueOf(cellToVlaue(row.getCell(11))));
+                    p.setIshundred("T".equals(cellToVlaue(row.getCell(11))) ? true : false);
                     p.setAssessmentmethod(cellToVlaue(row.getCell(12)));
                     p.setClassscorecard(cellToVlaue(row.getCell(13)));
                     p.setDepartmentscorecard(cellToVlaue(row.getCell(14)));
                     p.setPercentage(new BigDecimal(cellToVlaue(row.getCell(15))).multiply(BigDecimal.TEN).multiply(BigDecimal.TEN));
-                    p.setCoefficient(Double.valueOf(cellToVlaue(row.getCell(11))));
                     addlist.add(p);
                     if (!doBeforeMerge(p)) {
                         return;
@@ -557,7 +557,7 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
             } catch (Exception ex) {
                 ex.printStackTrace();
                 showErrorMsg("Error", "导入失败,找不到文件或格式错误----" + ex.toString());
-                showErrorMsg("Error", "第" + a + "行附近栏位发生错误");
+                showErrorMsg("Error", "第" + (a+1) + "行附近栏位发生错误");
             }
         }
     }
@@ -598,44 +598,6 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
         }
         return "";
     }
-//
-//    public void deptPercentageAddHandleFileUploadWhenNew(FileUploadEvent event) {
-//        UploadedFile file = event.getFile();
-//        if (file != null) {
-//            int a = 0;
-//            try {
-//                InputStream is = file.getInputstream();
-//                Workbook excel = WorkbookFactory.create(is);
-//                Sheet sheet = excel.getSheetAt(0);
-//                List<PersonDeptPercentage> list = personDeptPercentageBean.findByYear(this.importYear);
-//                if (list != null && !list.isEmpty()) {
-//                    personDeptPercentageBean.delete(list);
-//                }
-//                list.clear();
-//                Row row;
-//                for (int i = 4; i <= sheet.getLastRowNum(); i++) {
-//                    a = i;
-//                    row = sheet.getRow(i);
-//                    PersonDeptPercentage entity = new PersonDeptPercentage();
-//                    entity.setDeptname(BaseLib.convertExcelCell(String.class, row.getCell(0)));
-//                    entity.setDeptno(BaseLib.convertExcelCell(String.class, row.getCell(2)));
-//                    entity.setPercentage(BigDecimal.valueOf(BaseLib.convertExcelCell(Double.class, row.getCell(11)) * 100));
-//                    entity.setYear(this.importYear);
-//                    entity.setStatus("N");
-//                    entity.setCreator(getUserManagedBean().getCurrentUser().getUsername());
-//                    entity.setCredateToNow();
-//                    list.add(entity);
-//                }
-//                for (PersonDeptPercentage entity : list) {
-//                    personDeptPercentageBean.persist(entity);
-//                }
-//                this.showInfoMsg("Info", "导入成功");
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//                showErrorMsg("Error", String.format("导入失败，第%d行发生错误，%s", a, ex.getMessage()));
-//            }
-//        }
-//    }
 
     public List<PersonSet> getPerson() {
         List<PersonSet> personList = new ArrayList<>();
@@ -651,7 +613,7 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
                 //把需要更新，新增的人员放入对应集合中
                 for (SystemUser user : updateUsers) {
                     PersonSet person = new PersonSet(d, user.getUserid(), user.getUsername(), user.getDeptno(), user.getDept().getDept(),
-                            user.getLevelId(), user.getDecisionLevel(), user.getPosition(), user.getType(), user.getJob(), user.getStatus(), userManagedBean.getCurrentUser().getUsername());
+                            user.getLevelId(), user.getDecisionLevelName(), user.getPosition(), user.getType(), user.getJob(), user.getStatus(), userManagedBean.getCurrentUser().getUsername());
                     personList.add(person);
 
                 }
@@ -674,7 +636,7 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
                 for (SystemUser su : updateUsers) {
                     if (sc.getUserid().equals(su.getUserid())) {
                         sc.setDepartmentscorecard(entity.getName());
-                        continue;
+                        break;
                     }
                 }
             }
@@ -690,7 +652,7 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
                 for (SystemUser su : updateUsers) {
                     if (sc.getUserid().equals(su.getUserid())) {
                         sc.setClassscorecard(entity.getName());
-                        continue;
+                        break;
                     }
                 }
             }
@@ -709,7 +671,9 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
                 continue;
             }
             //CA临时工，劳务工，门卫，兴塔门卫等不考核
-            if (person.getUserid() == null || person.getUserid().startsWith("CA") || person.getUserid().startsWith("CL") || person.getUserid().startsWith("CM") || person.getUserid().startsWith("M")) {
+            if (person.getUserid() == null || person.getUserid().startsWith("CA") || person.getUserid().startsWith("CL") || person.getUserid().startsWith("CM") || person.getUserid().startsWith("M")
+                    || person.getUserid().startsWith("CG001")|| person.getUserid().startsWith("P032")
+                    ) {
                 person.setAssessmentmethod("O");
                 continue;
             }
@@ -722,7 +686,7 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
                 return null;
             }
             String assessmentlevel = person.getAssessmentlevel();
-            person.setIsadministrative(personSetBean.isadministrative(person.getOfficialrank(), person.getDuties()));
+            person.setIsadministrative(person.getOfficialrank(), person.getOfficialrankdesc());
 
             if ("A".equals(assessmentlevel) || "B".equals(assessmentlevel)) {
                 if (person.getType() == null) {
@@ -777,8 +741,11 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
                 }
                 continue;
             }
-
-            if ("E".equals(assessmentlevel) && (person.getDuties().contains("总经理") || person.getDuties().contains("董事长"))) {
+            if(person.getUserid().equals("C0003")){
+                    System.out.print(fc);
+            }
+            if ("E".equals(assessmentlevel) && (person.getOfficialrankdesc().contains("董事长级") || person.getOfficialrankdesc().contains("副总经理级") 
+                    || person.getOfficialrankdesc().contains("副董级")|| person.getOfficialrankdesc().contains("总经理级"))) {
                 person.setAssessmentmethod("O");
                 continue;
             } else if ("E".equals(assessmentlevel)) {
@@ -799,212 +766,6 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
             }
         }
         return personList;
-    }
-
-    public void test() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
-        //先根据人员调整考核表强制分配后的分数
-        Map<String, Object> filters = new HashMap<>();
-        List<String> methods = new ArrayList<>();
-        methods.add("I");
-        methods.add("J");
-        methods.add("K");
-        methods.add("L");
-        methods.add("M");
-        methods.add("N");
-        filters.put("personset.assessmentmethod IN ", methods);
-        filters.put("year", this.userManagedBean.getY());
-        List<PersonScorecard> list = personScorecardBean.findByFilters(filters);
-        Field f;
-        Method method = null;
-        OutputStream os = null;
-        try {
-            fileName = "奖金明细" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
-            String fileFullName = reportOutputPath + fileName;
-            HSSFWorkbook wb = new HSSFWorkbook();
-            CreationHelper createHelper = wb.getCreationHelper();
-            CellStyle cellStyle = wb.createCellStyle();
-            cellStyle.setBorderRight(CellStyle.BORDER_THIN);
-            cellStyle.setRightBorderColor(IndexedColors.BLACK.getIndex());
-            cellStyle.setBorderLeft(CellStyle.BORDER_THIN);
-            cellStyle.setLeftBorderColor(IndexedColors.BLACK.getIndex());
-            cellStyle.setBorderTop(CellStyle.BORDER_THIN);
-            cellStyle.setTopBorderColor(IndexedColors.BLACK.getIndex());
-            cellStyle.setBorderBottom(CellStyle.BORDER_THIN);
-            cellStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
-            //创建内容
-            Sheet sheet = wb.createSheet(String.format("%d$d个人奖金明细", this.userManagedBean.getY(), this.userManagedBean.getM()));
-            Cell cell;
-            Row row;
-            row = sheet.createRow(0);
-            cell = row.createCell(0);
-            cell.setCellValue("工号");
-            cell.setCellStyle(cellStyle);
-
-            cell = row.createCell(1);
-            cell.setCellValue("姓名");
-            cell.setCellStyle(cellStyle);
-
-            cell = row.createCell(2);
-            cell.setCellValue("部门");
-            cell.setCellStyle(cellStyle);
-
-            cell = row.createCell(3);
-            cell.setCellValue("课别");
-            cell.setCellStyle(cellStyle);
-
-            cell = row.createCell(4);
-            cell.setCellValue("职等");
-            cell.setCellStyle(cellStyle);
-
-            cell = row.createCell(5);
-            cell.setCellValue("行政职");
-            cell.setCellStyle(cellStyle);
-
-            cell = row.createCell(6);
-            cell.setCellValue("行政职系数");
-            cell.setCellStyle(cellStyle);
-
-            cell = row.createCell(7);
-            cell.setCellValue("岗位类别");
-            cell.setCellStyle(cellStyle);
-
-            cell = row.createCell(8);
-            cell.setCellValue("个人&主管考评分数");
-            cell.setCellStyle(cellStyle);
-
-            cell = row.createCell(9);
-            cell.setCellValue("单位季度考核分数");
-            cell.setCellStyle(cellStyle);
-
-            cell = row.createCell(10);
-            cell.setCellValue("个人综合绩效考核分数");
-            cell.setCellStyle(cellStyle);
-
-            cell = row.createCell(11);
-            cell.setCellValue("奖金发放标准分值");
-            cell.setCellStyle(cellStyle);
-
-            cell = row.createCell(12);
-            cell.setCellValue("分值对应元/分");
-            cell.setCellStyle(cellStyle);
-
-            cell = row.createCell(13);
-            cell.setCellValue("单位发送比率");
-            cell.setCellStyle(cellStyle);
-
-            cell = row.createCell(14);
-            cell.setCellValue("发送奖金元/月");
-            cell.setCellStyle(cellStyle);
-
-            cell = row.createCell(15);
-            cell.setCellValue("备注");
-            cell.setCellStyle(cellStyle);
-            int i = 1;
-            BigDecimal proScore, bscScore, c;
-            for (PersonScorecard sc : list) {
-
-                row = sheet.createRow(i);
-
-                cell = row.createCell(0);
-                cell.setCellStyle(cellStyle);
-                cell.setCellValue(sc.getUserid());
-
-                cell = row.createCell(1);
-                cell.setCellStyle(cellStyle);
-                cell.setCellValue(sc.getUsername());
-
-                cell = row.createCell(2);
-                cell.setCellStyle(cellStyle);
-                cell.setCellValue(sc.getPersonset().getDeptname());
-
-                cell = row.createCell(3);
-                cell.setCellStyle(cellStyle);
-                cell.setCellValue(sc.getDeptClass());
-
-                cell = row.createCell(4);
-                cell.setCellStyle(cellStyle);
-                cell.setCellValue(sc.getPersonset().getOfficialrank());
-
-                cell = row.createCell(5);
-                cell.setCellStyle(cellStyle);
-                cell.setCellValue(sc.getPersonset().getIsadministrative());
-
-                cell = row.createCell(6);
-                cell.setCellStyle(cellStyle);
-                cell.setCellValue(sc.getPersonset().getCoefficient() != null ? sc.getPersonset().getCoefficient() : 0.0);
-
-                cell = row.createCell(7);
-                cell.setCellStyle(cellStyle);
-                cell.setCellValue(sc.getPersonset().getJobcategory());
-
-                //获取个人主管考评分数，BSC分数。并按照计算类型获取百分比计算
-                BigDecimal porobjquarter = (BigDecimal) personScorecardBean.getScore(sc, "porobjquarter", this.userManagedBean.getQ());
-                BigDecimal porsubquarter = (BigDecimal) personScorecardBean.getScore(sc, "porsubquarter", this.userManagedBean.getQ());
-                proScore = porobjquarter.add(porsubquarter);
-                bscScore = getScoreCardScore(sc, "I".equals(sc.getPersonset().getAssessmentmethod()) || "J".equals(sc.getPersonset().getAssessmentmethod()));
-                Cell cell8 = row.createCell(8);
-                cell8.setCellStyle(cellStyle);
-                Cell cell9 = row.createCell(9);
-                cell9.setCellStyle(cellStyle);
-                //50%主客观分数+50%BSC分数
-                if ("I".equals(sc.getPersonset().getAssessmentmethod()) || "J".equals(sc.getPersonset().getAssessmentmethod())) {
-                    cell8.setCellValue(proScore.multiply(BigDecimal.valueOf(0.5)).doubleValue());
-                    cell9.setCellValue(bscScore.multiply(BigDecimal.valueOf(0.5)).doubleValue());
-                } else if ("L".equals(sc.getPersonset().getAssessmentmethod()) || "N".equals(sc.getPersonset().getAssessmentmethod())) {
-                    cell8.setCellValue(proScore.multiply(BigDecimal.valueOf(0.2)).doubleValue());
-                    cell9.setCellValue(bscScore.multiply(BigDecimal.valueOf(0.8)).doubleValue());
-                } else if ("K".equals(sc.getPersonset().getAssessmentmethod()) || "M".equals(sc.getPersonset().getAssessmentmethod())) {
-                    cell8.setCellValue(proScore.multiply(BigDecimal.valueOf(0.4)).doubleValue());
-                    cell9.setCellValue(bscScore.multiply(BigDecimal.valueOf(0.6)).doubleValue());
-                } else {
-                    cell8.setCellValue(0.0);
-                    cell9.setCellValue(0.0);
-                }
-                cell = row.createCell(10);
-                cell.setCellStyle(cellStyle);
-                cell.setCellValue(BaseLib.convertExcelCell(Double.class, cell8) + BaseLib.convertExcelCell(Double.class, cell9));
-
-                cell = row.createCell(11);
-                cell.setCellStyle(cellStyle);
-                cell.setCellValue(personScorecardBean.getStandardScore(sc.getPersonset().getAssessmentlevel(),
-                        BaseLib.convertExcelCell(Double.class, cell8) + BaseLib.convertExcelCell(Double.class, cell9)));
-
-                cell = row.createCell(12);
-                cell.setCellStyle(cellStyle);
-                cell.setCellValue(personScorecardBean.getAmountOfScore(sc.getPersonset().getAssessmentlevel(),
-                        sc.getPersonset().getCoefficient() > 0));
-
-                cell = row.createCell(13);
-                cell.setCellStyle(cellStyle);
-                cell.setCellValue(sc.getPersonset().getPercentage().divide(BigDecimal.TEN).divide(BigDecimal.TEN).doubleValue());
-
-                cell = row.createCell(14);
-                cell.setCellStyle(cellStyle);
-                double a1 = new BigDecimal(BaseLib.convertExcelCell(Double.class, row.getCell(6))).compareTo(BigDecimal.ZERO) > 0 ? BaseLib.convertExcelCell(Double.class, row.getCell(6)) : 1.00;
-                double a2 = BaseLib.convertExcelCell(Double.class, row.getCell(11)) == null ? 0.00 : BaseLib.convertExcelCell(Double.class, row.getCell(11));
-                double a3 = BaseLib.convertExcelCell(Double.class, row.getCell(12)) == null ? 0.00 : BaseLib.convertExcelCell(Double.class, row.getCell(12));
-                cell.setCellValue(a1 * a2 * a3);
-                cell = row.createCell(15);
-                cell.setCellStyle(cellStyle);
-                i++;
-            }
-            os = new FileOutputStream(fileFullName);
-            wb.write(os);
-            this.reportViewPath = reportViewContext + fileName;
-            this.preview();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            showErrorMsg("Error", ex.getMessage());
-        } finally {
-            try {
-                if (null != os) {
-                    os.flush();
-                    os.close();
-                }
-            } catch (IOException ex) {
-                showErrorMsg("Error", ex.getMessage());
-            }
-        }
     }
 
     /**
@@ -1160,6 +921,14 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
 
     public void setImportYear(int importYear) {
         this.importYear = importYear;
+    }
+
+    public List<PersonScorecardWay> getMethods() {
+        return methods;
+    }
+
+    public void setMothods(List<PersonScorecardWay> methods) {
+        this.methods = methods;
     }
 
 }

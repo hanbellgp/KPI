@@ -239,6 +239,9 @@ public class ShoppingAccomuntBean implements Serializable {
         if ("C".equals(facno)) {
             sql.append(" and sponr not like 'AC%'");
         }
+         if("A".equals(facno)) {
+            sql.append(" and sponr not like '%AKI%'");
+        }
         sql.append(" and yearmon like '").append(BaseLib.formatDate("yyyy", date)).append("%'");
         if (vdrnos != null && !"".equals(vdrnos)) {
             sql.append(" and vdrno").append(vdrnos);
@@ -277,6 +280,9 @@ public class ShoppingAccomuntBean implements Serializable {
         sql.append(" and facno='").append(facno).append("'");
         if ("C".equals(facno)) {
             sql.append(" and sponr not like 'AC%'");
+        } 
+         if("A".equals(facno)) {
+            sql.append(" and sponr not like '%AKI%'");
         }
        
         if (vdrnos != null && !"".equals(vdrnos)) {
@@ -327,6 +333,9 @@ public class ShoppingAccomuntBean implements Serializable {
         sql.append(" from shoppingtable a where exists(select id from( select max(id) as id from shoppingtable where itnbr<>'9' and  facno='").append(facno).append("'");
         if ("C".equals(facno)) {
             sql.append(" and  sponr not like 'AC%'");
+        }
+         if("A".equals(facno)) {
+            sql.append(" and sponr not like '%AKI%'");
         }
         sql.append(" and yearmon like '").append(BaseLib.formatDate("yyyy", date)).append("%'");
         if (vdrnos != null && !"".equals(vdrnos)) {

@@ -14,15 +14,16 @@
         </style>
         <h:form id="formOne">
             <p:growl id="growl"  showSummary="false" showDetail="true" />
+              <p:growl   showSummary="false" showDetail="true" />
             <p:toolbar id="toolbar" styleClass="topToolbar">
                 <f:facet name="left">
-                    <p:button id="btnReturn" value="返回" outcome="personscorecard" icon="ui-icon-restore"/>
+                    <p:commandButton id="btnReturn" value="返回"  icon="ui-icon-restore" action="#{personScorecardManagedBean.returnPage('personscorecard')}"/>
                 </f:facet>
             </p:toolbar>
             <p:panelGrid id="plgHead" styleClass="plgHead Wid100">
                 <f:facet name="header">
                     <p:row>
-                        <p:column colspan="4">员工考核评分--查看</p:column>
+                        <p:column colspan="4">员工考核评分--编辑</p:column>
                     </p:row>
                 </f:facet>
                 <p:row>
@@ -62,7 +63,7 @@
                     </p:column>
                     <p:column styleClass="Wid20"><p:outputLabel value="岗位" for="duties"/></p:column>
                     <p:column styleClass="Wid30">
-                        <p:outputLabel id="duties" value="#{personScorecardManagedBean.currentEntity.personset.officialrank}" title="部门名称"/>
+                        <p:outputLabel id="duties" value="#{personScorecardManagedBean.currentEntity.personset.duties}" title="岗位"/>
                     </p:column>
                 </p:row>
             </p:panelGrid>
@@ -71,7 +72,7 @@
                 <p:ajax event="tabChange" listener="#{personScorecardManagedBean.tabchange}"  update="formOne"></p:ajax>
                 <p:tab title="Q1主观" id="sq1">
                     <c:if test="#{personScorecardManagedBean.queryQuarter==1}">
-                        <p:toolbar  styleClass="detailToolbar">
+                        <p:toolbar  styleClass="detailToolbar ">
                             <f:facet name="right">
                                 <p:commandButton  value="保存" actionListener="#{personScorecardManagedBean.update()}" icon="ui-icon-check"
                                                   process="@this,formOne:tabView:tableList1" update="formOne:growl"/>
@@ -79,18 +80,21 @@
                         </p:toolbar>
                     </c:if>
                     <p:dataTable id="tableList1" value="#{personScorecardManagedBean.scoreMap.get('sq1').detail}" var="item" styleClass="tableList Mtop10">
-                        <p:column styleClass="Wid5"   >
+                        
+                        <p:column styleClass="Wid5" >
                             <f:facet name="header">
                                 <h:outputText value="项目"/>
                             </f:facet>
-                            <h:outputText value="#{item.name}"/>
+                            <h:outputFormat >
+                                <h:outputText value="#{item.name}" />
+                            </h:outputFormat>
                         </p:column>
                         <p:column styleClass="Wid5">
                             <f:facet name="header">
                                 <h:outputText value="单项分数"/>
                             </f:facet>
-                            <p:inputNumber  value="#{item.hunscore}"    readonly="#{personScorecardManagedBean.queryQuarter>1}" style="float:right!important">
-                                <p:ajax listener="#{personScorecardManagedBean.setScore}"   update="formOne:tabView:tableList1" process="@this,formOne:tabView:tableList1"></p:ajax>
+                            <p:inputNumber  value="#{item.hunscore}"  readonly="#{personScorecardManagedBean.queryQuarter>1}" style="float:right!important" onkeydown="return handleEnter(event, this)">
+                                <p:ajax listener="#{personScorecardManagedBean.setScore}" update="tableList1" oncomplete="selectall();"></p:ajax>
                             </p:inputNumber >
                         </p:column>
                         <p:column styleClass="Wid5">
@@ -99,29 +103,30 @@
                             </f:facet>
                             <h:outputText value="#{item.ratio*100}%"/>
                         </p:column>
-                        <p:column styleClass="Wid5" headerText="权重分数">
-                            <p:inputNumber value="#{item.score}"  readonly="true" inputStyleClass="scoreInputNumber"  >
-                            </p:inputNumber>
+                        <p:column styleClass="Wid5">
+                              <f:facet name="header">
+                                <h:outputText value="权重分数"/>
+                            </f:facet>
+                            <h:outputText value="#{item.score}"   id="score1">
+                            </h:outputText>
                         </p:column>
                         <p:column styleClass="Wid5" headerText="权重" groupRow="true" style="text-align:center">
                             <h:outputText value="#{personScorecardManagedBean.scoreMap.get('sq1').quarter*100}%" />
                         </p:column> 
-                        <p:columnGroup type="footer">
-                            <p:row>
+                        
+                        <p:columnGroup type="footer"  >
                                 <p:column style="text-align:left" footerText="Totals:" colspan="3"/>
-                                <p:column style="text-align:left">
-                                    <f:facet name="footer">
-                                        <h:outputText value="#{personScorecardManagedBean.currentEntity.subquarter1}" >
-                                        </h:outputText>
+                                <p:column style="text-align:left"  >
+                                    <f:facet name="footer" >
+                                        <h:outputText value="#{personScorecardManagedBean.currentEntity.subjectivity1}" />
                                     </f:facet>
                                 </p:column>
                                 <p:column style="text-align:left">
                                     <f:facet name="footer">
-                                        <h:outputText  value="#{personScorecardManagedBean.currentEntity.porsubquarter1}">
+                                        <h:outputText    value="#{personScorecardManagedBean.currentEntity.subjectivitypro1}">
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
-                            </p:row>
                         </p:columnGroup>
                     </p:dataTable>
                 </p:tab>
@@ -158,8 +163,8 @@
                                 <f:facet name="header">
                                     <h:outputText value="单项分数"/>
                                 </f:facet>
-                                <p:inputNumber  value="#{item.hunscore}"  inputStyleClass="scoreInputNumber"   readonly="#{personScorecardManagedBean.queryQuarter>1}">
-                                    <p:ajax listener="#{personScorecardManagedBean.setScore}"  update="formOne:tabView:tableList2" process="@this,formOne:tabView:tableList2"></p:ajax>
+                                <p:inputNumber  value="#{item.hunscore}"  inputStyleClass="scoreInputNumber"   readonly="#{personScorecardManagedBean.queryQuarter>1}" onkeydown="return handleEnter(event, this)">
+                                <p:ajax listener="#{personScorecardManagedBean.setScore}" update="tableList2" oncomplete="selectall();"></p:ajax>
                                 </p:inputNumber >
                             </p:column>
                             <p:column styleClass="Wid5">
@@ -183,13 +188,13 @@
                                     <p:column style="text-align:left" footerText="Totals:" colspan="5"/>
                                     <p:column style="text-align:left">
                                         <f:facet name="footer">
-                                            <h:outputText value="#{personScorecardManagedBean.currentEntity.objquarter1}">
+                                            <h:outputText value="#{personScorecardManagedBean.currentEntity.objective1}">
                                             </h:outputText>
                                         </f:facet>
                                     </p:column>
                                     <p:column style="text-align:left">
                                         <f:facet name="footer">
-                                            <h:outputText  value="#{personScorecardManagedBean.currentEntity.porobjquarter1}">
+                                            <h:outputText  value="#{personScorecardManagedBean.currentEntity.objectivepro1}">
                                             </h:outputText>
                                         </f:facet>
                                     </p:column>
@@ -219,8 +224,8 @@
                             <f:facet name="header">
                                 <h:outputText value="单项分数"/>
                             </f:facet>
-                            <p:inputNumber  value="#{item.hunscore}"  inputStyleClass="scoreInputNumber"   readonly="#{personScorecardManagedBean.queryQuarter>2}">
-                                <p:ajax listener="#{personScorecardManagedBean.setScore}"  update="formOne:tabView:tableList3" process="@this,formOne:tabView:tableList3"></p:ajax>
+                            <p:inputNumber  value="#{item.hunscore}"  inputStyleClass="scoreInputNumber"   readonly="#{personScorecardManagedBean.queryQuarter>2}" onkeydown="return handleEnter(event, this)">
+                                <p:ajax listener="#{personScorecardManagedBean.setScore}" update="tableList3" oncomplete="selectall();"></p:ajax>
                             </p:inputNumber >
                         </p:column>
                         <p:column styleClass="Wid5">
@@ -241,13 +246,13 @@
                                 <p:column style="text-align:left" footerText="Totals:" colspan="3"/>
                                 <p:column style="text-align:left">
                                     <f:facet name="footer">
-                                        <h:outputText value="#{personScorecardManagedBean.currentEntity.subquarter2}">
+                                        <h:outputText value="#{personScorecardManagedBean.currentEntity.subjectivity2}">
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
                                 <p:column style="text-align:left">
                                     <f:facet name="footer">
-                                        <h:outputText value="#{personScorecardManagedBean.currentEntity.porsubquarter2}">
+                                        <h:outputText value="#{personScorecardManagedBean.currentEntity.subjectivitypro2}">
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
@@ -288,8 +293,8 @@
                                 <f:facet name="header">
                                     <h:outputText value="单项分数"/>
                                 </f:facet>
-                                <p:inputNumber  value="#{item.hunscore}"  inputStyleClass="scoreInputNumber"   readonly="#{personScorecardManagedBean.queryQuarter>2}">
-                                    <p:ajax listener="#{personScorecardManagedBean.setScore}"  update="formOne:tabView:tableList4" process="@this,formOne:tabView:tableList4"></p:ajax>
+                                <p:inputNumber  value="#{item.hunscore}"  inputStyleClass="scoreInputNumber"   readonly="#{personScorecardManagedBean.queryQuarter>2}" onkeydown="return handleEnter(event, this)">
+                                <p:ajax listener="#{personScorecardManagedBean.setScore}" update="tableList4" oncomplete="selectall();"></p:ajax>
                                 </p:inputNumber >
                             </p:column>
                             <p:column styleClass="Wid5">
@@ -313,13 +318,13 @@
                                     <p:column style="text-align:left" footerText="Totals:" colspan="5"/>
                                     <p:column style="text-align:left">
                                         <f:facet name="footer">
-                                            <h:outputText value="#{personScorecardManagedBean.currentEntity.objquarter2}">
+                                            <h:outputText value="#{personScorecardManagedBean.currentEntity.objective2}">
                                             </h:outputText>
                                         </f:facet>
                                     </p:column>
                                     <p:column style="text-align:left">
                                         <f:facet name="footer">
-                                            <h:outputText value="#{personScorecardManagedBean.currentEntity.porobjquarter2}">
+                                            <h:outputText value="#{personScorecardManagedBean.currentEntity.objectivepro2}">
                                             </h:outputText>
                                         </f:facet>
                                     </p:column>
@@ -333,7 +338,7 @@
                     <c:if test="#{personScorecardManagedBean.queryQuarter==3}">
                         <p:toolbar  styleClass="detailToolbar">
                             <f:facet name="right">
-                                <p:commandButton  value="保存" actionListener="#{personScorecardManagedBean.update()}" icon="ui-icon-check"
+                                <p:commandButton  value="保存" actionListener="#{personScorecardManagedBean.update()}" icon="ui-icon-check" 
                                                   process="@this,formOne:tabView:tableList5" update="formOne:growl"/>
                             </f:facet>
                         </p:toolbar>
@@ -345,9 +350,9 @@
                             </f:facet>
                             <h:outputText value="#{item.name}"/>
                         </p:column>
-                         <p:column styleClass="Wid5" headerText="单项分数">
-                            <p:inputNumber value="#{item.hunscore}"  readonly="#{personScorecardManagedBean.queryQuarter>3}" inputStyleClass="scoreInputNumber"  >
-                                <p:ajax listener="#{personScorecardManagedBean.setQuarter}"  update="formOne:tabView:tableList5"></p:ajax>
+                        <p:column styleClass="Wid5" headerText="单项分数">
+                            <p:inputNumber value="#{item.hunscore}"  readonly="#{personScorecardManagedBean.queryQuarter>3}" inputStyleClass="scoreInputNumber"  onkeydown="return handleEnter(event, this)">
+                                <p:ajax listener="#{personScorecardManagedBean.setScore}" update="tableList5" oncomplete="selectall();"></p:ajax>
                             </p:inputNumber>
                         </p:column>
                         <p:column styleClass="Wid5">
@@ -368,13 +373,13 @@
                                 <p:column style="text-align:left" footerText="Totals:" colspan="3"/>
                                 <p:column style="text-align:left">
                                     <f:facet name="footer">
-                                        <h:outputText value="#{personScorecardManagedBean.currentEntity.subquarter3}">
+                                        <h:outputText value="#{personScorecardManagedBean.currentEntity.subjectivity3}">
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
                                 <p:column style="text-align:left">
                                     <f:facet name="footer">
-                                        <h:outputText value="#{personScorecardManagedBean.currentEntity.porsubquarter3}">
+                                        <h:outputText value="#{personScorecardManagedBean.currentEntity.subjectivitypro3}">
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
@@ -387,7 +392,7 @@
                         <c:if test="#{personScorecardManagedBean.queryQuarter==3}">
                             <p:toolbar  styleClass="detailToolbar">
                                 <f:facet name="right">
-                                    <p:commandButton  value="保存" actionListener="#{personScorecardManagedBean.update()}" icon="ui-icon-check"
+                                    <p:commandButton  value="保存" actionListener="#{personScorecardManagedBean.update()}" icon="ui-icon-check" 
                                                       process="@this,formOne:tabView:tableList6" update="formOne:growl"/>
                                 </f:facet>
                             </p:toolbar>
@@ -412,12 +417,12 @@
                                 </f:facet>
                                 <p:inputTextarea  value="#{item.standard}" styleClass="Wid100"  rows="3" readonly="true"/>
                             </p:column>
-                          <p:column styleClass="Wid5">
+                            <p:column styleClass="Wid5">
                                 <f:facet name="header">
                                     <h:outputText value="单项分数"/>
                                 </f:facet>
-                                <p:inputNumber  value="#{item.hunscore}"  inputStyleClass="scoreInputNumber"  readonly="#{personScorecardManagedBean.queryQuarter>3}" >
-                                    <p:ajax listener="#{personScorecardManagedBean.setQuarter}"  update="formOne:tabView:tableList6"   process="@this,formOne:tabView:tableList6"></p:ajax>
+                                <p:inputNumber  value="#{item.hunscore}"  inputStyleClass="scoreInputNumber"  readonly="#{personScorecardManagedBean.queryQuarter>3}" onkeydown="return handleEnter(event, this)">
+                                <p:ajax listener="#{personScorecardManagedBean.setScore}" update="tableList6" oncomplete="selectall();"></p:ajax>
                                 </p:inputNumber >
                             </p:column>
                             <p:column styleClass="Wid5">
@@ -441,13 +446,13 @@
                                     <p:column style="text-align:left" footerText="Totals:" colspan="5"/>
                                     <p:column style="text-align:left">
                                         <f:facet name="footer">
-                                            <h:outputText value="#{personScorecardManagedBean.currentEntity.objquarter3}">
+                                            <h:outputText value="#{personScorecardManagedBean.currentEntity.objective3}">
                                             </h:outputText>
                                         </f:facet>
                                     </p:column>
                                     <p:column style="text-align:left">
                                         <f:facet name="footer">
-                                            <h:outputText value="#{personScorecardManagedBean.currentEntity.porobjquarter3}">
+                                            <h:outputText value="#{personScorecardManagedBean.currentEntity.objectivepro3}">
                                             </h:outputText>
                                         </f:facet>
                                     </p:column>
@@ -462,7 +467,7 @@
                     <c:if test="#{personScorecardManagedBean.queryQuarter==3}">
                         <p:toolbar  styleClass="detailToolbar">
                             <f:facet name="right">
-                                <p:commandButton  value="保存" actionListener="#{personScorecardManagedBean.update()}" icon="ui-icon-check"
+                                <p:commandButton  value="保存" actionListener="#{personScorecardManagedBean.update()}" icon="ui-icon-check" 
                                                   process="@this,formOne:tabView:tableList7" update="formOne:growl"/>
                             </f:facet>
                         </p:toolbar>
@@ -474,9 +479,9 @@
                             </f:facet>
                             <h:outputText value="#{item.name}"/>
                         </p:column>
-                               <p:column styleClass="Wid5" headerText="单项分数">
-                            <p:inputNumber value="#{item.score}"  readonly="#{personScorecardManagedBean.queryQuarter>4}" inputStyleClass="scoreInputNumber"  >
-                                <p:ajax listener="#{personScorecardManagedBean.setQuarter}"  update="formOne:tabView:tableList7"></p:ajax>
+                        <p:column styleClass="Wid5" headerText="单项分数">
+                            <p:inputNumber value="#{item.score}"  readonly="#{personScorecardManagedBean.queryQuarter>4}" inputStyleClass="scoreInputNumber"   onkeydown="return handleEnter(event, this)">
+                                <p:ajax listener="#{personScorecardManagedBean.setScore}" update="tableList7" oncomplete="selectall();"></p:ajax>
                             </p:inputNumber>
                         </p:column>
                         <p:column styleClass="Wid5">
@@ -497,13 +502,13 @@
                                 <p:column style="text-align:left" footerText="Totals:" colspan="3"/>
                                 <p:column style="text-align:left">
                                     <f:facet name="footer">
-                                        <h:outputText value="#{personScorecardManagedBean.currentEntity.subquarter4}">
+                                        <h:outputText value="#{personScorecardManagedBean.currentEntity.subjectivity4}">
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
                                 <p:column style="text-align:left">
                                     <f:facet name="footer">
-                                        <h:outputText  value="#{personScorecardManagedBean.currentEntity.porsubquarter4}">
+                                        <h:outputText  value="#{personScorecardManagedBean.currentEntity.subjectivitypro4}">
                                         </h:outputText>
                                     </f:facet>
                                 </p:column>
@@ -516,7 +521,7 @@
                         <c:if test="#{personScorecardManagedBean.queryQuarter==3}">
                             <p:toolbar  styleClass="detailToolbar">
                                 <f:facet name="right">
-                                    <p:commandButton  value="保存" actionListener="#{personScorecardManagedBean.update()}" icon="ui-icon-check"
+                                    <p:commandButton  value="保存" actionListener="#{personScorecardManagedBean.update()}" icon="ui-icon-check" 
                                                       process="@this,formOne:tabView:tableList8" update="formOne:growl"/>
                                 </f:facet>
                             </p:toolbar>
@@ -541,12 +546,12 @@
                                 </f:facet>
                                 <p:inputTextarea  value="#{item.standard}" styleClass="Wid100"  rows="3" readonly="true"/>
                             </p:column>
-                           <p:column styleClass="Wid5">
+                            <p:column styleClass="Wid5">
                                 <f:facet name="header">
                                     <h:outputText value="单项分数"/>
                                 </f:facet>
-                                <p:inputNumber  value="#{item.hunscore}"  inputStyleClass="scoreInputNumber"  readonly="#{personScorecardManagedBean.queryQuarter>4}" >
-                                    <p:ajax listener="#{personScorecardManagedBean.setQuarter}"  update="formOne:tabView:tableList8"  process="@this,formOne:tabView:tableList8"></p:ajax>
+                                <p:inputNumber  value="#{item.hunscore}"  inputStyleClass="scoreInputNumber"  readonly="#{personScorecardManagedBean.queryQuarter>4}"  onkeydown="return handleEnter(event, this)">
+                                <p:ajax listener="#{personScorecardManagedBean.setScore}" update="tableList8" oncomplete="selectall();"></p:ajax>
                                 </p:inputNumber >
                             </p:column>
                             <p:column styleClass="Wid5">
@@ -570,13 +575,13 @@
                                     <p:column style="text-align:left" footerText="Totals:" colspan="5"/>
                                     <p:column style="text-align:left">
                                         <f:facet name="footer">
-                                            <h:outputText value="#{personScorecardManagedBean.currentEntity.objquarter4}">
+                                            <h:outputText value="#{personScorecardManagedBean.currentEntity.objective4}">
                                             </h:outputText>
                                         </f:facet>
                                     </p:column>
                                     <p:column style="text-align:left">
                                         <f:facet name="footer">
-                                            <h:outputText value="#{personScorecardManagedBean.currentEntity.porobjquarter4}">
+                                            <h:outputText value="#{personScorecardManagedBean.currentEntity.objectivepro4}">
                                             </h:outputText>
                                         </f:facet>
                                     </p:column>
@@ -586,6 +591,32 @@
                     </p:tab>
                 </c:if>
             </p:tabView>
+            <script type="text/javascript">
+                function handleEnter(event, currentInput) {
+                    if (event.keyCode == 13) { // Enter key
+                        var currentRow = currentInput.closest('tr');
+                        var nextRow = currentRow.nextElementSibling;
+                        if (nextRow) {
+                            var nextInput = nextRow.querySelector('input');
+                            if (nextInput) {
+                                nextInput.focus();
+                            }
+                        }else{
+                           document.activeElement.blur();
+                        }
+                        return false; // 阻止默认回车行为
+                    }
+                    return true;
+                };
+                function selectall(){
+                    var currentFocus = document.activeElement;
+                    if (currentFocus &amp;&amp; currentFocus.tagName.toLowerCase() == 'input') {
+                        currentFocus.select();
+                      }else{
+                          document.activeElement.blur();
+                      }
+                }
+            </script>
 
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
