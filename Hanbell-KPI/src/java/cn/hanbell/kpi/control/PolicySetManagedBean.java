@@ -488,25 +488,94 @@ public class PolicySetManagedBean extends SuperMultiBean<Policy, PolicyDetail> {
     public boolean verifyCalculationtype() {
         if ("B".equals(this.currentDetail.getCalculationtype())) {
             try {
+                if (this.currentDetail.getAq1() == null || "".equals(this.currentDetail.getAq1())) {
+                    this.currentDetail.setAq1("0");
+                }
                 Double.parseDouble(this.currentDetail.getAq1());
+
+                if (this.currentDetail.getAq2() == null || "".equals(this.currentDetail.getAq2())) {
+                    this.currentDetail.setAq2("0");
+                }
                 Double.parseDouble(this.currentDetail.getAq2());
+
+                if (this.currentDetail.getAq3() == null || "".equals(this.currentDetail.getAq3())) {
+                    this.currentDetail.setAq3("0");
+                }
                 Double.parseDouble(this.currentDetail.getAq3());
+
+                if (this.currentDetail.getAq4() == null || "".equals(this.currentDetail.getAq4())) {
+                    this.currentDetail.setAq4("0");
+                }
                 Double.parseDouble(this.currentDetail.getAq4());
+
+                if (this.currentDetail.getAhy() == null || "".equals(this.currentDetail.getAq1())) {
+                    this.currentDetail.setAhy("0");
+                }
                 Double.parseDouble(this.currentDetail.getAhy());
+
+                if (this.currentDetail.getAfy() == null || "".equals(this.currentDetail.getAfy())) {
+                    this.currentDetail.setAfy("0");
+                }
                 Double.parseDouble(this.currentDetail.getAfy());
 
+                if (this.currentDetail.getBq1() == null || "".equals(this.currentDetail.getBq1())) {
+                    this.currentDetail.setBq1("0");
+                }
                 Double.parseDouble(this.currentDetail.getBq1());
+
+                if (this.currentDetail.getBq2() == null || "".equals(this.currentDetail.getBq2())) {
+                    this.currentDetail.setBq2("0");
+                }
                 Double.parseDouble(this.currentDetail.getBq2());
+
+                if (this.currentDetail.getBq3() == null || "".equals(this.currentDetail.getBq3())) {
+                    this.currentDetail.setBq3("0");
+                }
                 Double.parseDouble(this.currentDetail.getBq3());
+
+                if (this.currentDetail.getBq4() == null || "".equals(this.currentDetail.getBq4())) {
+                    this.currentDetail.setBq4("0");
+                }
                 Double.parseDouble(this.currentDetail.getBq4());
+
+                if (this.currentDetail.getBhy() == null || "".equals(this.currentDetail.getBhy())) {
+                    this.currentDetail.setBhy("0");
+                }
                 Double.parseDouble(this.currentDetail.getBhy());
+
+                if (this.currentDetail.getBfy() == null || "".equals(this.currentDetail.getBfy())) {
+                    this.currentDetail.setBfy("0");
+                }
                 Double.parseDouble(this.currentDetail.getBfy());
 
+                if (this.currentDetail.getTq1() == null || "".equals(this.currentDetail.getTq1())) {
+                    this.currentDetail.setTq1("0");
+                }
                 Double.parseDouble(this.currentDetail.getTq1());
+
+                if (this.currentDetail.getTq2() == null || "".equals(this.currentDetail.getTq2())) {
+                    this.currentDetail.setTq2("0");
+                }
                 Double.parseDouble(this.currentDetail.getTq2());
+
+                if (this.currentDetail.getTq3() == null || "".equals(this.currentDetail.getTq3())) {
+                    this.currentDetail.setTq3("0");
+                }
                 Double.parseDouble(this.currentDetail.getTq3());
+
+                if (this.currentDetail.getTq4() == null || "".equals(this.currentDetail.getTq4())) {
+                    this.currentDetail.setTq4("0");
+                }
                 Double.parseDouble(this.currentDetail.getTq4());
+
+                if (this.currentDetail.getThy() == null || "".equals(this.currentDetail.getThy())) {
+                    this.currentDetail.setThy("0");
+                }
                 Double.parseDouble(this.currentDetail.getThy());
+
+                if (this.currentDetail.getTfy() == null || "".equals(this.currentDetail.getTfy())) {
+                    this.currentDetail.setTfy("0");
+                }
                 Double.parseDouble(this.currentDetail.getTfy());
             } catch (Exception e) {
                 this.currentDetail.setCalculationtype("A");

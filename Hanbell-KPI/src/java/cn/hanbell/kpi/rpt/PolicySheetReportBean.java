@@ -5,36 +5,22 @@
  */
 package cn.hanbell.kpi.rpt;
 
-import cn.hanbell.kpi.ejb.IndicatorChartBean;
 import cn.hanbell.kpi.ejb.PolicyBean;
 import cn.hanbell.kpi.ejb.PolicyDetailBean;
-import cn.hanbell.kpi.entity.Category;
-import cn.hanbell.kpi.entity.IndicatorChart;
 import cn.hanbell.kpi.entity.Policy;
 import cn.hanbell.kpi.entity.PolicyDetail;
 import cn.hanbell.kpi.entity.RoleGrantModule;
-import cn.hanbell.kpi.entity.tms.Project;
 import cn.hanbell.kpi.lazy.PolicyDetailModel;
-import cn.hanbell.kpi.lazy.PolicyModel;
-import cn.hanbell.kpi.lazy.ScorecardContentModel;
 import cn.hanbell.kpi.web.SuperQueryBean;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import org.primefaces.event.SelectEvent;
-import org.primefaces.model.DefaultTreeNode;
-import org.primefaces.model.TreeNode;
 
 /**
  *
@@ -92,6 +78,7 @@ public class PolicySheetReportBean extends SuperQueryBean<PolicyDetail> {
         }
         model = new PolicyDetailModel(policyDetailBean);
         model.getFilterFields().put("pid", Integer.valueOf(id));
+        model.getSortFields().put("seq", "asc");
         init();
     }
 
@@ -120,6 +107,7 @@ public class PolicySheetReportBean extends SuperQueryBean<PolicyDetail> {
             model.getFilterFields().remove("genre");
             model.getFilterFields().put("genre", this.queryGenre);
         }
+
         boolean isAula = true;
         if ("D".equals(this.queryTimeInterval)) {
             Policy p = policyBean.findByCompanyNameAndYear(policy.getCompany(), policy.getName(), this.userManagedBean.getY() + 1);
@@ -131,7 +119,7 @@ public class PolicySheetReportBean extends SuperQueryBean<PolicyDetail> {
                 isAula = false;
             }
         }
-        this.detaillist = this.policyDetailBean.findByFilters(model.getFilterFields());
+        this.detaillist = this.policyDetailBean.findByFilters(model.getFilterFields(),model.getSortFields());
         if (isAula && detaillist.size() > 0) {
             displaydiv1 = "none";
             displaydiv2 = "block";
@@ -217,8 +205,45 @@ public class PolicySheetReportBean extends SuperQueryBean<PolicyDetail> {
         }
     }
 
+//    public void setCurrentEntity(PolicyDetail p) {
+//        super.setHasNext(hasNext); //To change body of generated methods, choose Tools | Templates.
+//    }
+    @Override
+    public void toPrev() {
+        if (this.detaillist != null && !this.detaillist.isEmpty()) {
+            int idx = this.detaillist.indexOf(this.currentEntity) - 1;
+            if (idx >= 0) {
+                this.setCurrentEntity(this.detaillist.get(idx));
+            }
+        }
+    }
+
+    @Override
+    public void toNext() {
+        if (this.detaillist != null && !this.detaillist.isEmpty()) {
+            int idx = this.detaillist.indexOf(this.currentEntity) + 1;
+            if (idx < this.detaillist.size()) {
+                this.setCurrentEntity(this.detaillist.get(idx));
+            }
+        }
+    }
+
     public void setCurrentEntity(PolicyDetail t) {
         this.currentEntity = t;
+        int index = this.detaillist.indexOf(t);
+        if (index == 0 && this.detaillist.size() == 1) {
+            this.setHasPrev(false);
+            this.setHasNext(false);
+        } else if (index == 0 && this.detaillist.size() > 1) {
+            this.setHasPrev(false);
+            this.setHasNext(true);
+        } else if (index == this.detaillist.size() - 1) {
+            this.setHasPrev(true);
+            this.setHasNext(false);
+        } else {
+            this.setHasPrev(true);
+            this.setHasNext(true);
+        }
     }
 
     public Policy getPolicy() {

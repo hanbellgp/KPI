@@ -158,6 +158,8 @@ public class NoAssessedManagedBean extends SuperMultiBean<PersonScorecard, Perso
                 a = BigDecimal.ZERO;
                 b = BigDecimal.ZERO;
                 //获取课级考核表分数
+                if("C2632".equals(sc.getUserid())){
+            }
                 if (sc.getPersonset().getClassscorecard() != null && !"".equals(sc.getPersonset().getClassscorecard())) {
                     Scorecard entity = scorecardBean.findByNameAndSeqAndCompany(sc.getPersonset().getClassscorecard(), year, this.userManagedBean.getCompany());
                     //I,J对应AB职等，需要取考核表强制分布分数
@@ -271,8 +273,7 @@ public class NoAssessedManagedBean extends SuperMultiBean<PersonScorecard, Perso
                 msg.append("\\n").append("");
                 msg.append("\\n").append("><font color=\"warning\">尊敬的主管～贵单位以上人员尚未完成考核，烦请尽快处理，谢谢配合！</font>");
                 if (!"C0002".equals(employeeid)) {
-                  System.out.print("employeeid=="+employeeid+"   :"+msg);
-                  //     agent1000002Bean.sendMsgToUser("C2082", "markdown", msg.toString());
+                     agent1000002Bean.sendMsgToUser(employeeid, "markdown", msg.toString());
                 }
             }
               this.showInfoMsg("Info", "发送成功");
@@ -488,11 +489,11 @@ public class NoAssessedManagedBean extends SuperMultiBean<PersonScorecard, Perso
             cell.setCellStyle(cellStyle);
 
             cell = row.createCell(13);
-            cell.setCellValue("单位发送比率");
+            cell.setCellValue("单位发放比率");
             cell.setCellStyle(cellStyle);
 
             cell = row.createCell(14);
-            cell.setCellValue("发送奖金元/月");
+            cell.setCellValue("发放奖金元/月");
             cell.setCellStyle(cellStyle);
 
             cell = row.createCell(15);

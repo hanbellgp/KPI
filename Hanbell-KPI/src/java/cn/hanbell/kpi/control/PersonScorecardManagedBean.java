@@ -266,6 +266,8 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
                 BigDecimal ratio = BigDecimal.valueOf(BaseLib.convertExcelCell(Double.class, row.getCell(4)));
                 r = r.add(ratio);
                 PersonScorecardDetail sc = new PersonScorecardDetail(p.getId(), i - 4, "O", quarter, name, BigDecimal.ZERO, ratio);
+                sc.setScore(BigDecimal.ZERO);
+                sc.setHunscore(BigDecimal.ZERO);
                 sc.setTarget(BaseLib.convertExcelCell(String.class, row.getCell(2)));
                 sc.setStandard(BaseLib.convertExcelCell(String.class, row.getCell(3)));
                 list.add(sc);
@@ -380,17 +382,18 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
 
     @Override
     public void update() {
+           ScorecardDetailEntity entity = this.scoreMap.get(this.tabid);
         try {
-            ScorecardDetailEntity entity = this.scoreMap.get(this.tabid);
             for (PersonScorecardDetail detail : entity.getDetail()) {
                 if (detail.getScore().compareTo(detail.getRatio().multiply(BigDecimal.valueOf(100))) == 1
                         && !this.currentEntity.getPersonset().getIshundred()) {
-                    throw new Exception("分数必须小于或等于比重，请调整！");
+                    throw new Exception("单项分数不能大于100分。");
                 }
-                if (detail.getHunscore().compareTo(new BigDecimal(20)) < 1) {
-                    throw new Exception("单项分数满分100分,请调整!");
+                if (detail.getHunscore().compareTo(new BigDecimal(20)) < 1 && detail.getHunscore().compareTo(BigDecimal.ZERO)!=0) {
+                    throw new Exception("单项分数不能小于20分");
                 }
             };
+           
             switch (this.tabid) {
                 case "sq1":
                 case "aq1":
@@ -459,12 +462,59 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
                 detailEdited.remove(personScorecardDetailBean);
                 detailEdited.put(personScorecardDetailBean, entity.getDetail());
             }
-
+            
             super.update();
             this.personScorecardBean.sendmsg(this.currentEntity, this.queryQuarter);
             this.showInfoMsg("Info", "保存成功");
 
         } catch (Exception e) {
+            for (int i = 0; i < entity.getDetail().size(); i++) {
+                entity.getDetail().get(i).setHunscore(BigDecimal.ZERO);
+                entity.getDetail().get(i).setScore(BigDecimal.ZERO);
+            }
+            switch(this.tabid){
+                case "sq1":
+                    this.currentEntity.setSubjectivity1(BigDecimal.ZERO);
+                    this.currentEntity.setSubjectivityratio1(BigDecimal.ZERO);
+                    this.currentEntity.setSubjectivitypro1(BigDecimal.ZERO);
+                    break;
+                case "aq1":
+                    this.currentEntity.setObjective1(BigDecimal.ZERO);
+                    this.currentEntity.setObjectiveratio1(BigDecimal.ZERO);
+                    this.currentEntity.setObjectivepro1(BigDecimal.ZERO);
+                    break;
+                case "sq2":
+                    this.currentEntity.setSubjectivity2(BigDecimal.ZERO);
+                    this.currentEntity.setSubjectivityratio2(BigDecimal.ZERO);
+                    this.currentEntity.setSubjectivitypro2(BigDecimal.ZERO);
+                    break;
+                case "aq2":
+                    this.currentEntity.setObjective2(BigDecimal.ZERO);
+                    this.currentEntity.setObjectiveratio2(BigDecimal.ZERO);
+                    this.currentEntity.setObjectivepro2(BigDecimal.ZERO);
+                    break;
+                case "sq3":
+                    this.currentEntity.setSubjectivity3(BigDecimal.ZERO);
+                    this.currentEntity.setSubjectivityratio3(BigDecimal.ZERO);
+                    this.currentEntity.setSubjectivitypro3(BigDecimal.ZERO);
+                    break;
+                case "aq3":
+                    this.currentEntity.setObjective3(BigDecimal.ZERO);
+                    this.currentEntity.setObjectiveratio3(BigDecimal.ZERO);
+                    this.currentEntity.setObjectivepro3(BigDecimal.ZERO);
+                    break;
+                case "sq4":
+                    this.currentEntity.setSubjectivity4(BigDecimal.ZERO);
+                    this.currentEntity.setSubjectivityratio4(BigDecimal.ZERO);
+                    this.currentEntity.setSubjectivitypro4(BigDecimal.ZERO);
+                    break;
+                case "aq4":
+                    this.currentEntity.setObjective4(BigDecimal.ZERO);
+                    this.currentEntity.setObjectiveratio4(BigDecimal.ZERO);
+                    this.currentEntity.setObjectivepro4(BigDecimal.ZERO);
+                    break;
+
+            }
             e.printStackTrace();
             this.showInfoMsg("Info", String.format("更新失败，%s", e.getMessage()));
         }

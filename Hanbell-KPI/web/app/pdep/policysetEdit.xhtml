@@ -134,6 +134,24 @@
                                 <p:inputText id="name" value="#{policySetManagedBean.currentDetail.name}" title="name"/>
                             </p:column>
                         </p:row>
+                                       <p:row>
+                            <p:column styleClass="Wid20"><p:outputLabel value="类别" for="genre" /></p:column>
+                            <p:column styleClass="Wid30">
+                                <p:selectOneMenu id="genre" value="#{policySetManagedBean.currentDetail.genre}" title="类别" >
+                                    <f:selectItem itemLabel="成本构面" itemValue="C"/>
+                                    <f:selectItem itemLabel="顾客构面/品质" itemValue="Q"/>
+                                    <f:selectItem itemLabel="流程构面/交期" itemValue="D"/>
+                                    <f:selectItem itemLabel="学习成长构面/人员" itemValue="P"/>
+                                </p:selectOneMenu>
+                            </p:column>
+                            <p:column styleClass="Wid20"><p:outputLabel value="类型" for="type" /></p:column>
+                            <p:column styleClass="Wid30">
+                                <p:selectOneMenu id="type" value="#{policySetManagedBean.currentDetail.type}" title="类型" >
+                                    <f:selectItem itemLabel="KPI" itemValue="KPI"/>
+                                    <f:selectItem itemLabel="ORK" itemValue="ORK"/>
+                                </p:selectOneMenu>
+                            </p:column>
+                        </p:row>
                         <p:row>
                             <p:column styleClass="Wid20"><p:outputLabel value="内容类型（文字/数字）" for="calculationtype" /></p:column>
                             <p:column styleClass="Wid30">
@@ -152,11 +170,12 @@
                             </p:column>
                         </p:row>
                         <p:row>
-                            <p:column styleClass="Wid20"><p:outputLabel value="类型" for="type" /></p:column>
+                                <p:column styleClass="Wid20"><p:outputLabel value="序号" for="seq" /></p:column>
                             <p:column styleClass="Wid30">
-                                <p:inputText id="type" value="#{policySetManagedBean.currentDetail.type}" title="type"
-                                             requiredMessage="请输入类型"/>
-                            </p:column>
+                                <p:inputNumber id="seq" value="#{policySetManagedBean.currentDetail.seq}" title="seq" >
+                                    <p:ajax listener="#{policySetManagedBean.setSeq}"  update ="tableList,plgDetail"></p:ajax>
+                                </p:inputNumber>
+                            </p:column> 
                             <p:column styleClass="Wid20"><p:outputLabel value="单位" for="unit" /></p:column>
                             <p:column styleClass="Wid30">
                                 <p:inputText id="unit" value="#{policySetManagedBean.currentDetail.unit}" title="unit"
@@ -178,16 +197,11 @@
                             </p:column> 
                         </p:row>
                         <p:row>
-                            <p:column><p:outputLabel value="参考KPI转换率(X=KPI值/转换数值)" for="indicatorrate" /></p:column>
-                            <p:column styleClass="Wid30">
+                            <p:column  colspan="1"><p:outputLabel value="参考KPI转换率(X=KPI值/转换数值)" for="indicatorrate" /></p:column>
+                            <p:column styleClass="Wid30"  colspan="3">
                                 <p:inputText id="indicatorrate" value="#{policySetManagedBean.currentDetail.indicatorrate}" title="indicatorrate"/>
                             </p:column> 
-                            <p:column styleClass="Wid20"><p:outputLabel value="序号" for="seq" /></p:column>
-                            <p:column styleClass="Wid30">
-                                <p:inputNumber id="seq" value="#{policySetManagedBean.currentDetail.seq}" title="seq" >
-                                    <p:ajax listener="#{policySetManagedBean.setSeq}"  update ="tableList,plgDetail"></p:ajax>
-                                </p:inputNumber>
-                            </p:column> 
+                        
                         </p:row>
                         <p:row>
                             <p:column><p:outputLabel value="PLM编号" for="fromplm" /></p:column>
