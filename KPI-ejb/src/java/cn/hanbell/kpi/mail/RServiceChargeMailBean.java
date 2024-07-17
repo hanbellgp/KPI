@@ -86,9 +86,11 @@ public class RServiceChargeMailBean extends BscSheetMail {
         sb.append(getHtmlTable(fwzcindicators, y, m, d, true));
 
         sumIndicator = indicatorBean.getSumValue(hscindicators);
+        indicatorBean.updatePerformance(sumIndicator);
         sumIndicator.setName("后市场合计");
         allindicators.add(sumIndicator);
         sumIndicator = indicatorBean.getSumValue(fwzcindicators);
+        indicatorBean.updatePerformance(sumIndicator);
         sumIndicator.setName("服务支持合计");
         allindicators.add(sumIndicator);
         sb.append("<div class=\"tableTitle\"><h4 style=\"color:red\">合计  单位：万元</h4>").append("</div>");

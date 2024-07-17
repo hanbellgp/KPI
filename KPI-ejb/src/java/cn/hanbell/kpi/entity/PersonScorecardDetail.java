@@ -72,6 +72,8 @@ public class PersonScorecardDetail extends SuperDetailEntity {
         this.name = name;
         this.score = score;
         this.ratio = ratio;
+        this.score=BigDecimal.ZERO;
+        this.hunscore=BigDecimal.ZERO;
     }
 
     public PersonScorecardDetail(Integer id) {

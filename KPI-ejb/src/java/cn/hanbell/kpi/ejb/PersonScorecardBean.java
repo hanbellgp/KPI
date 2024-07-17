@@ -213,33 +213,24 @@ public class PersonScorecardBean extends SuperEJBForKPI<PersonScorecard> {
         msg.append("\\n").append(">岗位：<font color=\"info\">").append(psd.getPersonset().getDuties()).append("</font>");
         msg.append("\\n").append(">职等：<font color=\"info\">").append(psd.getPersonset().getOfficialrank()).append("</font>");
         if (psd.getPersonset().getAssessmentmethod().equals("I") || psd.getPersonset().getAssessmentmethod().equals("J")) {
-                if (porobjquarter.compareTo(BigDecimal.ZERO) != 0 && porsubquarter.compareTo(BigDecimal.ZERO) != 0 ) {
-                    msg.append("\\n").append(">主观分数：<font color=\"comment\">").append(porsubquarter).append("</font>");
-                    msg.append("\\n").append(">客观分数：<font color=\"comment\">").append(porobjquarter).append("</font>");
-                    msg.append("\\n").append(">合计分数：<font color=\"comment\">").append(porsubquarter.add(porobjquarter)).append("</font>");
-                    msg.append("\\n").append("");
-                    msg.append("\\n").append("><font color=\"warning\">若您对考核结果存在任何异议或疑问，请及时前往系统进行调整与反馈:</font>");
-                    //发送消息
-                    SystemUser u1 = this.systemUserBean.findByUserId(psd.getUserid());
-                    SystemUser u2 = this.systemUserBean.findByUserId(u1.getManagerId());
-                    if (!"C0002".equals(u2.getManagerId())) {
-                        agent1000002Bean.sendMsgToUser("C2082", "markdown", msg.toString());
-                    }
-                }
-            } else if (!psd.getPersonset().getOfficialrank().equals("E")) {
-                if (subquarter.compareTo(BigDecimal.ZERO) != 0 ) {
-                    msg.append("\\n").append(">主观分数：<font color=\"comment\">").append(subquarter).append("</font>");
-                    msg.append("\\n").append("");
-                    msg.append("\\n").append("><font color=\"warning\">若您对考核结果存在任何异议或疑问，请及时前往系统进行调整与反馈:</font>");
-                    //发送消息
-                    SystemUser u1 = this.systemUserBean.findByUserId(psd.getUserid());
-                    SystemUser u2 = this.systemUserBean.findByUserId(u1.getManagerId());
-                    if (!"C0002".equals(u2.getManagerId())) {
-                      agent1000002Bean.sendMsgToUser("C2082", "markdown", msg.toString());
-                    }
-                }
-
+            if (porobjquarter.compareTo(BigDecimal.ZERO) != 0 && porsubquarter.compareTo(BigDecimal.ZERO) != 0) {
+                msg.append("\\n").append(">主观分数：<font color=\"comment\">").append(porsubquarter).append("</font>");
+                msg.append("\\n").append(">客观分数：<font color=\"comment\">").append(porobjquarter).append("</font>");
+                msg.append("\\n").append(">合计分数：<font color=\"comment\">").append(porsubquarter.add(porobjquarter)).append("</font>");
+                msg.append("\\n").append("");
+                msg.append("\\n").append("><font color=\"warning\">若您对考核结果存在任何异议或疑问，请及时前往系统进行调整与反馈:</font>");
+                //发送消息
+            //    agent1000002Bean.sendMsgToUser(psd.getUserid(), "markdown", msg.toString());
             }
+        } else if (!psd.getPersonset().getOfficialrank().equals("E")) {
+            if (subquarter.compareTo(BigDecimal.ZERO) != 0) {
+                msg.append("\\n").append(">主观分数：<font color=\"comment\">").append(subquarter).append("</font>");
+                msg.append("\\n").append("");
+                msg.append("\\n").append("><font color=\"warning\">若您对考核结果存在任何异议或疑问，请及时前往系统进行调整与反馈:</font>");
+                //发送消息
+             //   agent1000002Bean.sendMsgToUser(psd.getUserid(), "markdown", msg.toString());
+            }
+        }
         return true;
     }
 }
