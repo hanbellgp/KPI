@@ -86,6 +86,8 @@ public class EquipmentPendingFileMailBean extends MailNotification {
                 return "维修验收";
             case "50":
                 return "责任回复";
+            case "55":
+                return "维修组长";
             case "60":
                 return "课长审核";
             case "70":
