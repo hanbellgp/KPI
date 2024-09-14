@@ -57,6 +57,7 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
             sbSql.append(" AND E.nexttime>='").append(date).append("' ");
             sbSql.append(" AND E.nexttime<'").append(formatter.format(cal.getTime())).append("'");
             sbSql.append(" AND E.standardlevel='").append(standardlevel).append("'");
+            
         } else {
             cal.add(Calendar.MONTH, 1);//获取下个月1号时间,因计划排程为每月1号所以直接月份相加
             sbSql.append(" AND E.nexttime>='").append(date).append("' ");
@@ -66,7 +67,7 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
 
         Query query = this.getEntityManager().createNativeQuery(sbSql.toString(), EquipmentStandard.class);
         List<EquipmentStandard> sList = query.getResultList();
-        return sList;
+        return sList; 
     }
 
     //根据资产编号获取对应资产
@@ -255,7 +256,7 @@ public class EquipmentAnalyResultBean extends SuperEJBForEAM<EquipmentAnalyResul
         * @return 
         */
       public List getPendingEquipment() {
-        String resultSql = "SELECT formid,assetno,repairusername,serviceusername,TIMESTAMPDIFF(HOUR, hitchtime, NOW()),rstatus FROM equipmentrepair WHERE rstatus>30  and rstatus<95 AND TIMESTAMPDIFF(HOUR, hitchtime, NOW())>48";
+        String resultSql = "SELECT formid,assetno,repairusername,serviceusername,TIMESTAMPDIFF(HOUR, hitchtime, NOW()),rstatus FROM equipmentrepair WHERE rstatus>30  and rstatus<95 AND TIMESTAMPDIFF(HOUR, hitchtime, NOW())>48  AND company='C'";
         Query query = getEntityManager().createNativeQuery(resultSql);
         List<Object[]> results = query.getResultList();
         return results;
