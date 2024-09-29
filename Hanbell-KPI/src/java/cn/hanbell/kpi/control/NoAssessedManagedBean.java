@@ -184,12 +184,14 @@ public class NoAssessedManagedBean extends SuperMultiBean<PersonScorecard, Perso
                     f.setAccessible(true);
                     b = ((BigDecimal) f.get(entity));
                 }
-                //同时有课级考核表和部级考核表需要 除2
-                if (sc.getPersonset().getDepartmentscorecard() != null && !"".equals(sc.getPersonset().getDepartmentscorecard())
-                        && sc.getPersonset().getClassscorecard() != null && !"".equals(sc.getPersonset().getClassscorecard())) {
-                    sum = a.add(b).divide(BigDecimal.valueOf(2), 2, BigDecimal.ROUND_HALF_UP);
+                
+                //A,B职等并且课级考核表不为空的情况下取课级考核表分数  
+                if (sc.getPersonset().getClassscorecard() != null && !"".equals(sc.getPersonset().getClassscorecard()) 
+                    &&  ("I".equals(sc.getPersonset().getAssessmentmethod()) || "J".equals(sc.getPersonset().getAssessmentmethod()))) {
+                    sum=a;
+                   
                 } else {
-                    sum = a.add(b);
+                    sum =b;
                 }
                 switch (this.quater) {
                     case 1:
@@ -596,6 +598,232 @@ public class NoAssessedManagedBean extends SuperMultiBean<PersonScorecard, Perso
         }
     }
 
+    public void printScore() {
+        Map<String, Object> filters = new HashMap<>();
+        List<String> methods = new ArrayList<>();
+        methods.add("I");
+        methods.add("J");
+        methods.add("K");
+        methods.add("L");
+        methods.add("M");
+        methods.add("N");
+        filters.put("personset.assessmentmethod IN ", methods);
+        filters.put("year", this.userManagedBean.getY());
+        List<PersonScorecard> list = personScorecardBean.findByFilters(filters);
+        Field f;
+        Method method = null;
+        OutputStream os = null;
+        try {
+            fileName = "Q" + this.userManagedBean.getQ() + "考核分数" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
+            String fileFullName = reportOutputPath + fileName;
+            HSSFWorkbook wb = new HSSFWorkbook();
+            CreationHelper createHelper = wb.getCreationHelper();
+            CellStyle cellStyle = wb.createCellStyle();
+            cellStyle.setBorderRight(CellStyle.BORDER_THIN);
+            cellStyle.setRightBorderColor(IndexedColors.BLACK.getIndex());
+            cellStyle.setBorderLeft(CellStyle.BORDER_THIN);
+            cellStyle.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+            cellStyle.setBorderTop(CellStyle.BORDER_THIN);
+            cellStyle.setTopBorderColor(IndexedColors.BLACK.getIndex());
+            cellStyle.setBorderBottom(CellStyle.BORDER_THIN);
+            cellStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+            //创建内容
+            Sheet sheet = wb.createSheet(String.format("%d$d个人奖金明细", this.userManagedBean.getY(), this.userManagedBean.getM()));
+            Cell cell;
+            Row row;
+            row = sheet.createRow(0);
+            cell = row.createCell(0);
+            cell.setCellValue("工号");
+            cell.setCellStyle(cellStyle);
+
+            cell = row.createCell(1);
+            cell.setCellValue("姓名");
+            cell.setCellStyle(cellStyle);
+
+            cell = row.createCell(2);
+            cell.setCellValue("主观考核分数");
+            cell.setCellStyle(cellStyle);
+
+            cell = row.createCell(3);
+            cell.setCellValue("主观考核比率");
+            cell.setCellStyle(cellStyle);
+
+            cell = row.createCell(4);
+            cell.setCellValue("主观分数");
+            cell.setCellStyle(cellStyle);
+
+            cell = row.createCell(5);
+            cell.setCellValue("客观考核分数");
+            cell.setCellStyle(cellStyle);
+
+            cell = row.createCell(6);
+            cell.setCellValue("客观考核比率");
+            cell.setCellStyle(cellStyle);
+
+            cell = row.createCell(7);
+            cell.setCellValue("客观分数");
+            cell.setCellStyle(cellStyle);
+
+            cell = row.createCell(8);
+            cell.setCellValue("合计分数");
+            cell.setCellStyle(cellStyle);
+
+            cell = row.createCell(9);
+            cell.setCellValue("计算奖金折算的比率");
+            cell.setCellStyle(cellStyle);
+
+            cell = row.createCell(10);
+            cell.setCellValue("折算分数");
+            cell.setCellStyle(cellStyle);
+
+            int i = 1;
+            BigDecimal proScore, bscScore, c;
+            for (PersonScorecard sc : list) {
+                row = sheet.createRow(i);
+                cell = row.createCell(0);
+                cell.setCellStyle(cellStyle);
+                cell.setCellValue(sc.getUserid());
+
+                cell = row.createCell(1);
+                cell.setCellStyle(cellStyle);
+                cell.setCellValue(sc.getUsername());
+
+                if (this.userManagedBean.getQ() == 1) {
+                    cell = row.createCell(2);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getSubjectivity1() == null ? 0.0 : sc.getSubjectivity1().doubleValue());
+                    cell = row.createCell(3);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getSubjectivityratio1() == null ? 0.0 : sc.getSubjectivityratio1().doubleValue());
+                    cell = row.createCell(4);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getSubjectivitypro1() == null ? 0.0 : sc.getSubjectivitypro1().doubleValue());
+                    cell = row.createCell(5);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getObjective1() == null ? 0.0 : sc.getObjective1().doubleValue());
+                    cell = row.createCell(6);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getObjectiveratio1() == null ? 0.0 : sc.getObjectiveratio1().doubleValue());
+                    cell = row.createCell(7);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getObjectivepro1() == null ? 0.0 : sc.getObjectivepro1().doubleValue());
+                    cell = row.createCell(8);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getPerformance1() == null ? 0.0 : sc.getPerformance1().doubleValue());
+                    cell = row.createCell(9);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getPerformanceratio1() == null ? 0.0 : sc.getPerformanceratio1().doubleValue());
+                    cell = row.createCell(10);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getPerformancepro1() == null ? 0.0 : sc.getPerformancepro1().doubleValue());
+                } else if (this.userManagedBean.getQ() == 2) {
+                    cell = row.createCell(2);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getSubjectivity2() == null ? 0.0 : sc.getSubjectivity2().doubleValue());
+                    cell = row.createCell(3);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getSubjectivityratio2() == null ? 0.0 : sc.getSubjectivityratio2().doubleValue());
+                    cell = row.createCell(4);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getSubjectivitypro2() == null ? 0.0 : sc.getSubjectivitypro2().doubleValue());
+                    cell = row.createCell(5);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getObjective2() == null ? 0.0 : sc.getObjective2().doubleValue());
+                    cell = row.createCell(6);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getObjectiveratio2() == null ? 0.0 : sc.getObjectiveratio2().doubleValue());
+                    cell = row.createCell(7);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getObjectivepro2() == null ? 0.0 : sc.getObjectivepro2().doubleValue());
+                    cell = row.createCell(8);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getPerformance2() == null ? 0.0 : sc.getPerformance2().doubleValue());
+                    cell = row.createCell(9);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getPerformanceratio2() == null ? 0.0 : sc.getPerformanceratio2().doubleValue());
+                    cell = row.createCell(10);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getPerformancepro2() == null ? 0.0 : sc.getPerformancepro2().doubleValue());
+                } else if (this.userManagedBean.getQ() == 3) {
+                    cell = row.createCell(2);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getSubjectivity3() == null ? 0.0 : sc.getSubjectivity3().doubleValue());
+                    cell = row.createCell(3);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getSubjectivityratio3() == null ? 0.0 : sc.getSubjectivityratio3().doubleValue());
+                    cell = row.createCell(4);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getSubjectivitypro3() == null ? 0.0 : sc.getSubjectivitypro3().doubleValue());
+                    cell = row.createCell(5);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getObjective3() == null ? 0.0 : sc.getObjective3().doubleValue());
+                    cell = row.createCell(6);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getObjectiveratio3() == null ? 0.0 : sc.getObjectiveratio3().doubleValue());
+                    cell = row.createCell(7);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getObjectivepro3() == null ? 0.0 : sc.getObjectivepro3().doubleValue());
+                    cell = row.createCell(8);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getPerformance3() == null ? 0.0 : sc.getPerformance3().doubleValue());
+                    cell = row.createCell(9);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getPerformanceratio3() == null ? 0.0 : sc.getPerformanceratio3().doubleValue());
+                    cell = row.createCell(10);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getPerformancepro3() == null ? 0.0 : sc.getPerformancepro3().doubleValue());
+                } else if (this.userManagedBean.getQ() == 4) {
+                    cell = row.createCell(2);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getSubjectivity4() == null ? 0.0 : sc.getSubjectivity4().doubleValue());
+                    cell = row.createCell(3);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getSubjectivityratio4() == null ? 0.0 : sc.getSubjectivityratio4().doubleValue());
+                    cell = row.createCell(4);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getSubjectivitypro4() == null ? 0.0 : sc.getSubjectivitypro4().doubleValue());
+                    cell = row.createCell(5);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getObjective4() == null ? 0.0 : sc.getObjective4().doubleValue());
+                    cell = row.createCell(6);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getObjectiveratio4() == null ? 0.0 : sc.getObjectiveratio4().doubleValue());
+                    cell = row.createCell(7);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getObjectivepro4() == null ? 0.0 : sc.getObjectivepro4().doubleValue());
+                    cell = row.createCell(8);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getPerformance4() == null ? 0.0 : sc.getPerformance4().doubleValue());
+                    cell = row.createCell(9);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getPerformanceratio4() == null ? 0.0 : sc.getPerformanceratio4().doubleValue());
+                    cell = row.createCell(10);
+                    cell.setCellStyle(cellStyle);
+                    cell.setCellValue(sc.getPerformancepro4() == null ? 0.0 : sc.getPerformancepro4().doubleValue());
+                }
+
+                i++;
+            }
+            os = new FileOutputStream(fileFullName);
+            wb.write(os);
+            this.reportViewPath = reportViewContext + fileName;
+            this.preview();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            showErrorMsg("Error", ex.getMessage());
+        } finally {
+            try {
+                if (null != os) {
+                    os.flush();
+                    os.close();
+                }
+            } catch (IOException ex) {
+                showErrorMsg("Error", ex.getMessage());
+            }
+        }
+    }
+
+    
     public int getYear() {
         return year;
     }

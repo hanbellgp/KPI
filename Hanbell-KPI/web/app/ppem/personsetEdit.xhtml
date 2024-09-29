@@ -14,7 +14,7 @@
                     <p:button id="btnReturn" value="返回" outcome="personset" icon="ui-icon-restore"/>
                 </f:facet>
                 <f:facet name="right">
-                      <p:commandButton id="btnSave" value="保存" action="#{personSetManagedBean.update()}" icon="ui-icon-save"
+                    <p:commandButton id="btnSave" value="保存" action="#{personSetManagedBean.update()}" icon="ui-icon-save"
                                      process="@this,plgHead" update="formOne"/>
                 </f:facet>
             </p:toolbar>
@@ -42,11 +42,11 @@
                 <p:row>
                     <p:column styleClass="Wid20"><p:outputLabel value="部门" for="deptno"/></p:column>
                     <p:column styleClass="Wid30">
-                        <p:outputLabel id="deptno" value="#{personSetManagedBean.currentEntity.deptno}" title="部门"/>
+                        <p:outputLabel id="deptno" value="#{personSetManagedBean.currentEntity.deptno}#{personSetManagedBean.currentEntity.deptname}" title="部门"/>
                     </p:column>
-                    <p:column styleClass="Wid20"><p:outputLabel value="部门名称" for="deptname"/></p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="奖金发放比率" for="percentage"/></p:column>
                     <p:column styleClass="Wid30">
-                        <p:outputLabel id="deptname" value="#{personSetManagedBean.currentEntity.deptname}" title="部门名称"/>
+                        <p:outputLabel id="percentage" value="#{personSetManagedBean.currentEntity.percentage}" title="奖金发放比率"/>
                     </p:column>
                 </p:row>
                 <p:row>
@@ -106,7 +106,7 @@
                     <p:column styleClass="Wid20"><p:outputLabel value="考核方式" for="assessmentmethod"/></p:column>
                     <p:column styleClass="Wid30">
                         <p:selectOneMenu id="assessmentmethod" value="#{personSetManagedBean.currentEntity.assessmentmethod}" title="考核方式" >
-                             <f:selectItem itemLabel="" itemValue=""/>
+                            <f:selectItem itemLabel="" itemValue=""/>
                             <f:selectItem itemLabel="AB幕僚" itemValue="I"/>
                             <f:selectItem itemLabel="AB现场" itemValue="J"/>
                             <f:selectItem itemLabel="非行政课级" itemValue="K"/>
@@ -116,9 +116,12 @@
                             <f:selectItem itemLabel="不考核" itemValue="O"/>
                         </p:selectOneMenu>
                     </p:column>
-                      <p:column styleClass="Wid20"><p:outputLabel value="奖金发放比率" for="percentage"/></p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="能否超过100分" for="ishundred"/></p:column>
                     <p:column styleClass="Wid30">
-                        <p:outputLabel id="percentage" value="#{personSetManagedBean.currentEntity.percentage}" title="奖金发放比率"/>
+                        <p:selectOneMenu id="ishundred" value="#{personSetManagedBean.currentEntity.ishundred}" title="是否100分制" >
+                            <f:selectItem itemLabel="是" itemValue="true"/>
+                            <f:selectItem itemLabel="否" itemValue="false"/>
+                        </p:selectOneMenu>
                     </p:column>
                 </p:row>
                 <p:row>
@@ -129,13 +132,9 @@
                             <f:selectItem itemLabel="否" itemValue="false"/>
                         </p:selectOneMenu>
                     </p:column>
-                  
-                      <p:column styleClass="Wid20"><p:outputLabel value="能否超过100分" for="ishundred"/></p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="系数" for="coefficient"/></p:column>
                     <p:column styleClass="Wid30">
-                        <p:selectOneMenu id="ishundred" value="#{personSetManagedBean.currentEntity.ishundred}" title="是否100分制" >
-                            <f:selectItem itemLabel="是" itemValue="true"/>
-                            <f:selectItem itemLabel="否" itemValue="false"/>
-                        </p:selectOneMenu>
+                        <p:outputLabel id="coefficient" value="#{personSetManagedBean.currentEntity.coefficient}" title="系数"/>
                     </p:column>
                 </p:row>
                 <p:row>

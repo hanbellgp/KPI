@@ -61,11 +61,10 @@
                 </f:facet>
                 <f:facet name="right">
                     <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
-                        <p:menuitem id="btnExport" value="导出"  icon="ui-icon-print" actionListener="#{noAssessedManagedBean.print()}"   />
-                        <p:menuitem id="btnExportMoney" value="计算" oncomplete="PF('dialogCalculate').show();"  icon="ui-icon-print"
+                        <p:menuitem id="btnExport" value="导出未考核人员"  icon="ui-icon-print" actionListener="#{noAssessedManagedBean.print()}"   />
+                        <p:menuitem id="btnEndMsg" value="导出分数"  icon="ui-icon-print" actionListener="#{noAssessedManagedBean.printScore()}" />
+                          <p:menuitem id="btnExportMoney" value="计算" oncomplete="PF('dialogCalculate').show();"  icon="ui-icon-print"
                                    update="formList:dialogCalculate" />
-                        <p:menuitem id="btnEndMsg" value="企微通知" oncomplete="PF('dialogSendMsg').show();" icon="ui-icon-print"
-                                  update=":formList"  />
                          <p:menuitem id="btnSalary" value="导出奖金"  actionListener="#{noAssessedManagedBean.printSalary()}"  icon="ui-icon-print"
                                   update=":formList"  />
                     </p:splitButton>
@@ -90,7 +89,7 @@
                         <p:column colspan="4" headerText="Q2"/>
                         <p:column colspan="4"  headerText="Q3"/>
                         <p:column colspan="4" headerText="Q4"/>
-                        <p:column rowspan="2" headerText="当季度是否考核"/>
+<!--                        <p:column rowspan="2" headerText="当季度是否考核"/>-->
                     </p:row>
                     <p:row>
                         <p:column headerText="主观分数"/>
@@ -168,10 +167,10 @@
                 <p:column style="text-align: center">
                     <h:outputText value="#{item.status4=='Y'?'✔':'X'}" style="#{item.status4=='Y' ? 'color:green' : 'color:red'}"/>
                 </p:column>
-                 <p:column style="text-align: center"> 
+<!--                 <p:column style="text-align: center"> 
                         <h:outputText value="#{ item.status == noAssessedManagedBean.userManagedBean.q ?'✔':'X'}" 
                                       style="#{item.status == noAssessedManagedBean.userManagedBean.q ? 'color:green' : 'color:red'}"/>
-                </p:column>
+                </p:column>-->
             </p:dataTable>
             <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
                 <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />

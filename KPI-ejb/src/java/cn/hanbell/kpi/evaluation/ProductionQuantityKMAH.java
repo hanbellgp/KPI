@@ -16,7 +16,7 @@ public class ProductionQuantityKMAH extends ProductionQuantity {
         queryParams.put("facno", "K");
         queryParams.put("prono", "1");
         //顾迪华2019年6月19日提出更改生产线别01 改 AT\ORC\RT
-        queryParams.put("linecode", " IN('AT','ORC','RT') ");
+        queryParams.put("linecode", " IN('A8') ");
         queryParams.put("typecode", "= '01' ");
         //#ITCLS CHANGE TODO #
         queryParams.put("itcls", " in ('3J76','3J79','3J80')");

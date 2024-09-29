@@ -146,18 +146,28 @@ public class ShoppingAccomuntBean implements Serializable {
     }
 
 
-    public Object[] getShbDateByVdrno(String name, String facno, Date date, String vdrnos) {
+    public Object[] getShbDateByVdrno(String name, String facno, Date date, String vdrnos,String  itcls) {
         Object[] row = new Object[16];
         row[0] = name;
         //循环获取12个月的数据
-        StringBuffer sql = new StringBuffer();
-        sql.append(" select CAST(right(yearmon,2) AS SIGNED) ,sum(acpamt)");
-        sql.append(" from shoppingtable");
-        sql.append(" where facno ='").append(facno).append("'");
-        if (vdrnos != null && !"".equals(vdrnos)) {
-            sql.append(" AND vdrno ").append(vdrnos);
+       StringBuffer sql = new StringBuffer();
+        sql.append("select  CAST(right(yearmon,2) AS SIGNED),sum(acpamt) from  shoppingtable");
+        sql.append(" where yearmon like '").append(BaseLib.formatDate("yyyy", date)).append("%'");
+        sql.append(" and facno='").append(facno).append("'");
+        if ("C".equals(facno)) {
+            sql.append(" and sponr not like 'AC%'");
+        } 
+         if("A".equals(facno)) {
+            sql.append(" and sponr not like '%AKI%'");
         }
-        sql.append(" and yearmon like '").append(String.valueOf(findYear(date))).append("%' group by yearmon order by yearmon ASC");
+       
+        if (vdrnos != null && !"".equals(vdrnos)) {
+            sql.append(" and vdrno").append(vdrnos);
+        }
+        if (itcls != null && !"".equals(itcls)) {
+            sql.append(" and itcls").append(itcls);
+        }
+        sql.append(" group by yearmon;");
         Query query = shoppingManufacturerBean.getEntityManager().createNativeQuery(sql.toString());
         BigDecimal sum = BigDecimal.ZERO;
         try {

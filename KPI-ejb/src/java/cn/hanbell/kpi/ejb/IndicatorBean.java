@@ -2276,6 +2276,7 @@ public class IndicatorBean extends SuperEJBForKPI<Indicator> {
                     break;
             }
         }
+        this.update(entity);
     }
 
     public void updateTarget(Indicator entity) {

@@ -50,7 +50,7 @@
                 </p:column>
                 <c:choose>
                     <c:when test="#{'B'.equals(policySheetReportBean.queryTimeInterval)}">
-                        <p:column  styleClass="Wid5" headerText="全年目标">
+                        <p:column  styleClass="Wid10" headerText="全年目标" style="white-space: pre-wrap">
                             <h:outputText value="#{policySheetReportBean.formatValue(item.calculationtype,item.unit,item.tfy)}"/>
                         </p:column>
                         <p:column  styleClass="Wid5" headerText="Q1达成率">
@@ -136,7 +136,7 @@
                 </c:choose>
             </p:dataTable>
 
-            <p:dialog id="dlgDetail" widgetVar="dlgDetail" width="100%" height="100%">
+            <p:dialog id="dlgDetail" widgetVar="dlgDetail" width="100%" height="800"  maximizable="true">
                 <p:toolbar id="toolbar" styleClass="topToolbar">
                     <f:facet name="right">
                         <p:commandButton id="btnPrev" value="向前" actionListener="#{policySheetReportBean.toPrev()}" icon="ui-icon-carat-1-w"
@@ -158,71 +158,71 @@
                     <c:if test="#{'B'.equals(policySheetReportBean.queryTimeInterval)}">
                         <p:row>
                             <p:column styleClass="Wid20"><p:outputLabel value="全年基准"/></p:column>
-                            <p:column  styleClass="Wid20">
+                            <p:column  styleClass="Wid20" style="white-space: pre-wrap">
                                 <h:outputLabel value="#{policySheetReportBean.formatValue(policySheetReportBean.currentEntity.calculationtype,policySheetReportBean.currentEntity.unit,policySheetReportBean.currentEntity.bfy)}"/>
                             </p:column>
                             <p:column styleClass="Wid20"><p:outputLabel value="全年目标"/></p:column>
-                            <p:column  styleClass="Wid20">
+                            <p:column  styleClass="Wid20" style="white-space: pre-wrap">
                                 <h:outputLabel value="#{policySheetReportBean.formatValue(policySheetReportBean.currentEntity.calculationtype,policySheetReportBean.currentEntity.unit,policySheetReportBean.currentEntity.tfy)}"/>
                             </p:column>
                         </p:row> 
                         <p:row>
                             <p:column styleClass="Wid20"><p:outputLabel value="Q1基准"/></p:column>
-                            <p:column  styleClass="Wid20">
+                            <p:column  styleClass="Wid20" style="white-space: pre-wrap">
                                 <h:outputLabel value="#{policySheetReportBean.formatValue(policySheetReportBean.currentEntity.calculationtype,policySheetReportBean.currentEntity.unit,policySheetReportBean.currentEntity.bq1)}"/>
                             </p:column>
                             <p:column styleClass="Wid20"><p:outputLabel value="Q1目标"/></p:column>
-                            <p:column  styleClass="Wid20">
+                            <p:column  styleClass="Wid20" style="white-space: pre-wrap">
                                 <h:outputLabel value="#{policySheetReportBean.formatValue(policySheetReportBean.currentEntity.calculationtype,policySheetReportBean.currentEntity.unit,policySheetReportBean.currentEntity.tq1)}"/>
                             </p:column>
                         </p:row> 
                         <p:row>
                             <p:column styleClass="Wid20"><p:outputLabel value="Q1实际"/></p:column>
-                            <p:column  styleClass="Wid20">
+                            <p:column  styleClass="Wid20" style="white-space: pre-wrap">
                                 <h:outputLabel value="#{policySheetReportBean.formatValue(policySheetReportBean.currentEntity.calculationtype,policySheetReportBean.currentEntity.unit,policySheetReportBean.currentEntity.aq1)}"/>
                             </p:column>
                             <p:column styleClass="Wid20"><p:outputLabel value="Q1达成率"/></p:column>
-                            <p:column styleClass="Wid20">
+                            <p:column styleClass="Wid20" style="white-space: pre-wrap">
                                 <h:outputLabel value="#{policySheetReportBean.currentEntity.tq1==''and policySheetReportBean.currentEntity.aq1==''?'':policySheetReportBean.formatValue('B','%',policySheetReportBean.currentEntity.pq1)}"/>
                             </p:column>
                         </p:row> 
                         <p:row>
                             <p:column styleClass="Wid20"><p:outputLabel value="Q2基准"/></p:column>
-                            <p:column  styleClass="Wid20">
+                            <p:column  styleClass="Wid20" style="white-space: pre-wrap">
                                 <h:outputLabel value="#{policySheetReportBean.formatValue(policySheetReportBean.currentEntity.calculationtype,policySheetReportBean.currentEntity.unit,policySheetReportBean.currentEntity.bq2)}"/>
                             </p:column>
                             <p:column styleClass="Wid20"><p:outputLabel value="Q2目标"/></p:column>
-                            <p:column  styleClass="Wid20">
+                            <p:column  styleClass="Wid20" style="white-space: pre-wrap">
                                 <h:outputLabel value="#{policySheetReportBean.formatValue(policySheetReportBean.currentEntity.calculationtype,policySheetReportBean.currentEntity.unit,policySheetReportBean.currentEntity.tq2)}"/>
                             </p:column>
                         </p:row> 
                         <p:row>
                             <p:column styleClass="Wid20"><p:outputLabel value="Q2实际"/></p:column>
-                            <p:column  styleClass="Wid20">
+                            <p:column  styleClass="Wid20" style="white-space: pre-wrap">
                                 <h:outputLabel value="#{policySheetReportBean.formatValue(policySheetReportBean.currentEntity.calculationtype,policySheetReportBean.currentEntity.unit,policySheetReportBean.currentEntity.aq2)}"/>
                             </p:column>
                             <p:column styleClass="Wid20"><p:outputLabel value="Q2达成率"/></p:column>
-                            <p:column styleClass="Wid20">
+                            <p:column styleClass="Wid20" style="white-space: pre-wrap">
                                 <h:outputLabel value="#{policySheetReportBean.currentEntity.tq2==''and policySheetReportBean.currentEntity.aq2==''?'':policySheetReportBean.formatValue('B','%',policySheetReportBean.currentEntity.pq2)}"/>
                             </p:column>
                         </p:row> 
                         <p:row>
                             <p:column styleClass="Wid20"><p:outputLabel value="上半年基准"/></p:column>
-                            <p:column styleClass="Wid20">
+                            <p:column styleClass="Wid20" style="white-space: pre-wrap">
                                 <h:outputLabel value="#{policySheetReportBean.formatValue(policySheetReportBean.currentEntity.calculationtype,policySheetReportBean.currentEntity.unit,policySheetReportBean.currentEntity.bhy)}"/>
                             </p:column>
                             <p:column styleClass="Wid20"><p:outputLabel value="上半年目标"/></p:column>
-                            <p:column styleClass="Wid20">
+                            <p:column styleClass="Wid20" style="white-space: pre-wrap">
                                 <h:outputLabel value="#{policySheetReportBean.formatValue(policySheetReportBean.currentEntity.calculationtype,policySheetReportBean.currentEntity.unit,policySheetReportBean.currentEntity.thy)}"/>
                             </p:column>
                         </p:row> 
                         <p:row>
                             <p:column styleClass="Wid20"><p:outputLabel value="上半年实际"/></p:column>
-                            <p:column styleClass="Wid20">
+                            <p:column styleClass="Wid20" style="white-space: pre-wrap">
                                 <h:outputLabel value="#{policySheetReportBean.formatValue(policySheetReportBean.currentEntity.calculationtype,policySheetReportBean.currentEntity.unit,policySheetReportBean.currentEntity.ahy)}"/>
                             </p:column>
                             <p:column styleClass="Wid20"><p:outputLabel value="上半年达成率"/></p:column>
-                            <p:column styleClass="Wid20">
+                            <p:column styleClass="Wid20" style="white-space: pre-wrap">
                                 <h:outputLabel value="#{policySheetReportBean.currentEntity.thy==''and policySheetReportBean.currentEntity.ahy==''?'':policySheetReportBean.formatValue('B','%',policySheetReportBean.currentEntity.phy)}"/>
                             </p:column>
                         </p:row> 

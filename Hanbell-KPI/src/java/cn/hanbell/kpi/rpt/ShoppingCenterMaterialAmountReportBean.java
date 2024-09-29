@@ -17,6 +17,8 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -85,6 +87,8 @@ public class ShoppingCenterMaterialAmountReportBean extends FinancingFreeService
                 }
             }
         }
+        BigDecimal a =new BigDecimal(0);
+//        a.doubleValue()
         btndate = settlementDate().getTime();
 
         btnquery();
@@ -99,7 +103,14 @@ public class ShoppingCenterMaterialAmountReportBean extends FinancingFreeService
             Field f;
             String mon = indicatorBean.getIndicatorColumn("N", m);
             Double a1 = 0.0, a2 = 0.0, a3 = 0.0, a4 = 0.0, a5 = 0.0, a6 = 0.0, a7 = 0.0, b1 = 0.0;
+            Collections.sort(indicatorList, new Comparator<Indicator>() {
+                @Override
+                public int compare(Indicator o1, Indicator o2) {
+                    return o1.getActualIndicator().getNfy().compareTo(o2.getActualIndicator().getNfy());
+                }
 
+            });
+BigDecimal a=BigDecimal.ZERO;
             for (Indicator indicator : indicatorList) {
                 indicator.setCategory(m + "月");
                 indicator.setCategoryId(m);
@@ -218,7 +229,7 @@ public class ShoppingCenterMaterialAmountReportBean extends FinancingFreeService
 
     public String format(BigDecimal value, BigDecimal rate) {
         if (BigDecimal.ZERO.equals(value)) {
-            return "0.00";
+            return "0";
         }
         return decimalFormat.format(value.divide(rate));
     }
