@@ -591,7 +591,7 @@ public class SalesTableUpdateBean implements Serializable {
         sb.append(",n_code_DA,n_code_CD,n_code_DC,n_code_DD,mancode,e.username AS manname,hmark1,hmark2 FROM ( ");
         //第一部分为整机出货销退
         sb.append(" select h.facno,itnbrcus,h.cusno,h.shpdate AS cdrdate,depno, ");
-        sb.append(" sum(CASE  when d.n_code_DA='AA' AND left(d.itnbr,1)='3' THEN shpqy1 when d.n_code_DA!='AA' THEN shpqy1 when d.n_code_DA='AA' AND d.n_code_DC='SDS' THEN shpqy1 ELSE 0 END ) as quantity, ");
+        sb.append(" sum(CASE  when d.n_code_DA='AA' THEN shpqy1 when d.n_code_DA!='AA' THEN shpqy1 when d.n_code_DA='AA' AND d.n_code_DC='SDS' THEN shpqy1 ELSE 0 END ) as quantity, ");
         sb.append(" isnull(convert(decimal(16,4),sum(case h.tax when '1' then (d.shpamts * h.ratio) else (d.shpamts * h.ratio)/(h.taxrate + 1) end)),0) as amount,d.n_code_DA,d.n_code_CD,d.n_code_DC,d.n_code_DD ");
         sb.append(" ,mancode,hmark1,hmark2 from cdrdta d left join cdrhad h on d.shpno=h.shpno");
         sb.append(" where h.facno='${facno}' and h.houtsta <> 'W' and h.cusno NOT IN ('SSD00107','SGD00088','SJS00254','SCQ00146','KZJ00029') and d.issevdta='N' and d.n_code_DD ='00' ");

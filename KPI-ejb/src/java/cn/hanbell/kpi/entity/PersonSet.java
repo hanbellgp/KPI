@@ -130,7 +130,7 @@ public class PersonSet extends SuperEntity {
         this.status = status;
         this.creator = creator;
         this.credate = new Date();
-        this.coefficient=0.0;
+        this.coefficient=1.0;
     }
 
     public String getFacno() {

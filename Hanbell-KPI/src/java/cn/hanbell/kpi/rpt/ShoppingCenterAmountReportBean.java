@@ -39,7 +39,7 @@ public class ShoppingCenterAmountReportBean extends BscChartManagedBean {
     private ShoppingAccomuntBean shoppingAccomuntBean;
 
     public ShoppingCenterAmountReportBean() {
-        this.floatFormat = new DecimalFormat("#,###.##");
+        this.floatFormat = new DecimalFormat("#,###");
     }
 
     @Override

@@ -18,8 +18,8 @@ public class ProductionPlanCompleteKMAH extends ProductionPlanComplete{
         queryParams.put("stats", "2");
         queryParams.put("linecode", " IN('AT','ORC','RT','A8','A9') ");
         queryParams.put("typecode", " ='01' ");
-        queryParams.put("prosscode", " IN ('LX08','KQ10','OR08') ");
-        queryParams.put("wrcode", " IN ('ZP01','ZP02','ZP03','WL2','ZS1') ");
+        queryParams.put("prosscode", " IN ('RT07') ");
+        queryParams.put("wrcode", " IN ('WL1') ");
         queryParams.put("itcls", " in ('3J76','3J79','3J80') ");
     }
 }

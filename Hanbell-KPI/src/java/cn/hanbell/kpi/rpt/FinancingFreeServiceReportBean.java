@@ -57,7 +57,7 @@ public class FinancingFreeServiceReportBean extends BscQueryTableManageBean impl
         firstList = new ArrayList<>();
         secondList = new ArrayList<>();
         thirdlyList = new ArrayList<>();
-        this.decimalFormat = new DecimalFormat("#,##0.00");
+        this.decimalFormat = new DecimalFormat("#,##0");
     }
 
     public Calendar settlementDate() {

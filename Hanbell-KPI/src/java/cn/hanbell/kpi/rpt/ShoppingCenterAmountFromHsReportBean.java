@@ -57,7 +57,7 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
     private ShoppingManufacturerBean shoppingManufacturerBean;
 
     public ShoppingCenterAmountFromHsReportBean() {
-        this.floatFormat = new DecimalFormat("#,###.00");
+        this.floatFormat = new DecimalFormat("#,###");
     }
 
     @PostConstruct
@@ -101,10 +101,11 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
             String twFhszj = " in ('1139')";
             String scmFhszj = " in ('KZJ00053')";
             String zcmFhszj = " in ('EZJ00053')";
-            Object[] shb = shoppingAccomuntBean.getShbDateByVdrno("SHB", "C", btnDate, shbFhszj);
-            Object[] thb = shoppingAccomuntBean.getShbDateByVdrno("THB", "A", btnDate, twFhszj);
-            Object[] scm = shoppingAccomuntBean.getShbDateByVdrno("SCOMER", "K", btnDate, scmFhszj);
-            Object[] zcm = shoppingAccomuntBean.getShbDateByVdrno("ZCOMER", "E", btnDate, zcmFhszj);
+            Object[] shb = shoppingAccomuntBean.getShbDateByVdrno("SHB", "C", btnDate, shbFhszj, this.getWhereItlcs(ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA + "/" + ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI).toString());
+         // shb =shoppingAccomuntBean.getGroupSalaryDate("总金额", "SHB", "C", btnDate, getWhereVdrnos("C", "'铸件'").toString(), this.getWhereItlcs(ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA + "/" + ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI).toString());
+            Object[] thb = shoppingAccomuntBean.getShbDateByVdrno("THB", "A", btnDate, twFhszj,"");
+            Object[] scm = shoppingAccomuntBean.getShbDateByVdrno("SCOMER", "K", btnDate, scmFhszj,"");
+            Object[] zcm = shoppingAccomuntBean.getShbDateByVdrno("ZCOMER", "E", btnDate, zcmFhszj,"");
             Object[] cm = new Object[15];
             cm[0] = "CM";
             for (int i = 1; i <= 13; i++) {
@@ -325,7 +326,7 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
         if (value == null || value.compareTo(BigDecimal.ZERO) == 0) {
             return "0";
         } else {
-            value = value.divide(new BigDecimal(10000), 2);
+            value = value.divide(new BigDecimal(10000), 0);
             return floatFormat.format(value);
         }
     }
@@ -334,15 +335,16 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
         if (value == null || value.compareTo(BigDecimal.ZERO) == 0) {
             return "0";
         } else {
-            value = value.divide(new BigDecimal(1000), 2);
+            value = value.divide(new BigDecimal(1000), 0);
             return floatFormat.format(value);
         }
     }
-        public String salarydoubleformat(BigDecimal value) {
+    
+    public String salarydoubleformat(BigDecimal value) {
         if (value == null || value.compareTo(BigDecimal.ZERO) == 0) {
             return "0";
         } else {
-            value = value.divide(new BigDecimal(10000), 2);
+            value = value.divide(new BigDecimal(10000), 0);
             return floatFormat.format(value);
         }
     }

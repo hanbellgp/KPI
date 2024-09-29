@@ -54,46 +54,46 @@
                             <h:outputText  value="#{item.descript}" />
                         </p:column>
                         <p:column style="#{shoppingCenterMaterialAmountReportBean.getBackgroundColor(item.descript)}">
-                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.format(shoppingCenterMaterialAmountReportBean.getValue(item.other1Indicator),item.rate)}"  style="color: #0033ff"  />
+                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.format(shoppingCenterMaterialAmountReportBean.getValue(item.other1Indicator),item.rate)}" />
                         </p:column>
                         <p:column style="#{shoppingCenterMaterialAmountReportBean.getBackgroundColor(item.descript)}">
-                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.format(shoppingCenterMaterialAmountReportBean.getValue(item.other3Indicator),item.rate)}"  style="color: #0033ff"  />
+                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.format(shoppingCenterMaterialAmountReportBean.getValue(item.other3Indicator),item.rate)}"  style="color: #0D0D0D"  />
                         </p:column>
                         <p:column style="#{shoppingCenterMaterialAmountReportBean.getBackgroundColor(item.descript)}" >
-                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.format(shoppingCenterMaterialAmountReportBean.getValue(item.other2Indicator),item.rate)}"  style="color: #0033ff"  />
+                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.format(shoppingCenterMaterialAmountReportBean.getValue(item.other2Indicator),item.rate)}"  style="color: #0D0D0D"  />
                         </p:column>
                         
                            <p:column style="#{shoppingCenterMaterialAmountReportBean.getBackgroundColor(item.descript)}" >
-                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.format(shoppingCenterMaterialAmountReportBean.getValue(item.other4Indicator),item.rate)}"  style="color: #0033ff"  />
+                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.format(shoppingCenterMaterialAmountReportBean.getValue(item.other4Indicator),item.rate)}"  style="color: #0D0D0D"  />
                         </p:column>
                            <p:column style="#{shoppingCenterMaterialAmountReportBean.getBackgroundColor(item.descript)}" >
-                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.format(shoppingCenterMaterialAmountReportBean.getValue(item.other5Indicator),item.rate)}"  style="color: #0033ff"  />
+                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.format(shoppingCenterMaterialAmountReportBean.getValue(item.other5Indicator),item.rate)}"  style="color: #0D0D0D"  />
                         </p:column>
                            <p:column style="#{shoppingCenterMaterialAmountReportBean.getBackgroundColor(item.descript)}" >
-                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.format(shoppingCenterMaterialAmountReportBean.getValue(item.other6Indicator),item.rate)}"  style="color: #0033ff"  />
+                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.format(shoppingCenterMaterialAmountReportBean.getValue(item.other6Indicator),item.rate)}"  style="color: #0D0D0D"  />
                         </p:column>
                         
                         <p:column style="#{shoppingCenterMaterialAmountReportBean.getBackgroundColor(item.descript)}" >
-                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.format(shoppingCenterMaterialAmountReportBean.getValue(item.actualIndicator),item.rate)}"  style="color: #0033ff"  />
+                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.format(shoppingCenterMaterialAmountReportBean.getValue(item.actualIndicator),item.rate)}"  style="color: #0D0D0D"  />
                         </p:column>
 
                         <p:column style="#{shoppingCenterMaterialAmountReportBean.getBackgroundColor(item.descript)}" >
-                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.percentValue(shoppingCenterMaterialAmountReportBean.getValue(item.actualIndicator).doubleValue(),shoppingCenterMaterialAmountReportBean.monthSum)}"  style="color: #0033ff"  />
+                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.percentValue(shoppingCenterMaterialAmountReportBean.getValue(item.actualIndicator).doubleValue(),shoppingCenterMaterialAmountReportBean.monthSum)}"  style="color: #0D0D0D"  />
                         </p:column>
 
                         <p:column style="#{shoppingCenterMaterialAmountReportBean.getBackgroundColor(item.descript)}" >
-                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.format(shoppingCenterMaterialAmountReportBean.getValue(item.benchmarkIndicator),item.rate)}"  style="color: #0033ff"  />
+                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.format(shoppingCenterMaterialAmountReportBean.getValue(item.benchmarkIndicator),item.rate)}"  style="color: #0D0D0D"  />
                         </p:column>
 
                         <p:column style="#{shoppingCenterMaterialAmountReportBean.getBackgroundColor(item.descript)}" >
-                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.format(shoppingCenterMaterialAmountReportBean.contrastValue(item.actualIndicator,item.benchmarkIndicator),item.rate)}"  style="color: #0033ff"  />
+                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.format(shoppingCenterMaterialAmountReportBean.contrastValue(item.actualIndicator,item.benchmarkIndicator),item.rate)}"  style="#{shoppingCenterMaterialAmountReportBean.contrastValue(item.actualIndicator,item.benchmarkIndicator).doubleValue() &lt; 0?'color:red':'color:black'}"  />
                         </p:column>
 
                         <p:column style="#{shoppingCenterMaterialAmountReportBean.getBackgroundColor(item.descript)}" >
-                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.format(item.actualIndicator.nfy,item.rate)}"  style="color: #0033ff"  />
+                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.format(item.actualIndicator.nfy,item.rate)}"  style="color: #0D0D0D"  />
                         </p:column>
                         <p:column style="#{shoppingCenterMaterialAmountReportBean.getBackgroundColor(item.descript)}" >
-                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.percentValue(item.actualIndicator.nfy.doubleValue(),shoppingCenterMaterialAmountReportBean.yearSum)}"  style="color: #0033ff"  />
+                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.percentValue(item.actualIndicator.nfy.doubleValue(),shoppingCenterMaterialAmountReportBean.yearSum)}"  style="color: #0D0D0D"  />
                         </p:column>
                     </p:dataTable>
                 </div>
