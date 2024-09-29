@@ -64,7 +64,7 @@ public class AAEmployeeOtherMailBean extends EmployeeMail {
                 this.init();
                 this.setD(d);
                 this.setMailContent(content.toString());
-                this.getTo().add("C2472@hanbell.com.cn");
+                this.getTo().add(quantityIndicators.get(i).getUserid()+"@hanbell.com.cn");
                   this.mailSubject = quantityIndicators.get(i).getUsername()+"销售业绩表";
                 this.notify(new MailNotify());
                 }
@@ -87,7 +87,7 @@ public class AAEmployeeOtherMailBean extends EmployeeMail {
                 this.init();
                 this.setD(d);
                 this.setMailContent(content.toString());
-                this.getTo().add("C2472@hanbell.com.cn");
+                this.getTo().add(quantityIndicators.get(i).getUserid()+"@hanbell.com.cn");
                   this.mailSubject = quantityIndicators.get(i).getUsername()+"销售业绩表";
                 this.notify(new MailNotify());
                 }
@@ -110,7 +110,7 @@ public class AAEmployeeOtherMailBean extends EmployeeMail {
                 this.init();
                 this.setD(d);
                 this.setMailContent(content.toString());
-                this.getTo().add("C2472@hanbell.com.cn");
+                this.getTo().add(quantityIndicators.get(i).getUserid()+"@hanbell.com.cn");
                   this.mailSubject = quantityIndicators.get(i).getUsername()+"销售业绩表";
                 this.notify(new MailNotify());
                 }
