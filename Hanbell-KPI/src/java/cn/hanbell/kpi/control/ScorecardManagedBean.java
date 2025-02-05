@@ -329,10 +329,10 @@ public class ScorecardManagedBean extends SuperSingleBean<ScorecardContent> {
                         scorecardBean.setPerf(currentEntity, "fy");
                         if (currentEntity.getScoreJexl().contains("object.c${n}")) {
                             //通过系数计算得分
-                            scorecardBean.setContentScoreByCoefficient(currentEntity, col);
+                            scorecardBean.setContentScoreByCoefficient(currentEntity, "fy");
                         } else {
                             // 计算得分
-                            scorecardBean.setContentScore(currentEntity, col);
+                            scorecardBean.setContentScore(currentEntity,  "fy");
                         }
                     }
                 }

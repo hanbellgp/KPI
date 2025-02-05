@@ -193,25 +193,25 @@ public class ScorecardDetail extends SuperDetailEntity {
     @Size(max = 200)
     @Column(name = "ffy")
     private String ffy;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "aq1")
     private String aq1;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "aq2")
     private String aq2;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "aq3")
     private String aq3;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "aq4")
     private String aq4;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "ah1")
     private String ah1;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "ah2")
     private String ah2;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "afy")
     private String afy;
     @Column(name = "pq1")

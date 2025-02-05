@@ -10,8 +10,13 @@ import cn.hanbell.kpi.entity.ClientRanking;
 import cn.hanbell.kpi.entity.SalesTable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -201,9 +206,9 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
 
         StringBuilder sb = new StringBuilder();
         if (aggregatechecked) {
-            sb.append(" Select parentcusno,parentcusna,sum(quantity),sum(amount) FROM  SalesTable where type='${type}' ");
+            sb.append(" Select parentcusno,parentcusna,sum(quantity),sum(amount),n_code_DA FROM  SalesTable where type='${type}' ");
         } else {
-            sb.append(" Select cusno,cusna,sum(quantity),sum(amount) FROM  SalesTable where type='${type}' ");
+            sb.append(" Select cusno,cusna,sum(quantity),sum(amount),n_code_DA FROM  SalesTable where type='${type}' ");
         }
         sb.append(" AND n_code_DA ").append(n_code_DA);
         if (!"".equals(n_code_DC)) {
@@ -219,22 +224,16 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
             sb.append(" and month(cdrdate) BETWEEN 1 AND ${m} ");
         }
         if (aggregatechecked) {
-            sb.append(" GROUP BY parentcusno ORDER BY sum(amount) desc");
+            sb.append(" GROUP BY parentcusno,n_code_DA ORDER BY sum(amount) desc");
         } else {
-            sb.append(" GROUP BY cusno ORDER BY sum(amount) desc");
-        }
-        String sqlsize = sb.toString().replace("${y}", String.valueOf(y)).replace("${m}", String.valueOf(m)).replace("${type}", type).replace("${rowsPerPage}", rowsPerPage);
-
-        if (!"0".equals(rowsPerPage)) {
-            sb.append("  LIMIT ${rowsPerPage} ");
+            sb.append(" GROUP BY cusno,n_code_DA ORDER BY sum(amount) desc");
         }
 
         String sql = sb.toString().replace("${y}", String.valueOf(y)).replace("${m}", String.valueOf(m)).replace("${type}", type).replace("${rowsPerPage}", rowsPerPage);
         try {
             ClientRanking ct;
             List<ClientRanking> list = new ArrayList<>();
-            Query query1 = getEntityManager().createNativeQuery(sqlsize);
-            int size = query1.getResultList().size();
+
             Query query = getEntityManager().createNativeQuery(sql);
             List result = query.getResultList();
             if (result != null && !result.isEmpty()) {
@@ -246,18 +245,9 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
                     ct.setNowrank(String.valueOf(i + 1));
                     ct.setNowshpqy1(row[2].toString());
                     ct.setNowshpamts(row[3].toString());
+                    ct.setN_code_DA(row[4].toString());
                     list.add(ct);
                 }
-                ct = new ClientRanking();
-                ct.setCusna("其他");
-                ct.setNowshpqy1("0");
-                ct.setNowshpamts("0");
-                list.add(ct);
-                ct = new ClientRanking();
-                ct.setCusna("总计");
-                ct.setNowshpqy1(String.valueOf(getSumQuantity(y, m, map, type, monthchecked)));
-                ct.setNowshpamts(String.valueOf(getSumAmount(y, m, map, type, monthchecked)));
-                list.add(ct);
             }
             return list;
         } catch (Exception e) {
@@ -352,9 +342,9 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
 
         StringBuilder sb = new StringBuilder();
         if (aggregatechecked) {
-            sb.append(" Select parentcusno,parentcusna,sum(quantity),sum(amount) FROM  SalesTable where type='${type}' ");
+            sb.append(" Select parentcusno,parentcusna,sum(quantity),sum(amount),n_code_DA FROM  SalesTable where type='${type}' ");
         } else {
-            sb.append(" Select cusno,cusna,sum(quantity),sum(amount) FROM  SalesTable where type='${type}' ");
+            sb.append(" Select cusno,cusna,sum(quantity),sum(amount),n_code_DA FROM  SalesTable where type='${type}' ");
         }
         sb.append(" AND n_code_DA ").append(n_code_DA);
         if (!"".equals(n_code_DC)) {
@@ -370,9 +360,9 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
             sb.append(" and month(cdrdate) BETWEEN 1 AND ${m} ");
         }
         if (aggregatechecked) {
-            sb.append(" GROUP BY parentcusno ORDER BY sum(amount) desc ");
+            sb.append(" GROUP BY parentcusno,n_code_DA ORDER BY sum(amount) desc ");
         } else {
-            sb.append(" GROUP BY cusno ORDER BY sum(amount) desc");
+            sb.append(" GROUP BY cusno,n_code_DA ORDER BY sum(amount) desc");
         }
         String sql = sb.toString().replace("${y}", String.valueOf(y)).replace("${m}", String.valueOf(m)).replace("${type}", type);
         try {
@@ -389,13 +379,9 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
                     ct.setPastrank(String.valueOf(i + 1));
                     ct.setPastshpqy1(row[2].toString());
                     ct.setPastshpamts(row[3].toString());
+                    ct.setN_code_DA(row[4].toString());
                     list.add(ct);
                 }
-                ct = new ClientRanking();
-                ct.setCusna("总计");
-                ct.setPastshpqy1(String.valueOf(getSumQuantity(y, m, map, type, monthchecked)));
-                ct.setPastshpamts(String.valueOf(getSumAmount(y, m, map, type, monthchecked)));
-                list.add(ct);
             }
             return list;
         } catch (Exception e) {
@@ -477,125 +463,225 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
      */
     public List<ClientRanking> getClientList(int y, int m, LinkedHashMap<String, String> map, Boolean monthchecked, Boolean aggregatechecked, String rowsPerPage) {
         String type = "Shipment";
-        List<ClientRanking> list = new ArrayList<>();
+        Set<ClientRanking> set = new HashSet<ClientRanking>();
         //得到已经有排名的list
         //NowClient
         List<ClientRanking> nowList = getNowClient(y, m, map, type, monthchecked, aggregatechecked, rowsPerPage);
+        set.addAll(nowList.stream().map(source -> new ClientRanking(source.getCusno(), source.getCusna(), source.getN_code_DA())).collect(Collectors.toList()));
+
         //PastClient
         List<ClientRanking> pastList = getPastClient(y - 1, m, map, type, monthchecked, aggregatechecked);
+        set.addAll(pastList.stream().map(source -> new ClientRanking(source.getCusno(), source.getCusna(), source.getN_code_DA())).collect(Collectors.toList()));
         //UltClient
         List<ClientRanking> ultList;
         if (monthchecked) {
             ultList = getPastClient(m == 1 ? y - 1 : y, m == 1 ? 12 : m - 1, map, type, monthchecked, aggregatechecked);
+            set.addAll(ultList.stream().map(source -> new ClientRanking(source.getCusno(), source.getCusna(), source.getN_code_DA())).collect(Collectors.toList()));
         } else {
+            set.addAll(pastList);
             ultList = null;
         }
         try {
-            //判断是否有其他项
-            Boolean other = false;
             ClientRanking cr;
-            if (nowList != null && !nowList.isEmpty()) {
-                for (ClientRanking now : nowList) {
-                    cr = new ClientRanking();
-                    cr.setCusno(now.getCusno());
-                    cr.setCusna(now.getCusna());
-                    cr.setNowrank(now.getNowrank());
-                    cr.setNowshpqy1(now.getNowshpqy1());
-                    cr.setNowshpamts(now.getNowshpamts());
-                    cr.setPastshpqy1("0");
-                    cr.setPastshpamts("0");
-                    cr.setUltshpqy1("0");
-                    cr.setUltshpamts("0");
-                    //找到同期数据
-                    if (pastList != null && !pastList.isEmpty()) {
-                        for (ClientRanking past : pastList) {
-                            if (now.getCusna().equals(past.getCusna())) {
-                                cr.setPastrank(past.getPastrank());
-                                cr.setPastshpqy1(past.getPastshpqy1());
-                                cr.setPastshpamts(past.getPastshpamts());
-                                break;
-                            }
-                        }
-                    }
-                    if (ultList != null && !ultList.isEmpty()) {
-                        for (ClientRanking ult : ultList) {
-                            if (now.getCusna().equals(ult.getCusna())) {
-                                cr.setUltshpqy1(ult.getPastshpqy1());
-                                cr.setUltshpamts(ult.getPastshpamts());
-                                break;
-                            }
-                        }
-                    }
-                    if ("其他".equals(now.getCusna())) {
-                        other = true;
-                    }
-                    list.add(cr);
+            //获取厂商并集
+            for (ClientRanking rank : set) {
+                rank.setNowshpqy1("0");
+                rank.setNowshpamts("0");
+                rank.setPastshpqy1("0");
+                rank.setPastshpamts("0");
+                rank.setUltshpqy1("0");
+                rank.setUltshpamts("0");
+                rank.setNowrank("9999");//方便后面排序，这里先设置到最大
+                rank.setPastrank("9999");
+                //当月数据
+                List<ClientRanking> nowFilter = nowList.stream().filter(element -> element.getCusno().equals(rank.getCusno())
+                        && element.getCusna().equals(rank.getCusna())&& element.getN_code_DA().equals(rank.getN_code_DA())).collect(Collectors.toList());
+                if (nowFilter.size() > 0) {
+                    rank.setNowrank(nowFilter.get(0).getNowrank());
+                    rank.setNowshpqy1(nowFilter.get(0).getNowshpqy1());
+                    rank.setNowshpamts(nowFilter.get(0).getNowshpamts());
                 }
-                //计算其他项
-                Double topNowshpqy1 = 0.0;
-                Double topPastshpqy1 = 0.0;
-                Double topUltshpqy1 = 0.0;
 
-                Double topNowshpamts = 0.0;
-                Double topPastshpamts = 0.0;
-                Double topUltshpamts = 0.0;
-                if (other) {
-                    for (ClientRanking ranking : list) {
-                        if (!"总计".equals(ranking.getCusna())) {
-                            topNowshpqy1 += Double.parseDouble(ranking.getNowshpqy1());
-                            topPastshpqy1 += Double.parseDouble(ranking.getPastshpqy1());
-                            topUltshpqy1 += Double.parseDouble(ranking.getUltshpqy1());
-
-                            topNowshpamts += Double.parseDouble(ranking.getNowshpamts());
-                            topPastshpamts += Double.parseDouble(ranking.getPastshpamts());
-                            topUltshpamts += Double.parseDouble(ranking.getUltshpamts());
-                        }
-                        if ("总计".equals(ranking.getCusna())) {
-                            topNowshpqy1 = Double.parseDouble(ranking.getNowshpqy1()) - topNowshpqy1;
-                            topPastshpqy1 = Double.parseDouble(ranking.getPastshpqy1()) - topPastshpqy1;
-                            topUltshpqy1 = Double.parseDouble(ranking.getUltshpqy1()) - topUltshpqy1;
-
-                            topNowshpamts = Double.parseDouble(ranking.getNowshpamts()) - topNowshpamts;
-                            topPastshpamts = Double.parseDouble(ranking.getPastshpamts()) - topPastshpamts;
-                            topUltshpamts = Double.parseDouble(ranking.getUltshpamts()) - topUltshpamts;
-                        }
-                    }
+                //去年同期
+                List<ClientRanking> pastFilter = pastList.stream().filter(element -> element.getCusno().equals(rank.getCusno())
+                        && element.getCusna().equals(rank.getCusna()) && element.getN_code_DA().equals(rank.getN_code_DA()) ).collect(Collectors.toList());
+                if (pastFilter.size() > 0) {
+                    rank.setPastrank(pastFilter.get(0).getPastrank());
+                    rank.setPastshpqy1(pastFilter.get(0).getPastshpqy1());
+                    rank.setPastshpamts(pastFilter.get(0).getPastshpamts());
                 }
-                for (ClientRanking ranking : list) {
-                    if ("其他".equals(ranking.getCusna())) {
-                        ranking.setNowshpqy1(topNowshpqy1.toString());
-                        ranking.setNowshpamts(topNowshpamts.toString());
-                        ranking.setPastshpqy1(topPastshpqy1.toString());
-                        ranking.setPastshpamts(topPastshpamts.toString());
-                        ranking.setUltshpqy1(topUltshpqy1.toString());
-                        ranking.setUltshpamts(topUltshpamts.toString());
-                        if(topNowshpamts<5 && -5<topNowshpamts){
-                             ranking.setNowshpamts("0");
-                        }
-                        if(topPastshpamts<5 && -5<topPastshpamts){
-                             ranking.setPastshpamts("0");
-                        }
-                    }
-                    if ("总计".equals(ranking.getCusna())) {
 
-                    }
-                    ranking.setDifferencevalue(CRdifferencevalue(ranking.getNowshpamts(), ranking.getPastshpamts()));
-                    ranking.setGrowthrate(CRrate(ranking.getNowshpamts(), ranking.getPastshpamts()));
-                    ranking.setShpqy1growthrate(CRrate(ranking.getNowshpqy1(), ranking.getPastshpqy1()));
-                    if (Double.parseDouble(ranking.getGrowthrate()) < 0) {
-                        ranking.setPaststyle("red");
-                    }
-                    ranking.setShpqy1chainrate(CRrate(ranking.getNowshpqy1(), ranking.getUltshpqy1()));
-                    ranking.setShpamtschainrate(CRrate(ranking.getNowshpamts(), ranking.getUltshpamts()));
-                    if (Double.parseDouble(ranking.getShpamtschainrate()) < 0) {
-                        ranking.setUltstyle("red");
+                if (ultList != null) {
+                    List<ClientRanking> ultFilter = ultList.stream().filter(element -> element.getCusno().equals(rank.getCusno())
+                            && element.getCusna().equals(rank.getCusna())  && element.getN_code_DA().equals(rank.getN_code_DA())).collect(Collectors.toList());
+                    if (ultFilter.size() > 0) {
+                        rank.setUltshpqy1(ultFilter.get(0).getPastshpqy1());
+                        rank.setUltshpamts(ultFilter.get(0).getPastshpamts());
                     }
                 }
             }
+            List<ClientRanking> list = new ArrayList<>(set);
+
+            //list排序
+            Collections.sort(list);
+
+
+            //获取求和
+            ClientRanking sumClientRanking = new ClientRanking();
+            sumClientRanking.setCusna("总计");
+            List<ClientRanking> result = new ArrayList<>();
+            Double topNowshpqy1 = 0.0, topPastshpqy1 = 0.0, topUltshpqy1 = 0.0;
+            Double topNowshpamts = 0.0, topPastshpamts = 0.0, topUltshpamts = 0.0;
+            if (list.size() <= Double.parseDouble(rowsPerPage)) {//客户少于页面的行数
+                result = new ArrayList<ClientRanking>(list);
+                for (ClientRanking r : result) {
+                    //计算合计
+                    topNowshpqy1 += Double.parseDouble(r.getNowshpqy1());
+                    topPastshpqy1 += Double.parseDouble(r.getPastshpqy1());
+                    topUltshpqy1 += Double.parseDouble(r.getUltshpqy1());
+                    topNowshpamts += Double.parseDouble(r.getNowshpamts());
+                    topPastshpamts += Double.parseDouble(r.getPastshpamts());
+                    topUltshpamts += Double.parseDouble(r.getUltshpamts());
+
+                    if ("9999".equals(r.getNowrank())) {
+                        r.setNowrank("");
+                    }
+                    if ("9999".equals(r.getPastrank())) {
+                        r.setPastrank("");
+                    }
+                    //调整环比,同比,
+                    r.setDifferencevalue(CRdifferencevalue(r.getNowshpamts(), r.getPastshpamts()));
+                    r.setGrowthrate(CRrate(r.getNowshpamts(), r.getPastshpamts()));
+                    r.setShpqy1growthrate(CRrate(r.getNowshpqy1(), r.getPastshpqy1()));
+                    if (Double.parseDouble(r.getGrowthrate()) < 0) {
+                        r.setPaststyle("red");
+                    }
+                    r.setShpqy1chainrate(CRrate(r.getNowshpqy1(), r.getUltshpqy1()));
+                    r.setShpamtschainrate(CRrate(r.getNowshpamts(), r.getUltshpamts()));
+                    if (Double.parseDouble(r.getShpamtschainrate()) < 0) {
+                        r.setUltstyle("red");
+                    }
+                }
+                
+
+                    
+                //合计
+                sumClientRanking.setNowshpqy1(topNowshpqy1.toString());
+                sumClientRanking.setPastshpqy1(topPastshpqy1.toString());
+                sumClientRanking.setUltshpqy1(topUltshpqy1.toString());
+                sumClientRanking.setNowshpamts(topNowshpamts.toString());
+                sumClientRanking.setPastshpamts(topPastshpamts.toString());
+                sumClientRanking.setUltshpamts(topUltshpamts.toString());
+
+                sumClientRanking.setDifferencevalue(CRdifferencevalue(sumClientRanking.getNowshpamts(), sumClientRanking.getPastshpamts()));
+                sumClientRanking.setGrowthrate(CRrate(sumClientRanking.getNowshpamts(), sumClientRanking.getPastshpamts()));
+                sumClientRanking.setShpqy1growthrate(CRrate(sumClientRanking.getNowshpqy1(), sumClientRanking.getPastshpqy1()));
+                if (Double.parseDouble(sumClientRanking.getGrowthrate()) < 0) {
+                    sumClientRanking.setPaststyle("red");
+                }
+                sumClientRanking.setShpqy1chainrate(CRrate(sumClientRanking.getNowshpqy1(), sumClientRanking.getUltshpqy1()));
+                sumClientRanking.setShpamtschainrate(CRrate(sumClientRanking.getNowshpamts(), sumClientRanking.getUltshpamts()));
+                if (Double.parseDouble(sumClientRanking.getShpamtschainrate()) < 0) {
+                    sumClientRanking.setUltstyle("red");
+                }
+                result.add(sumClientRanking);
+                return result;
+            } else {
+                Double otherNowshpqy1 = 0.0, otherPastshpqy1 = 0.0, otherUltshpqy1 = 0.0;
+                Double otherNowshpamts = 0.0, otherPastshpamts = 0.0, otherUltshpamts = 0.0;
+                int i = 0;
+                for (ClientRanking r : list) {
+                    if ("0".equals(rowsPerPage) || i < Double.parseDouble(rowsPerPage)) {
+                        //调整环比,同比,
+                        r.setDifferencevalue(CRdifferencevalue(r.getNowshpamts(), r.getPastshpamts()));
+                        r.setGrowthrate(CRrate(r.getNowshpamts(), r.getPastshpamts()));
+                        r.setShpqy1growthrate(CRrate(r.getNowshpqy1(), r.getPastshpqy1()));
+                        if (Double.parseDouble(r.getGrowthrate()) < 0) {
+                            r.setPaststyle("red");
+                        }
+                        r.setShpqy1chainrate(CRrate(r.getNowshpqy1(), r.getUltshpqy1()));
+                        r.setShpamtschainrate(CRrate(r.getNowshpamts(), r.getUltshpamts()));
+                        if (Double.parseDouble(r.getShpamtschainrate()) < 0) {
+                            r.setUltstyle("red");
+                        }
+                        if ("9999".equals(r.getNowrank())) {
+                            r.setNowrank("");
+                        }
+                        if ("9999".equals(r.getPastrank())) {
+                            r.setPastrank("");
+                        }
+                        result.add(r);
+                    } else {
+                        otherNowshpqy1 += Double.parseDouble(r.getNowshpqy1());
+                        otherPastshpqy1 += Double.parseDouble(r.getPastshpqy1());
+                        otherUltshpqy1 += Double.parseDouble(r.getUltshpqy1());
+                        otherNowshpamts += Double.parseDouble(r.getNowshpamts());
+                        otherPastshpamts += Double.parseDouble(r.getPastshpamts());
+                        otherUltshpamts += Double.parseDouble(r.getUltshpamts());
+                    }
+                    //计算合计
+                    topNowshpqy1 += Double.parseDouble(r.getNowshpqy1());
+                    topPastshpqy1 += Double.parseDouble(r.getPastshpqy1());
+                    topUltshpqy1 += Double.parseDouble(r.getUltshpqy1());
+                    topNowshpamts += Double.parseDouble(r.getNowshpamts());
+                    topPastshpamts += Double.parseDouble(r.getPastshpamts());
+                    topUltshpamts += Double.parseDouble(r.getUltshpamts());
+                    i++;
+                }
+                //选择所有时前端不会有"其他行"。
+                //当刷新的页面的数据小于或者等于页面选择的数据。也没有其他
+                if (!"0".equals(rowsPerPage) && list.size() > Integer.valueOf(rowsPerPage)) {
+                    //其他
+                    ClientRanking otherClientRanking = new ClientRanking();
+                    otherClientRanking.setCusna("其他");
+                    otherClientRanking.setNowshpqy1(otherNowshpqy1.toString());
+                    otherClientRanking.setPastshpqy1(otherPastshpqy1.toString());
+                    otherClientRanking.setUltshpqy1(otherUltshpqy1.toString());
+                    otherClientRanking.setNowshpamts(otherNowshpamts.toString());
+                    otherClientRanking.setPastshpamts(otherPastshpamts.toString());
+                    otherClientRanking.setUltshpamts(otherUltshpamts.toString());
+
+                    otherClientRanking.setDifferencevalue(CRdifferencevalue(otherClientRanking.getNowshpamts(), otherClientRanking.getPastshpamts()));
+                    otherClientRanking.setGrowthrate(CRrate(otherClientRanking.getNowshpamts(), otherClientRanking.getPastshpamts()));
+                    otherClientRanking.setShpqy1growthrate(CRrate(otherClientRanking.getNowshpqy1(), otherClientRanking.getPastshpqy1()));
+                    if (Double.parseDouble(otherClientRanking.getGrowthrate()) < 0) {
+                        otherClientRanking.setPaststyle("red");
+                    }
+                    otherClientRanking.setShpqy1chainrate(CRrate(otherClientRanking.getNowshpqy1(), otherClientRanking.getUltshpqy1()));
+                    otherClientRanking.setShpamtschainrate(CRrate(otherClientRanking.getNowshpamts(), otherClientRanking.getUltshpamts()));
+                    if (Double.parseDouble(otherClientRanking.getShpamtschainrate()) < 0) {
+                        otherClientRanking.setUltstyle("red");
+                    }
+                    result.add(otherClientRanking);
+                }
+
+                //合计
+                sumClientRanking.setNowshpqy1(topNowshpqy1.toString());
+                sumClientRanking.setPastshpqy1(topPastshpqy1.toString());
+                sumClientRanking.setUltshpqy1(topUltshpqy1.toString());
+                sumClientRanking.setNowshpamts(topNowshpamts.toString());
+                sumClientRanking.setPastshpamts(topPastshpamts.toString());
+                sumClientRanking.setUltshpamts(topUltshpamts.toString());
+
+                sumClientRanking.setDifferencevalue(CRdifferencevalue(sumClientRanking.getNowshpamts(), sumClientRanking.getPastshpamts()));
+                sumClientRanking.setGrowthrate(CRrate(sumClientRanking.getNowshpamts(), sumClientRanking.getPastshpamts()));
+                sumClientRanking.setShpqy1growthrate(CRrate(sumClientRanking.getNowshpqy1(), sumClientRanking.getPastshpqy1()));
+                if (Double.parseDouble(sumClientRanking.getGrowthrate()) < 0) {
+                    sumClientRanking.setPaststyle("red");
+                }
+                sumClientRanking.setShpqy1chainrate(CRrate(sumClientRanking.getNowshpqy1(), sumClientRanking.getUltshpqy1()));
+                sumClientRanking.setShpamtschainrate(CRrate(sumClientRanking.getNowshpamts(), sumClientRanking.getUltshpamts()));
+                if (Double.parseDouble(sumClientRanking.getShpamtschainrate()) < 0) {
+                    sumClientRanking.setUltstyle("red");
+                }
+                result.add(sumClientRanking);
+                return result;
+            }
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("cn.hanbell.kpi.ejb.SalesTableBean.getClientList()" + e.toString());
         }
-        return list;
+        return null;
     }
 
     /**
@@ -613,13 +699,13 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
         List<ClientRanking> list = new ArrayList<>();
         //得到已经有排名的list
         //NowClient
-        List<ClientRanking> nowList = getNowClientByCodeDA(y, m, map, type, monthchecked, aggregatechecked, rowsPerPage);
+        List<ClientRanking> nowList = getNowClient(y, m, map, type, monthchecked, aggregatechecked, rowsPerPage);
         //PastClient
-        List<ClientRanking> pastList = getPastClientByCodeDA(y - 1, m, map, type, monthchecked, aggregatechecked);
+        List<ClientRanking> pastList = getPastClient(y - 1, m, map, type, monthchecked, aggregatechecked);
         //UltClient
         List<ClientRanking> ultList;
         if (monthchecked) {
-            ultList = getPastClientByCodeDA(m == 1 ? y - 1 : y, m == 1 ? 12 : m - 1, map, type, monthchecked, aggregatechecked);
+            ultList = getPastClient(m == 1 ? y - 1 : y, m == 1 ? 12 : m - 1, map, type, monthchecked, aggregatechecked);
         } else {
             ultList = null;
         }

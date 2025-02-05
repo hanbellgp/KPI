@@ -314,24 +314,30 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
         cell = row.createCell(11);
         cell.setCellValue("行政职系数");
         cell.setCellStyle(cellStyle);
+        
         cell = row.createCell(12);
-        cell.setCellValue("是否超过100分");
+        cell.setCellValue("最低分");
         cell.setCellStyle(cellStyle);
         cell = row.createCell(13);
+        cell.setCellValue("最高分");
+        cell.setCellStyle(cellStyle);
+        
+        
+        cell = row.createCell(14);
         cell.setCellValue("计算方式");
         cell.setCellStyle(cellStyle);
-        cell = row.createCell(14);
+        cell = row.createCell(15);
         cell.setCellValue("课级考核表");
         cell.setCellStyle(cellStyle);
-        cell = row.createCell(15);
+        cell = row.createCell(16);
         cell.setCellValue("部级考核表");
         cell.setCellStyle(cellStyle);
 
-        cell = row.createCell(16);
+        cell = row.createCell(17);
         cell.setCellValue("奖金发放比率");
         cell.setCellStyle(cellStyle);
 
-        cell = row.createCell(17);
+        cell = row.createCell(18);
         cell.setCellValue("在职状态");
         cell.setCellStyle(cellStyle);
         
@@ -382,32 +388,35 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
                 cell = row.createCell(10);
                 cell.setCellStyle(cellStyle);
                 cell.setCellValue(p.getIsadministrative() != null && p.getIsadministrative() ? "T" : "F");
-                
-                  cell = row.createCell(11);
+
+                cell = row.createCell(11);
                 cell.setCellStyle(cellStyle);
                 cell.setCellValue(p.getCoefficient());
 
                 cell = row.createCell(12);
                 cell.setCellStyle(cellStyle);
-                cell.setCellValue(p.getIshundred()!= null && p.getIshundred() ? "T" : "F");
-
-                cell = row.createCell(13);
+                cell.setCellValue(p.getMinscore() != null ? p.getMinscore().doubleValue() : 0);
+                cell = row.createCell(14);
                 cell.setCellStyle(cellStyle);
-                cell.setCellValue(p.getAssessmentmethod() != null ? p.getAssessmentmethod() : "");
+                cell.setCellValue(p.getMaxscore() != null ? p.getMaxscore().doubleValue() : 0);
 
                 cell = row.createCell(14);
                 cell.setCellStyle(cellStyle);
-                cell.setCellValue(p.getClassscorecard() != null ? p.getClassscorecard() : "");
+                cell.setCellValue(p.getAssessmentmethod() != null ? p.getAssessmentmethod() : "");
 
                 cell = row.createCell(15);
                 cell.setCellStyle(cellStyle);
-                cell.setCellValue(p.getDepartmentscorecard() != null ? p.getDepartmentscorecard() : "");
+                cell.setCellValue(p.getClassscorecard() != null ? p.getClassscorecard() : "");
 
                 cell = row.createCell(16);
                 cell.setCellStyle(cellStyle);
-                cell.setCellValue(p.getPercentage() != null ? p.getPercentage().doubleValue() : 0.0);
+                cell.setCellValue(p.getDepartmentscorecard() != null ? p.getDepartmentscorecard() : "");
 
                 cell = row.createCell(17);
+                cell.setCellStyle(cellStyle);
+                cell.setCellValue(p.getPercentage() != null ? p.getPercentage().doubleValue() : 0.0);
+
+                cell = row.createCell(18);
                 cell.setCellStyle(cellStyle);
                 cell.setCellValue(p.getStatus() != null ? p.getStatus() : "");
 
@@ -541,14 +550,16 @@ public class PersonSetManagedBean extends SuperSingleBean<PersonSet> {
                     PersonSet p = new PersonSet(cellToVlaue(row.getCell(0)), cellToVlaue(row.getCell(1)), cellToVlaue(row.getCell(2)),
                             cellToVlaue(row.getCell(3)), cellToVlaue(row.getCell(4)), cellToVlaue(row.getCell(6)),
                             cellToVlaue(row.getCell(7)), cellToVlaue(row.getCell(8)), cellToVlaue(row.getCell(5)),
-                            cellToVlaue(row.getCell(9)), cellToVlaue(row.getCell(17)), userManagedBean.getCurrentUser().getUsername());
+                            cellToVlaue(row.getCell(9)), cellToVlaue(row.getCell(18)), userManagedBean.getCurrentUser().getUsername());
                     p.setIsadministrative("T".equals(cellToVlaue(row.getCell(10))) ? true : false);
                     p.setCoefficient(Double.valueOf(cellToVlaue(row.getCell(11))));
-                    p.setIshundred("T".equals(cellToVlaue(row.getCell(12))) ? true : false);
-                    p.setAssessmentmethod(cellToVlaue(row.getCell(13)));
-                    p.setClassscorecard(cellToVlaue(row.getCell(14)));
-                    p.setDepartmentscorecard(cellToVlaue(row.getCell(15)));
-                    p.setPercentage(new BigDecimal(cellToVlaue(row.getCell(16))).multiply(BigDecimal.TEN).multiply(BigDecimal.TEN));
+                    //p.setIshundred("T".equals(cellToVlaue(row.getCell(12))) ? true : false);
+                    p.setMinscore(new BigDecimal(cellToVlaue(row.getCell(12))));
+                    p.setMaxscore(new BigDecimal(cellToVlaue(row.getCell(13))));
+                    p.setAssessmentmethod(cellToVlaue(row.getCell(14)));
+                    p.setClassscorecard(cellToVlaue(row.getCell(15)));
+                    p.setDepartmentscorecard(cellToVlaue(row.getCell(16)));
+                    p.setPercentage(new BigDecimal(cellToVlaue(row.getCell(17))).multiply(BigDecimal.TEN).multiply(BigDecimal.TEN));
                     addlist.add(p);
                     if (!doBeforeMerge(p)) {
                         return;

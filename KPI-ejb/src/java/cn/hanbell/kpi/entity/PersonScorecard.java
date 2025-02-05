@@ -284,6 +284,31 @@ public class PersonScorecard extends SuperEntity {
         this.status4 = "N";
     }
 
+    
+    public PersonScorecard(String userid, String username, Integer year, Integer quarter, BigDecimal ratio1, BigDecimal ratio2, BigDecimal ratio3, BigDecimal ratio4) {
+        this(userid, username, year);
+        if (quarter == 1) {
+            this.subjectivityratio1 = ratio1;
+            this.objectiveratio1 = ratio2;
+            this.performanceratio1 = ratio3;
+            this.scorecardratio1 = ratio4;
+        } else if (quarter == 2) {
+            this.subjectivityratio2 = ratio1;
+            this.objectiveratio2 = ratio2;
+            this.performanceratio2 = ratio3;
+            this.scorecardratio2 = ratio4;
+        } else if (quarter == 3) {
+            this.subjectivityratio3 = ratio1;
+            this.objectiveratio3 = ratio2;
+            this.performanceratio3 = ratio3;
+            this.scorecardratio3 = ratio4;
+        } else if (quarter == 4) {
+            this.subjectivityratio4 = ratio1;
+            this.objectiveratio4 = ratio2;
+            this.performanceratio4 = ratio3;
+            this.scorecardratio4 = ratio4;
+        }
+    }
     public PersonScorecard() {
     }
 

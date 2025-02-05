@@ -14,8 +14,6 @@ public class SalesOrderQuantityAJ7 extends SalesOrderQuantity {
     public SalesOrderQuantityAJ7() {
         super();
         queryParams.put("facno", "C");
-        queryParams.put("deptno", " '1T100' ");
-        // queryParams.put("decode", "2");
         queryParams.put("n_code_DA", "='AH' ");
         queryParams.put("n_code_CD", " like '%WX%' ");
         queryParams.put("n_code_DC", " NOT LIKE 'SAM%' ");

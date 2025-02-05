@@ -143,25 +143,27 @@ public class AuditClientRankingReportBean extends BscQueryTableManageBean implem
                 break;
             case "1Q000-SDS":
                 map.put("deptnoname", "空压机组产品部");
-                map.put("daname", "空压机组");
+                map.put("daname", "SDS");
                 map.put("n_code_DA", "= 'AA'");
                 map.put("n_code_DC", " = 'SDS' ");
                 break;
-            case "1G100":
+              case "1G000":
+                map.put("deptnoname", "空压机体营销一课");
+                map.put("daname", "空压机体");
+                map.put("n_code_DA", "= 'AH'");
+                break;
+                
+            case "1G000-AH":
                 map.put("deptnoname", "空压机体营销一课");
                 map.put("daname", "A机体");
                 map.put("n_code_DA", "= 'AH'");
                 map.put("n_code_DC", " LIKE 'A%'");
                 break;
-            case "1G000":
-                if (indicatorChart.getRemark().contains("SAM")) {
-                    map.put("deptnoname", "空压机体涡旋");
-                    map.put("daname", "涡旋");
-                    map.put("n_code_DA", " in ('AH','S') ");
-                    map.put("n_code_DC", " in ('SAM-3HP','SAM-5HP','SAM-7HP','SAM-10HP','SF','SC') ");
-                } else {
-                    map.clear();
-                }
+            case "1G000-S":
+                map.put("deptnoname", "空压机体涡旋");
+                map.put("daname", "涡旋");
+                map.put("n_code_DA", " in ('AH','S') ");
+                map.put("n_code_DC", " in ('SAM-3HP','SAM-5HP','SAM-7HP','SAM-10HP','SF','SC') ");
                 break;
             case "1H000":
                 map.put("deptnoname", "真空产品部");
@@ -188,6 +190,11 @@ public class AuditClientRankingReportBean extends BscQueryTableManageBean implem
                 map.put("deptnoname", "汉钟");
                 map.put("daname", "汉钟");
                 map.put("n_code_DA", " Not In('RT','OH') ");
+                break;
+            case "10000": 
+                map.put("deptnoname", "汉钟+浙江柯茂+上海柯茂");
+                map.put("daname", "汉钟+浙江柯茂+上海柯茂");
+                map.put("n_code_DA", "  In('RT','OH','AA','AH','P','R') ");
                 break;
             default:
                 map.put("deptnoname", "");

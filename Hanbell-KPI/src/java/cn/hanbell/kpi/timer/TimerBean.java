@@ -138,8 +138,8 @@ public class TimerBean {
                         indicatorBean.updatePerformance(e);
                         Indicator newEntity=indicatorBean.findById(e.getId());
                         indicatorBean.update(newEntity);
-                        log4j.info(String.format("成功执行%s:更新指标%s达成率:Id:%d", "updateIndicatorActualValue", e.getName(),
-                                e.getId()));
+                        log4j.info(String.format("成功执行%s:更新指标%s达成率:Id:%d。达成率是:%s", "updateIndicatorActualValue", e.getName(),
+                                e.getId(),newEntity.getPerformanceIndicator().getN01()));
                     } catch (Exception ex) {
                         log4j.error(
                                 String.format("执行%s:更新指标%s:Id:%d时异常", "updateIndicatorActualValue", e.getName(), e.getId()),

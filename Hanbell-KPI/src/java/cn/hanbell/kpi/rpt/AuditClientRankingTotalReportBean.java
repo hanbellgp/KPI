@@ -49,7 +49,7 @@ public class AuditClientRankingTotalReportBean extends AuditClientRankingReportB
                     }
                     map.put("nowtitle", "本年");
                 }
-                list = salesTableBean.getClientListByCodeDA(year, month, map, monthchecked, aggregatechecked, rowsPerPage);
+                list = salesTableBean.getClientList(year, month, map, monthchecked, aggregatechecked, rowsPerPage);
                 if (list.size() <= 0) {
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "无法查询到该日期的数据，请重新查询！"));
                 } else {

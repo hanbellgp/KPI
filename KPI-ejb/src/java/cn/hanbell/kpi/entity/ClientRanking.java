@@ -6,6 +6,7 @@
 package cn.hanbell.kpi.entity;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,7 +15,7 @@ import javax.persistence.Id;
  *
  * @author C1879 此对象用于查询销售统计表数据，数据库无此表
  */
-public class ClientRanking implements Serializable {
+public class ClientRanking implements Serializable,Comparable {
 
     private static long serialVersionUID = 1L;
 
@@ -89,6 +90,17 @@ public class ClientRanking implements Serializable {
     //数量同比
     private String shpqy1growthrate;
 
+    public ClientRanking() {
+    }
+
+    
+    public ClientRanking(String cusno, String cusna, String n_code_DA) {
+        this.cusno = cusno;
+        this.cusna = cusna;
+        this.n_code_DA = n_code_DA;
+    }
+
+    
     public Long getId() {
         return id;
     }
@@ -99,20 +111,36 @@ public class ClientRanking implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (getId() != null ? getId().hashCode() : 0);
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.cusno);
+        hash = 79 * hash + Objects.hashCode(this.n_code_DA);
         return hash;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof ClientRanking)) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        ClientRanking other = (ClientRanking) object;
-        return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ClientRanking other = (ClientRanking) obj;
+        if (!Objects.equals(this.cusno, other.cusno)) {
+            return false;
+        }
+        if (!Objects.equals(this.cusna, other.cusna)) {
+            return false;
+        }
+        if (!Objects.equals(this.n_code_DA, other.n_code_DA)) {
+            return false;
+        }
+        return true;
     }
+
 
     @Override
     public String toString() {
@@ -371,4 +399,23 @@ public class ClientRanking implements Serializable {
         this.n_code_DA = n_code_DA;
     }
 
+    //
+    @Override
+    public int compareTo(Object o1) {
+        ClientRanking o2 = (ClientRanking) o1;
+        int thisrank = Integer.valueOf(this.getNowrank());
+        int o2rank = Integer.valueOf(o2.getNowrank());
+        if (thisrank == o2rank) {
+            double thisUlshpamts = Math.abs(Double.valueOf(this.getUltshpamts()));
+            double o2Ulshpamts = Math.abs(Double.valueOf(o2.getUltshpamts()));
+            if (thisUlshpamts == o2Ulshpamts) {
+                return Double.valueOf(this.getPastrank()) - Double.valueOf(o2.getPastrank()) >= 1 ? 1 : -1;
+            } else {
+                return thisUlshpamts - o2Ulshpamts >= 1 ? -1 : 1;
+            }
+        } else {
+            return thisrank - o2rank >= 1 ? 1 : -1;
+        }
+    }
 }
+

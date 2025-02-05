@@ -30,7 +30,7 @@ public class ShipmentQuantityAJ0 extends ShipmentQuantity {
         StringBuilder sb = new StringBuilder();
         //调出
         sb.append("SELECT ISNULL(sum(trnqy1),0) from invdta d,invhad h WHERE d.facno=h.facno AND d.trno = h.trno AND  d.trtype='IAC' AND d.wareh='W01' ");
-        sb.append(" AND h.trno in (SELECT DISTINCT a.trno FROM invdta b,invhad a WHERE b.facno=a.facno AND b.trno = a.trno AND b.trtype='IAC' AND b.wareh='EW01' AND b.iocode='1' AND a.status<>'W' ");
+        sb.append(" AND h.trno in (SELECT DISTINCT a.trno FROM invdta b,invhad a WHERE b.facno=a.facno AND b.trno = a.trno AND b.trtype='IAC' AND b.wareh  in('EM01','EW01') AND b.iocode='1' AND a.status<>'W' ");
         //#ITCLS CHANGE TODO #
         sb.append(" AND b.itcls IN ('3876','3879','3880','3886','3889','3890','3976','3979','3980') ");
         sb.append(" AND a.facno='C' AND year(a.trdate)=${y} and month(a.trdate)= ${m} ");
@@ -66,7 +66,7 @@ public class ShipmentQuantityAJ0 extends ShipmentQuantity {
 
         sb.setLength(0);
         //调入
-        sb.append("SELECT ISNULL(sum(trnqy1),0) from invdta d,invhad h WHERE d.facno=h.facno AND d.trno = h.trno AND  d.trtype='IAC' AND d.wareh='EW01' ");
+        sb.append("SELECT ISNULL(sum(trnqy1),0) from invdta d,invhad h WHERE d.facno=h.facno AND d.trno = h.trno AND  d.trtype='IAC' AND d.wareh  in('EM01','EW01') ");
         sb.append(" AND h.trno in (SELECT DISTINCT a.trno FROM invdta b,invhad a WHERE b.facno=a.facno AND b.trno = a.trno AND b.trtype='IAC' AND b.wareh='W01' AND b.iocode='1' AND a.status<>'W' ");
         //#ITCLS CHANGE TODO #
         sb.append(" AND b.itcls IN ('3876','3879','3880','3886','3889','3890','3976','3979','3980') ");
