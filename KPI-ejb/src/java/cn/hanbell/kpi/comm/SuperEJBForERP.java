@@ -69,7 +69,7 @@ public class SuperEJBForERP implements Serializable {
     @PersistenceContext(unitName = "PU_vbhberp")
     private EntityManager em_vbhberp;
 
-    @PersistenceContext(unitName = "PU_vhberp")
+   @PersistenceContext(unitName = "PU_vhberp")
     private EntityManager em_vhberp;
 
     @PersistenceContext(unitName = "SHBEXCH-ejbPU")

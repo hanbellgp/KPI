@@ -11,7 +11,6 @@ import cn.hanbell.kpi.entity.SalesTable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -85,25 +84,7 @@ public class SalesTableBean extends SuperEJBForKPI<SalesTable> {
 
     }
 
-//    /**
-//     * 增加删除逻辑--RT新统计逻辑需要删除上海柯茂销售给上海汉钟RT部分
-//     *
-//     * @param y
-//     * @param m
-//     */
-//    private void deleteShbRT(int y, int m) {
-//        StringBuilder sb = new StringBuilder();
-//        sb.append(" delete from SalesTable  WHERE  cusno='KSH00004' and n_code_DC='RT' AND  year(cdrdate)=${y} and month(cdrdate)=${m}  ");
-//        String sql = sb.toString().replace("${y}", String.valueOf(y)).replace("${m}", String.valueOf(m));
-//        try {
-//            Query query = getEntityManager().createNativeQuery(sql);
-//            int count = query.executeUpdate();
-//            System.out.println("cn.hanbell.kpi.ejb.SalesTableBean.deleteShbRT()受影响行数：" + count);
-//        } catch (Exception e) {
-//            System.out.println("cn.hanbell.kpi.ejb.SalesTableBean.deleteShbRT()" + e);
-//        }
-//        
-//    }
+    
     //更新到KPI
     public boolean updateSalesTable(int y, int m, String daString, String typeString) {
         String da = daString == null ? "" : daString;

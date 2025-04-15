@@ -36,7 +36,7 @@
                 <div  style="display:#{shoppingCenterAmountFromHsReportBean.statusMap.displaydiv2};" align="center">
                     <p:panelGrid  styleClass="plgSheetData Wid100">
                         <p:row>
-                            <p:column style="width: 8%;text-align: right">名称</p:column>
+                            <p:column style="width: 10%;text-align: right">名称</p:column>
                             <p:column style="width: 6.5%;text-align: right">1月</p:column>
                             <p:column style="width: 6.5%;text-align: right" >2月</p:column>
                             <p:column style="width: 6.5%;text-align: right" >3月</p:column>
@@ -49,29 +49,29 @@
                             <p:column style="width: 6.6%;text-align: right" >10月</p:column>
                             <p:column style="width: 6.6%;text-align: right" >11月</p:column>
                             <p:column style="width: 6.6%;text-align: right">12月</p:column>
-                            <p:column style="width: 13.4%;text-align: right" >合计</p:column>
+                            <p:column style="width: 10%;text-align: right" >合计</p:column>
                         </p:row>
-                        <c:forEach items="#{shoppingCenterAmountFromHsReportBean.salaryList}" var="item" >
+                        <c:forEach items="#{shoppingCenterAmountFromHsReportBean.list1}" var="item" >
                             <p:row>
-                                <p:column style="text-align: right">#{item[0]}(#{item[1]})</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==1?'color:red':''};text-align: right">#{item[0] == '占比'?item[2]: shoppingCenterAmountFromHsReportBean.salarydoubleformat(item[2])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==2?'color:red':''};text-align: right">#{item[0] == '占比'?item[3]: shoppingCenterAmountFromHsReportBean.salarydoubleformat(item[3])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==3?'color:red':''};text-align: right">#{item[0] == '占比'?item[4]: shoppingCenterAmountFromHsReportBean.salarydoubleformat(item[4])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==4?'color:red':''};text-align: right">#{item[0] == '占比'?item[5]: shoppingCenterAmountFromHsReportBean.salarydoubleformat(item[5])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==5?'color:red':''};text-align: right">#{item[0] == '占比'?item[6]: shoppingCenterAmountFromHsReportBean.salarydoubleformat(item[6])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==6?'color:red':''};text-align: right">#{item[0] == '占比'?item[7]: shoppingCenterAmountFromHsReportBean.salarydoubleformat(item[7])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==7?'color:red':''};text-align: right">#{item[0] == '占比'?item[8]: shoppingCenterAmountFromHsReportBean.salarydoubleformat(item[8])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==8?'color:red':''};text-align: right">#{item[0] == '占比'?item[9]: shoppingCenterAmountFromHsReportBean.salarydoubleformat(item[9])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==9?'color:red':''};text-align: right">#{item[0] == '占比'?item[10]: shoppingCenterAmountFromHsReportBean.salarydoubleformat(item[10])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==10?'color:red':''};text-align: right">#{item[0] == '占比'?item[11]: shoppingCenterAmountFromHsReportBean.salarydoubleformat(item[11])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==11?'color:red':''};text-align: right">#{item[0] == '占比'?item[12]: shoppingCenterAmountFromHsReportBean.salarydoubleformat(item[12])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==12?'color:red':''};text-align: right">#{item[0] == '占比'?item[13]: shoppingCenterAmountFromHsReportBean.salarydoubleformat(item[13])}</p:column>
-                                <p:column style="text-align: right">#{item[0] == '占比'?item[14]: shoppingCenterAmountFromHsReportBean.salarydoubleformat(item[14])}</p:column>
+                                <p:column style="text-align: right">#{item.name}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==1?'color:red':''};text-align: right">#{item.m1}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==2?'color:red':''};text-align: right">#{item.m2}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==3?'color:red':''};text-align: right">#{item.m3}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==4?'color:red':''};text-align: right">#{item.m4}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==5?'color:red':''};text-align: right">#{item.m5}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==6?'color:red':''};text-align: right">#{item.m6}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==7?'color:red':''};text-align: right">#{item.m7}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==8?'color:red':''};text-align: right">#{item.m8}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==9?'color:red':''};text-align: right">#{item.m9}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==10?'color:red':''};text-align: right">#{item.m10}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==11?'color:red':''};text-align: right">#{item.m11}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==12?'color:red':''};text-align: right">#{item.m12}</p:column>
+                                <p:column style="text-align: right">#{item.sum}</p:column>
                             </p:row>
                         </c:forEach>
                     </p:panelGrid >
                 </div>
-               
+                
                 <p:panelGrid  styleClass="plgDetail Wid100">
                     <f:facet name="header"  >
                         <p:row >
@@ -87,7 +87,7 @@
                 <div  style="display:#{shoppingCenterAmountFromHsReportBean.statusMap.displaydiv2};" align="center">
                     <p:panelGrid  styleClass="plgSheetData Wid100">
                         <p:row>
-                            <p:column style="width: 8%;text-align: right">名称</p:column>
+                              <p:column style="width: 10%;text-align: right">名称</p:column>
                             <p:column style="width: 6.5%;text-align: right">1月</p:column>
                             <p:column style="width: 6.5%;text-align: right" >2月</p:column>
                             <p:column style="width: 6.5%;text-align: right" >3月</p:column>
@@ -100,24 +100,24 @@
                             <p:column style="width: 6.6%;text-align: right" >10月</p:column>
                             <p:column style="width: 6.6%;text-align: right" >11月</p:column>
                             <p:column style="width: 6.6%;text-align: right">12月</p:column>
-                            <p:column style="width: 13.4%;text-align: right" >合计</p:column>
+                            <p:column style="width: 10%;text-align: right" >合计</p:column>
                         </p:row>
-                        <c:forEach items="#{shoppingCenterAmountFromHsReportBean.weightList}" var="item" >
+                        <c:forEach items="#{shoppingCenterAmountFromHsReportBean.list2}" var="item" >
                             <p:row>
-                                <p:column style="text-align: right">#{item[0]}(#{item[1]})</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==1?'color:red':''};text-align: right">#{item[0] == '占比'?item[2]: shoppingCenterAmountFromHsReportBean.weightdoubleformat(item[2])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==2?'color:red':''};text-align: right">#{item[0] == '占比'?item[3]: shoppingCenterAmountFromHsReportBean.weightdoubleformat(item[3])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==3?'color:red':''};text-align: right">#{item[0] == '占比'?item[4]: shoppingCenterAmountFromHsReportBean.weightdoubleformat(item[4])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==4?'color:red':''};text-align: right">#{item[0] == '占比'?item[5]: shoppingCenterAmountFromHsReportBean.weightdoubleformat(item[5])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==5?'color:red':''};text-align: right">#{item[0] == '占比'?item[6]: shoppingCenterAmountFromHsReportBean.weightdoubleformat(item[6])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==6?'color:red':''};text-align: right">#{item[0] == '占比'?item[7]: shoppingCenterAmountFromHsReportBean.weightdoubleformat(item[7])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==7?'color:red':''};text-align: right">#{item[0] == '占比'?item[8]: shoppingCenterAmountFromHsReportBean.weightdoubleformat(item[8])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==8?'color:red':''};text-align: right">#{item[0] == '占比'?item[9]: shoppingCenterAmountFromHsReportBean.weightdoubleformat(item[9])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==9?'color:red':''};text-align: right">#{item[0] == '占比'?item[10]: shoppingCenterAmountFromHsReportBean.weightdoubleformat(item[10])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==10?'color:red':''};text-align: right">#{item[0] == '占比'?item[11]: shoppingCenterAmountFromHsReportBean.weightdoubleformat(item[11])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==11?'color:red':''};text-align: right">#{item[0] == '占比'?item[12]: shoppingCenterAmountFromHsReportBean.weightdoubleformat(item[12])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==12?'color:red':''};text-align: right">#{item[0] == '占比'?item[13]: shoppingCenterAmountFromHsReportBean.weightdoubleformat(item[13])}</p:column>
-                                <p:column style="text-align: right">#{item[0] == '占比'?item[14]: shoppingCenterAmountFromHsReportBean.weightdoubleformat(item[14])}</p:column>
+                                <p:column style="text-align: right">#{item.name}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==1?'color:red':''};text-align: right">#{item.m1}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==2?'color:red':''};text-align: right">#{item.m2}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==3?'color:red':''};text-align: right">#{item.m3}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==4?'color:red':''};text-align: right">#{item.m4}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==5?'color:red':''};text-align: right">#{item.m5}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==6?'color:red':''};text-align: right">#{item.m6}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==7?'color:red':''};text-align: right">#{item.m7}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==8?'color:red':''};text-align: right">#{item.m8}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==9?'color:red':''};text-align: right">#{item.m9}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==10?'color:red':''};text-align: right">#{item.m10}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==11?'color:red':''};text-align: right">#{item.m11}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==12?'color:red':''};text-align: right">#{item.m12}</p:column>
+                                <p:column style="text-align: right">#{item.sum}</p:column>
                             </p:row>
                         </c:forEach>
                     </p:panelGrid >
@@ -126,7 +126,7 @@
                  <p:panelGrid id="exchangeRateValue" styleClass="plgDetail Wid100">
                     <f:facet name="header"  >
                         <p:row >
-                            <p:column style="font-size: 21px;letter-spacing:2px;font-weight: 600" >#{shoppingCenterAmountFromHsReportBean.statusMap.title}年集团向汉声铸件采购金额
+                            <p:column style="font-size: 21px;letter-spacing:2px;font-weight: 600" >#{shoppingCenterAmountFromHsReportBean.statusMap.title}年集团向汉声加工金额
                                 <span  style="float: right;font-size: 16px;" >单位：万元</span></p:column>
                         </p:row>
                     </f:facet>
@@ -145,43 +145,46 @@
                     </script> 
                     <p:panelGrid   styleClass="plgSheetData Wid100">
                         <p:row>
-                            <p:column style="width: 8% ;text-align: right">名称</p:column>
+                               <p:column style="width: 10%;text-align: right">名称</p:column>
                             <p:column style="width: 6.5%;text-align: right">1月</p:column>
                             <p:column style="width: 6.5%;text-align: right" >2月</p:column>
                             <p:column style="width: 6.5%;text-align: right" >3月</p:column>
                             <p:column style="width: 6.5%;text-align: right" >4月</p:column>
                             <p:column style="width: 6.5%;text-align: right" >5月</p:column>
                             <p:column style="width: 6.5%;text-align: right">6月</p:column>
-                            <p:column style="width: 6.6%;text-align: right" >7月</p:column>
-                            <p:column style="width: 6.6%;text-align: right"  >8月</p:column>
-                            <p:column style="width: 6.6%;text-align: right"  >9月</p:column>
-                            <p:column style="width: 6.6%;text-align: right"  >10月</p:column>
-                            <p:column style="width: 6.6%;text-align: right"  >11月</p:column>
-                            <p:column style="width: 6.6%;text-align: right"  >12月</p:column>
-                            <p:column style="width: 6.7%;text-align: right" >合计</p:column>
-                            <p:column style="width: 6.7%;text-align: right" >占比</p:column>
+                            <p:column style="width: 6.6%;text-align: right">7月</p:column>
+                            <p:column style="width: 6.6%;text-align: right" >8月</p:column>
+                            <p:column style="width: 6.6%;text-align: right" >9月</p:column>
+                            <p:column style="width: 6.6%;text-align: right" >10月</p:column>
+                            <p:column style="width: 6.6%;text-align: right" >11月</p:column>
+                            <p:column style="width: 6.6%;text-align: right">12月</p:column>
+                            <p:column style="width: 10%;text-align: right" >合计</p:column>
                         </p:row>
-                        <c:forEach items="#{shoppingCenterAmountFromHsReportBean.list}" var="item" >
+                        <c:forEach items="#{shoppingCenterAmountFromHsReportBean.list3}" var="item" >
                             <p:row>
-                                <p:column style="text-align: right">#{item[0]}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==1?'color:red':''};text-align: right">#{shoppingCenterAmountFromHsReportBean.doubleformat(item[1])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==2?'color:red':''};text-align: right">#{shoppingCenterAmountFromHsReportBean.doubleformat(item[2])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==3?'color:red':''};text-align: right">#{shoppingCenterAmountFromHsReportBean.doubleformat(item[3])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==4?'color:red':''};text-align: right">#{shoppingCenterAmountFromHsReportBean.doubleformat(item[4])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==5?'color:red':''};text-align: right">#{shoppingCenterAmountFromHsReportBean.doubleformat(item[5])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==6?'color:red':''};text-align: right">#{shoppingCenterAmountFromHsReportBean.doubleformat(item[6])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==7?'color:red':''};text-align: right">#{shoppingCenterAmountFromHsReportBean.doubleformat(item[7])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==8?'color:red':''};text-align: right">#{shoppingCenterAmountFromHsReportBean.doubleformat(item[8])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==9?'color:red':''};text-align: right">#{shoppingCenterAmountFromHsReportBean.doubleformat(item[9])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==10?'color:red':''};text-align: right">#{shoppingCenterAmountFromHsReportBean.doubleformat(item[10])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==11?'color:red':''};text-align: right">#{shoppingCenterAmountFromHsReportBean.doubleformat(item[11])}</p:column>
-                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==12?'color:red':''};text-align: right">#{shoppingCenterAmountFromHsReportBean.doubleformat(item[12])}</p:column>
-                                <p:column style="text-align: right">#{shoppingCenterAmountFromHsReportBean.doubleformat(item[13])}</p:column>
-                                <p:column style="text-align: right">#{item[14]}</p:column>
+                               <p:column style="text-align: right">#{item.name}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==1?'color:red':''};text-align: right">#{item.m1}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==2?'color:red':''};text-align: right">#{item.m2}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==3?'color:red':''};text-align: right">#{item.m3}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==4?'color:red':''};text-align: right">#{item.m4}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==5?'color:red':''};text-align: right">#{item.m5}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==6?'color:red':''};text-align: right">#{item.m6}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==7?'color:red':''};text-align: right">#{item.m7}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==8?'color:red':''};text-align: right">#{item.m8}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==9?'color:red':''};text-align: right">#{item.m9}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==10?'color:red':''};text-align: right">#{item.m10}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==11?'color:red':''};text-align: right">#{item.m11}</p:column>
+                                <p:column style="#{shoppingCenterAmountFromHsReportBean.m==12?'color:red':''};text-align: right">#{item.m12}</p:column>
+                                <p:column style="text-align: right">#{item.sum}</p:column>
                             </p:row>
                         </c:forEach>
                     </p:panelGrid >
+                    <p style="text-align: left;color: red;font-weight: bolder;margin-bottom: 0px !important">** 备注:以上铸件不包括钢件材料:如钢件转子等。</p>
+                    <p style="text-align: left;color: red;font-weight: bolder;margin-top: 0px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;以上加工单只包含铸件厂商的加工金额。</p>         
+
                 </div>
+                
+           
                 <div style="width: 100%;">
                     <div id="indicatorSummary" class="ui-g-12 ui-md-12">
                         <p:repeat id="repSummary" value="#{shoppingCenterAmountFromHsReportBean.summaryList}" var="s" rendered="#{shoppingCenterAmountFromHsReportBean.summaryCount>0}">

@@ -30,7 +30,7 @@
                             <p:row>
                                 <p:column style="background-color:#dbdbdb" rowspan="2" headerText="月份" />
                                 <p:column style="background-color:#dbdbdb" rowspan="2" headerText="项目" />
-                                <p:column style="background-color:#dbdbdb" colspan="8" headerText="采购金额（未税RMB）" />
+                                <p:column style="background-color:#dbdbdb" colspan="7" headerText="采购金额（未税RMB）" />
                                 <p:column style="background-color:#dbdbdb" rowspan="2" headerText="去年同期" />
                                 <p:column style="background-color:#dbdbdb" rowspan="2" headerText="与去年同期相比差异" />
                                 <p:column style="background-color:#dbdbdb" rowspan="2" headerText="月累计" />
@@ -42,7 +42,7 @@
                                 <p:column headerText="浙江汉声" style="background-color:#dbdbdb" />
                                  <p:column headerText="上海柯茂" style="background-color:#dbdbdb" />
                                 <p:column headerText="浙江柯茂" style="background-color:#dbdbdb" />
-                                <p:column headerText="安徽汉扬" style="background-color:#dbdbdb" />
+                              
                                 <p:column headerText="合计" style="background-color:#dbdbdb" />
                                 <p:column headerText="百分比" style="background-color:#dbdbdb" />
                             </p:row>
@@ -68,9 +68,6 @@
                         </p:column>
                            <p:column style="#{shoppingCenterMaterialAmountReportBean.getBackgroundColor(item.descript)}" >
                             <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.format(shoppingCenterMaterialAmountReportBean.getValue(item.other5Indicator),item.rate)}"  style="color: #0D0D0D"  />
-                        </p:column>
-                           <p:column style="#{shoppingCenterMaterialAmountReportBean.getBackgroundColor(item.descript)}" >
-                            <h:outputText  value="#{shoppingCenterMaterialAmountReportBean.format(shoppingCenterMaterialAmountReportBean.getValue(item.other6Indicator),item.rate)}"  style="color: #0D0D0D"  />
                         </p:column>
                         
                         <p:column style="#{shoppingCenterMaterialAmountReportBean.getBackgroundColor(item.descript)}" >

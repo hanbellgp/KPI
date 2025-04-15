@@ -42,7 +42,7 @@
                 </f:facet>
                 <f:facet name="right">
                     <p:commandButton id="btnUpdateActualValue" value="计算" actionListener="#{employeeSetManagedBean.updateActualValue()}" icon="ui-icon-save"
-                                     process="@this,formList:plgQuery"/>
+                                     process="@this,formList:plgQuery" update="growl"/>
                     <p:splitButton id="btnOperate" value="操作" icon="ui-icon-menu">
                         <p:menuitem id="btnEdit" value="编辑" icon="ui-icon-pencil" action="#{employeeSetManagedBean.edit('employeesetEdit')}"
                                     rendered="#{employeeSetManagedBean.doEdit}"/>

@@ -193,6 +193,16 @@ public class ClientRankingReportBean extends BscQueryTableManageBean implements 
                 map.put("daname", "汉钟");
                 map.put("n_code_DA", " Not In('RT','OH') ");
                 break;
+            case "W0000":
+                map.put("deptnoname", "越南北宁");
+                map.put("daname", "越南北宁");
+                map.put("n_code_DA", " ='VNBN' ");
+                break;
+            case "30000":
+                map.put("deptnoname", "越南隆安");
+                map.put("daname", "越南隆安");
+                map.put("n_code_DA", " ='VNLA' ");
+                break;
             default:
                 map.put("deptnoname", "");
                 map.put("daname", "");

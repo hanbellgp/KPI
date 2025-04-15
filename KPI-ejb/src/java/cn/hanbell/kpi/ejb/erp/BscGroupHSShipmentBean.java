@@ -219,6 +219,7 @@ public class BscGroupHSShipmentBean implements Serializable {
         if (!"".equals(cusno)) {
             sb.append(" AND h.cusno ").append(cusno);
         }
+        sb.append("  and h.trtype in ('L1A','S1A')");
         sb.append(" and year(h.shpdate) = ${y} and month(h.shpdate)= ${m} and h.shpdate<='${d}' ");
         sb.append(" UNION ALL ");
         // 销退
@@ -235,6 +236,7 @@ public class BscGroupHSShipmentBean implements Serializable {
         if (!"".equals(cusno)) {
             sb.append(" AND h.cusno ").append(cusno);
         }
+        sb.append(" and h.trtype in ('L2A','L2B','S2A','S2B')");
         sb.append(" and year(h.bakdate) = ${y} and month(h.bakdate)= ${m} and h.bakdate<='${d}' ");
         // 质量扣款
         sb.append(" UNION ALL ");

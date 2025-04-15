@@ -30,6 +30,7 @@ import cn.hanbell.kpi.entity.ScorecardDetail;
 import cn.hanbell.kpi.entity.ScorecardGrant;
 import cn.hanbell.kpi.lazy.ScorecardContentModel;
 import cn.hanbell.kpi.web.SuperSingleBean;
+import com.ibm.icu.math.MathContext;
 import com.lightshell.comm.BaseLib;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -212,19 +213,19 @@ public class ScorecardManagedBean extends SuperSingleBean<ScorecardContent> {
             if (i != null) {
                 switch (userManagedBean.getQ()) {
                     case 1:
-                        currentEntity.setAq1(i.getActualIndicator().getNq1().toString());
+                        currentEntity.setAq1(i.getActualIndicator().getNq1().divide(currentEntity.getRate()).setScale(2,MathContext.ROUND_HALF_UP).toString());
                         break;
                     case 2:
-                        currentEntity.setAq2(i.getActualIndicator().getNq2().toString());
-                        currentEntity.setAh1(i.getActualIndicator().getNh1().toString());
+                        currentEntity.setAq2(i.getActualIndicator().getNq2().divide(currentEntity.getRate()).setScale(2,MathContext.ROUND_HALF_UP).toString());
+                        currentEntity.setAh1(i.getActualIndicator().getNh1().divide(currentEntity.getRate()).setScale(2,MathContext.ROUND_HALF_UP).toString());
                         break;
                     case 3:
-                        currentEntity.setAq3(i.getActualIndicator().getNq3().toString());
+                        currentEntity.setAq3(i.getActualIndicator().getNq3().divide(currentEntity.getRate()).setScale(2,MathContext.ROUND_HALF_UP).toString());
                         break;
                     case 4:
-                        currentEntity.setAq4(i.getActualIndicator().getNq4().toString());
-                        currentEntity.setAh2(i.getActualIndicator().getNh2().toString());
-                        currentEntity.setAfy(i.getActualIndicator().getNfy().toString());
+                        currentEntity.setAq4(i.getActualIndicator().getNq4().divide(currentEntity.getRate()).setScale(2,MathContext.ROUND_HALF_UP).toString());
+                        currentEntity.setAh2(i.getActualIndicator().getNh2().divide(currentEntity.getRate()).setScale(2,MathContext.ROUND_HALF_UP).toString());
+                        currentEntity.setAfy(i.getActualIndicator().getNfy().divide(currentEntity.getRate()).setScale(2,MathContext.ROUND_HALF_UP).toString());
                         break;
                 }
             }
@@ -254,7 +255,20 @@ public class ScorecardManagedBean extends SuperSingleBean<ScorecardContent> {
                             target = currentEntity.getTq1();
                             actual = currentEntity.getAq1();
                             value = calculateScore(target, actual);
-                            currentEntity.setPq1(value);
+                            String    str1 = target.substring(target.indexOf("#") + 1, target.indexOf("%"));
+                            String    str2 = actual.substring(target.indexOf("#") + 1, target.indexOf("%"));
+                            double a = Double.valueOf(str1);
+                            double b = Double.valueOf(str2);
+                            if (a == 0.0) { //如果目标为0。则
+                                if (b == 0) { //
+                                    currentEntity.setPq1(new BigDecimal(100));
+                                } else {
+                                    currentEntity.setPq1(currentEntity.getMaxNum());
+                                }
+                            } else {
+                                currentEntity.setPq1(value);
+                            }
+
                             currentEntity.getDeptScore().setSq1(value);
                             currentEntity.getGeneralScore().setSq1(value);
                             break;
@@ -262,37 +276,97 @@ public class ScorecardManagedBean extends SuperSingleBean<ScorecardContent> {
                             target = currentEntity.getTq2();
                             actual = currentEntity.getAq2();
                             value = calculateScore(target, actual);
-                            currentEntity.setPq2(value);
+                            str1 = target.substring(target.indexOf("#") + 1, target.indexOf("%"));
+                            str2 = actual.substring(target.indexOf("#") + 1, target.indexOf("%"));
+                            a = Double.valueOf(str1);
+                            b = Double.valueOf(str2);
+                            if (a == 0.0) { //如果目标为0。则
+                                if (b == 0) { //
+                                    currentEntity.setPq2(new BigDecimal(100));
+                                } else {
+                                    currentEntity.setPq2(currentEntity.getMaxNum());
+                                }
+                            } else {
+                                currentEntity.setPq2(value);
+                            }
                             currentEntity.getDeptScore().setSq2(value);
                             currentEntity.getGeneralScore().setSq2(value);
 
                             target = currentEntity.getTh1();
                             actual = currentEntity.getAh1();
                             value = calculateScore(target, actual);
-                            currentEntity.setPh1(value);
+                            str1 = target.substring(target.indexOf("#") + 1, target.indexOf("%"));
+                            str2 = actual.substring(target.indexOf("#") + 1, target.indexOf("%"));
+                            a = Double.valueOf(str1);
+                            b = Double.valueOf(str2);
+                            if (a == 0.0) { //如果目标为0。则
+                                if (b == 0) { //
+                                    currentEntity.setPh1(new BigDecimal(100));
+                                } else {
+                                    currentEntity.setPh1(currentEntity.getMaxNum());
+                                }
+                            } else {
+                                currentEntity.setPh1(value);
+                            }
                             currentEntity.getDeptScore().setSh1(value);
                             currentEntity.getGeneralScore().setSh1(value);
                             break;
                         case "q3":
-                            target = currentEntity.getTq2();
-                            actual = currentEntity.getAq2();
+                            target = currentEntity.getTq3();
+                            actual = currentEntity.getAq3();
                             value = calculateScore(target, actual);
-                            currentEntity.setPq2(value);
-                            currentEntity.getDeptScore().setSq2(value);
-                            currentEntity.getGeneralScore().setSq2(value);
+                            str1 = target.substring(target.indexOf("#") + 1, target.indexOf("%"));
+                            str2 = actual.substring(target.indexOf("#") + 1, target.indexOf("%"));
+                            a = Double.valueOf(str1);
+                            b = Double.valueOf(str2);
+                            if (a == 0.0) { //如果目标为0。则
+                                if (b == 0) { //
+                                    currentEntity.setPq3(new BigDecimal(100));
+                                } else {
+                                    currentEntity.setPq3(currentEntity.getMaxNum());
+                                }
+                            } else {
+                                currentEntity.setPq3(value);
+                            }
+                            currentEntity.getDeptScore().setSq3(value);
+                            currentEntity.getGeneralScore().setSq3(value);
                             break;
                         case "q4":
                             target = currentEntity.getTq4();
                             actual = currentEntity.getAq4();
                             value = calculateScore(target, actual);
-                            currentEntity.setPq4(value);
+                            str1 = target.substring(target.indexOf("#") + 1, target.indexOf("%"));
+                            str2 = actual.substring(target.indexOf("#") + 1, target.indexOf("%"));
+                            a = Double.valueOf(str1);
+                            b = Double.valueOf(str2);
+                            if (a == 0.0) { //如果目标为0。则
+                                if (b == 0) { //
+                                    currentEntity.setPq4(new BigDecimal(100));
+                                } else {
+                                    currentEntity.setPq4(currentEntity.getMaxNum());
+                                }
+                            } else {
+                                currentEntity.setPq4(value);
+                            }
                             currentEntity.getDeptScore().setSq4(value);
                             currentEntity.getGeneralScore().setSq4(value);
 
                             target = currentEntity.getTfy();
                             actual = currentEntity.getAfy();
                             value = calculateScore(target, actual);
-                            currentEntity.setPfy(value);
+                            str1 = target.substring(target.indexOf("#") + 1, target.indexOf("%"));
+                            str2 = actual.substring(target.indexOf("#") + 1, target.indexOf("%"));
+                            a = Double.valueOf(str1);
+                            b = Double.valueOf(str2);
+                            if (a == 0.0) { //如果目标为0。则
+                                if (b == 0) { //
+                                    currentEntity.setPfy(new BigDecimal(100));
+                                } else {
+                                    currentEntity.setPfy(currentEntity.getMaxNum());
+                                }
+                            } else {
+                                currentEntity.setPfy(value);
+                            }
                             currentEntity.getDeptScore().setSfy(value);
                             currentEntity.getGeneralScore().setSfy(value);
                             break;
