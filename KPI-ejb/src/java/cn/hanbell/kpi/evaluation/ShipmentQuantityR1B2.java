@@ -41,21 +41,21 @@ public class ShipmentQuantityR1B2 extends ShipmentQuantity {
             //华东销售台数
             BigDecimal saleCount1B = super.getValue(y, m, d, type, queryParams);
             String deptno = queryParams.get("deptno") != null ? queryParams.get("deptno").toString() : "";
-            Indicator indicator = getIndicatorBean().findByFormidYearAndDeptno("R-华东R均价", y, "1F000");
+            Indicator indicator = getIndicatorBean().findByFormidYearAndDeptno("R-华东热泵R均价", y, "1F000");
 
-            //柯茂卖出后新增到华东的台数
+            // //分公司卖出后新增到华东的台数
             IndicatorDetail o1 = indicator.getOther1Indicator();
             f = o1.getClass().getDeclaredField(mon);
             f.setAccessible(true);
             a1 = Double.valueOf(f.get(o1).toString());
 
-            //华东LTA/H卖给柯茂的台数
+            //华东卖出后新增到分公司的台数
             IndicatorDetail o2 = indicator.getOther3Indicator();
             f = o2.getClass().getDeclaredField(mon);
             f.setAccessible(true);
             a2 = Double.valueOf(f.get(o2).toString());
 
-            //华东销售台数=华东销售台数+柯茂卖出后新增到华东-LTA/H卖给柯茂的数据
+             //华东销售台数=华东销售台数+分公司卖出后新增到华东-华东卖给分公司的台数
             return saleCount1B.add(BigDecimal.valueOf(a1 - a2));
         } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException ex) {
             Logger.getLogger(ShipmentQuantityR1B2.class.getName()).log(Level.SEVERE, null, ex);
