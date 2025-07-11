@@ -5,31 +5,21 @@
  */
 package cn.hanbell.kpi.evaluation;
 
-import cn.hanbell.kpi.ejb.crm.DSALPBean;
 import com.lightshell.comm.BaseLib;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.persistence.Query;
 
 /**
  *
- * @author C1879
+ * @author C2082
  */
-public class EmployeeShipmentAmount extends Shipment {
+public class EmployeeServiceAmount extends Shipment{
 
-    DSALPBean dsalpBean = lookupDsalpBean();
-
-    public EmployeeShipmentAmount() {
-        super();
-    }
-
-    @Override
+  @Override
     public BigDecimal getValue(int y, int m, Date d, int type, LinkedHashMap<String, Object> map) {
         //获得查询参数
         String facno = map.get("facno") != null ? map.get("facno").toString() : "";
@@ -44,7 +34,7 @@ public class EmployeeShipmentAmount extends Shipment {
         StringBuilder sb = new StringBuilder();
         sb.append("select isnull(convert(decimal(16,2),sum((d.shpamts * h.ratio)/(h.taxrate + 1))),0) from cdrhad h,cdrdta d where h.facno=d.facno and h.shpno=d.shpno and h.houtsta<>'W' ");
         sb.append(" and h.cusno NOT IN ('SSD00107','SGD00088','SJS00254','SCQ00146','KZJ00029') ");
-        sb.append(" and d.issevdta='N' and h.facno='${facno}' ");
+        sb.append(" and d.issevdta='Y' and h.facno='${facno}' ");
         if (!"".equals(userid)) {
             sb.append(" and h.mancode ='").append(userid).append("' ");
         }
@@ -76,7 +66,7 @@ public class EmployeeShipmentAmount extends Shipment {
         sb.setLength(0);
         sb.append("select isnull(convert(decimal(16,2),sum((d.bakamts * h.ratio)/(h.taxrate + 1))),0) from cdrbhad h,cdrbdta d where h.facno=d.facno and h.bakno=d.bakno and h.baksta<>'W' ");
         sb.append(" and h.cusno NOT IN ('SSD00107','SGD00088','SJS00254','SCQ00146','KZJ00029') ");
-        sb.append(" and d.issevdta='N' and h.facno='${facno}' ");
+        sb.append(" and d.issevdta='Y' and h.facno='${facno}' ");
         if (!"".equals(userid)) {
             sb.append(" and h.mancode ='").append(userid).append("' ");
         }
@@ -122,15 +112,8 @@ public class EmployeeShipmentAmount extends Shipment {
             this.arm270 = this.getARM270Value(y, m, d, type, getQueryParams());
             this.arm423 = this.getARM423Value(y, m, d, type, getQueryParams());
         }
-        if (shp1.subtract(bshp1).add(arm232).add(arm235).add(arm270).add(arm423).compareTo(BigDecimal.ZERO) != 0) {
-            map.put("type", "Shipment");
-            try {
-                dsalpBean.addDsalpList(y, m, d, map);
-            } catch (Exception ex) {
-                Logger.getLogger(Shipment.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return shp1.subtract(bshp1).add(arm232).add(arm235).add(arm270).add(arm423);
+        
+        return shp1.subtract(bshp1).add(arm232).add(arm270).add(arm423);
     }
 
     @Override
@@ -141,7 +124,7 @@ public class EmployeeShipmentAmount extends Shipment {
         String n_code_DD = map.get("n_code_DD") != null ? map.get("n_code_DD").toString() : "";
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT ISNULL(SUM(CASE h.amtco WHEN 'P' THEN d.psamt WHEN 'M' THEN d.psamt *(-1) ELSE 0 END),0) FROM armpmm h,armacq d,cdrdta s,cdrhad c  ");
-        sb.append(" WHERE h.facno=d.facno AND h.trno = d.trno AND d.facno = s.facno AND d.shpno=s.shpno AND d.shpseq = s.trseq AND s.shpno=c.shpno and s.issevdta='N' and h.facno='${facno}' ");
+        sb.append(" WHERE h.facno=d.facno AND h.trno = d.trno AND d.facno = s.facno AND d.shpno=s.shpno AND d.shpseq = s.trseq AND s.shpno=c.shpno and s.issevdta='Y' and h.facno='${facno}' ");
         if (!"".equals(userid)) {
             sb.append(" and c.mancode ='").append(userid).append("' ");
         }
@@ -183,7 +166,7 @@ public class EmployeeShipmentAmount extends Shipment {
         String deptno = map.get("deptno") != null ? map.get("deptno").toString() : "";
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT ISNULL(SUM(h.shpamt),0) FROM armbil h WHERE h.rkd='RQ11' AND h.facno='${facno}' AND h.depno IN ${deptno}");
-        sb.append(" and h.address5 ='").append("N").append("' ");
+        sb.append(" and h.address5 ='").append("Y").append("' ");
         if (!"".equals(userid)) {
             sb.append(" and h.mancode ='").append(userid).append("' ");
         }
@@ -255,15 +238,5 @@ public class EmployeeShipmentAmount extends Shipment {
         }
         return BigDecimal.ZERO;
     }
-
-    private DSALPBean lookupDsalpBean() {
-        try {
-            Context c = new InitialContext();
-            return (DSALPBean) c.lookup("java:global/KPI/KPI-ejb/DSALPBean!cn.hanbell.kpi.ejb.crm.DSALPBean");
-        } catch (NamingException ne) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", ne);
-            throw new RuntimeException(ne);
-        }
-    }
-
+    
 }

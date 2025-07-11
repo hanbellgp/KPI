@@ -21,7 +21,7 @@ public class ProductionPlanCompletePJZ extends ProductionPlanComplete {
         queryParams.put("typecode", " ='01' ");
         queryParams.put("prosscode", " in ('PS07')");
         //#ITCLS CHANGE TODO #
-        queryParams.put("itcls", " in('3776','3A76','3780','3A80') ");
+        queryParams.put("itcls", " in('3779','3780','3A79','3A80','3776','3A76') ");
 
     }
 }

@@ -7,23 +7,21 @@ package cn.hanbell.kpi.rpt;
 
 import cn.hanbell.kpi.ejb.ShoppingAccomuntBean;
 import cn.hanbell.kpi.ejb.ShoppingManufacturerBean;
-import cn.hanbell.kpi.entity.Indicator;
 import cn.hanbell.kpi.entity.IndicatorDetail;
 import cn.hanbell.kpi.entity.RoleGrantModule;
 import cn.hanbell.kpi.entity.ShoppingManufacturer;
-import cn.hanbell.kpi.web.BscChartManagedBean;
+import cn.hanbell.kpi.model.ShoppingHSDataModel;
+import cn.hanbell.kpi.model.ShoppingHSPercentModel;
 import com.lightshell.comm.BaseLib;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -31,8 +29,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
-
-import org.primefaces.model.chart.PieChartModel;
 
 /**
  *
@@ -43,9 +39,9 @@ import org.primefaces.model.chart.PieChartModel;
 public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceReportBean {
 
     protected final DecimalFormat floatFormat;
-    private List<Object[]> list;
-    private List<Object[]> weightList;
-    private List<Object[]> salaryList;
+    private List<Serializable> list1;
+    private List<Serializable> list2;
+    private List<Serializable> list3;
     protected LinkedHashMap<String, String> statusMap;
     private Date btnDate;
     private int y;
@@ -83,9 +79,9 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
                 }
             }
         }
-        list = new ArrayList<>();
-        weightList = new ArrayList<>();
-        salaryList= new ArrayList<>();
+        list1 = new ArrayList<>();
+        list2 = new ArrayList<>();
+        list3 = new ArrayList<>();
         statusMap = new LinkedHashMap<>();
         statusMap.put("displaydiv1", "block");
         statusMap.put("displaydiv2", "none");
@@ -96,151 +92,126 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
 
     public void query() {
         try {
-            //汉声铸件采购金额
-            String shbFhszj = " in ('SZJ00065','SZJ00067')";
-            String twFhszj = " in ('1139')";
-            String scmFhszj = " in ('KZJ00053')";
-            String zcmFhszj = " in ('EZJ00053')";
-            Object[] shb = shoppingAccomuntBean.getShbDateByVdrno("SHB", "C", btnDate, shbFhszj, this.getWhereItlcs(ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA + "/" + ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI).toString());
-         // shb =shoppingAccomuntBean.getGroupSalaryDate("总金额", "SHB", "C", btnDate, getWhereVdrnos("C", "'铸件'").toString(), this.getWhereItlcs(ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA + "/" + ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI).toString());
-            Object[] thb = shoppingAccomuntBean.getShbDateByVdrno("THB", "A", btnDate, twFhszj,"");
-            Object[] scm = shoppingAccomuntBean.getShbDateByVdrno("SCOMER", "K", btnDate, scmFhszj,"");
-            Object[] zcm = shoppingAccomuntBean.getShbDateByVdrno("ZCOMER", "E", btnDate, zcmFhszj,"");
-            Object[] cm = new Object[15];
-            cm[0] = "CM";
-            for (int i = 1; i <= 13; i++) {
-                cm[i] = ((BigDecimal) scm[i]).add((BigDecimal) zcm[i]);
-            }
+            list1.clear();
+            list2.clear();
+            list3.clear();
+            //上海汉钟金额部分
+            ShoppingHSDataModel shbsalary1 = shoppingAccomuntBean.getSalary1("C", this.y, false);
+            ShoppingHSDataModel shbsalary2 = shoppingAccomuntBean.getSalary2("C", this.y, false);
+            ShoppingHSDataModel shbsalary = mergeListDecimal(shbsalary1, shbsalary2);
+            ShoppingHSDataModel shbforhssalary1 = shoppingAccomuntBean.getSalary1("C", this.y, true);
+            ShoppingHSDataModel shbforhssalary2 = shoppingAccomuntBean.getSalary2("C", this.y, true);
+            ShoppingHSDataModel shbforhssalary = mergeListDecimal(shbforhssalary1, shbforhssalary2);
+            ShoppingHSPercentModel percentshbsalary = percentListDecimal(shbsalary, shbforhssalary);
+            shbsalary.setName("总金额(SHB)");
+            shbforhssalary.setName("汉声金额(SHB)");
+            percentshbsalary.setName("占比(SHB)");
+            list1.add(shbsalary);
+            list1.add(shbforhssalary);
+            list1.add(percentshbsalary);
+            //台湾汉钟金额部分
+            ShoppingHSDataModel thbsalary1 = shoppingAccomuntBean.getSalary1("A", this.y, false);
+            ShoppingHSDataModel thbsalary2 = shoppingAccomuntBean.getSalary2("A", this.y, false);
+            ShoppingHSDataModel thbsalary = mergeListDecimal(thbsalary1, thbsalary2);
+            ShoppingHSDataModel thbforhssalary1 = shoppingAccomuntBean.getSalary1("A", this.y, true);
+            ShoppingHSDataModel thbforhssalary2 = shoppingAccomuntBean.getSalary2("A", this.y, true);
+            ShoppingHSDataModel thbforhssalary = mergeListDecimal(thbforhssalary1, thbforhssalary2);
+            ShoppingHSPercentModel percentthbsalary = percentListDecimal(thbsalary, thbforhssalary);
+            thbsalary.setName("总金额(THB)");
+            thbforhssalary.setName("汉声金额(THB)");
+            percentthbsalary.setName("占比(THB)");
+            list1.add(thbsalary);
+            list1.add(thbforhssalary);
+            list1.add(percentthbsalary);
+            //合计金额
+            ShoppingHSDataModel sumsalary = mergeListDecimal(shbsalary, thbsalary);
+            ShoppingHSDataModel sumforhssalary = mergeListDecimal(shbforhssalary, thbforhssalary);
+            ShoppingHSPercentModel percentsumsalary = percentListDecimal(sumsalary, sumforhssalary);
+            sumsalary.setName("总金额(SHB+THB)");
+            sumforhssalary.setName("汉声金额(SHB+THB)");
+            percentsumsalary.setName("占比(SHB+THB)");
+            list1.add(sumsalary);
+            list1.add(sumforhssalary);
+            list1.add(percentsumsalary);
 
-            Object[] sum = new Object[15];
-            sum[0] = "集团内合计";
-            for (int i = 1; i <= 13; i++) {
-                sum[i] = ((BigDecimal) cm[i]).add((BigDecimal) shb[i]).add((BigDecimal) thb[i]);
-            }
-//            新增其中卓准部分
-            //调整占比
-            list.clear();
-            list.add(shb);
-            list.add(shoppingAccomuntBean.getCommodityCirculation("其中商流：", "H", btnDate));
-            list.add(thb);
-            list.add(cm);
-            list.add(sum);
+            //region
+            //上海汉钟重量
+            ShoppingHSDataModel shbweight = shoppingAccomuntBean.getWeight("C", this.y, false);
+            ShoppingHSDataModel shbforhsweight = shoppingAccomuntBean.getWeight("C", this.y, true);
+            ShoppingHSPercentModel percentshbweight = percentListDecimal(shbweight, shbforhsweight);
+            shbweight.setName("总重(SHB)");
+            shbforhsweight.setName("汉声重量(SHB)");
+            percentshbweight.setName("占比(SHB)");
+            list2.add(shbweight);
+            list2.add(shbforhsweight);
+            list2.add(percentshbweight);
 
-            for (Object[] o : list) {
-                o[14] = ((BigDecimal) o[13]).multiply(BigDecimal.valueOf(100)).divide((BigDecimal) list.get(list.size() - 1)[13], 2).toString().concat("%");
-            }
-            //铸件重量;
-            Object[] shbweigth = shoppingAccomuntBean.getGroupWeightDate("总重", "SHB", "C", btnDate, getWhereVdrnos("C", "'铸件'").toString(),  this.getWhereItlcs(ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA + "/" + ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI).toString());
-            Object[] shbgornhsweigth = shoppingAccomuntBean.getGroupWeightDate("汉声", "SHB", "C", btnDate, shbFhszj,  this.getWhereItlcs(ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA + "/" + ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI).toString());
-            //上海汉钟已作为进口列入。需手动加入上海汉钟厂商
-            StringBuffer sb = getWhereVdrnos("A", "'鑄件'");
-            Object[] thbweigth = shoppingAccomuntBean.getGroupWeightDate("总重", "THB", "A", btnDate, sb.substring(0, sb.length() - 1).concat(",'86005')"), " not in ('3A12','3391')");
-            Object[] thbgornhsweigth = shoppingAccomuntBean.getGroupWeightDate("汉声", "THB", "A", btnDate, twFhszj, " not in ('3A12','3391')");
-            weightList.clear();
-            weightList.add(shbweigth);
-            weightList.add(shbgornhsweigth);
-            Object[] zhanbi1 = new Object[16];
-            zhanbi1[0] = "占比";
-            zhanbi1[1] = "SHB";
-            for (int i = 2; i <= Integer.valueOf(BaseLib.formatDate("MM", btnDate)) + 1; i++) {
-                zhanbi1[i] = ((BigDecimal) shbgornhsweigth[i]).multiply(new BigDecimal(100)).divide((BigDecimal) shbweigth[i], 0, BigDecimal.ROUND_HALF_UP).toString().concat("%");
-            }
-            zhanbi1[14] = ((BigDecimal) shbgornhsweigth[14]).multiply(new BigDecimal(100)).divide((BigDecimal) shbweigth[14], 0, BigDecimal.ROUND_HALF_UP).toString().concat("%");
-            weightList.add(zhanbi1);
-            weightList.add(thbweigth);
-            weightList.add(thbgornhsweigth);
-            Object[] zhanbi2 = new Object[16];
-            zhanbi2[0] = "占比";
-            zhanbi2[1] = "THB";
-            for (int i = 2; i <= Integer.valueOf(BaseLib.formatDate("MM", btnDate)) + 1; i++) {
-                zhanbi2[i] = ((BigDecimal) thbgornhsweigth[i]).multiply(new BigDecimal(100)).divide((BigDecimal) thbweigth[i], 0, BigDecimal.ROUND_HALF_UP).toString().concat("%");
-            }
-            zhanbi2[14] = ((BigDecimal) thbgornhsweigth[14]).multiply(new BigDecimal(100)).divide((BigDecimal) thbweigth[14], 0, BigDecimal.ROUND_HALF_UP).toString().concat("%");
-            weightList.add(zhanbi2);
+            //台湾汉钟重量
+            ShoppingHSDataModel thbweight = shoppingAccomuntBean.getWeight("A", this.y, false);
+            ShoppingHSDataModel thbforhsweight = shoppingAccomuntBean.getWeight("A", this.y, true);
+            ShoppingHSPercentModel percentthbweight = percentListDecimal(thbweight, thbforhsweight);
+            thbweight.setName("总重(THB)");
+            thbforhsweight.setName("汉声重量(THB)");
+            percentthbweight.setName("占比(THB)");
+            list2.add(thbweight);
+            list2.add(thbforhsweight);
+            list2.add(percentthbweight);
 
-            Object[] sumall1 = new Object[16];
-            sumall1[0] = "总重";
-            sumall1[1] = "SHB+THB";
-            for (int i = 2; i <= Integer.valueOf(BaseLib.formatDate("MM", btnDate)) + 1; i++) {
-                sumall1[i] = ((BigDecimal) shbweigth[i]).add((BigDecimal) thbweigth[i]);
-            }
-            sumall1[14] = ((BigDecimal) shbweigth[14]).add((BigDecimal) thbweigth[14]);
-            weightList.add(sumall1);
+            //合计重量
+            ShoppingHSDataModel sumweight = this.mergeListDecimal(shbweight, thbweight);
+            ShoppingHSDataModel sumforhsweight = this.mergeListDecimal(shbforhsweight, thbforhsweight);
+            ShoppingHSPercentModel percentsumweight = percentListDecimal(sumweight, sumforhsweight);
+            sumweight.setName("总重(SHB+THB)");
+            sumforhsweight.setName("汉声重量(SHB+THB)");
+            percentsumweight.setName("占比(SHB+THB)");
+            list2.add(sumweight);
+            list2.add(sumforhsweight);
+            list2.add(percentsumweight);
+            //endregion
 
-            Object[] sumall2 = new Object[16];
-            sumall2[0] = "汉声";
-            sumall2[1] = "SHB+THB";
-            for (int i = 2; i <= Integer.valueOf(BaseLib.formatDate("MM", btnDate)) + 1; i++) {
-                sumall2[i] = ((BigDecimal) thbgornhsweigth[i]).add((BigDecimal) shbgornhsweigth[i]);
-            }
-            sumall2[14] = ((BigDecimal) thbgornhsweigth[14]).add((BigDecimal) shbgornhsweigth[14]);
-            weightList.add(sumall2);
+            //上海汉钟加工件金额
+            ShoppingHSDataModel shbsalary3 = shoppingAccomuntBean.getSalary3("C", this.y, false);
+            ShoppingHSDataModel shbsalary4 = shoppingAccomuntBean.getSalary4("C", this.y, false);
+            ShoppingHSDataModel shbforhssalary3 = shoppingAccomuntBean.getSalary3("C", this.y, true);
+            ShoppingHSDataModel shbforhssalary4 = shoppingAccomuntBean.getSalary4("C", this.y, true);
 
-            Object[] zhanbi3 = new Object[16];
-            zhanbi3[0] = "占比";
-            zhanbi3[1] = "SHB+THB";
-            for (int i = 2; i <= Integer.valueOf(BaseLib.formatDate("MM", btnDate)) + 1; i++) {
-                zhanbi3[i] = ((BigDecimal) sumall2[i]).multiply(new BigDecimal(100)).divide((BigDecimal) sumall1[i], 0, BigDecimal.ROUND_HALF_UP).toString().concat("%");
-            }
-            zhanbi3[14] = ((BigDecimal) sumall2[14]).multiply(new BigDecimal(100)).divide((BigDecimal) sumall1[14], 0, BigDecimal.ROUND_HALF_UP).toString().concat("%");
-            weightList.add(zhanbi3);
+            ShoppingHSDataModel shbsumtg = this.mergeListDecimal(shbsalary3, shbsalary4);
+            ShoppingHSDataModel shbsumforhstg = this.mergeListDecimal(shbforhssalary3, shbforhssalary4);
+            ShoppingHSPercentModel percentshbsalary3 = percentListDecimal(shbsumtg, shbsumforhstg);
+            shbsumtg.setName("总金额(SHB)");
+            shbsumforhstg.setName("汉声金额(SHB)");
+            percentshbsalary3.setName("占比(SHB)");
+            list3.add(shbsumtg);
+            list3.add(shbsumforhstg);
+            list3.add(percentshbsalary3);
+
+            //台湾汉钟加工件金额
+            ShoppingHSDataModel thbsalary3 = shoppingAccomuntBean.getSalary3("A", this.y, false);
+            ShoppingHSDataModel thbsalary4 = shoppingAccomuntBean.getSalary4("A", this.y, false);
+            ShoppingHSDataModel thbforhssalary3 = shoppingAccomuntBean.getSalary3("A", this.y, true);
+            ShoppingHSDataModel thbforhssalary4 = shoppingAccomuntBean.getSalary4("A", this.y, true);
             
-            //铸件金额
-            Object[] shbsalary = shoppingAccomuntBean.getGroupSalaryDate("总金额", "SHB", "C", btnDate, getWhereVdrnos("C", "'铸件'").toString(), this.getWhereItlcs(ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA + "/" + ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI).toString());
-            Object[] shbgornhsalary = shoppingAccomuntBean.getGroupSalaryDate("汉声金额", "SHB", "C", btnDate, shbFhszj, this.getWhereItlcs(ShoppingAccomuntBean.SHB_ITCLS_ZHUJIA + "/" + ShoppingAccomuntBean.SHB_ITCLS_ZHUANZI).toString());
-            //上海汉钟已作为进口列入。需手动加入上海汉钟厂商
-            sb.setLength(0);
-            sb = getWhereVdrnos("A", "'鑄件'");
-            Object[] thbsalary = shoppingAccomuntBean.getGroupSalaryDate("总金额", "THB", "A", btnDate, sb.substring(0, sb.length() - 1).concat(",'86005')"),  " not in ('3A12','3391')");
-            Object[] thbgroupsalary = shoppingAccomuntBean.getGroupSalaryDate("汉声金额", "THB", "A", btnDate, twFhszj, " not in ('3A12','3391')");
-            salaryList.clear();
-            salaryList.add(shbsalary);
-            salaryList.add(shbgornhsalary);
-            zhanbi1 = new Object[16];
-            zhanbi1[0] = "占比";
-            zhanbi1[1] = "SHB";
-            for (int i = 2; i <= Integer.valueOf(BaseLib.formatDate("MM", btnDate)) + 1; i++) {
-                zhanbi1[i] = ((BigDecimal) shbgornhsalary[i]).multiply(new BigDecimal(100)).divide((BigDecimal) shbsalary[i], 0, BigDecimal.ROUND_HALF_UP).toString().concat("%");
-            }
-            zhanbi1[14] = ((BigDecimal) shbgornhsalary[14]).multiply(new BigDecimal(100)).divide((BigDecimal) shbsalary[14], 0, BigDecimal.ROUND_HALF_UP).toString().concat("%");
-            salaryList.add(zhanbi1);
-            salaryList.add(thbsalary);
-            salaryList.add(thbgroupsalary);
-            zhanbi2 = new Object[16];
-            zhanbi2[0] = "占比";
-            zhanbi2[1] = "THB";
-            for (int i = 2; i <= Integer.valueOf(BaseLib.formatDate("MM", btnDate)) + 1; i++) {
-                zhanbi2[i] = ((BigDecimal) thbgroupsalary[i]).multiply(new BigDecimal(100)).divide((BigDecimal) thbsalary[i], 0, BigDecimal.ROUND_HALF_UP).toString().concat("%");
-            }
-            zhanbi2[14] = ((BigDecimal) thbgroupsalary[14]).multiply(new BigDecimal(100)).divide((BigDecimal) thbsalary[14], 0, BigDecimal.ROUND_HALF_UP).toString().concat("%");
-            salaryList.add(zhanbi2);
+            ShoppingHSDataModel thbsumtg = this.mergeListDecimal(thbsalary3, thbsalary4);
+            ShoppingHSDataModel thbsumforhstg = this.mergeListDecimal(thbforhssalary3, thbforhssalary4);
+            
+            ShoppingHSPercentModel percentthbsalary3 = percentListDecimal(thbsumtg, thbsumforhstg);
+            thbsumtg.setName("总金额(THB)");
+            thbsumforhstg.setName("汉声金额(THB)");
+            percentthbsalary3.setName("占比(THB)");
+            list3.add(thbsumtg);
+            list3.add(thbsumforhstg);
+            list3.add(percentthbsalary3);
 
-            sumall1 = new Object[16];
-            sumall1[0] = "总金额";
-            sumall1[1] = "SHB+THB";
-            for (int i = 2; i <= Integer.valueOf(BaseLib.formatDate("MM", btnDate)) + 1; i++) {
-                sumall1[i] = ((BigDecimal) shbsalary[i]).add((BigDecimal) thbsalary[i]);
-            }
-            sumall1[14] = ((BigDecimal) shbsalary[14]).add((BigDecimal) thbsalary[14]);
-            salaryList.add(sumall1);
+            ShoppingHSDataModel sunsalary3 = this.mergeListDecimal(shbsumtg, thbsumtg);
+            ShoppingHSDataModel sunforhssalary3 = this.mergeListDecimal(shbforhssalary3, thbforhssalary3);
+            ShoppingHSPercentModel percentsumsalary3 = percentListDecimal(shbsumforhstg, thbsumforhstg);
+            sunsalary3.setName("总金额(SHB+THB)");
+            sunforhssalary3.setName("汉声金额(SHB+THB)");
+            percentsumsalary3.setName("占比(SHB+THB)");
+            list3.add(sunsalary3);
+            list3.add(sunforhssalary3);
+            list3.add(percentsumsalary3);
 
-            sumall2 = new Object[16];
-            sumall2[0] = "汉声金额";
-            sumall2[1] = "SHB+THB";
-            for (int i = 2; i <= Integer.valueOf(BaseLib.formatDate("MM", btnDate)) + 1; i++) {
-                sumall2[i] = ((BigDecimal) shbgornhsalary[i]).add((BigDecimal) thbgroupsalary[i]);
-            }
-            sumall2[14] = ((BigDecimal) shbgornhsalary[14]).add((BigDecimal) thbgroupsalary[14]);
-            salaryList.add(sumall2);
-
-            zhanbi3 = new Object[16];
-            zhanbi3[0] = "占比";
-            zhanbi3[1] = "SHB+THB";
-            for (int i = 2; i <= Integer.valueOf(BaseLib.formatDate("MM", btnDate)) + 1; i++) {
-                zhanbi3[i] = ((BigDecimal) sumall2[i]).multiply(new BigDecimal(100)).divide((BigDecimal) sumall1[i], 0, BigDecimal.ROUND_HALF_UP).toString().concat("%");
-            }
-            zhanbi3[14] = ((BigDecimal) sumall2[14]).multiply(new BigDecimal(100)).divide((BigDecimal) sumall1[14], 0, BigDecimal.ROUND_HALF_UP).toString().concat("%");
-            salaryList.add(zhanbi3);
             statusMap.put("displaydiv1", "none");
             statusMap.put("displaydiv2", "block");
             //根据指标ID加载指标说明、指标分析
@@ -259,10 +230,46 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
 
     }
 
+    public ShoppingHSDataModel mergeListDecimal(ShoppingHSDataModel b1, ShoppingHSDataModel b2) throws Exception {
+        ShoppingHSDataModel result = new ShoppingHSDataModel();
+        result.setM1(b1.getM1().add(b2.getM1()));
+        result.setM2(b1.getM2().add(b2.getM2()));
+        result.setM3(b1.getM3().add(b2.getM3()));
+        result.setM4(b1.getM4().add(b2.getM4()));
+        result.setM5(b1.getM5().add(b2.getM5()));
+        result.setM6(b1.getM6().add(b2.getM6()));
+        result.setM7(b1.getM7().add(b2.getM7()));
+        result.setM8(b1.getM8().add(b2.getM8()));
+        result.setM9(b1.getM9().add(b2.getM9()));
+        result.setM10(b1.getM10().add(b2.getM10()));
+        result.setM11(b1.getM11().add(b2.getM11()));
+        result.setM12(b1.getM12().add(b2.getM12()));
+        result.setSum(b1.getSum().add(b2.getSum()));
+        return result;
+    }
+
+    public ShoppingHSPercentModel percentListDecimal(ShoppingHSDataModel b1, ShoppingHSDataModel b2) throws Exception {
+        ShoppingHSPercentModel mode = new ShoppingHSPercentModel();
+        mode.setM1(b1.getM1().compareTo(BigDecimal.ZERO) == 0 ? "" : b2.getM1().divide(b1.getM1(), 2, BigDecimal.ROUND_HALF_DOWN).multiply(new BigDecimal(100)).setScale(0).toString() + "%");
+        mode.setM2(b1.getM2().compareTo(BigDecimal.ZERO) == 0 ? "" : b2.getM2().divide(b1.getM2(), 2, BigDecimal.ROUND_HALF_DOWN).multiply(new BigDecimal(100)).setScale(0).toString() + "%");
+        mode.setM3(b1.getM3().compareTo(BigDecimal.ZERO) == 0 ? "" : b2.getM3().divide(b1.getM3(), 2, BigDecimal.ROUND_HALF_DOWN).multiply(new BigDecimal(100)).setScale(0).toString() + "%");
+        mode.setM4(b1.getM4().compareTo(BigDecimal.ZERO) == 0 ? "" : b2.getM4().divide(b1.getM4(), 2, BigDecimal.ROUND_HALF_DOWN).multiply(new BigDecimal(100)).setScale(0).toString() + "%");
+        mode.setM5(b1.getM5().compareTo(BigDecimal.ZERO) == 0 ? "" : b2.getM5().divide(b1.getM5(), 2, BigDecimal.ROUND_HALF_DOWN).multiply(new BigDecimal(100)).setScale(0).toString() + "%");
+        mode.setM6(b1.getM6().compareTo(BigDecimal.ZERO) == 0 ? "" : b2.getM6().divide(b1.getM6(), 2, BigDecimal.ROUND_HALF_DOWN).multiply(new BigDecimal(100)).setScale(0).toString() + "%");
+        mode.setM7(b1.getM7().compareTo(BigDecimal.ZERO) == 0 ? "" : b2.getM7().divide(b1.getM7(), 2, BigDecimal.ROUND_HALF_DOWN).multiply(new BigDecimal(100)).setScale(0).toString() + "%");
+        mode.setM8(b1.getM8().compareTo(BigDecimal.ZERO) == 0 ? "" : b2.getM8().divide(b1.getM8(), 2, BigDecimal.ROUND_HALF_DOWN).multiply(new BigDecimal(100)).setScale(0).toString() + "%");
+        mode.setM9(b1.getM9().compareTo(BigDecimal.ZERO) == 0 ? "" : b2.getM9().divide(b1.getM9(), 2, BigDecimal.ROUND_HALF_DOWN).multiply(new BigDecimal(100)).setScale(0).toString() + "%");
+        mode.setM10(b1.getM10().compareTo(BigDecimal.ZERO) == 0 ? "" : b2.getM10().divide(b1.getM10(), 2, BigDecimal.ROUND_HALF_DOWN).multiply(new BigDecimal(100)).setScale(0).toString() + "%");
+        mode.setM11(b1.getM11().compareTo(BigDecimal.ZERO) == 0 ? "" : b2.getM11().divide(b1.getM11(), 2, BigDecimal.ROUND_HALF_DOWN).multiply(new BigDecimal(100)).setScale(0).toString() + "%");
+        mode.setM12(b1.getM12().compareTo(BigDecimal.ZERO) == 0 ? "" : b2.getM12().divide(b1.getM12(), 2, BigDecimal.ROUND_HALF_DOWN).multiply(new BigDecimal(100)).setScale(0).toString() + "%");
+        mode.setSum(b1.getSum().compareTo(BigDecimal.ZERO) == 0 ? "" : b2.getSum().divide(b1.getSum(), 2, BigDecimal.ROUND_HALF_DOWN).multiply(new BigDecimal(100)).setScale(0).toString() + "%");
+        return mode;
+    }
+
     public void reset() {
         statusMap.put("displaydiv1", "block");
         statusMap.put("displaydiv2", "none");
-        list.clear();
+        list1.clear();
     }
 
     public StringBuffer getWhereVdrnos(String facno, String materialTypeName) {
@@ -282,8 +289,8 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
             throw e;
         }
     }
-    
-        public StringBuffer getWhereItlcs(String itcls) {
+
+    public StringBuffer getWhereItlcs(String itcls) {
         StringBuffer sql = new StringBuffer("");
         try {
             StringTokenizer stzj = new StringTokenizer(itcls, "/");
@@ -295,7 +302,7 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
         } catch (Exception e) {
             throw e;
         }
-        }
+    }
 
     public String percentFormat(BigDecimal value1, BigDecimal value2, int i) {
         if (value1 == null || value1 == BigDecimal.ZERO) {
@@ -339,7 +346,7 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
             return floatFormat.format(value);
         }
     }
-    
+
     public String salarydoubleformat(BigDecimal value) {
         if (value == null || value.compareTo(BigDecimal.ZERO) == 0) {
             return "0";
@@ -357,12 +364,12 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
         }
     }
 
-    public List<Object[]> getList() {
-        return list;
+    public List<Serializable> getList1() {
+        return list1;
     }
 
-    public void setList(List<Object[]> list) {
-        this.list = list;
+    public void setList1(List<Serializable> list1) {
+        this.list1 = list1;
     }
 
     public Date getBtnDate() {
@@ -381,14 +388,6 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
         this.statusMap = statusMap;
     }
 
-    public List<Object[]> getWeightList() {
-        return weightList;
-    }
-
-    public void setWeightList(List<Object[]> weightList) {
-        this.weightList = weightList;
-    }
-
     public int getY() {
         return y;
     }
@@ -405,12 +404,20 @@ public class ShoppingCenterAmountFromHsReportBean extends FinancingFreeServiceRe
         this.m = m;
     }
 
-    public List<Object[]> getSalaryList() {
-        return salaryList;
+    public List<Serializable> getList2() {
+        return list2;
     }
 
-    public void setSalaryList(List<Object[]> salaryList) {
-        this.salaryList = salaryList;
+    public void setList2(List<Serializable> list2) {
+        this.list2 = list2;
+    }
+
+    public List<Serializable> getList3() {
+        return list3;   
+    }
+
+    public void setList3(List<Serializable> list3) {
+        this.list3 = list3;
     }
 
 }

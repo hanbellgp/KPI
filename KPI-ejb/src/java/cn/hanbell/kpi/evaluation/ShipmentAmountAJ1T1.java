@@ -9,9 +9,9 @@ package cn.hanbell.kpi.evaluation;
  *
  * @author C2082
  */
-public class ShipmentAmountAJ6 extends ShipmentAmount {
+public class ShipmentAmountAJ1T1 extends ShipmentAmount {
 
-    public ShipmentAmountAJ6() {
+    public ShipmentAmountAJ1T1() {
         super();
         queryParams.put("facno", "C");
         queryParams.put("deptno", " '1T100' ");

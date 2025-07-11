@@ -7,9 +7,11 @@ package cn.hanbell.kpi.ejb;
 
 import cn.hanbell.kpi.comm.SuperEJBForERP;
 import cn.hanbell.kpi.entity.ShoppingManufacturer;
+import cn.hanbell.kpi.model.ShoppingHSDataModel;
 import cn.hanbell.util.BaseLib;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,46 +42,6 @@ public class ShoppingAccomuntBean implements Serializable {
         this.df = new DecimalFormat("#,###");
         this.dfpercent = new DecimalFormat("0.00％");
     }
-    //上海汉钟
-    public static final String SHB_ITCLS_ZHUJIA = "1014/1016/1102/1202/1401/1402/1802/2013/2015/2102/2202/2402/2802/3202/3233/3401/3402/3433/3802/3833/9014/9017/1C02/3C33/3733/2012/3102/3716/3C02";
-    public static final String SHB_ITCLS_DIANJI = "3703/3104/9019/RDJF/4504/3504";//电机
-    public static final String SHB_ITCLS_ZHOUCHENG = "4009/4018/3235";
-    public static final String SHB_ITCLS_YOUPING = "5061/5062";
-    public static final String SHB_ITCLS_ZHUANZI = "1101/1801/2101/2401/2801/3013/3012/3015/3016/3101/3201/3801/2201";
-    public static final String SHB_ITCLS_FALEI = "3134/3234/3102";
-    public static final String SHB_ITCLS_DAOJU = "BS1/B001/C002";//刀具
-    public static final String SHB_ITCLS_CHENGDIAN = "3133/3231/3233/3433/3533/4049";
-    public static final String SHB_FACT_JIEXIANGAIBAN = "3139/3239/3131";
-    public static final String SHB_FACT_JIEXIANGHE = "3231";
-    public static final String SHB_ITCLS_MOJU = "B005";
-    public static final String SHB_ITCLS_CHILUN = "3406/3806/3E06";
-    public static final String SHB_ITCLS_LVCAI = "3140/3240";
-
-    //浙江汉声
-    public static final String HS_ITCLS_ZHUJIA = "2A05/2A02/2A05/2A06/2HJK/2HMD/1A03/1HJK/1HYF/1HMD/3A03/3A01/3HMD/3HYF/2AZ1/2AZ3/3H/1/3A06/1102/2H/3/2HZC/3HJK";
-    public static final String HS_ITCLS_ZHUANZI = "2HZZ/2A04/2HTG/2101/2201/2801/3H/2013/2015";
-    public static final String HS_ITCLS_MOJU = "B005";
-    public static final String HS_ITCLS_DAOJU = "5C2/B001";
-    //安徽汉阳
-    public static final String HY_ITCLS_ZHUJIA = "52/1AZ9";
-    public static final String HY_ITCLS_DAOJU = "B001";
-    //台湾汉钟
-    public static final String THB_FACT_ZHUJIA = "'鑄件','加工','HS'";
-    public static final String THB_FACT_DIANJI = "'電機'";//电机
-    public static final String THB_FACT_ZHOUCHENG = "'軸承'";
-    public static final String THB_FACT_YOUPING = "'油品','油品P'";
-    public static final String THB_FACT_JINGKOU = "'SHB','CM'";
-    public static final String THB_ITCLS_ZHUANZI = "2511/2521/3011";
-    public static final String THB_FACT_FALEI = "'閥'";
-    public static final String THB_FACT_DAOJU = "'刀具'";
-    public static final String THB_FACT_CHENGDIAN = "'襯墊'";
-    public static final String THB_FACT_JIEXIANGAIBAN = "'蓋板'";
-    //上海柯茂
-    public static final String SCM_ITCLS_ZHUANZI = "1J02/1014/3013/3J02/3H33";
-    public static final String SCM_ITCLS_DIANJI = "3J04/4047";
-    public static final String SCM_ITCLS_CHENGDIAN = "3J33/4049/4046";
-    public static final String SCM_ITCLS_ZHOUCHENG = "4009";
-    public static final String SCM_ITCLS_MOJU = "B005";
 
     private int findYear(Date date) {
         Calendar c = Calendar.getInstance();
@@ -93,21 +55,38 @@ public class ShoppingAccomuntBean implements Serializable {
         return c.get(Calendar.MONTH) + 1;
     }
 
-    //
+    public List<Object[]> getDateDetail(String facno, Date date) {
+        StringBuffer sql = new StringBuffer();
+        sql.append(" select a.*,b.itcls");
+        sql.append(" from (");
+        sql.append(" SELECT apmpyh.facno ,apmpyh.vdrno , purvdr.vdrna , apmpyh.itnbr,apmpyh.itdsc,  sum(apmpyh.acpamt) as  acpamt,sum(apmpyh.payqty) as payqty,purhad.userno,left(sponr,2) as 'sponr'");
+        sql.append(" FROM apmpyh ,purvdr ,purhad");
+        sql.append(" WHERE apmpyh.vdrno = purvdr.vdrno  and  purhad.facno = apmpyh.facno  and  purhad.prono = apmpyh.prono");
+        sql.append(" and  purhad.pono = apmpyh.pono  and  apmpyh.pyhkind = '1'");
+        sql.append(" AND apmpyh.facno =  '").append(facno).append("'  and apmpyh.prono ='1'");
+        sql.append(" and year(apmpyh.trdat) =").append(String.valueOf(findYear(date)));
+        sql.append(" and month(apmpyh.trdat) =").append(String.valueOf(findMonth(date)));
+        sql.append("  group by  apmpyh.facno ,apmpyh.vdrno , purvdr.vdrna , apmpyh.itnbr,apmpyh.itdsc, purhad.userno,left(sponr,2) )a left join invmas b on a.itnbr=b.itnbr");
+        erpEJB.setCompany(facno);
+        Query query = erpEJB.getEntityManager().createNativeQuery(sql.toString());
+        List<Object[]> list = query.getResultList();
+        return list;
+    }
+
     public List<Object[]> getList(Date date) {
         List<Object[]> list = new ArrayList<>();
         list.add(getDateByIsCenter("SHB全部", "C", date, false));
-        list.add(getDateByIsCenter("SHB采购中心", "C", date,true));
+        list.add(getDateByIsCenter("SHB采购中心", "C", date, true));
         list.add(getDateByIsCenter("THB全部", "A", date, false));
-        list.add(getDateByIsCenter("THB采购中心", "A", date,true));
+        list.add(getDateByIsCenter("THB采购中心", "A", date, true));
         list.add(getDateByIsCenter("HS全部", "H", date, false));
         list.add(getDateByIsCenter("HS采购中心", "H", date, true));
         list.add(getDateByIsCenter("SCM全部", "K", date, false));
         list.add(getDateByIsCenter("SCM采购中心", "K", date, true));
         list.add(getDateByIsCenter("ZCM全部", "E", date, false));
         list.add(getDateByIsCenter("ZCM采购中心", "E", date, true));
-        list.add(getDateByIsCenter("HY全部", "Y", date,false));
-        list.add(getDateByIsCenter("HY采购中心", "Y", date, true));
+//        list.add(getDateByIsCenter("HY全部", "Y", date, false));
+//        list.add(getDateByIsCenter("HY采购中心", "Y", date, true));
         //计算合计指标
         Object[] o1 = new Object[]{"集团合计", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
             BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, ""};
@@ -118,7 +97,7 @@ public class ShoppingAccomuntBean implements Serializable {
         }
         list.add(o1);
         Object[] o2 = new Object[]{"采购中心合计", BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
-            BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,"", ""};
+            BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, "", ""};
         for (int i = 1; i <= 13; i++) {
             for (int j = 1; j < list.size(); j = j + 2) {
                 o2[i] = ((BigDecimal) o2[i]).add((BigDecimal) list.get(j)[i]);
@@ -145,50 +124,7 @@ public class ShoppingAccomuntBean implements Serializable {
         return list;
     }
 
-
-    public Object[] getShbDateByVdrno(String name, String facno, Date date, String vdrnos,String  itcls) {
-        Object[] row = new Object[16];
-        row[0] = name;
-        //循环获取12个月的数据
-       StringBuffer sql = new StringBuffer();
-        sql.append("select  CAST(right(yearmon,2) AS SIGNED),sum(acpamt) from  shoppingtable");
-        sql.append(" where yearmon like '").append(BaseLib.formatDate("yyyy", date)).append("%'");
-        sql.append(" and facno='").append(facno).append("'");
-        if ("C".equals(facno)) {
-            sql.append(" and sponr not like 'AC%'");
-        } 
-         if("A".equals(facno)) {
-            sql.append(" and sponr not like '%AKI%'");
-        }
-       
-        if (vdrnos != null && !"".equals(vdrnos)) {
-            sql.append(" and vdrno").append(vdrnos);
-        }
-        if (itcls != null && !"".equals(itcls)) {
-            sql.append(" and itcls").append(itcls);
-        }
-        sql.append(" group by yearmon;");
-        Query query = shoppingManufacturerBean.getEntityManager().createNativeQuery(sql.toString());
-        BigDecimal sum = BigDecimal.ZERO;
-        try {
-            List<Object[]> data = query.getResultList();
-            for (int i = 1; i <= 12; i++) {
-                if (i <= data.size()) {
-                    row[i] = (java.math.BigDecimal) data.get(i - 1)[1];
-                } else {
-                    row[i] = new BigDecimal(0.0);
-                }
-                sum = sum.add((java.math.BigDecimal) row[i]);
-            }
-            row[13] = sum;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
-        return row;
-    }
-    
-      public Object[] getDateByIsCenter(String name, String facno, Date date,boolean iscenter) {
+    public Object[] getDateByIsCenter(String name, String facno, Date date, boolean iscenter) {
         Object[] row = new Object[16];
         row[0] = name;
         //循环获取12个月的数据
@@ -196,7 +132,7 @@ public class ShoppingAccomuntBean implements Serializable {
         sql.append(" select CAST(right(yearmon,2) AS SIGNED) ,sum(acpamt)");
         sql.append(" from shoppingtable");
         sql.append(" where facno ='").append(facno).append("'");
-        if(iscenter){
+        if (iscenter) {
             sql.append(" and iscenter=1 ");
         }
         sql.append(" and yearmon like '").append(String.valueOf(findYear(date))).append("%' group by yearmon order by yearmon ASC");
@@ -220,251 +156,247 @@ public class ShoppingAccomuntBean implements Serializable {
         return row;
     }
 
-    /**
-     * 按照年月分类获取重量
-     *
-     * @param name
-     * @param facno
-     * @param date
-     * @param vdrnos
-     * @param itcls
-     * @return
-     */
-    public Object[] getGroupWeightDate(String name1, String name2, String facno, Date date, String vdrnos, String itcls) throws Exception {
+    public ShoppingHSDataModel getSalary1(String facno, int year, boolean isHs) {
+        if (facno == "C") {
+            return getSHBSalary1(year, isHs);
+        } else if (facno == "A") {
+            return getTHBSalary1(year, isHs);
+        }
+        return null;
+    }
 
-//        String sb=getWhereItlcs(itcls).toString();
-        //先判断是否有漏的重量件号
-        List list = getWeightDate1(facno, date, vdrnos, itcls);
+    public ShoppingHSDataModel getSalary2(String facno, int year, boolean isHs) {
+        if (facno == "C") {
+            return getSHBSalary2(year, isHs);
+        } else if (facno == "A") {
+            return getTHBSalary2(year, isHs);
+        }
+        return null;
+    }
 
-        if (list.size() > 0) {
-            throw new Exception("未配置件号重量，请维护");
+    public ShoppingHSDataModel getSalary3(String facno, int year, boolean isHs) {
+        if (facno == "C") {
+            return getSHBSalary3(year, isHs);
+        } else if (facno == "A") {
+            return getTHBSalary3(year, isHs);
         }
-        Object[] row = new Object[16];
-        row[0] = name1;
-        row[1] = name2;
-        StringBuffer sql = new StringBuffer();
-        sql.append(" select CAST(right(yearmon,2) AS SIGNED) ,sum(head.payqty*detail.weight)");
-        sql.append(" from (select *");
-        sql.append(" from shoppingtable where itnbr<>'9' and  facno='").append(facno).append("'");
-        if ("C".equals(facno)) {
-            sql.append(" and sponr not like 'AC%'");
+        return null;
+    }
+
+    public ShoppingHSDataModel getSalary4(String facno, int year, boolean isHs) {
+        if (facno == "C") {
+            return getSHBSalary4(year, isHs);
+        } else if (facno == "A") {
+            return getTHBSalary4(year, isHs);
         }
-         if("A".equals(facno)) {
-            sql.append(" and sponr not like '%AKI%'");
+        return null;
+    }
+
+    public ShoppingHSDataModel getWeight(String facno, int year, boolean isHs) {
+        if (facno == "C") {
+            return getSHBWeight(year, isHs);
+        } else if (facno == "A") {
+            return getTHBWeight(year, isHs);
         }
-        sql.append(" and yearmon like '").append(BaseLib.formatDate("yyyy", date)).append("%'");
-        if (vdrnos != null && !"".equals(vdrnos)) {
-            sql.append(" and vdrno").append(vdrnos);
-        }
-        if (itcls != null && !"".equals(itcls)) {
-            sql.append(" and itcls").append(itcls);
-        }
-        sql.append(" ) head left join shoppingmenuweight detail on  head.itnbr=detail.itnbr where detail.id is not null");
-        sql.append(" group by yearmon order by yearmon asc");
+        return null;
+    }
+
+    //获取上海汉钟1字头的铸件金额
+    private ShoppingHSDataModel getSHBSalary1(int year, boolean isHs) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" select yearmon,sum(acpamt)/10000");
+        sql.append(" from shoppingtable left join shoppingmenuweight on  shoppingmenuweight.facno='C' and shoppingmenuweight.itnbr=shoppingtable.itnbr");
+        sql.append(" where  type2 ='铸件' And left(shoppingtable.itnbr,1)='1' and shoppingtable.facno='C' and yearmon like '").append(year).append("%' and sponr not in ('AC')");
+        if (isHs) {
+            sql.append(" and  vdrno='SZJ00065'");
+        };
+        sql.append(" group by yearmon");
+
+        return returnMonthList(sql.toString());
+    }
+
+    //获取上海汉钟2,3字头的铸件金额
+    private ShoppingHSDataModel getSHBSalary2(int year, boolean isHs) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" select  yearmon,sum(a.payqty*c.weight*a.price)/10000");
+        sql.append(" from shoppingtable a left join shoppingmenuweight c on a.itnbr =c.itnbr and c.facno='C'");
+        sql.append(" where    type2='铸件' And left(a.itnbr,1)!='1' and a.facno='C' and yearmon like '").append(year).append("%' and sponr not in ('AC') ");
+        if (isHs) {
+            sql.append(" and  a.vdrno='SZJ00065'");
+        };
+        sql.append(" group by yearmon");
+        return returnMonthList(sql.toString());
+    }
+
+    //获取上海汉钟2,3字头的加工件金额
+    private ShoppingHSDataModel getSHBSalary3(int year, boolean isHs) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" select  yearmon,sum(acpamt-ifnull(a.payqty,0)*ifnull(c.weight,0)*ifnull(a.price,0))/10000");
+        sql.append(" from shoppingtable a left join shoppingmenuweight c on a.itnbr =c.itnbr and c.facno='C'");
+        sql.append(" where   type2='铸件' And left(a.itnbr,1)!='1' and a.facno='C' and yearmon like '").append(year).append("%'  ");
+        if (isHs) {
+            sql.append(" and  a.vdrno='SZJ00065'");
+        };
+        sql.append(" group by yearmon");
+        return returnMonthList(sql.toString());
+    }
+
+    //获取上海汉AC的加工件金额
+    private ShoppingHSDataModel getSHBSalary4(int year, boolean isHs) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" select  yearmon,sum(acpamt)/10000");
+        sql.append(" from shoppingtable a left join shoppingmenuweight c on a.itnbr =c.itnbr and c.facno='C'");
+        sql.append(" where sponr='AC' and  type2='铸件' and a.facno='C' and yearmon like '").append(year).append("%'  ");
+        if (isHs) {
+            sql.append(" and  a.vdrno='SZJ00065'");
+        };
+        sql.append(" group by yearmon");
+        return returnMonthList(sql.toString());
+    }
+
+    //获取台湾1字头的铸件金额
+    private ShoppingHSDataModel getTHBSalary1(int year, boolean isHs) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" select yearmon,sum(acpamt)/10000");
+        sql.append(" from shoppingtable left join shoppingmenuweight on  shoppingmenuweight.facno='A' and shoppingmenuweight.itnbr=shoppingtable.itnbr");
+        sql.append(" where  type2 ='铸件' And left(shoppingtable.itnbr,1)='1' and shoppingtable.facno='A' and yearmon like '").append(year).append("%' and sponr not in  ('BAKI','AAKI')");
+        if (isHs) {
+            sql.append(" and  vdrno='1139'");
+        };
+        sql.append(" group by yearmon");
+
+        return returnMonthList(sql.toString());
+    }
+
+    //获取台湾2,3字头的铸件金额
+    private ShoppingHSDataModel getTHBSalary2(int year, boolean isHs) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" select  yearmon,sum(a.payqty*c.weight*a.price)/10000");
+        sql.append(" from shoppingtable a left join shoppingmenuweight c on a.itnbr =c.itnbr and c.facno='A'");
+        sql.append(" where type2='铸件' And left(a.itnbr,1)!='1' and a.facno='A' and yearmon like '").append(year).append("%' and sponr not in  ('BAKI','AAKI')  ");
+        if (isHs) {
+            sql.append(" and  a.vdrno='1139'");
+        };
+        sql.append(" group by yearmon");
+        return returnMonthList(sql.toString());
+    }
+
+    //获取台湾汉钟2,3字头的加工件金额
+    private ShoppingHSDataModel getTHBSalary3(int year, boolean isHs) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" select  yearmon,sum(acpamt-ifnull(a.payqty,0)*ifnull(c.weight,0)*ifnull(a.price,0))/10000");
+        sql.append(" from shoppingtable a left join shoppingmenuweight c on a.itnbr =c.itnbr and c.facno='A'");
+        sql.append(" where    sponr not in('BAKI','AAKI') and  type2='铸件' And left(a.itnbr,1)!='1' and a.facno='A' and yearmon like '").append(year).append("%'  ");
+        if (isHs) {
+            sql.append(" and  a.vdrno='1139'");
+        };
+        sql.append(" group by yearmon");
+        return returnMonthList(sql.toString());
+    }
+
+    //获取台湾汉钟托工的加工件金额
+    private ShoppingHSDataModel getTHBSalary4(int year, boolean isHs) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" select  yearmon,sum(acpamt)/10000");
+        sql.append(" from shoppingtable a left join shoppingmenuweight c on a.itnbr =c.itnbr and c.facno='A'");
+        sql.append(" where   sponr  in('BAKI','AAKI') and  type2='铸件' and a.facno='A' and yearmon like '").append(year).append("%'  ");
+        if (isHs) {
+            sql.append(" and  a.vdrno='1139'");
+        };
+        sql.append(" group by yearmon");
+        return returnMonthList(sql.toString());
+    }
+
+    //获取上海汉钟1字头的铸件重量
+    private ShoppingHSDataModel getSHBWeight(int year, boolean isHs) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" select yearmon,sum(payqty*shoppingmenuweight.weight)/1000");
+        sql.append(" from shoppingtable left join shoppingmenuweight on  shoppingmenuweight.facno='C' and shoppingmenuweight.itnbr=shoppingtable.itnbr");
+        sql.append(" where  type2 ='铸件' and shoppingtable.facno='C' and yearmon like '").append(year).append("%' and sponr not in ('AC')");
+        if (isHs) {
+            sql.append(" and vdrno='SZJ00065'");
+        };
+        sql.append(" group by yearmon");
+
+        return returnMonthList(sql.toString());
+    }
+
+    //获取台湾汉钟1字头的铸件重量
+    private ShoppingHSDataModel getTHBWeight(int year, boolean isHs) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(" select yearmon,sum(payqty*shoppingmenuweight.weight)/1000");
+        sql.append(" from shoppingtable left join shoppingmenuweight on  shoppingmenuweight.facno='A' and shoppingmenuweight.itnbr=shoppingtable.itnbr");
+        sql.append(" where  type2 ='铸件'  and shoppingtable.facno='A' and yearmon like '").append(year).append("%' and sponr not in  ('BAKI','AAKI')");
+        if (isHs) {
+            sql.append(" and  vdrno='1139'");
+        };
+        sql.append(" group by yearmon");
+
+        return returnMonthList(sql.toString());
+    }
+
+    private ShoppingHSDataModel returnMonthList(String sql) {
         Query query = shoppingManufacturerBean.getEntityManager().createNativeQuery(sql.toString());
-        BigDecimal sum = BigDecimal.ZERO;
-        try {
-            List<Object[]> data = query.getResultList();
-            for (int i = 1; i <= 12; i++) {
-                if (i <= data.size()) {
-
-                    row[i + 1] = (java.math.BigDecimal) data.get(i - 1)[1];
-                } else {
-                    row[i + 1] = new BigDecimal(0.0);
-                }
-                sum = sum.add((java.math.BigDecimal) row[i + 1]);
-            }
-            row[14] = sum;
-        } catch (Exception e) {
-            throw e;
-        }
-        return row;
-    }
-      public Object[] getGroupSalaryDate(String name1, String name2, String facno, Date date, String vdrnos, String itcls) throws Exception {
-        Object[] row = new Object[16];
-        row[0] = name1;
-        row[1] = name2;
-        StringBuffer sql = new StringBuffer();
-        sql.append("select  CAST(right(yearmon,2) AS SIGNED),sum(acpamt) from  shoppingtable");
-        sql.append(" where yearmon like '").append(BaseLib.formatDate("yyyy", date)).append("%'");
-        sql.append(" and facno='").append(facno).append("'");
-        if ("C".equals(facno)) {
-            sql.append(" and sponr not like 'AC%'");
-        } 
-         if("A".equals(facno)) {
-            sql.append(" and sponr not like '%AKI%'");
-        }
-       
-        if (vdrnos != null && !"".equals(vdrnos)) {
-            sql.append(" and vdrno").append(vdrnos);
-        }
-        if (itcls != null && !"".equals(itcls)) {
-            sql.append(" and itcls").append(itcls);
-        }
-        sql.append(" group by yearmon;");
-        Query query = shoppingManufacturerBean.getEntityManager().createNativeQuery(sql.toString());
-        BigDecimal sum = BigDecimal.ZERO;
-        try {
-            List<Object[]> data = query.getResultList();
-            for (int i = 1; i <= 12; i++) {
-                if (i <= data.size()) {
-
-                    row[i + 1] = (java.math.BigDecimal) data.get(i - 1)[1];
-                } else {
-                    row[i + 1] = new BigDecimal(0.0);
-                }
-                sum = sum.add((java.math.BigDecimal) row[i + 1]);
-            }
-            row[14] = sum;
-        } catch (Exception e) {
-            throw e;
-        }
-        return row;
-    }
-
-    public StringBuffer getWhereItlcs(String itcls) {
-        StringBuffer sql = new StringBuffer("");
-        try {
-            StringTokenizer stzj = new StringTokenizer(itcls, "/");
-            sql.append(" in (");
-            while (stzj.hasMoreTokens()) {
-                sql.append("'").append(stzj.nextToken()).append("',");
-            }
-            return sql.delete(sql.length() - 1, sql.length()).append(")");
-        } catch (Exception e) {
-            throw e;
-        }
-    }
-
-    public List<Object[]> getWeightDate1(String facno, Date date, String vdrnos, String itcls) throws Exception {
-        StringBuffer sql = new StringBuffer();
-        sql.append(" select  head.facno,head.itnbr,head.itdsc");
-        sql.append(" from (select *");
-        sql.append(" from shoppingtable a where exists(select id from( select max(id) as id from shoppingtable where itnbr<>'9' and  facno='").append(facno).append("'");
-        if ("C".equals(facno)) {
-            sql.append(" and  sponr not like 'AC%'");
-        }
-         if("A".equals(facno)) {
-            sql.append(" and sponr not like '%AKI%'");
-        }
-        sql.append(" and yearmon like '").append(BaseLib.formatDate("yyyy", date)).append("%'");
-        if (vdrnos != null && !"".equals(vdrnos)) {
-            sql.append(" and vdrno ").append(vdrnos);
-        }
-        if (itcls != null && !"".equals(itcls)) {
-            sql.append(" and itcls").append(itcls);
-        }
-        sql.append(" group by itnbr,facno)b where a.id=b.id)) head left join shoppingmenuweight detail on  head.itnbr=detail.itnbr where detail.id is  null");
-        Query query = shoppingManufacturerBean.getEntityManager().createNativeQuery(sql.toString());
-        BigDecimal sum = BigDecimal.ZERO;
-        try {
-            List<Object[]> data = query.getResultList();
-            return data;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
-    }
-
-    public List<Object[]> getThbDateDetail1( Date date) {
-        StringBuffer sql = new StringBuffer();
-        sql.append(" select a.*,b.itcls");
-        sql.append(" from (");
-        sql.append(" select  'A'  as 'facno',apmpyh.vdrno , purvdr.vdrna , apmpyh.itnbr,apmpyh.itdsc, sum(round(apmpyh.acpamt/4.4,2)) as 'acpamt', sum(apmpyh.payqty) as payqty,purhad.userno");
-        sql.append(" from apmpyh ,purvdr  ,purhad ");
-        sql.append(" WHERE apmpyh.vdrno = purvdr.vdrno  and  purhad.facno = apmpyh.facno  and  purhad.prono = apmpyh.prono");
-        sql.append(" and  purhad.pono = apmpyh.pono  and purkind not in ('9999') ");
-        sql.append(" and apmpyh.pyhkind='1' and itnbr <> '9' ");
-        sql.append(" and year(apmpyh.trdat) =").append(String.valueOf(findYear(date)));
-        sql.append(" and month(apmpyh.trdat) =").append(String.valueOf(findMonth(date)));
-        sql.append(" group by  apmpyh.facno ,apmpyh.vdrno , purvdr.vdrna , apmpyh.itnbr,apmpyh.itdsc, purhad.userno )a left join invmas b on a.itnbr=b.itnbr");
-        erpEJB.setCompany("A");
-        Query query = erpEJB.getEntityManager().createNativeQuery(sql.toString());
-        List<Object[]> list = query.getResultList();
-        return list;
-    }
-
-    /**
-     * 获取商业流通部分数据
-     *
-     * @param name
-     * @param facno
-     * @param date
-     * @return
-     */
-    public Object[] getCommodityCirculation(String name, String facno, Date date) {
-        int year = this.findYear(date);
-        int month = this.findMonth(date);
-        Object[] row = new Object[15];
-        row[0] = name;
-        StringBuffer sql = new StringBuffer();
-        sql.append(" SELECT month(apmpyh.trdat),sum(acpamt)");
-        sql.append("  FROM apmpyh ,purvdr ,purhad");
-        sql.append(" WHERE apmpyh.vdrno = purvdr.vdrno  and  purhad.facno = apmpyh.facno  and  purhad.prono = apmpyh.prono");
-        sql.append(" and  purhad.pono = apmpyh.pono  and  apmpyh.pyhkind = '1'");
-        sql.append(" and apmpyh.vdrno in ('HHB00007','HSH00247')");
-        sql.append(" and purhad.fromcdrno is not null and purhad.fromcdrno<>''");
-        sql.append(" and year(apmpyh.trdat) =").append(year);
-        sql.append(" and month(apmpyh.trdat) <= ").append(month).append("group by  month(apmpyh.trdat) order by month(apmpyh.trdat)");
-        erpEJB.setCompany(facno);
-        Query query = erpEJB.getEntityManager().createNativeQuery(sql.toString());
-        List<Object[]> list = query.getResultList();
-        BigDecimal sum = BigDecimal.ZERO;
-        for (int i = 1; i <= 12; i++) {
-            boolean isTrue = false;
-            for (Object[] o : list) {
-                if ((int) o[0] == i) {
-                    row[i] = (BigDecimal) o[1];
-                    sum = sum.add((BigDecimal) o[1]);
-                    isTrue = true;
+        List<Object[]> data = query.getResultList();
+        ShoppingHSDataModel result = new ShoppingHSDataModel();
+        BigDecimal sum = new BigDecimal(0.0);
+        for (int j = 0; j < data.size(); j++) {
+            int month = Integer.valueOf(data.get(j)[0].toString().substring(4));
+            switch (month) {
+                case 1:
+                    result.setM1(new BigDecimal(data.get(j)[1].toString()).setScale(0, RoundingMode.HALF_UP));
+                    sum = sum.add(result.getM1());
                     break;
-                }
+                case 2:
+                    result.setM2(new BigDecimal(data.get(j)[1].toString()).setScale(0, RoundingMode.HALF_UP));
+                    sum = sum.add(result.getM2());
+                    break;
+                case 3:
+                    result.setM3(new BigDecimal(data.get(j)[1].toString()).setScale(0, RoundingMode.HALF_UP));
+                    sum = sum.add(result.getM3());
+                    break;
+                case 4:
+                    result.setM4(new BigDecimal(data.get(j)[1].toString()).setScale(0, RoundingMode.HALF_UP));
+                    sum = sum.add(result.getM4());
+                    break;
+                case 5:
+                    result.setM5(new BigDecimal(data.get(j)[1].toString()).setScale(0, RoundingMode.HALF_UP));
+                    sum = sum.add(result.getM5());
+                    break;
+                case 6:
+                    result.setM6(new BigDecimal(data.get(j)[1].toString()).setScale(0, RoundingMode.HALF_UP));
+                    sum = sum.add(result.getM6());
+                    break;
+                case 7:
+                    result.setM7(new BigDecimal(data.get(j)[1].toString()).setScale(0, RoundingMode.HALF_UP));
+                    sum = sum.add(result.getM7());
+                    break;
+                case 8:
+                    result.setM8(new BigDecimal(data.get(j)[1].toString()).setScale(0, RoundingMode.HALF_UP));
+                    sum = sum.add(result.getM8());
+                    break;
+                case 9:
+                    result.setM9(new BigDecimal(data.get(j)[1].toString()).setScale(0, RoundingMode.HALF_UP));
+                    sum = sum.add(result.getM9());
+                    break;
+                case 10:
+                    result.setM10(new BigDecimal(data.get(j)[1].toString()).setScale(0, RoundingMode.HALF_UP));
+                    sum = sum.add(result.getM10());
+                    break;
+                case 11:
+                    result.setM11(new BigDecimal(data.get(j)[1].toString()).setScale(0, RoundingMode.HALF_UP));
+                    sum = sum.add(result.getM11());
+                    break;
+                case 12:
+                    result.setM12(new BigDecimal(data.get(j)[1].toString()).setScale(0, RoundingMode.HALF_UP));
+                    sum = sum.add(result.getM12());
+                    break;
+
             }
-            if (isTrue) {
-                continue;
-            } else {
-                row[i] = BigDecimal.ZERO;
-            }
+
         }
-        row[13] = sum;
-        return row;
+        result.setSum(sum);
+        return result;
     }
 
-    public List<Object[]> getDateDetail(String facno, Date date) {
-        StringBuffer sql = new StringBuffer();
-        sql.append(" select a.*,b.itcls");
-        sql.append(" from (");
-        sql.append(" SELECT apmpyh.facno ,apmpyh.vdrno , purvdr.vdrna , apmpyh.itnbr,apmpyh.itdsc,  sum(apmpyh.acpamt) as  acpamt,sum(apmpyh.payqty) as payqty,purhad.userno,left(sponr,2) as 'sponr'");
-        sql.append(" FROM apmpyh ,purvdr ,purhad");
-        sql.append(" WHERE apmpyh.vdrno = purvdr.vdrno  and  purhad.facno = apmpyh.facno  and  purhad.prono = apmpyh.prono");
-        sql.append(" and  purhad.pono = apmpyh.pono  and  apmpyh.pyhkind = '1'");
-        sql.append(" AND apmpyh.facno =  '").append(facno).append("'  and apmpyh.prono ='1'");
-        sql.append(" and year(apmpyh.trdat) =").append(String.valueOf(findYear(date)));
-        sql.append(" and month(apmpyh.trdat) =").append(String.valueOf(findMonth(date)));
-        sql.append("  group by  apmpyh.facno ,apmpyh.vdrno , purvdr.vdrna , apmpyh.itnbr,apmpyh.itdsc, purhad.userno,left(sponr,2) )a left join invmas b on a.itnbr=b.itnbr");
-        erpEJB.setCompany(facno);
-        Query query = erpEJB.getEntityManager().createNativeQuery(sql.toString());
-        List<Object[]> list = query.getResultList();
-        return list;
-    }
-
-    public StringBuffer getWhereVdrnos(String facno) {
-        StringBuffer sql = new StringBuffer("");
-        try {
-            List<ShoppingManufacturer> list = shoppingManufacturerBean.findByFacno(facno);
-            if (list == null || list.isEmpty()) {
-                sql.append(" in ('') ");
-                return sql;
-            }
-            sql.setLength(0);
-            sql.append(" in (");
-            for (ShoppingManufacturer m : list) {
-                sql.append("'").append(m.getVdrno()).append("',");
-            }
-            sql.replace(sql.length() - 1, sql.length(), "").append(")");
-            return sql;
-        } catch (Exception e) {
-            throw e;
-        }
-    }
 }

@@ -11,20 +11,21 @@ import java.util.LinkedHashMap;
 
 /**
  *
- * @author C2082
+ * @author C0160
  */
-public class ShipmentAmountAJ20 extends ShipmentAmountAJ19 {
+public class ShipmentAmountAJ1D extends ShipmentAmount {
 
-    public ShipmentAmountAJ20() {
-        queryParams = new LinkedHashMap<>();
+    public ShipmentAmountAJ1D() {
+        super();
         queryParams.put("facno", "C");
-        queryParams.put("decode", "1");
+        queryParams.put("deptno", " '1G000','1G100' ");
+        // queryParams.put("decode", "1");
         queryParams.put("ogdkid", "RL01");
         queryParams.put("n_code_DA", "='AH' ");
-        queryParams.put("n_code_CD", " in ('GZ')");
+        queryParams.put("n_code_CD", " in ('GZ') ");
         queryParams.put("n_code_DC", " NOT LIKE 'SAM%' ");
+        queryParams.put("n_code_DD", " ='00' ");
     }
-
     @Override
     public BigDecimal getValue(int y, int m, Date d, int type, LinkedHashMap<String, Object> map) {
         BigDecimal temp1, temp2;

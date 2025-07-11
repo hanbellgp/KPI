@@ -5,21 +5,24 @@
  */
 package cn.hanbell.kpi.evaluation;
 
+import java.util.LinkedHashMap;
+
 /**
  *
- * @author C2082
+ * @author C0160
  */
-public class ShipmentAmountAJ4 extends ShipmentAmount {
+public class ShipmentAmountAJ1T9 extends ShipmentAmountAJ1G9 {
 
-    public ShipmentAmountAJ4() {
-        super();
+    public ShipmentAmountAJ1T9() {
+        queryParams = new LinkedHashMap<>();
         queryParams.put("facno", "C");
-        queryParams.put("deptno", " '1T100' ");
-        // queryParams.put("decode", "2");
-        queryParams.put("ogdkid", "RL03");
+//        queryParams.put("decode", "1");
+        queryParams.put("ogdkid", "RL01");
         queryParams.put("n_code_DA", "='AH' ");
-        queryParams.put("n_code_CD", " ='WXOZ' ");
+        queryParams.put("n_code_CD", " like 'WX%'");
         queryParams.put("n_code_DC", " NOT LIKE 'SAM%' ");
-        queryParams.put("n_code_DD", " ='00' ");
+        queryParams.put("n_code_DD", " ='07' ");
     }
+
+
 }

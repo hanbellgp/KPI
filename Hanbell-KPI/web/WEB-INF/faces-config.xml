@@ -351,6 +351,11 @@
             <redirect/>
         </navigation-case>
         <navigation-case>
+            <from-outcome>clientrankingvhb</from-outcome>
+            <to-view-id>/app/bsc/clientrankingvhb.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>
+        <navigation-case>
             <from-outcome>castingratehs</from-outcome>
             <to-view-id>/app/bsc/castingratehs.xhtml</to-view-id>
             <redirect/>
@@ -550,7 +555,7 @@
             <to-view-id>/app/bsc/scorecardbsc.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-       <navigation-case>
+        <navigation-case>
             <from-outcome>policysheet</from-outcome>
             <to-view-id>/app/bsc/policysheet.xhtml</to-view-id>
             <redirect/>
@@ -616,7 +621,7 @@
             <to-view-id>/app/ppem/personscorecard.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-             <navigation-case>
+        <navigation-case>
             <from-outcome>noAssessed</from-outcome>
             <to-view-id>/app/ppem/other/noAssessed.xhtml</to-view-id>
             <redirect/>

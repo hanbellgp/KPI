@@ -109,58 +109,58 @@ public class PolicyDetail extends SuperDetailEntity {
     @Size(max = 5)
     @Column(name = "genre")
     private String genre;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "bq1")
     private String bq1;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "bq2")
     private String bq2;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "bq3")
     private String bq3;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "bq4")
     private String bq4;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "bhy")
     private String bhy;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "bfy")
     private String bfy;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "tq1")
     private String tq1;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "tq2")
     private String tq2;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "tq3")
     private String tq3;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "tq4")
     private String tq4;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "thy")
     private String thy;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "tfy")
     private String tfy;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "aq1")
     private String aq1;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "aq2")
     private String aq2;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "aq3")
     private String aq3;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "aq4")
     private String aq4;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "ahy")
     private String ahy;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "afy")
     private String afy;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
