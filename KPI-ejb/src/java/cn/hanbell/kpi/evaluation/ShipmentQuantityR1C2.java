@@ -33,33 +33,42 @@ public class ShipmentQuantityR1C2 extends ShipmentQuantity {
 
     @Override
     public BigDecimal getValue(int y, int m, Date d, int type, LinkedHashMap<String, Object> map) {
+        try {
         BigDecimal temp1, temp2;
-        Field f;
-        String mon;
-        Double a;
         //SHB ERP
         temp1 = super.getValue(y, m, d, type, map);
         queryParams.remove("facno");
         queryParams.remove("n_code_CD");
         queryParams.put("facno", "J");
-        //JN ERP
+        //GZ ERP
         temp2 = super.getValue(y, m, d, type, queryParams);
-
-        //KPI中卖到各个分公司中的数据,由制冷维护台数
-        Indicator indicator = getIndicatorBean().findByFormidYearAndDeptno("R-济南R均价", y, "1F000");
-        try {
-            IndicatorDetail o = indicator.getOther1Indicator();
+        //SHB + GZ
+            Field f;
+            String mon;
+            Double a1, a2;
             mon = getIndicatorBean().getIndicatorColumn("N", m);
-            f = o.getClass().getDeclaredField(mon);
+           String deptno = queryParams.get("deptno") != null ? queryParams.get("deptno").toString() : "";
+            Indicator indicator = getIndicatorBean().findByFormidYearAndDeptno("R-济南热泵R均价", y, "1F000");
+
+            // //分公司卖出后新增到华东的台数
+            IndicatorDetail o1 = indicator.getOther1Indicator();
+            f = o1.getClass().getDeclaredField(mon);
             f.setAccessible(true);
-            a = Double.valueOf(f.get(o).toString());
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            a = 0.0;
-            Logger.getLogger(ShipmentAmountR1E2.class.getName()).log(Level.SEVERE, null, ex);
+            a1 = Double.valueOf(f.get(o1).toString());
+
+            //华东卖出后新增到分公司的台数
+            IndicatorDetail o2 = indicator.getOther3Indicator();
+            f = o2.getClass().getDeclaredField(mon);
+            f.setAccessible(true);
+            a2 = Double.valueOf(f.get(o2).toString());
+
+             //华东销售台数=华东销售台数+分公司卖出后新增到华东-华东卖给分公司的台数
+        return temp1.add(temp2).add(BigDecimal.valueOf(a1 - a2));
+     
+    } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException ex) {
+            Logger.getLogger(ShipmentQuantityR1D1.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        //SHB + JN + 产品后续由分公司卖出的数据（济南R销售均价）
-        return temp1.add(temp2).add(BigDecimal.valueOf(a));
+        return BigDecimal.ZERO;
     }
 
 }

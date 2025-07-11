@@ -34,10 +34,9 @@ public class ShipmentAmountR1D2 extends ShipmentAmount {
 
     @Override
     public BigDecimal getValue(int y, int m, Date d, int type, LinkedHashMap<String, Object> map) {
-        BigDecimal temp1, temp2;
-        Field f;
-        String mon;
-        Double a;
+        try {
+            BigDecimal temp1, temp2;
+   
         //SHB ERP
         temp1 = super.getValue(y, m, d, type, map);
         queryParams.remove("facno");
@@ -45,21 +44,31 @@ public class ShipmentAmountR1D2 extends ShipmentAmount {
         queryParams.put("facno", "G");
         //GZ ERP
         temp2 = super.getValue(y, m, d, type, queryParams);
-
-        //KPI中卖到各个分公司中的数据,由制冷维护金额
-        Indicator indicator = getIndicatorBean().findByFormidYearAndDeptno("R-广州R均价", y, "1F000");
-        try {
-            IndicatorDetail o = indicator.getOther2Indicator();
+        //SHB + GZ
+         Field f;
+            String mon;
+            Double a2, a4;
             mon = getIndicatorBean().getIndicatorColumn("N", m);
-            f = o.getClass().getDeclaredField(mon);
-            f.setAccessible(true);
-            a = Double.valueOf(f.get(o).toString());
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            a = 0.0;
-            Logger.getLogger(ShipmentAmountR1E2.class.getName()).log(Level.SEVERE, null, ex);
-        }
+           String deptno = queryParams.get("deptno") != null ? queryParams.get("deptno").toString() : "";
+            Indicator indicator = getIndicatorBean().findByFormidYearAndDeptno("R-广州热泵R均价", y, "1F000");
 
-        //SHB + GZ +   产品后续由分公司卖出的数据（广州R销售均价）
-        return temp1.add(temp2).add(BigDecimal.valueOf(a));
+            // //分公司卖出后新增到华东的台数
+            IndicatorDetail o2 = indicator.getOther2Indicator();
+            f = o2.getClass().getDeclaredField(mon);
+            f.setAccessible(true);
+            a2 = Double.valueOf(f.get(o2).toString());
+
+            //华东卖出后新增到分公司的台数
+            IndicatorDetail o4 = indicator.getOther4Indicator();
+            f = o4.getClass().getDeclaredField(mon);
+            f.setAccessible(true);
+            a4 = Double.valueOf(f.get(o4).toString());
+
+             //华东销售台数=华东销售台数+分公司卖出后新增到华东-华东卖给分公司的台数
+        return temp1.add(temp2).add(BigDecimal.valueOf(a2 - a4));
+         } catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException ex) {
+            Logger.getLogger(ShipmentQuantityR1D1.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return BigDecimal.ZERO;
     }
 }
