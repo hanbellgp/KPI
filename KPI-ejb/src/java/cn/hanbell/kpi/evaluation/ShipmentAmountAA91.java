@@ -33,7 +33,6 @@ public class ShipmentAmountAA91 extends ShipmentAmount9 {
         //2024-7-1 陈超徐伟盛卖机组零件+机体整机部分,
         //机体整机归入机组零件数据
         //出货=销售-退货
-        
         //机体整机
         BigDecimal a = getSingleValue(y, m, d, type, map);
         //机组零件

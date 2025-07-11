@@ -7,6 +7,11 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <ui:define name="content">
+          <style>
+            body .ui-inputnumber .ui-inputtext{
+                text-align:left !important;
+            }
+        </style>
         <h:form id="formOne">
             <p:growl id="growl"  showSummary="false" showDetail="true" />
             <p:toolbar id="toolbar" styleClass="topToolbar">
@@ -44,13 +49,7 @@
                     <p:column styleClass="Wid30">
                         <p:outputLabel id="deptno" value="#{personSetManagedBean.currentEntity.deptno}#{personSetManagedBean.currentEntity.deptname}" title="部门"/>
                     </p:column>
-                    <p:column styleClass="Wid20"><p:outputLabel value="奖金发放比率" for="percentage"/></p:column>
-                    <p:column styleClass="Wid30">
-                        <p:outputLabel id="percentage" value="#{personSetManagedBean.currentEntity.percentage}" title="奖金发放比率"/>
-                    </p:column>
-                </p:row>
-                <p:row>
-                    <p:column styleClass="Wid20"><p:outputLabel value="职等" for="officialrank"/></p:column>
+                      <p:column styleClass="Wid20"><p:outputLabel value="职等" for="officialrank"/></p:column>
                     <p:column styleClass="Wid30">
                         <p:selectOneMenu id="officialrank" value="#{personSetManagedBean.currentEntity.officialrank}" title="职等" >
                             <f:selectItem itemLabel="A-" itemValue="A-"/>
@@ -64,6 +63,10 @@
                             <f:selectItem itemLabel="E" itemValue="E"/>
                         </p:selectOneMenu>
                     </p:column>
+                </p:row>
+                <p:row>
+                  
+                    
                     <p:column styleClass="Wid20"><p:outputLabel value="职等名称" for="officialrankdesc"/></p:column>
                     <p:column styleClass="Wid30">
                         <p:selectOneMenu id="officialrankdesc" value="#{personSetManagedBean.currentEntity.officialrankdesc}" title="职等" >
@@ -78,9 +81,7 @@
                             <f:selectItem itemLabel="副董级" itemValue="副董级"/>
                         </p:selectOneMenu>
                     </p:column>
-                </p:row>
-                <p:row>
-                    <p:column styleClass="Wid20"><p:outputLabel value="职等类型" for="jobcategory"/></p:column>
+                      <p:column styleClass="Wid20"><p:outputLabel value="职等类型" for="jobcategory"/></p:column>
                     <p:column styleClass="Wid30">
                         <p:selectOneMenu id="jobcategory" value="#{personSetManagedBean.currentEntity.jobcategory}" title="职等类型" >
                             <f:selectItem itemLabel="第一类" itemValue="第一类"/>
@@ -97,13 +98,14 @@
                             <f:selectItem itemLabel="其他" itemValue="其他"/>
                         </p:selectOneMenu>
                     </p:column>
+                </p:row>
+                <p:row>
+                  
                     <p:column styleClass="Wid20"><p:outputLabel value="岗位" for="duties"/></p:column>
                     <p:column styleClass="Wid30">
                         <p:inputText id="duties" value="#{personSetManagedBean.currentEntity.duties}" title="岗位"/>
                     </p:column>
-                </p:row>
-                <p:row>
-                    <p:column styleClass="Wid20"><p:outputLabel value="考核方式" for="assessmentmethod"/></p:column>
+                     <p:column styleClass="Wid20"><p:outputLabel value="考核方式" for="assessmentmethod"/></p:column>
                     <p:column styleClass="Wid30">
                         <p:selectOneMenu id="assessmentmethod" value="#{personSetManagedBean.currentEntity.assessmentmethod}" title="考核方式" >
                             <f:selectItem itemLabel="" itemValue=""/>
@@ -116,12 +118,19 @@
                             <f:selectItem itemLabel="不考核" itemValue="O"/>
                         </p:selectOneMenu>
                     </p:column>
-                    <p:column styleClass="Wid20"><p:outputLabel value="能否超过100分" for="ishundred"/></p:column>
+                </p:row>
+                <p:row>
+
+                    <p:column styleClass="Wid20"><p:outputLabel value="最低分" for="minscore"/></p:column>
                     <p:column styleClass="Wid30">
-                        <p:selectOneMenu id="ishundred" value="#{personSetManagedBean.currentEntity.ishundred}" title="是否100分制" >
-                            <f:selectItem itemLabel="是" itemValue="true"/>
-                            <f:selectItem itemLabel="否" itemValue="false"/>
-                        </p:selectOneMenu>
+                        <p:inputNumber   id="minscore" value="#{personSetManagedBean.currentEntity.minscore}"  title="最低分"  >
+
+                        </p:inputNumber >
+                    </p:column>
+                    <p:column styleClass="Wid20"><p:outputLabel value="最高分" for="maxscore"/></p:column>
+                    <p:column styleClass="Wid30">
+                        <p:inputNumber   id="maxscore" value="#{personSetManagedBean.currentEntity.maxscore}"  title="最高分"  >
+                        </p:inputNumber >
                     </p:column>
                 </p:row>
                 <p:row>

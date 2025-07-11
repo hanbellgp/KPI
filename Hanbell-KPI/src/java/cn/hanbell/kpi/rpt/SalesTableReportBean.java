@@ -26,6 +26,8 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import vn.hanbell.kpi.ejb.SalesTableVNBean;
+import vn.hanbell.kpi.ejb.SalesTableVNUpdateBean;
 
 /**
  *
@@ -39,6 +41,12 @@ public class SalesTableReportBean implements Serializable {
     private SalesTableBean salesTableBean;
     @EJB
     protected SalesTableUpdateBean salesTableUpdateBean;
+
+    @EJB
+    private SalesTableVNBean salesTableVNBean;
+    @EJB
+    protected SalesTableVNUpdateBean salesTableVNUpdateBean;
+
     @EJB
     protected IndicatorChartBean indicatorChartBean;
 
@@ -100,47 +108,93 @@ public class SalesTableReportBean implements Serializable {
         } else {
             List<SalesTable> list = new ArrayList();
             try {
-                if ("Shipment".equals(type)) {
-                    list = salesTableUpdateBean.getShipmentListSum(getDate().get(Calendar.YEAR), (getDate().get(Calendar.MONTH) + 1), (da == null ? "" : da), type);
-                }
-                if ("SalesOrder".equals(type)) {
-                    list = salesTableUpdateBean.getSalesOrderListSum(getDate().get(Calendar.YEAR), (getDate().get(Calendar.MONTH) + 1), (da == null ? "" : da), type);
-                }
-                if ("ServiceAmount".equals(type)) {
-                    list = salesTableUpdateBean.getServiceAmountListSum(getDate().get(Calendar.YEAR), (getDate().get(Calendar.MONTH) + 1), (da == null ? "" : da), type);
-                }
-                if (list != null && !list.isEmpty()) {
-                    if (salesTableBean.querySalesTableIsExist(getDate().get(Calendar.YEAR), (getDate().get(Calendar.MONTH) + 1), da, type)) {
-                        status1 = new SimpleDateFormat("yyyy年MM月").format(getDate().getTime()) + (da != null ? da : "所有部门") + " (" + type + ") 数据已存在，如点击更新则会重新覆盖该时间数据！！！慎重";
-                    } else {
-                        status2 = new SimpleDateFormat("yyyy年MM月").format(getDate().getTime()) + (da != null ? da : "所有部门") + " (" + type + ")为新数据，请及时更新";
-                    }
-                    Double aaDouble = 0.0;
-                    for (SalesTable salesTable : list) {
-                        quantitySum += salesTable.getQuantity().doubleValue();
-                        aaDouble += salesTable.getAmount().doubleValue();
-                    }
-                    String bbString = new DecimalFormat("#,##0.00").format(aaDouble);
-                    amountSum = bbString;
-                    display = "block";
+                if ("VNLA".equals(da) || "VNBN".equals(da)) {
+                    queryVHB(); //查越南
                 } else {
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "无法查询到该数据！"));
+                    querySHB();//查上海汉钟
                 }
             } catch (Exception e) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", e.toString()));
             }
         }
+    }
 
+    public void querySHB() {
+        List<SalesTable> list = new ArrayList();
+        if ("Shipment".equals(type)) {
+            list = salesTableUpdateBean.getShipmentListSum(getDate().get(Calendar.YEAR), (getDate().get(Calendar.MONTH) + 1), (da == null ? "" : da), type);
+        }
+        if ("SalesOrder".equals(type)) {
+            list = salesTableUpdateBean.getSalesOrderListSum(getDate().get(Calendar.YEAR), (getDate().get(Calendar.MONTH) + 1), (da == null ? "" : da), type);
+        }
+        if ("ServiceAmount".equals(type)) {
+            list = salesTableUpdateBean.getServiceAmountListSum(getDate().get(Calendar.YEAR), (getDate().get(Calendar.MONTH) + 1), (da == null ? "" : da), type);
+        }
+        if (list != null && !list.isEmpty()) {
+            if (salesTableBean.querySalesTableIsExist(getDate().get(Calendar.YEAR), (getDate().get(Calendar.MONTH) + 1), da, type)) {
+                status1 = new SimpleDateFormat("yyyy年MM月").format(getDate().getTime()) + (da != null ? da : "所有部门") + " (" + type + ") 数据已存在，如点击更新则会重新覆盖该时间数据！！！慎重";
+            } else {
+                status2 = new SimpleDateFormat("yyyy年MM月").format(getDate().getTime()) + (da != null ? da : "所有部门") + " (" + type + ")为新数据，请及时更新";
+            }
+            Double aaDouble = 0.0;
+            for (SalesTable salesTable : list) {
+                quantitySum += salesTable.getQuantity().doubleValue();
+                aaDouble += salesTable.getAmount().doubleValue();
+            }
+            String bbString = new DecimalFormat("#,##0.00").format(aaDouble);
+            amountSum = bbString;
+            display = "block";
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "无法查询到该数据！"));
+        }
+    }
+
+    public void queryVHB() {
+        List<SalesTable> list = new ArrayList();
+        if ("Shipment".equals(type)) {
+            list = salesTableVNUpdateBean.getShipmentListSum(getDate().get(Calendar.YEAR), (getDate().get(Calendar.MONTH) + 1), (da == null ? "" : da), type);
+        }
+        if ("SalesOrder".equals(type)) {
+            list = salesTableVNUpdateBean.getSalesOrderListSum(getDate().get(Calendar.YEAR), (getDate().get(Calendar.MONTH) + 1), (da == null ? "" : da), type);
+        }
+        if ("ServiceAmount".equals(type)) {
+            list = salesTableVNUpdateBean.getServiceAmountListSum(getDate().get(Calendar.YEAR), (getDate().get(Calendar.MONTH) + 1), (da == null ? "" : da), type);
+        }
+        if (list != null && !list.isEmpty()) {
+            if (salesTableVNBean.querySalesTableIsExist(getDate().get(Calendar.YEAR), (getDate().get(Calendar.MONTH) + 1), da, type)) {
+                status1 = new SimpleDateFormat("yyyy年MM月").format(getDate().getTime()) + (da != null ? da : "所有部门") + " (" + type + ") 数据已存在，如点击更新则会重新覆盖该时间数据！！！慎重";
+            } else {
+                status2 = new SimpleDateFormat("yyyy年MM月").format(getDate().getTime()) + (da != null ? da : "所有部门") + " (" + type + ")为新数据，请及时更新";
+            }
+            Double aaDouble = 0.0;
+            for (SalesTable salesTable : list) {
+                quantitySum += salesTable.getQuantity().doubleValue();
+                aaDouble += salesTable.getAmount().doubleValue();
+            }
+            String bbString = new DecimalFormat("#,##0.00").format(aaDouble);
+            amountSum = bbString;
+            display = "block";
+        } else {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "无法查询到该数据！"));
+        }
     }
 
     public void updateSales() {
-        if (salesTableBean.updateSalesTable(getDate().get(Calendar.YEAR), (getDate().get(Calendar.MONTH) + 1), da, type)) {
+        boolean a = true;
+        if ("VNLA".equals(da) || "VNBN".equals(da)) {
+            a = salesTableVNBean.updateSalesTable(getDate().get(Calendar.YEAR), (getDate().get(Calendar.MONTH) + 1), da, type); //越南
+        } else {
+            a = salesTableBean.updateSalesTable(getDate().get(Calendar.YEAR), (getDate().get(Calendar.MONTH) + 1), da, type);//上海汉钟
+        }
+        if (a) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Info", "数据更新成功！"));
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "数据更新异常！"));
         }
         display = "none";
     }
+
+
 
     /**
      * @return the btnDate

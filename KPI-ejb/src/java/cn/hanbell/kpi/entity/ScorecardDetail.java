@@ -130,88 +130,88 @@ public class ScorecardDetail extends SuperDetailEntity {
     @Size(max = 20)
     @Column(name = "username")
     private String username;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "tq1")
     private String tq1;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "tq2")
     private String tq2;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "tq3")
     private String tq3;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "tq4")
     private String tq4;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "th1")
     private String th1;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "th2")
     private String th2;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "tfy")
     private String tfy;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "bq1")
     private String bq1;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "bq2")
     private String bq2;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "bq3")
     private String bq3;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "bq4")
     private String bq4;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "bh1")
     private String bh1;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "bh2")
     private String bh2;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "bfy")
     private String bfy;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "fq1")
     private String fq1;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "fq2")
     private String fq2;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "fq3")
     private String fq3;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "fq4")
     private String fq4;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "fh1")
     private String fh1;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "fh2")
     private String fh2;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "ffy")
     private String ffy;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "aq1")
     private String aq1;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "aq2")
     private String aq2;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "aq3")
     private String aq3;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "aq4")
     private String aq4;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "ah1")
     private String ah1;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "ah2")
     private String ah2;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "afy")
     private String afy;
     @Column(name = "pq1")
@@ -245,13 +245,13 @@ public class ScorecardDetail extends SuperDetailEntity {
     @Size(max = 800)
     @Column(name = "performanceJexl")
     private String performanceJexl;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "performanceInterface")
     private String performanceInterface;
     @Size(max = 800)
     @Column(name = "scoreJexl")
     private String scoreJexl;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "scoreInterface")
     private String scoreInterface;
     @Column(name = "cq1")
@@ -274,7 +274,7 @@ public class ScorecardDetail extends SuperDetailEntity {
     @Column(name = "freezeDate")
     @Temporal(TemporalType.DATE)
     private Date freezeDate;
-    @Size(max = 200)
+    @Size(max = 500)
     @Column(name = "remark")
     private String remark;
     @Size(max = 45)

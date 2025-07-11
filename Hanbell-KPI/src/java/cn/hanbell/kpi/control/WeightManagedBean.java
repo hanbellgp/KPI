@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
@@ -186,10 +187,12 @@ public class WeightManagedBean extends SuperSingleBean<ShoppingMenuWeight> {
         String shbFhszj = " in ('SZJ00065','SZJ00067')";
         String twFhszj = " in ('1139')";
         fileName = "采购中心物料重量" + BaseLib.formatDate("yyyyMMddHHmmss", BaseLib.getDate()) + ".xls";
-        List<Object[]> shbList = shoppingAccomuntBean.getWeightDate1("C", this.queryDate, getWhereVdrnos("C", "'铸件'").toString(), "");
+        List<Object[]> shbList = new ArrayList<>();
+//                shoppingAccomuntBean.getWeightDate1("C", this.queryDate, getWhereVdrnos("C", "'铸件'").toString(), "");
         //上海汉钟已作为进口列入。需手动加入上海汉钟厂商
         StringBuffer sb = getWhereVdrnos("A", "'鑄件'");
-        List<Object[]> thbList = shoppingAccomuntBean.getWeightDate1("A", this.queryDate, sb.substring(0, sb.length() - 1).concat(",'86005')"), "");
+        List<Object[]> thbList = new ArrayList<>();
+//                shoppingAccomuntBean.getWeightDate1("A", this.queryDate, sb.substring(0, sb.length() - 1).concat(",'86005')"), "");
         String fileFullName = reportOutputPath + fileName;
         OutputStream os = null;
         os = new FileOutputStream(fileFullName);

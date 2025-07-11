@@ -516,7 +516,8 @@ public class IndicatorBean extends SuperEJBForKPI<Indicator> {
             nb = BigDecimal.valueOf(Double.valueOf(f.get(b).toString()));
             // 计算
             if (nb.compareTo(BigDecimal.ZERO) != 0) {
-                return na.divide(nb, scale + 2, RoundingMode.HALF_UP).subtract(BigDecimal.ONE)
+                return na.subtract(nb).divide(nb.abs(), scale + 2, RoundingMode.HALF_UP)   
+//                return na.divide(nb, scale + 2, RoundingMode.HALF_UP).subtract(BigDecimal.ONE)
                     .multiply(BigDecimal.valueOf(100d));
             } else {
                 return BigDecimal.valueOf(na.compareTo(nb)).multiply(BigDecimal.valueOf(100d));
@@ -2276,7 +2277,6 @@ public class IndicatorBean extends SuperEJBForKPI<Indicator> {
                     break;
             }
         }
-        this.update(entity);
     }
 
     public void updateTarget(Indicator entity) {

@@ -215,16 +215,30 @@
                                     <p:column><p:outputLabel value="Q1"/></p:column>
                                     <p:column rendered="#{scorecardManagedBean.currentEntity.type!='N'}">
                                         <p:outputLabel id="tq1" value="#{scorecardManagedBean.currentEntity.tq1}"  styleClass="Wid100"  title="tq1" />
+										 
                                     </p:column>
                                     <p:column rendered="#{scorecardManagedBean.currentEntity.type=='N'}">
                                         <p:outputLabel id="tq1n" value="#{scorecardManagedBean.currentEntity.tq1}" styleClass="Wid100"  title="tq1"/>
+										  <c:if test="#{scorecardManagedBean.currentEntity.symbol != '%'}">
+											&nbsp;&nbsp;<p:outputLabel id="tq1symbol" value="#{scorecardManagedBean.currentEntity.symbol}" styleClass="Wid100" style="color: #1e22ff; font-size: 12px; font-weight: 1000" />
+										   </c:if>
+										     <c:if test="#{scorecardManagedBean.currentEntity.symbol == '%'}">
+											 <p:outputLabel id="tq1symbol" value="#{scorecardManagedBean.currentEntity.symbol}" styleClass="Wid100" />
+											   </c:if>
                                     </p:column>
                                     <p:column>
                                         <p:outputLabel id="aq1" value="#{scorecardManagedBean.currentEntity.aq1}" styleClass="Wid100"  title="aq1" rendered="#{scorecardManagedBean.currentEntity.type!='N'}"/>
                                         <p:outputLabel id="aq1n" value="#{scorecardManagedBean.currentEntity.aq1}" styleClass="Wid100"  title="aq1" rendered="#{scorecardManagedBean.currentEntity.type=='N'}" />
+										  <c:if test="#{scorecardManagedBean.currentEntity.symbol != '%'}">
+										&nbsp;&nbsp;
+										 <p:outputLabel id="aq1symbol" value="#{scorecardManagedBean.currentEntity.symbol}" styleClass="Wid100"  style="color: #1e22ff; font-size: 12px;     font-weight: 1000"/>
+										   </c:if>
+										    <c:if test="#{scorecardManagedBean.currentEntity.symbol == '%'}">
+											 <p:outputLabel id="tq1symbol" value="#{scorecardManagedBean.currentEntity.symbol}" styleClass="Wid100" />
+											   </c:if>
                                     </p:column>
                                     <p:column styleClass="Wid5">
-                                        <p:outputLabel id="pq1" value="#{scorecardManagedBean.currentEntity.pq1}" title="pq1"/>
+                                        <p:outputLabel id="pq1" value="#{scorecardManagedBean.currentEntity.pq1}" title="pq1"/>%
                                     </p:column>
                                 </p:row>
                             </c:when>

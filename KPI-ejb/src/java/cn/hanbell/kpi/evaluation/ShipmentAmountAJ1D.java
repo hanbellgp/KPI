@@ -13,9 +13,9 @@ import java.util.LinkedHashMap;
  *
  * @author C0160
  */
-public class ShipmentAmountAJ3 extends ShipmentAmount {
+public class ShipmentAmountAJ1D extends ShipmentAmount {
 
-    public ShipmentAmountAJ3() {
+    public ShipmentAmountAJ1D() {
         super();
         queryParams.put("facno", "C");
         queryParams.put("deptno", " '1G000','1G100' ");

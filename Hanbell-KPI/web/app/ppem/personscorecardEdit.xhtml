@@ -101,7 +101,7 @@
                             <f:facet name="header">
                                 <h:outputText value="比重"/>
                             </f:facet>
-                            <h:outputText value="#{item.ratio*100}%"/>
+                            <h:outputText value="#{personScorecardManagedBean.formatPercentage(item.ratio*100)}%"/>
                         </p:column>
                         <p:column styleClass="Wid5">
                               <f:facet name="header">
@@ -114,7 +114,7 @@
                             <h:outputText value="#{personScorecardManagedBean.scoreMap.get('sq1').quarter*100}%" />
                         </p:column> 
                         
-                        <p:columnGroup type="footer"  >
+                        <p:columnGroup type="footer">
                                 <p:column style="text-align:left" footerText="Totals:" colspan="3"/>
                                 <p:column style="text-align:left"  >
                                     <f:facet name="footer" >
@@ -171,7 +171,7 @@
                                 <f:facet name="header">
                                     <h:outputText value="比重"/>
                                 </f:facet>
-                                <h:outputText value="#{item.ratio*100}%"/>
+                                <h:outputText value="#{personScorecardManagedBean.formatPercentage(item.ratio*100)}%"/>
                             </p:column>
                             <p:column styleClass="Wid5">
                                 <f:facet name="header">
@@ -232,7 +232,7 @@
                             <f:facet name="header">
                                 <h:outputText value="比重"/>
                             </f:facet>
-                            <h:outputText value="#{item.ratio*100}%"/>
+                            <h:outputText value="#{personScorecardManagedBean.formatPercentage(item.ratio*100)}%"/>
                         </p:column>
                         <p:column styleClass="Wid5" headerText="权重分数">
                             <p:inputNumber value="#{item.score}"  readonly="true" inputStyleClass="scoreInputNumber"  >
@@ -301,7 +301,7 @@
                                 <f:facet name="header">
                                     <h:outputText value="比重"/>
                                 </f:facet>
-                                <h:outputText value="#{item.ratio*100}%"/>
+                                <h:outputText value="#{personScorecardManagedBean.formatPercentage(item.ratio*100)}%"/>
                             </p:column>
                             <p:column styleClass="Wid5">
                                 <f:facet name="header">
@@ -359,7 +359,7 @@
                             <f:facet name="header">
                                 <h:outputText value="比重"/>
                             </f:facet>
-                            <h:outputText value="#{item.ratio*100}%"/>
+                            <h:outputText value="#{personScorecardManagedBean.formatPercentage(item.ratio*100)}%"/>
                         </p:column>
                         <p:column styleClass="Wid5" headerText="权重分数">
                             <p:inputNumber value="#{item.score}"  readonly="true" inputStyleClass="scoreInputNumber"  >
@@ -429,7 +429,7 @@
                                 <f:facet name="header">
                                     <h:outputText value="比重"/>
                                 </f:facet>
-                                <h:outputText value="#{item.ratio*100}%"/>
+                                <h:outputText value="#{personScorecardManagedBean.formatPercentage(item.ratio*100)}%"/>
                             </p:column>
                             <p:column styleClass="Wid5">
                                 <f:facet name="header">
@@ -464,7 +464,7 @@
 
                 Q4
                 <p:tab title="Q4主观" id="sq4">
-                    <c:if test="#{personScorecardManagedBean.queryQuarter==3}">
+                    <c:if test="#{personScorecardManagedBean.queryQuarter==4}">
                         <p:toolbar  styleClass="detailToolbar">
                             <f:facet name="right">
                                 <p:commandButton  value="保存" actionListener="#{personScorecardManagedBean.update()}" icon="ui-icon-check" 
@@ -480,7 +480,7 @@
                             <h:outputText value="#{item.name}"/>
                         </p:column>
                         <p:column styleClass="Wid5" headerText="单项分数">
-                            <p:inputNumber value="#{item.score}"  readonly="#{personScorecardManagedBean.queryQuarter>4}" inputStyleClass="scoreInputNumber"   onkeydown="return handleEnter(event, this)">
+                            <p:inputNumber value="#{item.hunscore}"  readonly="#{personScorecardManagedBean.queryQuarter>4}" inputStyleClass="scoreInputNumber"   onkeydown="return handleEnter(event, this)">
                                 <p:ajax listener="#{personScorecardManagedBean.setScore}" update="tableList7" oncomplete="selectall();"></p:ajax>
                             </p:inputNumber>
                         </p:column>
@@ -488,7 +488,7 @@
                             <f:facet name="header">
                                 <h:outputText value="比重"/>
                             </f:facet>
-                            <h:outputText value="#{item.ratio*100}%"/>
+                            <h:outputText value="#{personScorecardManagedBean.formatPercentage(item.ratio*100)}%"/>
                         </p:column>
                         <p:column styleClass="Wid5" headerText="权重分数">
                             <p:inputNumber value="#{item.score}"  readonly="true" inputStyleClass="scoreInputNumber"  >
@@ -518,7 +518,7 @@
                 </p:tab>
                 <c:if test="#{'I'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod()) or 'J'.equals(personScorecardManagedBean.currentEntity.personset.getAssessmentmethod())}">
                     <p:tab title="Q4客观" id="aq4">
-                        <c:if test="#{personScorecardManagedBean.queryQuarter==3}">
+                        <c:if test="#{personScorecardManagedBean.queryQuarter==4}">
                             <p:toolbar  styleClass="detailToolbar">
                                 <f:facet name="right">
                                     <p:commandButton  value="保存" actionListener="#{personScorecardManagedBean.update()}" icon="ui-icon-check" 
@@ -558,7 +558,7 @@
                                 <f:facet name="header">
                                     <h:outputText value="比重"/>
                                 </f:facet>
-                                <h:outputText value="#{item.ratio*100}%"/>
+                                <h:outputText value="#{personScorecardManagedBean.formatPercentage(item.ratio*100)}%"/>
                             </p:column>
                             <p:column styleClass="Wid5">
                                 <f:facet name="header">

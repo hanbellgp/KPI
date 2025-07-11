@@ -226,8 +226,15 @@
                             </p:commandButton>
                             <p:commandButton id="btnSaveDetail" widgetVar="btnSaveDetail" value="确定" actionListener="#{scorecardSetManagedBean.doConfirmDetail()}" icon="ui-icon-check"
                                              onsuccess="PF('btnAddDetail').enable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').disable();"
-                                             process="@this,formOne:tabView:plgDetail" update="formOne:tabView:plgDetail,formOne:tabView:tableList,formOne:dlgStageDescription,formOne:growl"/>
+                                             
+                                             process="@this,formOne:tabView:plgDetail" 
+                                             update="formOne:tabView:plgDetail,formOne:tabView:tableList,formOne:dlgStageDescription,formOne:growl"/>
 
+                            <script type="text/javascript">
+                                function handleSuccess() {
+                                    alert('操作成功！');
+                                }
+                            </script>
                             <p:commandButton id="btnImportByPolicyDetail" widgetVar="btnImportByPolicyDetail" value="方针导入" icon="ui-icon-note" actionListener="#{scorecardSetManagedBean.openDialog('policySelect')}"
                                              oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').disable();PF('btnSaveDetail').enable();"  process="@this"  >
                                 <p:ajax event="dialogReturn" listener="#{scorecardSetManagedBean.handleDialogReturnWhenPolicySelect}"
@@ -241,28 +248,28 @@
                             <p:column styleClass="Wid20"><p:outputLabel value="考核内容" for="content" /></p:column>
                             <p:column styleClass="Wid30">
                                 <p:inputText id="content" value="#{scorecardSetManagedBean.currentDetail.content}" title="content"
-                                             required="true" requiredMessage="请输入考核内容"/>
+                                            />
                             </p:column>
                             <p:column styleClass="Wid20"><p:outputLabel value="权重" for="weight" /></p:column>
                             <p:column styleClass="Wid30">
                                 <p:spinner id="weight" value="#{scorecardSetManagedBean.currentDetail.weight}" title="weight" stepFactor="0.5"
-                                           required="true" requiredMessage="请输入权重"/>
+                                          />
                             </p:column>
                         </p:row>
                         <p:row>
-                            <p:column><h:outputText value="指标类型"/></p:column>
+                            <p:column><p:outputLabel value="指标类型" for="type"/></p:column>
                             <p:column>
-                                <p:selectOneMenu id="type" value="#{scorecardSetManagedBean.currentDetail.type}" title="type"
-                                                 required="true" requiredMessage="请输入指标类型">
+                                <p:selectOneMenu id="type" value="#{scorecardSetManagedBean.currentDetail.type}" title="type">
                                     <f:selectItem itemLabel="数字" itemValue="N"/>
                                     <f:selectItem itemLabel="文字" itemValue="S"/>
                                     <f:selectItem itemLabel="时间" itemValue="T"/>
+                                    <f:ajax execute="@this" />
                                 </p:selectOneMenu>
                             </p:column>
-                            <p:column><h:outputText value="计算周期"/></p:column>
+                            <p:column><p:outputLabel value="计算周期"  for="kind"/></p:column>
                             <p:column>
                                 <p:selectOneMenu id="kind" value="#{scorecardSetManagedBean.currentDetail.kind}" title="kind"
-                                                 required="true" requiredMessage="请输入计算周期" disabled="false">
+                                               disabled="false">
                                     <f:selectItem itemLabel="季" itemValue="Q"/>
                                 </p:selectOneMenu>
                             </p:column>
@@ -271,7 +278,7 @@
                             <p:column><p:outputLabel value="计算方式" for="valuemode" /></p:column>
                             <p:column>
                                 <p:selectOneMenu id="valuemode" value="#{scorecardSetManagedBean.currentDetail.valueMode}" title="valuemode"
-                                                 required="true" requiredMessage="请输入计算方式">
+                                              >
                                     <f:selectItem itemLabel="手动输入" itemValue="I"/>
                                     <f:selectItem itemLabel="求和" itemValue="S"/>
                                     <f:selectItem itemLabel="平均值" itemValue="A"/>
@@ -303,9 +310,9 @@
                             <p:column>
                                 <p:inputText id="projectSeq" value="#{scorecardSetManagedBean.currentDetail.projectSeq}" title="projectSeq"  styleClass="inputWithButton" />
                                 <p:commandButton id="btnProjectSelect" actionListener="#{scorecardSetManagedBean.openDialog('projectSelect')}" icon="ui-icon-extlink"
-                                                 process="@this" >
+                                                 process="@this type" >
                                     <p:ajax event="dialogReturn" listener="#{scorecardSetManagedBean.handleDialogReturnDeptWhenProjectNew}"
-                                            update="projectSeq,projectName" />
+                                            update="projectSeq,projectName,formOne:growl" />
                                 </p:commandButton>
                             </p:column>
                             <p:column><p:outputLabel value="PLM名称" for="projectName" /></p:column>
@@ -318,7 +325,7 @@
                             <p:column>
                                 <p:inputText id="policySeq" value="#{scorecardSetManagedBean.currentDetail.policySeq}" title="policySeq"  styleClass="inputWithButton" readonly="true"/>
                                 <p:commandButton id="btnPolicySelect" actionListener="#{scorecardSetManagedBean.openDialog('policySelect')}" icon="ui-icon-extlink"
-                                                 process="@this" >
+                                                 process="@form" >
                                     <p:ajax event="dialogReturn" listener="#{scorecardSetManagedBean.handleDialogReturnDeptWhenPolicyNew}"
                                             update="policySeq,policyName,formOne:growl" />
                                 </p:commandButton>
@@ -335,7 +342,7 @@
                                 <p:inputText id="indicatorDeptno" value="#{scorecardSetManagedBean.currentDetail.deptno}" title="indicatorDeptno"
                                              styleClass="inputWithButton" readonly="true"/>
                                 <p:commandButton id="btnIndicatorDeptSelect" actionListener="#{scorecardSetManagedBean.openDialog('departmentSelect')}" icon="ui-icon-extlink"
-                                                 process="@this" >
+                                                 process="@form" >
                                     <p:ajax event="dialogReturn" listener="#{scorecardSetManagedBean.handleDialogReturnDeptWhenDetailEdit}"
                                             update="indicatorDeptno,indicatorDeptname" />
                                 </p:commandButton>
@@ -365,7 +372,7 @@
                                 <p:inputNumber id="seq" value="#{scorecardSetManagedBean.currentDetail.seq}" title="seq" />
                             </p:column>
                         </p:row>
-                        <p:row rendered="#{scorecardSetManagedBean.currentDetail.type=='N'}">
+                        <p:row>
                             <p:column><p:outputLabel value="公式名称" for="jexlName" /></p:column>
                             <p:column colspan="3">
                                 <p:selectOneMenu id="jexlName" value="#{scorecardSetManagedBean.currentDetail.jexlName}" title="jexlName" >
@@ -380,13 +387,13 @@
                                 </p:selectOneMenu>
                             </p:column>
                         </p:row>
-                        <p:row rendered="#{scorecardSetManagedBean.currentDetail.type=='N'}">
+                        <p:row>
                             <p:column><h:outputText value="达成公式"/></p:column>
                             <p:column colspan="3">
                                 <p:inputTextarea id="performanceJexl" value="#{scorecardSetManagedBean.currentDetail.performanceJexl}" title="performanceJexl" styleClass="Wid100"/>
                             </p:column>
                         </p:row>
-                        <p:row rendered="#{scorecardSetManagedBean.currentDetail.type=='N'}">
+                        <p:row >
                             <p:column><p:outputLabel value="得分公式" for="scoreJexl" /></p:column>
                             <p:column colspan="3">
                                 <p:inputTextarea id="scoreJexl" value="#{scorecardSetManagedBean.currentDetail.scoreJexl}" title="scoreJexl" styleClass="Wid100"/>
@@ -395,11 +402,11 @@
                     </p:panelGrid>
                     <p:dataTable id="tableList" value="#{scorecardSetManagedBean.detailList}" var="item" styleClass="tableList Mtop10"
                                  selectionMode="single" selection="#{scorecardSetManagedBean.currentDetail}" rowKey="#{item.seq}" >
-                        <p:ajax event="rowSelect" update="formOne:tabView:plgDetail,formOne:tabView:contextMenu,formOne:dlgStageDescription"
-                                oncomplete="PF('btnAddDetail').disable();PF('btnDeleteDetail').enable();PF('btnSaveDetail').enable();" />
+                        <p:ajax event="rowSelect" update="formOne:tabView:plgDetail,formOne:dlgStageDescription" 
+                                oncomplete="PF('btnAddDetail').enable();PF('btnDeleteDetail').enable();PF('btnSaveDetail').enable();"  />
                         <p:ajax event="rowUnselect" update=":formOne:tabView:plgDetail" oncomplete="" />
                         <p:ajax event="rowDblselect" update="formOne:dlgDetail" oncomplete="PF('dlgDetail').show();"/>
-
+                        
                         <p:column styleClass="Wid30">
                             <f:facet name="header">
                                 <h:outputText value="考核内容"/>
@@ -475,12 +482,13 @@
                             </f:facet>
                             <h:outputText value="#{item.sq4}"/>
                         </p:column>
+            
                     </p:dataTable>
                     <p:contextMenu id="contextMenu" for="tableList">
-                        <p:menuitem value="向上" icon="arrow-upward" actionListener="#{scorecardSetManagedBean.moveUp}"
-                                    process="@this"  update="formOne:tabView:plgDetail,formOne:tabView:contextMenu,formOne:dlgStageDescription,tableList" disabled="#{scorecardSetManagedBean.firstDetail}"/>
-                        <p:menuitem value="向下" icon="arrow-downward" actionListener="#{scorecardSetManagedBean.moveDown}"
-                                    process="@this"  update="formOne:tabView:plgDetail,formOne:tabView:contextMenu,formOne:dlgStageDescription,tableList" disabled="#{scorecardSetManagedBean.lastDetail}"/>
+                        <p:menuitem value="向上" icon="arrow-upward" actionListener="#{scorecardSetManagedBean.moveUp}"  process="@this,formOne:tabView" 
+                                    update="formOne:tabView:plgDetail,formOne:tabView:contextMenu,formOne:dlgStageDescription,tableList" />
+                        <p:menuitem value="向下" icon="arrow-downward" actionListener="#{scorecardSetManagedBean.moveDown}" process="@this,formOne:tabView" 
+                                   update="formOne:tabView:plgDetail,formOne:tabView:contextMenu,formOne:dlgStageDescription,tableList" />
                     </p:contextMenu>
                 </p:tab>
             </p:tabView>

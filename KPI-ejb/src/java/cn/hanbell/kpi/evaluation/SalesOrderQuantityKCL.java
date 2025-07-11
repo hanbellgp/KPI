@@ -11,32 +11,33 @@ import java.util.LinkedHashMap;
 
 /**
  *
- * @author C0160
+ * @author C1879
  */
-public class ShipmentAmountAJ10 extends ShipmentAmountAJ9 {
+public class SalesOrderQuantityKCL extends SalesOrderQuantity {
 
-    public ShipmentAmountAJ10() {
-         queryParams = new LinkedHashMap<>();
-        queryParams.put("facno", "C");
-        queryParams.put("decode", "1");
+    public SalesOrderQuantityKCL() {
+        super();
+        queryParams.put("facno", "K");
+        queryParams.put("deptno", " '5B000' ");
         queryParams.put("ogdkid", "RL01");
-        queryParams.put("n_code_DA", "='AH' ");
-        queryParams.put("n_code_CD","  in ('GZ')");
-        queryParams.put("n_code_DC", " NOT LIKE 'SAM%' ");
+        queryParams.put("n_code_DA", " ='OH' ");
+        queryParams.put("n_code_DC", " ='CL' ");
+        queryParams.put("n_code_DD", " ='00' ");
     }
 
     @Override
     public BigDecimal getValue(int y, int m, Date d, int type, LinkedHashMap<String, Object> map) {
         BigDecimal temp1, temp2;
-        //SHB ERP
+        //ComerERP
         temp1 = super.getValue(y, m, d, type, map);
         queryParams.remove("facno");
+        queryParams.remove("deptno");
         queryParams.remove("n_code_CD");
-        queryParams.put("facno", "G");
-        queryParams.put("n_code_CD", " not in ('WX','WXTW','WXVN')");
-        //GZ ERP
+        queryParams.put("facno", "E");
+        queryParams.put("deptno", " '8A000' ");
+        //ZJComerERP
         temp2 = super.getValue(y, m, d, type, queryParams);
-        //SHB + GZ
+        //ComerERP + ZJComerERP
         return temp1.add(temp2);
     }
 

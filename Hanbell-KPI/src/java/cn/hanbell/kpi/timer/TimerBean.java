@@ -37,6 +37,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import vn.hanbell.kpi.ejb.SalesTableVNBean;
 
 /**
  *
@@ -56,6 +57,9 @@ public class TimerBean {
     private MailSettingBean mailSettingBean;
     @EJB
     private SalesTableBean salesTableBean;
+
+    @EJB
+    private SalesTableVNBean salesTablevnBean;
     @Resource
     TimerService timerService;
 
@@ -138,8 +142,8 @@ public class TimerBean {
                         indicatorBean.updatePerformance(e);
                         Indicator newEntity=indicatorBean.findById(e.getId());
                         indicatorBean.update(newEntity);
-                        log4j.info(String.format("成功执行%s:更新指标%s达成率:Id:%d", "updateIndicatorActualValue", e.getName(),
-                                e.getId()));
+                        log4j.info(String.format("成功执行%s:更新指标%s达成率:Id:%d。达成率是:%s", "updateIndicatorActualValue", e.getName(),
+                                e.getId(),newEntity.getPerformanceIndicator().getN01()));
                     } catch (Exception ex) {
                         log4j.error(
                                 String.format("执行%s:更新指标%s:Id:%d时异常", "updateIndicatorActualValue", e.getName(), e.getId()),
@@ -292,8 +296,14 @@ public class TimerBean {
             if (salesTableBean.updateSalesTable(y, m, "", "Shipment")
                     && salesTableBean.updateSalesTable(y, m, "", "SalesOrder")
                     && salesTableBean.updateSalesTable(y, m, "", "ServiceAmount")) {
-                log4j.info("End Execute Job updateKPISalesTable");
+
             }
+
+            if (salesTablevnBean.updateSalesTable(y, m, "", "Shipment")
+                    && salesTablevnBean.updateSalesTable(y, m, "", "SalesOrder")
+                    && salesTablevnBean.updateSalesTable(y, m, "", "ServiceAmount")) {
+            }
+            log4j.info("End Execute Job updateKPISalesTable");
         } catch (Exception e) {
             log4j.error(String.format("出货、订单、收费服务历史表归档更新异常", "updateKPISalesTable"), e.toString());
         }
@@ -306,13 +316,17 @@ public class TimerBean {
             Calendar now = Calendar.getInstance();
             int y = now.get(Calendar.YEAR);
             int m = (now.get(Calendar.MONTH) + 1);
-            if (salesTableBean.updateSalesTable(y, m, "", "Shipment")) {
+            if (salesTableBean.updateSalesTable(y, m, "", "Shipment")
+                    && salesTablevnBean.updateSalesTable(y, m, "", "Shipment")) {
                 log4j.info("End Execute Job updateKPISalesTableDays");
             }
         } catch (Exception e) {
             log4j.error(String.format("当月出货资料归档更新异常", "updateKPISalesTableDays"), e.toString());
         }
     }
+    
+    
+
 
     public String getExceptionInfo(Exception ex) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();

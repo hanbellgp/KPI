@@ -5,21 +5,24 @@
  */
 package cn.hanbell.kpi.evaluation;
 
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.LinkedHashMap;
+
 /**
  *
- * @author C2082
+ * @author C1879
  */
-public class ShipmentAmountAJ5 extends ShipmentAmount {
+public class SalesOrderQuantityAJ10 extends SalesOrderQuantity {
 
-    public ShipmentAmountAJ5() {
+    public SalesOrderQuantityAJ10() {
         super();
         queryParams.put("facno", "C");
-        queryParams.put("deptno", " '1T100' ");
-        // queryParams.put("decode", "2");
-        queryParams.put("ogdkid", "RL03");
         queryParams.put("n_code_DA", "='AH' ");
-        queryParams.put("n_code_CD", " ='WXHG' ");
+        queryParams.put("n_code_CD", " in ('JN') ");
         queryParams.put("n_code_DC", " NOT LIKE 'SAM%' ");
         queryParams.put("n_code_DD", " ='00' ");
     }
+
+
 }

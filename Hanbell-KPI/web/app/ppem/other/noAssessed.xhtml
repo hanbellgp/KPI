@@ -67,6 +67,8 @@
                                    update="formList:dialogCalculate" />
                          <p:menuitem id="btnSalary" value="导出奖金"  actionListener="#{noAssessedManagedBean.printSalary()}"  icon="ui-icon-print"
                                   update=":formList"  />
+                         <p:menuitem id="btnSalar1y2" value="未考核人员通知"  actionListener="#{noAssessedManagedBean.sendmsg()}"  icon="ui-icon-print"
+                                  update=":formList"  />
                     </p:splitButton>
                     <p:commandButton id="btnReset" value="重置" actionListener="#{noAssessedManagedBean.reset()}" icon="ui-icon-refresh"
                                      update=":formList"/>

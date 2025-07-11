@@ -7,6 +7,11 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="content">
+        <style>
+            .body.layout-compact .ui-inputfield {
+                width: 100% !important
+            }
+        </style>
         <h:form id="formOne">
             <p:growl id="growl"  showSummary="false" showDetail="true" />
             <p:toolbar id="toolbar" styleClass="topToolbar">
@@ -134,7 +139,7 @@
                                 <p:inputText id="name" value="#{policySetManagedBean.currentDetail.name}" title="name"/>
                             </p:column>
                         </p:row>
-                                       <p:row>
+                        <p:row>
                             <p:column styleClass="Wid20"><p:outputLabel value="类别" for="genre" /></p:column>
                             <p:column styleClass="Wid30">
                                 <p:selectOneMenu id="genre" value="#{policySetManagedBean.currentDetail.genre}" title="类别" >
@@ -170,7 +175,7 @@
                             </p:column>
                         </p:row>
                         <p:row>
-                                <p:column styleClass="Wid20"><p:outputLabel value="序号" for="seq" /></p:column>
+                            <p:column styleClass="Wid20"><p:outputLabel value="序号" for="seq" /></p:column>
                             <p:column styleClass="Wid30">
                                 <p:inputNumber id="seq" value="#{policySetManagedBean.currentDetail.seq}" title="seq" >
                                     <p:ajax listener="#{policySetManagedBean.setSeq}"  update ="tableList,plgDetail"></p:ajax>
@@ -201,7 +206,7 @@
                             <p:column styleClass="Wid30"  colspan="3">
                                 <p:inputText id="indicatorrate" value="#{policySetManagedBean.currentDetail.indicatorrate}" title="indicatorrate"/>
                             </p:column> 
-                        
+
                         </p:row>
                         <p:row>
                             <p:column><p:outputLabel value="PLM编号" for="fromplm" /></p:column>
@@ -369,149 +374,167 @@
                         <p:row>
                             <p:column styleClass="Wid5"><p:outputLabel value="期间"/></p:column>
                             <p:column styleClass="Wid15" colspan="2" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}"><p:outputLabel value="基准或目标"/></p:column>
-                            <p:column  rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}"><p:outputLabel value="基准"/></p:column>
-                            <p:column  rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}"><p:outputLabel value="目标"/></p:column>
+                            <p:column styleClass="Wid15" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}"><p:outputLabel value="基准"/></p:column>
+                            <p:column styleClass="Wid15" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}"><p:outputLabel value="目标"/></p:column>
                             <p:column styleClass="Wid15"><p:outputLabel value="实际"/></p:column>
-                            <p:column><p:outputLabel value="达成"/></p:column>
+                            <p:column styleClass="Wid5"> <p:outputLabel value="达成"/></p:column>
                         </p:row>
                     </f:facet>
                     <p:row>
-                        <p:column styleClass="Wid5"><h:outputText value="Q1"/></p:column>
-                        <p:column colspan="2" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
-                            <p:inputTextarea id="tq1" value="#{policySetManagedBean.currentDetail.tq1}" rows="5" styleClass="Wid100"  title="tq1"/>
+                        <p:column styleClass="Wid5">><h:outputText value="Q1"/></p:column>
+                        <p:column styleClass="Wid15" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
+                            <p:inputTextarea id="bq1" value="#{policySetManagedBean.currentDetail.bq1}" rows="5" title="tq1" style="width:100%"/>
                         </p:column>
-                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}" styleClass="Wid10">
-                            <p:inputNumber id="bq1n" value="#{policySetManagedBean.currentDetail.bq1}" styleClass="Wid100"  title="bq1" decimalPlaces="3"
-                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero"/>
+                        <p:column styleClass="Wid15" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}" >
+                            <p:inputNumber id="bq1n" value="#{policySetManagedBean.currentDetail.bq1}"   title="tq1" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero"  style="width:100%"/>
                         </p:column>
-                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}" styleClass="Wid10">
-                            <p:inputNumber id="tq1n" value="#{policySetManagedBean.currentDetail.tq1}" styleClass="Wid100"  title="tq1" decimalPlaces="3"
-                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" />
+                        <p:column styleClass="Wid15" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
+                            <p:inputTextarea id="tq1" value="#{policySetManagedBean.currentDetail.tq1}" rows="5"  title="tq1" style="width:100%"/>
                         </p:column>
-                        <p:column  styleClass="Wid10">
-                            <p:inputTextarea id="aq1" value="#{policySetManagedBean.currentDetail.aq1}" rows="5" styleClass="Wid100"  title="aq1" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}"/>
-                            <p:inputNumber id="aq1n" value="#{policySetManagedBean.currentDetail.aq1}" styleClass="Wid100"  title="aq1" decimalPlaces="3"
-                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}"/>
+                        <p:column  styleClass="Wid15" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
+                            <p:inputNumber id="tq1n" value="#{policySetManagedBean.currentDetail.tq1}"   title="tq1" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" style="width:100%" />
+                        </p:column>
+                        <p:column  styleClass="Wid15" >
+                            <p:inputTextarea id="aq1" value="#{policySetManagedBean.currentDetail.aq1}"  style="width:100%" rows="5" title="aq1" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}"/>
+                            <p:inputNumber id="aq1n" value="#{policySetManagedBean.currentDetail.aq1}"  title="aq1" decimalPlaces="3"
+                                           style="width:100%"         symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}"/>
                         </p:column>
                         <p:column styleClass="Wid5">
                             <p:inputNumber id="pq1" value="#{policySetManagedBean.currentDetail.pq1}" title="pq1"
-                                           symbol="%" symbolPosition="s" emptyValue="zero" />
+                                           style="width:100%"      symbol="%" symbolPosition="s" emptyValue="zero" />
                         </p:column>
                     </p:row>
                     <p:row>
                         <p:column styleClass="Wid5"><h:outputText value="Q2"/></p:column>
-                        <p:column colspan="2" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
-                            <p:inputTextarea id="tq2" value="#{policySetManagedBean.currentDetail.tq2}" rows="5" styleClass="Wid100"  title="tq2"/>
+                        <p:column  styleClass="Wid15"   rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
+                            <p:inputTextarea id="bq2" value="#{policySetManagedBean.currentDetail.bq2}" style="width:100%" rows="5" title="bq2"/>
                         </p:column>
-                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
-                            <p:inputNumber id="bq2n" value="#{policySetManagedBean.currentDetail.bq2}" styleClass="Wid100"  title="bq2" decimalPlaces="3"
+                        <p:column  styleClass="Wid15"  rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}" >
+                            <p:inputNumber id="bq2n" value="#{policySetManagedBean.currentDetail.bq2}" style="width:100%" title="bq2" decimalPlaces="3"
                                            symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" />
                         </p:column>
-                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
-                            <p:inputNumber id="tq2n" value="#{policySetManagedBean.currentDetail.tq2}" styleClass="Wid100"  title="tq2" decimalPlaces="3"
-                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" />
+                        <p:column  styleClass="Wid15"  rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
+                            <p:inputTextarea id="tq2" value="#{policySetManagedBean.currentDetail.tq2}" rows="5" style="width:100%"  title="tq2"/>
                         </p:column>
-                        <p:column styleClass="Wid5">
-                            <p:inputTextarea id="aq2" value="#{policySetManagedBean.currentDetail.aq2}" rows="5" styleClass="Wid100"  title="aq2" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}"/>
-                            <p:inputNumber id="aq2n" value="#{policySetManagedBean.currentDetail.aq2}" styleClass="Wid100"  title="aq2" decimalPlaces="3"
-                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}"/>
+                        <p:column  styleClass="Wid15"  rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}" >
+                            <p:inputNumber id="tq2n" value="#{policySetManagedBean.currentDetail.tq2}" title="tq2" decimalPlaces="3"
+                                           style="width:100%"     symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" />
                         </p:column>
-                        <p:column styleClass="Wid5">
+                        <p:column  styleClass="Wid15"  >
+                            <p:inputTextarea id="aq2" value="#{policySetManagedBean.currentDetail.aq2}" rows="5" style="width:100%" title="aq2" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}"/>
+                            <p:inputNumber id="aq2n" value="#{policySetManagedBean.currentDetail.aq2}"  title="aq2" decimalPlaces="3"
+                                           style="width:100%"    symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}"/>
+                        </p:column>
+                        <p:column styleClass="Wid5" >
                             <p:inputNumber id="pq2" value="#{policySetManagedBean.currentDetail.pq2}" title="pq2"
-                                           symbol="%" symbolPosition="s"  emptyValue="zero" />
+                                           style="width:100%"    symbol="%" symbolPosition="s"  emptyValue="zero" />
                         </p:column>
                     </p:row>
 
                     <p:row>
-                        <p:column styleClass="Wid5"><h:outputText value="上半年"/></p:column>
-                        <p:column colspan="2" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
-                            <p:inputTextarea id="thy" value="#{policySetManagedBean.currentDetail.thy}" rows="5" styleClass="Wid100"  title="thy" />
+                        <p:column  styleClass="Wid5"><h:outputText value="上半年"/></p:column>
+                        <p:column  styleClass="Wid15"   rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
+                            <p:inputTextarea id="bhy" value="#{policySetManagedBean.currentDetail.bhy}" rows="5" style="width:100%"  title="bhy"/>
                         </p:column>
-                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
-                            <p:inputNumber id="bhyn" value="#{policySetManagedBean.currentDetail.bhy}" styleClass="Wid100"  title="bhy" decimalPlaces="3"
+                        <p:column  styleClass="Wid15"  rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}" >
+                            <p:inputNumber id="bhyn" value="#{policySetManagedBean.currentDetail.bhy}"  style="width:100%" title="bhy" decimalPlaces="3"
                                            symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" />
                         </p:column>
-                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
-                            <p:inputNumber id="thyn" value="#{policySetManagedBean.currentDetail.thy}" styleClass="Wid100"  title="thy" decimalPlaces="3"
-                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" />
+                        <p:column   styleClass="Wid15" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
+                            <p:inputTextarea id="thy" value="#{policySetManagedBean.currentDetail.thy}" rows="5" style="width:100%"  title="thy"/>
                         </p:column>
-                        <p:column>
-                            <p:inputTextarea id="ahy" value="#{policySetManagedBean.currentDetail.ahy}" rows="5" styleClass="Wid100"  title="ahy" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}" />
-                            <p:inputNumber id="ahyn" value="#{policySetManagedBean.currentDetail.ahy}" styleClass="Wid100"  title="ahy" decimalPlaces="3"
-                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}"/>
+                        <p:column  styleClass="Wid15"  rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
+                            <p:inputNumber id="thyn" value="#{policySetManagedBean.currentDetail.thy}" title="thy" decimalPlaces="3"
+                                           style="width:100%"      symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" />
                         </p:column>
-                        <p:column styleClass="Wid5">
+                        <p:column  styleClass="Wid15" >
+                            <p:inputTextarea id="ahy" value="#{policySetManagedBean.currentDetail.ahy}" style="width:100%" rows="5" title="ahy" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}" />
+                            <p:inputNumber id="ahyn" value="#{policySetManagedBean.currentDetail.ahy}" title="ahy" decimalPlaces="3"
+                                           style="width:100%"    symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}"/>
+                        </p:column>
+                        <p:column  styleClass="Wid5">
                             <p:inputNumber id="phy" value="#{policySetManagedBean.currentDetail.phy}" title="phy"
-                                           symbol="%" symbolPosition="s" emptyValue="zero"/>
+                                           style="width:100%"     symbol="%" symbolPosition="s" emptyValue="zero"/>
                         </p:column>
                     </p:row>
                     <p:row>
-                        <p:column styleClass="Wid5"><h:outputText value="Q3"/></p:column>
-                        <p:column colspan="2" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
-                            <p:inputTextarea id="tq3" value="#{policySetManagedBean.currentDetail.tq3}" rows="5" styleClass="Wid100"  title="tq3" />
+                        <p:column  styleClass="Wid5"><h:outputText value="Q3"/></p:column>
+                        <p:column   styleClass="Wid15"  rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
+                            <p:inputTextarea id="bq3" style="width:100%" value="#{policySetManagedBean.currentDetail.bq3}" rows="5" title="bq3"/>
                         </p:column>
-                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
-                            <p:inputNumber id="bq3n" value="#{policySetManagedBean.currentDetail.bq3}" styleClass="Wid100"  title="bq3" decimalPlaces="3"
-                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero"/>
+                        <p:column  styleClass="Wid15"  rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}" >
+                            <p:inputNumber id="bq3n" value="#{policySetManagedBean.currentDetail.bq3}"  title="bq3" decimalPlaces="3"
+                                           style="width:100%"      symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" />
                         </p:column>
-                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
-                            <p:inputNumber id="tq3n" value="#{policySetManagedBean.currentDetail.tq3}" styleClass="Wid100"  title="tq3" decimalPlaces="3"
-                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" />
+                        <p:column  styleClass="Wid15"  rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
+                            <p:inputTextarea id="tq3" style="width:100%" value="#{policySetManagedBean.currentDetail.tq3}" rows="5"   title="tq3"/>
                         </p:column>
-                        <p:column>
-                            <p:inputTextarea id="aq3" value="#{policySetManagedBean.currentDetail.aq3}" rows="5" styleClass="Wid100"  title="aq3" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}" />
-                            <p:inputNumber id="aq3n" value="#{policySetManagedBean.currentDetail.aq3}" styleClass="Wid100"  title="aq3" decimalPlaces="3"
-                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}"/>
+                        <p:column  styleClass="Wid15"  rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
+                            <p:inputNumber id="tq3n" value="#{policySetManagedBean.currentDetail.tq3}"  title="tq3" decimalPlaces="3"
+                                           style="width:100%"     symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" />
                         </p:column>
-                        <p:column styleClass="Wid5">
+                        <p:column  styleClass="Wid15" >
+                            <p:inputTextarea id="aq3" style="width:100%" value="#{policySetManagedBean.currentDetail.aq3}" rows="5"  title="aq3" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}" />
+                            <p:inputNumber id="aq3n" value="#{policySetManagedBean.currentDetail.aq3}"  title="aq3" decimalPlaces="3"
+                                           style="width:100%"    symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}"/>
+                        </p:column>
+                        <p:column  styleClass="Wid5">
                             <p:inputNumber id="pq3" value="#{policySetManagedBean.currentDetail.pq3}" title="pq3"
-                                           symbol="%" symbolPosition="s" emptyValue="zero" />
+                                           style="width:100%"   symbol="%" symbolPosition="s" emptyValue="zero" />
                         </p:column>
                     </p:row>
                     <p:row>
-                        <p:column styleClass="Wid5"><h:outputText value="Q4"/></p:column>
-                        <p:column colspan="2" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
-                            <p:inputTextarea id="tq4" value="#{policySetManagedBean.currentDetail.tq4}" rows="5" styleClass="Wid100"  title="tq4" />
+                        <p:column  styleClass="Wid5"><h:outputText value="Q4"/></p:column>
+                        <p:column  styleClass="Wid15"   rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
+                            <p:inputTextarea id="bq4" style="width:100%" value="#{policySetManagedBean.currentDetail.bq4}" rows="5"   title="bq4"/>
                         </p:column>
-                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
-                            <p:inputNumber id="bq4n" value="#{policySetManagedBean.currentDetail.bq4}" styleClass="Wid100"  title="bq4" decimalPlaces="3"
-                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" />
+                        <p:column   styleClass="Wid15" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}" >
+                            <p:inputNumber id="bq4n" value="#{policySetManagedBean.currentDetail.bq4}"   title="bq4" decimalPlaces="3"
+                                           style="width:100%"     symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" />
                         </p:column>
-                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
-                            <p:inputNumber id="tq4n" value="#{policySetManagedBean.currentDetail.tq4}" styleClass="Wid100"  title="tq4" decimalPlaces="3"
-                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" />
+                        <p:column  styleClass="Wid15"  rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
+                            <p:inputTextarea id="tq4" style="width:100%" value="#{policySetManagedBean.currentDetail.tq4}" rows="5"  title="tq4"/>
                         </p:column>
-                        <p:column>
-                            <p:inputTextarea id="aq4" value="#{policySetManagedBean.currentDetail.aq4}" rows="5" styleClass="Wid100"  title="aq4" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}"/>
-                            <p:inputNumber id="aq4n" value="#{policySetManagedBean.currentDetail.aq4}" styleClass="Wid100"  title="aq4" decimalPlaces="3"
-                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}"/>
+                        <p:column  styleClass="Wid15"  rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}" >
+                            <p:inputNumber id="tq4n" value="#{policySetManagedBean.currentDetail.tq4}"   title="tq4" decimalPlaces="3"
+                                           style="width:100%"    symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" />
                         </p:column>
-                        <p:column styleClass="Wid5">
-                            <p:inputNumber id="pq4" value="#{policySetManagedBean.currentDetail.pq4}" title="pq4"
+                        <p:column  styleClass="Wid15" >
+                            <p:inputTextarea id="aq4" style="width:100%" value="#{policySetManagedBean.currentDetail.aq4}" rows="5"  title="aq4" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}"/>
+                            <p:inputNumber id="aq4n" value="#{policySetManagedBean.currentDetail.aq4}"  title="aq4" decimalPlaces="3"
+                                           style="width:100%"   symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}"/>
+                        </p:column>
+                        <p:column  styleClass="Wid5">
+                            <p:inputNumber id="pq4" style="width:100%" value="#{policySetManagedBean.currentDetail.pq4}" title="pq4"
                                            symbol="%" symbolPosition="s" emptyValue="zero"/>
                         </p:column>
                     </p:row>
                     <p:row>
-                        <p:column styleClass="Wid5"><h:outputText value="全年"/></p:column>
-                        <p:column colspan="2" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
-                            <p:inputTextarea id="tfy" value="#{policySetManagedBean.currentDetail.tfy}" rows="5" styleClass="Wid100"  title="tfy" />
+                        <p:column  styleClass="Wid5" ><h:outputText value="全年"/></p:column>
+                        <p:column   styleClass="Wid15"  rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
+                            <p:inputTextarea id="bfy" value="#{policySetManagedBean.currentDetail.bfy}" rows="5"  title="bfy" style="width:100%"/>
                         </p:column>
-                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
-                            <p:inputNumber id="bfyn" value="#{policySetManagedBean.currentDetail.bfy}" styleClass="Wid100"  title="bfy" decimalPlaces="3"
-                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" />
+                        <p:column  styleClass="Wid15"  rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}" >
+                            <p:inputNumber id="bfyn" value="#{policySetManagedBean.currentDetail.bfy}" title="bfy" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" style="width:100%"/>
                         </p:column>
-                        <p:column rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
-                            <p:inputNumber id="tfyn" value="#{policySetManagedBean.currentDetail.tfy}" styleClass="Wid100"  title="tfy" decimalPlaces="3"
-                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" />
+                        <p:column   styleClass="Wid15" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}">
+                            <p:inputTextarea id="tfy" value="#{policySetManagedBean.currentDetail.tfy}" rows="5"   title="tfy" style="width:100%"/>
                         </p:column>
-                        <p:column>
-                            <p:inputTextarea id="afy" value="#{policySetManagedBean.currentDetail.afy}" rows="5" styleClass="Wid100"  title="afy" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}" />
-                            <p:inputNumber id="afyn" value="#{policySetManagedBean.currentDetail.afy}" styleClass="Wid100"  title="afy" decimalPlaces="3"
-                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}"/>
+                        <p:column  styleClass="Wid15"  rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}">
+                            <p:inputNumber id="tfyn" value="#{policySetManagedBean.currentDetail.tfy}"  title="tfy" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" style="width:100%"/>
                         </p:column>
-                        <p:column styleClass="Wid5">
+                        <p:column  styleClass="Wid15" >
+                            <p:inputTextarea id="afy" value="#{policySetManagedBean.currentDetail.afy}" rows="5" title="afy" style="width:100%" rendered="#{policySetManagedBean.currentDetail.calculationtype!='B'}" />
+                            <p:inputNumber id="afyn" value="#{policySetManagedBean.currentDetail.afy}"   title="afy" decimalPlaces="3"
+                                           symbol="#{policySetManagedBean.currentDetail.unit}" symbolPosition="s" emptyValue="zero" style="width:100%" rendered="#{policySetManagedBean.currentDetail.calculationtype=='B'}"/>
+                        </p:column>
+                        <p:column  styleClass="Wid5">
                             <p:inputNumber id="pfy" value="#{policySetManagedBean.currentDetail.pfy}" title="pfy"
-                                           symbol="%" symbolPosition="s" emptyValue="zero"/>
+                                           style="width:100%"    symbol="%" symbolPosition="s" emptyValue="zero"/>
                         </p:column>
                     </p:row>
                     <f:facet name="footer">

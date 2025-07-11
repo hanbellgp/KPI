@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,6 +73,8 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
     private ScorecardBean scorecardBean;
     @EJB
     private Agent1000002Bean agent1000002Bean;
+    
+    DecimalFormat df = null;
 
     public PersonScorecardManagedBean() {
         super(PersonScorecard.class, PersonScorecardDetail.class);
@@ -87,6 +90,7 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
         queryYear = this.userManagedBean.getY();
         queryQuarter = this.userManagedBean.getQ();
         isShowAll = "F";
+        df= new DecimalFormat("#.##");
         super.init();
         this.query();
     }
@@ -209,6 +213,10 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
             }
         }
     }
+    
+    public String formatPercentage(Double value) {
+        return df.format(value);
+    }
 
     @Override
     public void print() throws Exception {
@@ -263,6 +271,9 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
             try {
                 row = sheet.getRow(i);
                 String name = BaseLib.convertExcelCell(String.class, row.getCell(1));
+                if(name==null || name==""){
+                    break;
+                }
                 BigDecimal ratio = BigDecimal.valueOf(BaseLib.convertExcelCell(Double.class, row.getCell(4)));
                 r = r.add(ratio);
                 PersonScorecardDetail sc = new PersonScorecardDetail(p.getId(), i - 4, "O", quarter, name, BigDecimal.ZERO, ratio);
@@ -273,7 +284,7 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
                 list.add(sc);
             } catch (Exception e) {
                 e.printStackTrace();
-                throw new Exception(String.format("第%d行文本内容解析失败，请查看", i));
+                throw new Exception(String.format("第%d行文本内容解析失败，请查看", i+1));
             }
         }
         if (BigDecimal.ONE.compareTo(r) != 0) {
@@ -382,15 +393,14 @@ public class PersonScorecardManagedBean extends SuperMultiBean<PersonScorecard, 
 
     @Override
     public void update() {
-           ScorecardDetailEntity entity = this.scoreMap.get(this.tabid);
+        ScorecardDetailEntity entity = this.scoreMap.get(this.tabid);
         try {
             for (PersonScorecardDetail detail : entity.getDetail()) {
-                if (detail.getScore().compareTo(detail.getRatio().multiply(BigDecimal.valueOf(100))) == 1
-                        && !this.currentEntity.getPersonset().getIshundred()) {
-                    throw new Exception("单项分数不能大于100分。");
+                if (detail.getHunscore().compareTo(this.currentEntity.getPersonset().getMinscore()) == -1) {
+                    throw new Exception("单项分数不能小于" + this.currentEntity.getPersonset().getMinscore() + "分！");
                 }
-                if (detail.getHunscore().compareTo(new BigDecimal(20)) < 1 && detail.getHunscore().compareTo(BigDecimal.ZERO)!=0) {
-                    throw new Exception("单项分数不能小于20分");
+                if (detail.getHunscore().compareTo(this.currentEntity.getPersonset().getMaxscore()) == 1) {
+                    throw new Exception("单项分数不能大于" + this.currentEntity.getPersonset().getMaxscore() + "分！");
                 }
             };
            

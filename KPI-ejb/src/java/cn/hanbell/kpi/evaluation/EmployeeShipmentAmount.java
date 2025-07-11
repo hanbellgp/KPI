@@ -141,15 +141,15 @@ public class EmployeeShipmentAmount extends Shipment {
         String n_code_DD = map.get("n_code_DD") != null ? map.get("n_code_DD").toString() : "";
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT ISNULL(SUM(CASE h.amtco WHEN 'P' THEN d.psamt WHEN 'M' THEN d.psamt *(-1) ELSE 0 END),0) FROM armpmm h,armacq d,cdrdta s,cdrhad c  ");
-        sb.append(" WHERE h.facno=d.facno AND h.trno = d.trno AND d.facno = s.facno AND d.shpno=s.shpno AND d.shpseq = s.trseq AND s.shpno=c.shpno and s.issevdta='Y' and h.facno='${facno}' ");
+        sb.append(" WHERE h.facno=d.facno AND h.trno = d.trno AND d.facno = s.facno AND d.shpno=s.shpno AND d.shpseq = s.trseq AND s.shpno=c.shpno and s.issevdta='N' and h.facno='${facno}' ");
         if (!"".equals(userid)) {
             sb.append(" and c.mancode ='").append(userid).append("' ");
         }
         if (!"".equals(n_code_DA)) {
-            sb.append(" and d.n_code_DA ").append(n_code_DA);
+            sb.append(" and s.n_code_DA ").append(n_code_DA);
         }
         if (!"".equals(n_code_DD)) {
-            sb.append(" and d.n_code_DD ").append(n_code_DD);
+            sb.append(" and s.n_code_DD ").append(n_code_DD);
         }
         sb.append(" AND year(h.trdat) = ${y} AND month(h.trdat) = ${m} ");
         switch (type) {
@@ -183,6 +183,7 @@ public class EmployeeShipmentAmount extends Shipment {
         String deptno = map.get("deptno") != null ? map.get("deptno").toString() : "";
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT ISNULL(SUM(h.shpamt),0) FROM armbil h WHERE h.rkd='RQ11' AND h.facno='${facno}' AND h.depno IN ${deptno}");
+        sb.append(" and h.address5 ='").append("N").append("' ");
         if (!"".equals(userid)) {
             sb.append(" and h.mancode ='").append(userid).append("' ");
         }

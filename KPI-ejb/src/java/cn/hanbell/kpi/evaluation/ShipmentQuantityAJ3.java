@@ -19,27 +19,10 @@ public class ShipmentQuantityAJ3 extends ShipmentQuantity {
         super();
         // A机体总部内销出货台数
         queryParams.put("facno", "C");
-        // queryParams.put("decode", "1");
         queryParams.put("n_code_DA", "='AH' ");
         queryParams.put("n_code_CD", " in ('GZ')");
         queryParams.put("n_code_DC", " NOT LIKE 'SAM%' ");
         queryParams.put("n_code_DD", " ='00' ");
-    }
-
-    
-    @Override
-    public BigDecimal getValue(int y, int m, Date d, int type, LinkedHashMap<String, Object> map) {
-        BigDecimal temp1, temp2;
-        //SHB ERP
-        temp1 = super.getValue(y, m, d, type, map);
-        queryParams.remove("facno");
-        queryParams.remove("n_code_CD");
-        queryParams.put("facno", "G");
-        queryParams.put("n_code_CD", " not in ('WX','WXTW','WXVN')");
-        //GZ ERP
-        temp2 = super.getValue(y, m, d, type, queryParams);
-        //SHB + GZ
-        return temp1.add(temp2);
     }
 
 }

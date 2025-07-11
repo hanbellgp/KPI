@@ -17,9 +17,9 @@ import javax.persistence.Query;
  *
  * @author C0160
  */
-public class ShipmentAmountAJ9 extends ShipmentAmount9 {
+public class ShipmentAmountAJ1G9 extends ShipmentAmount9 {
 
-    public ShipmentAmountAJ9() {
+    public ShipmentAmountAJ1G9() {
         super();
         queryParams.put("facno", "C");
 //        queryParams.put("decode", "1");

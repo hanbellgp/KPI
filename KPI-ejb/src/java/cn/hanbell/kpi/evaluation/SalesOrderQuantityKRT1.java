@@ -5,14 +5,6 @@
  */
 package cn.hanbell.kpi.evaluation;
 
-import com.lightshell.comm.BaseLib;
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.persistence.Query;
-
 /**
  *
  * @author C1879

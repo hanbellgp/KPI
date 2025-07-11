@@ -83,6 +83,13 @@ public class ScorecardExplanation extends SuperDetailEntity {
     private BigDecimal sfy;
 
     public ScorecardExplanation() {
+        this.q1 = "";
+        this.q2 = "";
+        this.q3 = "";
+        this.q4 = "";
+        this.h1 = "";
+        this.h2 = "";
+        this.fy = "";
         this.sq1 = BigDecimal.ZERO;
         this.sq2 = BigDecimal.ZERO;
         this.sq3 = BigDecimal.ZERO;

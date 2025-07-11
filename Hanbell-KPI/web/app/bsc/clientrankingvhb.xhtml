@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/bsc.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:define name="content">
+        <h:form id="formOne" rendered="#{!clientRankingReportBean.deny}">
+            <p:growl id="growl" showSummary="false" showDetail="true" sticky="true" />
+            <p:panelGrid id="plgQuery" columns="9" columnClasses="Wid10,Wid20,Wid15,Wid15,Wid5,Wid5,Wid15,Wid15,Wid0" styleClass="plgQuery Wid100">
+                <p:outputLabel value="查询日期"  title="查询日期"/>
+                <p:calendar  value="#{clientRankingReportBean.querydate}" title="日期" pattern="yyyy/MM/dd" />
+                <h:selectBooleanCheckbox value="#{clientRankingReportBean.monthchecked}"  title="√不选中为年统计." style="height: 18px;width: 18px" >
+                    只查当月
+                </h:selectBooleanCheckbox>
+                <h:selectBooleanCheckbox   value="#{clientRankingReportBean.aggregatechecked}"  title="√选中为总公司排名查询." style="height: 18px;width: 18px" >
+                    客户整合
+                </h:selectBooleanCheckbox>
+                <p:outputLabel value="TOP" for="rowsPerPage" title="请选择展示记录数" />
+                <p:selectOneMenu id="rowsPerPage" value="#{clientRankingReportBean.rowsPerPage}" style="width:100%;" title="记录数" >
+                    <f:selectItem itemLabel="20" itemValue="20"/>
+                    <f:selectItem itemLabel="30" itemValue="30"/>
+                    <f:selectItem itemLabel="50" itemValue="50"/>
+                    <f:selectItem itemLabel="100" itemValue="100"/>
+                    <f:selectItem itemLabel="All" itemValue="0"/>
+                </p:selectOneMenu>
+                <p:commandButton id="btnReset" value="重置" actionListener="#{clientRankingReportBean.reset()}"  icon="ui-icon-refresh"
+                                 update="formOne" />
+                <p:commandButton id="btnQuery" value="查询" actionListener="#{clientRankingReportBean.query()}"  icon="ui-icon-search"
+                                 update="formOne"  oncomplete="setTableHeaderStyle();" />
+                <p:link value="返回"  outcome="home" style="float: left"/>
+            </p:panelGrid>
+            <p:row id="toolbar" styleClass="topToolbar" style="visibility: hidden"></p:row>
+            <p:dataTable id="tblList" value="#{clientRankingReportBean.list}" var="item" styleClass="plgSheetData"
+                         rowIndexVar="index" reflow="true" stickyHeader="true">
+                <f:facet name="header" >
+                    <span style="font-size: 21px;" >#{clientRankingReportBean.map.daname}&nbsp;#{clientRankingReportBean.map.title}出货销售统计表</span>
+                </f:facet>
+                <p:columnGroup type="header">
+                    <p:row>
+                        <p:column style="width: 13%" headerText="客户" />
+                        <p:column style="width: 9%" headerText="#{clientRankingReportBean.map.nowtitle}排名" />
+                        <p:column style="width: 9%" headerText="#{clientRankingReportBean.map.nowtitle}台数" />
+                        <p:column style="width: 14%" headerText="#{clientRankingReportBean.map.nowtitle}金额" />
+                        <p:column style="width: 9%" headerText="去年同期排名" />
+                        <p:column style="width: 9%" headerText="去年同期台数" />
+                        <p:column style="width: 14%" headerText="去年同期金额" />
+                        <p:column style="width: 14%" headerText="同比差异值" />
+                        <p:column style="width: 9%" headerText="同比成长率" />
+                    </p:row>
+                </p:columnGroup>
+                <p:column  style="text-align: center;width: 13%">
+                    <h:outputText value="#{item.cusna}" style="#{(item.cusna == '总计')?'color:red':'' }" />
+                </p:column>
+                <p:column  style="text-align: center;width: 9%">
+                    <h:outputText value="#{item.nowrank}" style="#{(item.cusna == '总计')?'color:red':'' }"/>
+                </p:column>
+                <p:column>
+                    <h:outputText  value="#{clientRankingReportBean.dfShpqy1(item.nowshpqy1)}" style="#{(item.cusna == '总计')?'color:red':'' }"/>
+                </p:column>
+                <p:column>
+                    <h:outputText value="#{clientRankingReportBean.dfShpqy1(item.nowshpamts)}" style="#{(item.cusna == '总计')?'color:red':'' }"/>
+                </p:column>
+                <p:column  style="text-align: center;">
+                    <h:outputText value="#{item.pastrank}" style="#{(item.cusna == '总计')?'color:red':'' }"/>
+                </p:column>
+                <p:column >
+                    <h:outputText value="#{clientRankingReportBean.dfShpqy1(item.pastshpqy1)}" style="#{(item.cusna == '总计')?'color:red':'' }"/>
+                </p:column>
+                <p:column >
+                    <h:outputText value="#{clientRankingReportBean.dfShpqy1(item.pastshpamts)}" style="#{(item.cusna == '总计')?'color:red':'' }"/>
+                </p:column>
+                <p:column>
+                    <h:outputText value="#{clientRankingReportBean.dfShpqy1(item.differencevalue)}" style="#{(item.cusna == '总计' or item.paststyle=='red')?'color:red':'' }"/>
+                </p:column>
+                <p:column >
+                    <h:outputText value="#{item.growthrate}%"  style="#{(item.cusna == '总计' or item.paststyle=='red' )?'color:red':'' }" />
+                </p:column>
+            </p:dataTable>
+            <div style="width: 100%;color: gray; font-size: 13px;" >
+                <p style="height: 14px">
+                    同比差异值 = 本年累计金额 - 去年同期累计金额
+                </p>
+                <p style="height: 14px">
+                    同比成长率 = (本年累计金额 - 去年同期累计金额)/去年同期累计金额*100%
+                </p>
+                <p  style="height: 14px;">
+                    此出货销售统计表数据去除销退金额
+                </p>
+            </div>
+            <p:panel id="remarks" style="height: 0px" >
+                <c:if test="#{clientRankingReportBean.summaryCount != 0 }">
+                    <div id="indicatorSummary" class="ui-g-12 ui-md-12">
+                        <p:repeat id="repSummary" value="#{clientRankingReportBean.summaryList}" var="s" rendered="#{clientRankingReportBean.summaryCount>0}">
+                            <p:panel  id="summaryPanel" header="#{s.title}" toggleable="true" style="height:min-content">
+                                <h:panelGrid>
+                                    <h:outputText id="summary"/>
+                                    <h:inputHidden id="hdnSummary" value="#{s.summary}"/>
+                                </h:panelGrid>
+                            </p:panel>
+                        </p:repeat>
+                    </div>
+                </c:if>
+                <c:if test="#{clientRankingReportBean.analysisCount != 0}">
+                    <div id="indicatorAnalysis" class="ui-g-12 ui-md-12">
+                        <p:repeat id="repAnalysis" value="#{clientRankingReportBean.analysisList}" var="a" rendered="#{clientRankingReportBean.analysisCount>0}">
+                            <p:panel  id="analysisPanel" header="#{a.title}" toggleable="true" style="height:min-content">
+                                <h:panelGrid columns="3" columnClasses="Wid30,Wid30,Wid40" styleClass="plgDetail Wid100">
+                                    <h:outputText id="issueLabel" value="问题"/>
+                                    <h:outputText id="factorLabel" value="原因"/>
+                                    <h:outputText id="countermeasureLabel" value="对策"/>
+                                    <h:outputText id="issue"/>
+                                    <h:outputText id="factor"/>
+                                    <h:outputText id="countermeasure"/>
+                                    <h:inputHidden id="hdnIssue" value="#{a.issue}"/>
+                                    <h:inputHidden id="hdnFactor" value="#{a.factor}"/>
+                                    <h:inputHidden id="hdnCountermeasure" value="#{a.countermeasure}"/>
+                                </h:panelGrid>
+                            </p:panel>
+                        </p:repeat>
+                    </div>
+                </c:if>
+                <c:if test="#{clientRankingReportBean.analysisCount != 0  or clientRankingReportBean.summaryCount != 0 }">
+                    <h:inputHidden id="ac" value="#{clientRankingReportBean.analysisCount}"></h:inputHidden>
+                    <h:inputHidden id="sc" value="#{clientRankingReportBean.summaryCount}"></h:inputHidden>
+                </c:if>
+            </p:panel>
+            <p:blockUI id="blockUI" block="formOne" trigger="btnQuery">
+                <p:graphicImage name="images/ajaxloadingbar.gif" library="ultima-layout"/>
+            </p:blockUI>
+            <h:outputScript name="bsc-clientranking.js" library="js" />
+        </h:form>
+        <script>
+            var setTableHeaderStyle = function () {
+                var h = $(document.getElementById("formOne:tblList")).find('div')[0];
+                if (h !== null) {
+                    $(h).css("z-index", "800");
+                    $(h).addClass('plgSheetData');
+                }
+            };
+        </script>
+        <h:form id="formTwo"  rendered="#{clientRankingReportBean.deny}">
+            <h1 style="text-align: center;margin-top: 50px;">你想干嘛</h1>
+            <h1 style="text-align: center">别没事找事</h1>
+            <h1 style="text-align: center">再看我真的生气了</h1>
+            <div class="exception-type" style="text-align: center;">
+                <p:graphicImage name="images/angry.gif" library="ultima-layout" style=""/>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>
