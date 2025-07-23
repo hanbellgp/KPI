@@ -62,6 +62,8 @@ public abstract class BscChartManagedBean extends SuperQueryBean<Indicator> {
     protected final DecimalFormat percentFormat;
     protected LineChartModel chartModel;
     protected LineChartModel accumulatedChartModel;
+    protected LineChartModel otherChartModel;
+    protected LineChartModel AllChartModel;
 
     protected List<IndicatorAnalysis> analysisList;
     protected List<IndicatorSummary> summaryList;
@@ -473,6 +475,120 @@ public abstract class BscChartManagedBean extends SuperQueryBean<Indicator> {
         accumulatedChartModel.setShowPointLabels(true);
         accumulatedChartModel.setBreakOnNull(true);
 
+        
+        
+        
+        otherChartModel = new LineChartModel();
+        ChartSeries o1 = new ChartSeries();
+        o1.setLabel("他项1");
+        switch (getIndicator().getFormkind()) {
+            case "M":
+                o1.set("M01", getIndicator().getOther1Indicator().getN01().doubleValue());
+                o1.set("M02", getIndicator().getOther1Indicator().getN02().doubleValue());
+                o1.set("M03", getIndicator().getOther1Indicator().getN03().doubleValue());
+                o1.set("M04", getIndicator().getOther1Indicator().getN04().doubleValue());
+                o1.set("M05", getIndicator().getOther1Indicator().getN05().doubleValue());
+                o1.set("M06", getIndicator().getOther1Indicator().getN06().doubleValue());
+                o1.set("M07", getIndicator().getOther1Indicator().getN07().doubleValue());
+                o1.set("M08", getIndicator().getOther1Indicator().getN08().doubleValue());
+                o1.set("M09", getIndicator().getOther1Indicator().getN09().doubleValue());
+                o1.set("M10", getIndicator().getOther1Indicator().getN10().doubleValue());
+                o1.set("M11", getIndicator().getOther1Indicator().getN11().doubleValue());
+                o1.set("M12", getIndicator().getOther1Indicator().getN12().doubleValue());
+                break;
+            case "Q":
+                o1.set("Q1", getIndicator().getOther1Indicator().getNq1().doubleValue());
+                o1.set("Q2", getIndicator().getOther1Indicator().getNq2().doubleValue());
+                o1.set("Q3", getIndicator().getOther1Indicator().getNq3().doubleValue());
+                o1.set("Q4", getIndicator().getOther1Indicator().getNq4().doubleValue());
+                break;
+        }
+
+        ChartSeries o2 = new ChartSeries();
+        o2.setLabel("他项2");
+        switch (getIndicator().getFormkind()) {
+            case "M":
+                o2.set("M01", getIndicator().getOther2Indicator().getN01().doubleValue());
+                o2.set("M02", getIndicator().getOther2Indicator().getN02().doubleValue());
+                o2.set("M03", getIndicator().getOther2Indicator().getN03().doubleValue());
+                o2.set("M04", getIndicator().getOther2Indicator().getN04().doubleValue());
+                o2.set("M05", getIndicator().getOther2Indicator().getN05().doubleValue());
+                o2.set("M06", getIndicator().getOther2Indicator().getN06().doubleValue());
+                o2.set("M07", getIndicator().getOther2Indicator().getN07().doubleValue());
+                o2.set("M08", getIndicator().getOther2Indicator().getN08().doubleValue());
+                o2.set("M09", getIndicator().getOther2Indicator().getN09().doubleValue());
+                o2.set("M10", getIndicator().getOther2Indicator().getN10().doubleValue());
+                o2.set("M11", getIndicator().getOther2Indicator().getN11().doubleValue());
+                o2.set("M12", getIndicator().getOther2Indicator().getN12().doubleValue());
+                break;
+            case "Q":
+                o2.set("Q1", getIndicator().getOther2Indicator().getNq1().doubleValue());
+                o2.set("Q2", getIndicator().getOther2Indicator().getNq2().doubleValue());
+                o2.set("Q3", getIndicator().getOther2Indicator().getNq3().doubleValue());
+                o2.set("Q4", getIndicator().getOther2Indicator().getNq4().doubleValue());
+                break;
+        }
+        
+        ChartSeries o3 = new ChartSeries();
+        o3.setLabel("他项3");
+        switch (getIndicator().getFormkind()) {
+            case "M":
+                o3.set("M01", getIndicator().getOther3Indicator().getN01().doubleValue());
+                o3.set("M02", getIndicator().getOther3Indicator().getN02().doubleValue());
+                o3.set("M03", getIndicator().getOther3Indicator().getN03().doubleValue());
+                o3.set("M04", getIndicator().getOther3Indicator().getN04().doubleValue());
+                o3.set("M05", getIndicator().getOther3Indicator().getN05().doubleValue());
+                o3.set("M06", getIndicator().getOther3Indicator().getN06().doubleValue());
+                o3.set("M07", getIndicator().getOther3Indicator().getN07().doubleValue());
+                o3.set("M08", getIndicator().getOther3Indicator().getN08().doubleValue());
+                o3.set("M09", getIndicator().getOther3Indicator().getN09().doubleValue());
+                o3.set("M10", getIndicator().getOther3Indicator().getN10().doubleValue());
+                o3.set("M11", getIndicator().getOther3Indicator().getN11().doubleValue());
+                o3.set("M12", getIndicator().getOther3Indicator().getN12().doubleValue());
+                break;
+            case "Q":
+                o3.set("Q1", getIndicator().getOther3Indicator().getNq1().doubleValue());
+                o3.set("Q2", getIndicator().getOther3Indicator().getNq2().doubleValue());
+                o3.set("Q3", getIndicator().getOther3Indicator().getNq3().doubleValue());
+                o3.set("Q4", getIndicator().getOther3Indicator().getNq4().doubleValue());
+                break;
+        }
+        
+        ChartSeries o4 = new ChartSeries();
+        o4.setLabel("他项4");
+        switch (getIndicator().getFormkind()) {
+            case "M":
+                o4.set("M01", getIndicator().getOther4Indicator().getN01().doubleValue());
+                o4.set("M02", getIndicator().getOther4Indicator().getN02().doubleValue());
+                o4.set("M03", getIndicator().getOther4Indicator().getN03().doubleValue());
+                o4.set("M04", getIndicator().getOther4Indicator().getN04().doubleValue());
+                o4.set("M05", getIndicator().getOther4Indicator().getN05().doubleValue());
+                o4.set("M06", getIndicator().getOther4Indicator().getN06().doubleValue());
+                o4.set("M07", getIndicator().getOther4Indicator().getN07().doubleValue());
+                o4.set("M08", getIndicator().getOther4Indicator().getN08().doubleValue());
+                o4.set("M09", getIndicator().getOther4Indicator().getN09().doubleValue());
+                o4.set("M10", getIndicator().getOther4Indicator().getN10().doubleValue());
+                o4.set("M11", getIndicator().getOther4Indicator().getN11().doubleValue());
+                o4.set("M12", getIndicator().getOther4Indicator().getN12().doubleValue());
+                break;
+            case "Q":
+                o4.set("Q1", getIndicator().getOther4Indicator().getNq1().doubleValue());
+                o4.set("Q2", getIndicator().getOther4Indicator().getNq2().doubleValue());
+                o4.set("Q3", getIndicator().getOther4Indicator().getNq3().doubleValue());
+                o4.set("Q4", getIndicator().getOther4Indicator().getNq4().doubleValue());
+                break;
+        }
+       
+
+        getotherChartModel().addSeries(o1);//他项1
+        getotherChartModel().addSeries(o2);//他项2
+        getotherChartModel().addSeries(o3);//他项3
+        getotherChartModel().addSeries(o4);//他项4
+        getotherChartModel().setTitle(getIndicator().getName());
+        getotherChartModel().setLegendPosition("e");
+        getotherChartModel().setShowPointLabels(true);
+        getotherChartModel().setBreakOnNull(true);
+        
         //根据指标ID加载指标说明、指标分析
         analysisList = indicatorAnalysisBean.findByPIdAndMonth(indicator.getId(), this.getM());//指标分析
         if (analysisList != null) {
@@ -483,6 +599,22 @@ public abstract class BscChartManagedBean extends SuperQueryBean<Indicator> {
             this.summaryCount = summaryList.size();
         }
 
+    }
+    public LineChartModel initOtherChartModel(String xTitle, String yTitle){
+        Axis yAxis;
+        getotherChartModel().setSeriesColors("33FF66,FF6633,0000EE,FFFF00");//自定义颜色
+        getotherChartModel().getAxes().put(AxisType.X, new CategoryAxis(xTitle));
+        yAxis = getotherChartModel().getAxis(AxisType.Y);
+        yAxis.setLabel(Objects.equals(getIndicator().getUnit(), "") ? yTitle : yTitle + "(" + getIndicator().getUnit() + ")");
+        return getotherChartModel();  
+    }
+        public LineChartModel initallChartModel(String xTitle, String yTitle){
+        Axis yAxis;
+        getallChartModel().setSeriesColors("33FF66,FF6633,0000EE");//自定义颜色
+        getallChartModel().getAxes().put(AxisType.X, new CategoryAxis(xTitle));
+        yAxis = getallChartModel().getAxis(AxisType.Y);
+        yAxis.setLabel(Objects.equals(getIndicator().getUnit(), "") ? yTitle : yTitle + "(" + getIndicator().getUnit() + ")");
+        return getallChartModel();  
     }
 
     public LineChartModel initLineChartModel(String xTitle, String yTitle) {
@@ -733,7 +865,13 @@ public abstract class BscChartManagedBean extends SuperQueryBean<Indicator> {
     public LineChartModel getChartModel() {
         return chartModel;
     }
-
+    
+    public LineChartModel getotherChartModel() {
+        return otherChartModel;
+    }
+    public LineChartModel getallChartModel() {
+        return AllChartModel;
+    }
     /**
      * @return the accumulativeChartModel
      */
@@ -776,4 +914,5 @@ public abstract class BscChartManagedBean extends SuperQueryBean<Indicator> {
     public void setMonthchecked(boolean monthchecked) {
         this.monthchecked = monthchecked;
     }
+
 }
