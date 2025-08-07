@@ -10,9 +10,13 @@ import cn.hanbell.kpi.entity.RoleGrantModule;
 import cn.hanbell.kpi.web.BscChartManagedBean;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.servlet.http.HttpServletRequest;
+import org.primefaces.model.chart.Axis;
+import org.primefaces.model.chart.AxisType;
+import org.primefaces.model.chart.CategoryAxis;
 import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.LineChartModel;
 
@@ -23,7 +27,8 @@ import org.primefaces.model.chart.LineChartModel;
 @ManagedBean(name = "complaintsChartReportBean")
 @ViewScoped
 public class ComplaintsChartReportBean extends BscChartManagedBean {
-
+    protected LineChartModel otherChartModel;
+    protected LineChartModel AllChartModel;
     public ComplaintsChartReportBean() {
     }
 
@@ -333,5 +338,28 @@ public class ComplaintsChartReportBean extends BscChartManagedBean {
         if (summaryList != null) {
             this.summaryCount = summaryList.size();
         }
+    }  
+        public LineChartModel initOtherChartModel(String xTitle, String yTitle){
+        Axis yAxis;
+        getotherChartModel().setSeriesColors("33FF66,FF6633,0000EE,FFFF00");//自定义颜色
+        getotherChartModel().getAxes().put(AxisType.X, new CategoryAxis(xTitle));
+        yAxis = getotherChartModel().getAxis(AxisType.Y);
+        yAxis.setLabel(Objects.equals(getIndicator().getUnit(), "") ? yTitle : yTitle + "(" + getIndicator().getUnit() + ")");
+        return getotherChartModel();  
+    }
+        public LineChartModel initallChartModel(String xTitle, String yTitle){
+        Axis yAxis;
+        getallChartModel().setSeriesColors("33FF66,FF6633,0000EE");//自定义颜色
+        getallChartModel().getAxes().put(AxisType.X, new CategoryAxis(xTitle));
+        yAxis = getallChartModel().getAxis(AxisType.Y);
+        yAxis.setLabel(Objects.equals(getIndicator().getUnit(), "") ? yTitle : yTitle + "(" + getIndicator().getUnit() + ")");
+        return getallChartModel();  
+    }
+    public LineChartModel getotherChartModel() {
+        return otherChartModel;
+    }
+    public LineChartModel getallChartModel() {
+        return AllChartModel;
     }
 }
+
