@@ -365,7 +365,7 @@
             <to-view-id>/app/bsc/complaintssheet.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
-	    <navigation-case>
+	<navigation-case>
             <from-outcome>complaintsAHsheet</from-outcome>
             <to-view-id>/app/bsc/complaintsAHsheet.xhtml</to-view-id>
             <redirect/>
@@ -533,6 +533,11 @@
         <navigation-case>
             <from-outcome>shipmentsheet</from-outcome>
             <to-view-id>/app/bsc/shipmentsheet.xhtml</to-view-id>
+            <redirect/>
+        </navigation-case>       
+        <navigation-case>
+            <from-outcome>shipmentsheetServerBSC</from-outcome>
+            <to-view-id>/app/bsc/shipmentsheetServerBSC.xhtml</to-view-id>
             <redirect/>
         </navigation-case>
         <navigation-case>

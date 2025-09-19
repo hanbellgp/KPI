@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./../../WEB-INF/bsc.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content">
+        <h:form id="formOne" rendered="#{!ShipmentSheetReportServerBean.deny}">
+            <div class="ui-g dashboard">
+                <div class="ui-g-12 ui-md-12" align="center">
+                    <div><h3 style="text-align: center">
+                            <span style="float: left">单位:#{ShipmentSheetReportServerBean.indicator.unit}</span>#{ShipmentSheetReportServerBean.y}&nbsp;&nbsp;#{ShipmentSheetReportServerBean.indicatorChart.name}
+                            <p:link value="返回" outcome="home" style="float: right"/>
+                            <p:selectOneRadio id="scale" value="#{ShipmentSheetReportServerBean.scale}" style="float:right" >
+                                <f:selectItem itemLabel="0位" itemValue="0" />
+                                <f:selectItem itemLabel="2位" itemValue="2" />
+                                <p:ajax process="@this" update="formOne"/>
+                            </p:selectOneRadio>
+                            <div style="float:right;margin-right:12px;">
+                                <h:selectBooleanCheckbox value="#{ShipmentSheetReportServerBean.monthchecked}"  title="√不选中为所以数据" style="height: 18px;width: 18px">
+                                <span>只显示当月</span>
+                                <p:ajax process="@this" update="formOne"/>
+                                </h:selectBooleanCheckbox>
+                            </div>
+                        </h3>
+                    </div>
+                    <p:dataTable var="item" value="#{ShipmentSheetReportServerBean.indicatorDetailList}" styleClass="#{ShipmentSheetReportServerBean.monthchecked==true?'plgSheetData Wid30':'plgSheetData Wid100'}" reflow="true" stickyHeader="true">
+                        <p:column headerText="产品" groupRow="true">
+                            <p:link rendered="#{ShipmentSheetReportServerBean.isExists(item.parent.formid, item.parent.deptno)}"  value="#{item.parent.name}" outcome="#{ShipmentSheetReportServerBean.sheetChart.api}" includeViewParams="true" >
+                                <f:param name="id" value="#{ShipmentSheetReportServerBean.sheetChart.id}" />
+                            </p:link>
+                            <h:outputText value="#{item.parent.name}" rendered="#{!ShipmentSheetReportServerBean.isExists}" />
+                        </p:column>
+                        <p:column headerText="类别">
+                            <h:outputText value="#{item.type}" />
+                        </p:column>
+                        <p:column headerText="1月" visible="#{ShipmentSheetReportServerBean.visible(1)}" priority="#{ShipmentSheetReportServerBean.m==1?4:5}">
+                            <h:outputText value="#{ShipmentSheetReportServerBean.format(item.type,item.n01,1)}" />
+                        </p:column>
+                        <p:column headerText="2月" visible="#{ShipmentSheetReportServerBean.visible(2)}" priority="#{ShipmentSheetReportServerBean.m==2?4:5}">
+                            <h:outputText value="#{ShipmentSheetReportServerBean.format(item.type,item.n02,2)}" />
+                        </p:column>
+                        <p:column headerText="3月" visible="#{ShipmentSheetReportServerBean.visible(3)}" priority="#{ShipmentSheetReportServerBean.m==3?4:5}">
+                            <h:outputText value="#{ShipmentSheetReportServerBean.format(item.type,item.n03,3)}" />
+                        </p:column>
+                        <p:column headerText="4月" visible="#{ShipmentSheetReportServerBean.visible(4)}" priority="#{ShipmentSheetReportServerBean.m==4?4:5}">
+                            <h:outputText value="#{ShipmentSheetReportServerBean.format(item.type,item.n04,4)}" />
+                        </p:column>
+                        <p:column headerText="5月" visible="#{ShipmentSheetReportServerBean.visible(5)}" priority="#{ShipmentSheetReportServerBean.m==5?4:5}">
+                            <h:outputText value="#{ShipmentSheetReportServerBean.format(item.type,item.n05,5)}" />
+                        </p:column>
+                        <p:column headerText="6月" visible="#{ShipmentSheetReportServerBean.visible(6)}" priority="#{ShipmentSheetReportServerBean.m==6?4:5}">
+                            <h:outputText value="#{ShipmentSheetReportServerBean.format(item.type,item.n06,6)}" />
+                        </p:column>
+                        <p:column headerText="7月" visible="#{ShipmentSheetReportServerBean.visible(7)}" priority="#{ShipmentSheetReportServerBean.m==7?4:5}">
+                            <h:outputText value="#{ShipmentSheetReportServerBean.format(item.type,item.n07,7)}" />
+                        </p:column>
+                        <p:column headerText="8月" visible="#{ShipmentSheetReportServerBean.visible(8)}" priority="#{ShipmentSheetReportServerBean.m==8?4:5}">
+                            <h:outputText value="#{ShipmentSheetReportServerBean.format(item.type,item.n08,8)}" />
+                        </p:column>
+                        <p:column headerText="9月" visible="#{ShipmentSheetReportServerBean.visible(9)}" priority="#{ShipmentSheetReportServerBean.m==9?4:5}">
+                            <h:outputText value="#{ShipmentSheetReportServerBean.format(item.type,item.n09,9)}" />
+                        </p:column>
+                        <p:column headerText="10月" visible="#{ShipmentSheetReportServerBean.visible(10)}" priority="#{ShipmentSheetReportServerBean.m==10?4:5}">
+                            <h:outputText value="#{ShipmentSheetReportServerBean.format(item.type,item.n10,10)}" />
+                        </p:column>
+                        <p:column headerText="11月" visible="#{ShipmentSheetReportServerBean.visible(11)}" priority="#{ShipmentSheetReportServerBean.m==11?4:5}">
+                            <h:outputText value="#{ShipmentSheetReportServerBean.format(item.type,item.n11,11)}" />
+                        </p:column>
+                        <p:column headerText="12月" visible="#{ShipmentSheetReportServerBean.visible(12)}" priority="#{ShipmentSheetReportServerBean.m==12?4:5}">
+                            <h:outputText value="#{ShipmentSheetReportServerBean.format(item.type,item.n12,12)}" />
+                        </p:column>
+                        <p:column headerText="全年">
+                            <h:outputText value="#{ShipmentSheetReportServerBean.format(item.type,item.nfy,0)}" />
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </div>
+            <div id="indicatorSummary" class="ui-g-12 ui-md-12">
+                <p:repeat id="repSummary" value="#{ShipmentSheetReportServerBean.summaryList}" var="s" rendered="#{ShipmentSheetReportServerBean.summaryCount>0}">
+                    <p:panel  id="summaryPanel" header="#{s.title}" toggleable="true" style="height:min-content">
+                        <h:panelGrid>
+                            <h:outputText id="summary"/>
+                            <h:inputHidden id="hdnSummary" value="#{s.summary}"/>
+                        </h:panelGrid>
+                    </p:panel>
+                </p:repeat>
+            </div>
+            <div id="indicatorAnalysis" class="ui-g-12 ui-md-12">
+                <p:repeat id="repAnalysis" value="#{ShipmentSheetReportServerBean.analysisList}" var="a" rendered="#{ShipmentSheetReportServerBean.analysisCount>0}">
+                    <p:panel  id="analysisPanel" header="#{a.title}" toggleable="true" style="height:min-content">
+                        <h:panelGrid columns="3" columnClasses="Wid30,Wid30,Wid40" styleClass="plgDetail Wid100">
+                            <h:outputText id="issueLabel" value="问题"/>
+                            <h:outputText id="factorLabel" value="原因"/>
+                            <h:outputText id="countermeasureLabel" value="对策"/>
+                            <h:outputText id="issue"/>
+                            <h:outputText id="factor"/>
+                            <h:outputText id="countermeasure"/>
+                            <h:inputHidden id="hdnIssue" value="#{a.issue}"/>
+                            <h:inputHidden id="hdnFactor" value="#{a.factor}"/>
+                            <h:inputHidden id="hdnCountermeasure" value="#{a.countermeasure}"/>
+                        </h:panelGrid>
+                    </p:panel>
+                </p:repeat>
+            </div>
+            <div>
+                <h:inputHidden id="m" value="#{ShipmentSheetReportServerBean.m}"></h:inputHidden>
+                <h:inputHidden id="sc" value="#{ShipmentSheetReportServerBean.summaryCount}"></h:inputHidden>
+                <h:inputHidden id="ac" value="#{ShipmentSheetReportServerBean.analysisCount}"></h:inputHidden>
+            </div>
+            <h:outputScript name="bsc-analysis-sheet.js" library="js"/>
+        </h:form>
+        <h:form id="formTwo"  rendered="#{ShipmentSheetReportServerBean.deny}">
+            <h1 style="text-align: center;margin-top: 50px;">你想干嘛</h1>
+            <h1 style="text-align: center">别没事找事</h1>
+            <h1 style="text-align: center">再看我真的生气了</h1>
+            <div class="exception-type" style="text-align: center;">
+                <p:graphicImage name="images/angry.gif" library="ultima-layout" style=""/>
+            </div>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
