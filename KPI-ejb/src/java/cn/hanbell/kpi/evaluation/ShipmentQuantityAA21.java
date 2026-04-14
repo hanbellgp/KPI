@@ -17,9 +17,9 @@ import javax.persistence.Query;
  *
  * @author C0160
  */
-public class ShipmentQuantityAA2 extends ShipmentQuantityAA {
+public class ShipmentQuantityAA21 extends ShipmentQuantityAA {
 
-    public ShipmentQuantityAA2() {
+    public ShipmentQuantityAA21() {
         super();
         queryParams.put("facno", "C");
         queryParams.put("deptno", " '1T000','1T100' ");
@@ -30,7 +30,7 @@ public class ShipmentQuantityAA2 extends ShipmentQuantityAA {
     }
     @Override
     public BigDecimal getValue(int y, int m, Date d, int type, LinkedHashMap<String, Object> map) {
-        //2026-4-13 机组外销其他出货排除'C2915','C2718'
+        //2026-4-13 国际营销课卖机组'C2915','C2718' 算国际营销课业绩
         //出货=销售-退货
         //机体整机
  //获得查询参数
@@ -76,7 +76,7 @@ public class ShipmentQuantityAA2 extends ShipmentQuantityAA {
                     break;
             }
         }
-        sb.append(" and h.mancode not in('C2915','C2718')");
+        sb.append(" and h.mancode  in('C2915','C2718')");
         sb.append(" and year(h.shpdate) = ${y} and month(h.shpdate)= ${m} ");
         switch (type) {
             case 2:
@@ -93,7 +93,7 @@ public class ShipmentQuantityAA2 extends ShipmentQuantityAA {
         String cdrdta = sb.toString().replace("${y}", String.valueOf(y)).replace("${m}", String.valueOf(m)).replace("${d}", BaseLib.formatDate("yyyyMMdd", d))
                 .replace("${facno}", facno);
 
-        sb.setLength(0);
+         sb.setLength(0);
         sb.append("select isnull(sum(d.bshpqy1),0) from cdrbhad h,cdrbdta d,cdrdmas cd left join  cdritncusmap p on cd.itnbrcus = p.itnbrcus  ");
         sb.append(" where h.facno=d.facno and h.bakno=d.bakno and d.cdrno = cd.cdrno and d.ctrseq = cd.trseq and h.baksta<>'W' ");
         sb.append(" and h.cusno NOT IN ('SSD00107','SGD00088','SJS00254','SCQ00146') ");
@@ -123,7 +123,7 @@ public class ShipmentQuantityAA2 extends ShipmentQuantityAA {
                     break;
             }
         }
-        sb.append(" and h.mancode not in('C2915','C2718')");
+        sb.append(" and h.mancode  in('C2915','C2718')");
         sb.append(" and year(h.bakdate) = ${y} and month(h.bakdate)= ${m} ");
         switch (type) {
             case 2:
